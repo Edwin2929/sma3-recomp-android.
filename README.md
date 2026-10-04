@@ -2,11 +2,19 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
+## Novedad: v0.4 experimental
+
+Modo opcional **Atrás → 120 FPS experimentales (mezcla)**. Conserva el ritmo original y añade mezcla temporal entre imágenes, con un objetivo de 119,455 presentaciones/s. Puede producir estelas y añadir latencia; no son 120 estados independientes del juego.
+
+APK ARM64 compilado y firmado con la misma firma que v0.3. La prueba de temporización pasó; **todavía no se ha medido el rendimiento de v0.4 en Pixel 7 Pro**. [Activación, funcionamiento y límites](docs/INTERPOLACION_120.md).
+
+La descarga del APK en GitHub está pendiente de publicación. El repositorio contiene las fuentes y el parche del motor para compilarlo.
+
 ## Estado
 
 - **Prueba del usuario:** Edwin reportó el 3 de octubre de 2026 que el juego funciona en Android a **60 FPS**. Modelo del teléfono, versión de Android, versión exacta del APK y duración de la prueba: pendientes de registrar.
 - Prueba automatizada en Linux: recorrido de **18.000 fotogramas** completado con recompilación estática, cero fallos de despacho y cero instrucciones ejecutadas mediante el intérprete.
-- APK ARM64 compilado y firmado; versión actual del código: **0.3-back-menu**, `versionCode=3`.
+- APK ARM64 compilado y firmado; versión actual del código: **0.4-interpolation-experimental**, `versionCode=4`.
 - Contador de FPS opcional. Durante la partida, **Atrás del teléfono → Opciones → Mostrar FPS**. **Continuar** cierra el menú.
 - La opción también aparece en la pantalla inicial y se conserva entre sesiones.
 

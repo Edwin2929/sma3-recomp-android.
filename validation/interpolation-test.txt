@@ -1,0 +1,1 @@
+PASS: blend/cuts/reset/resize; 60 guest periods in 1.0166s; 60 midpoint slots

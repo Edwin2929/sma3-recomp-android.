@@ -1,0 +1,14 @@
+{
+  "apk": "sma3-recomp-0.4-120fps-experimental-arm64.apk",
+  "bytes": 31662331,
+  "sha256": "ff8dd4cfdab8cdb5dbd88165b0acec0daa4c6632c1bbf01c474ec2d31de89739",
+  "versionCode": 4,
+  "minSdk": 28,
+  "abi": "arm64-v8a",
+  "signature_matches_v03": true,
+  "zip_crc_ok": true,
+  "interpolation_jni_and_menu_packaged": true,
+  "guest_timing_test": "PASS: blend/cuts/reset/resize; 60 guest periods in 1.0166s; 60 midpoint slots",
+  "device_execution_tested": false,
+  "pixel7pro_120fps_measured": false
+}

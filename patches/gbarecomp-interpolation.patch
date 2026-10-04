@@ -1,0 +1,120 @@
+diff --git a/src/runtime/host_platform.cpp b/src/runtime/host_platform.cpp
+index 99c7813..4fa3c4e 100644
+--- a/src/runtime/host_platform.cpp
++++ b/src/runtime/host_platform.cpp
+@@ -50,6 +50,16 @@ void FramePacer::reset() {
+     next_ = clock::now() + period_;
+ }
+ 
++bool FramePacer::wait_for_midpoint() {
++    if (uncapped_) return false;
++    const auto deadline = next_ - period_ / 2;
++    if (clock::now() > deadline + std::chrono::microseconds(1000)) return false;
++    const auto sleep_end = deadline - std::chrono::microseconds(300);
++    if (clock::now() < sleep_end) std::this_thread::sleep_until(sleep_end);
++    while (clock::now() < deadline) std::this_thread::yield();
++    return clock::now() < next_ - std::chrono::milliseconds(2);
++}
++
+ void FramePacer::wait_for_next_frame() {
+     if (uncapped_) {
+         next_ = clock::now();  // keep the deadline current for re-cap
+diff --git a/src/runtime/host_platform.h b/src/runtime/host_platform.h
+index 2b48ab3..6c05c8e 100644
+--- a/src/runtime/host_platform.h
++++ b/src/runtime/host_platform.h
+@@ -42,6 +42,8 @@ public:
+     // Block until the next frame's deadline. Call once per presented
+     // frame. No-op while uncapped.
+     void wait_for_next_frame();
++    // Presentation slot only: never advances the guest deadline.
++    bool wait_for_midpoint();
+ 
+     // Realign the deadline to "now". Call after any non-real-time jump
+     // (startup, save-state load) so the pacer doesn't try to catch up.
+diff --git a/src/runtime/runtime.cpp b/src/runtime/runtime.cpp
+index b560791..6a26685 100644
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -20,6 +20,9 @@
+ // step_once() becomes a real `runtime_dispatch` driver.
+ 
+ #include "runtime.h"
++#ifdef SMA3_FRAME_INTERPOLATION
++#include "frame_interpolation.h"
++#endif
+ #include "multiplayer_launch.h"
+ #include "view_config.h"
+ 
+@@ -3627,6 +3630,35 @@ int run_game(int argc, char** argv, const RunOptions& opts) {
+     if (args.window) {
+         runtime_set_host_service_hook([&]() { win.service_events(); });
+     }
++    // Presentation-only extension: no extra CPU/PPU/audio steps.
++    bool sma3_frame_paced = false;
++#ifdef SMA3_FRAME_INTERPOLATION
++    sma3::FrameBlend sma3_blend;
++    auto sma3_last_pair = std::chrono::steady_clock::now();
++    bool sma3_was_enabled = false;
++#endif
++    auto present_game_frame = [&]() {
++        sma3_frame_paced = false;
++#ifdef SMA3_FRAME_INTERPOLATION
++        const bool enabled = sma3::interpolation_enabled.load(std::memory_order_relaxed)
++            && pacer && !fast_forward_active && !host_paused;
++        const auto now = std::chrono::steady_clock::now();
++        if (!enabled || !sma3_was_enabled || now - sma3_last_pair > std::chrono::milliseconds(100))
++            sma3_blend.reset();
++        sma3_last_pair = now;
++        sma3_was_enabled = enabled;
++        if (enabled) {
++            const bool has_middle = sma3_blend.prepare(live_fb.data(), live_fb.size(), ppu.frame_count());
++            if (has_middle && pacer->wait_for_midpoint()) win.present(sma3_blend.middle());
++            // ONE full-period wait per guest frame. The ordinary wait below
++            // is skipped, keeping guest simulation at its original rate.
++            pacer->wait_for_next_frame();
++            sma3_frame_paced = true;
++        }
++#endif
++        win.present(live_fb.data());
++    };
++
+     // Present-in-place (structural fix for frame-boundary resume dispatch-misses).
+     // When windowed, register a hook so the per-VBlank frame-present yield presents
+     // the frame from INSIDE runtime_should_yield and resumes the guest in place —
+@@ -3671,7 +3703,7 @@ int run_game(int argc, char** argv, const RunOptions& opts) {
+                     }
+                 }
+                 if (phase_active) fp_t1 = FramePhaseRing::now_ns();
+-                if (present_frame) win.present(live_fb.data());
++                if (present_frame) present_game_frame();
+                 if (phase_active) fp_t2 = FramePhaseRing::now_ns();
+                 int16_t audio_buf[2048];
+                 std::size_t n = bus.audio().drain_samples(audio_buf, 2048);
+@@ -3692,7 +3724,7 @@ int run_game(int argc, char** argv, const RunOptions& opts) {
+                     ++frames_presented;
+                     if (args.frames >= 0 && frames_presented >= args.frames)
+                         host_quit = true;
+-                    if (pacer) pacer->wait_for_next_frame();
++                    if (pacer && !sma3_frame_paced) pacer->wait_for_next_frame();
+                 }
+                 if (phase_active) {
+                     frame_phase.record(frame, fp_t0, fp_t1, fp_t2, fp_t3,
+@@ -4070,7 +4102,7 @@ int run_game(int argc, char** argv, const RunOptions& opts) {
+                     }
+                 }
+                 if (phase_active) fp_t1 = FramePhaseRing::now_ns();
+-                if (present_frame) win.present(live_fb.data());
++                if (present_frame) present_game_frame();
+                 // Framedump (capture runs only) is attributed to present_us.
+                 if (framedump_dir && frame >= framedump_start &&
+                     framedump_written < framedump_max) {
+@@ -4101,7 +4133,7 @@ int run_game(int argc, char** argv, const RunOptions& opts) {
+                     // Normal play presents/paces every frame. Fast-forward
+                     // runs N guest frames per one paced host presentation,
+                     // making its selected multiplier independent of monitor Hz.
+-                    if (pacer) pacer->wait_for_next_frame();
++                    if (pacer && !sma3_frame_paced) pacer->wait_for_next_frame();
+                 }
+                 if (phase_active) {
+                     frame_phase.record(frame, fp_t0, fp_t1, fp_t2, fp_t3,

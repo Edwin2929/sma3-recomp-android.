@@ -3,6 +3,9 @@ package org.gbarecomp;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import java.util.Locale;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -71,6 +74,43 @@ public class GbaGameActivity extends SDLActivity {
         updateFpsVisibility();
     }
 
+    private boolean activityResumed;
+    private String lastFps;
+    private SurfaceHolder.Callback refreshCallback;
+    private boolean wantsInterpolation() {
+        return getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("interpolation-120", false);
+    }
+    private void applyPresentationMode() {
+        boolean enabled = activityResumed && wantsInterpolation();
+        float rate = enabled ? 119.455f : 59.7275f;
+        WindowManager.LayoutParams attributes = getWindow().getAttributes();
+        attributes.preferredRefreshRate = activityResumed ? rate : 0f;
+        getWindow().setAttributes(attributes);
+        if (Build.VERSION.SDK_INT >= 30 && mSurface != null) {
+            Surface surface = mSurface.getHolder().getSurface();
+            if (surface != null && surface.isValid()) {
+                try { surface.setFrameRate(activityResumed ? rate : 0f, Surface.FRAME_RATE_COMPATIBILITY_DEFAULT); }
+                catch (IllegalArgumentException ignored) { /* device retains its mode */ }
+            }
+        }
+        try { GbaNative.setInterpolationEnabled(enabled); }
+        catch (UnsatisfiedLinkError notLoadedYet) { /* retried on resume/surface creation */ }
+        updateFpsText();
+    }
+    private void updateFpsText() {
+        if (fpsLabel == null) return;
+        String fps = lastFps == null ? "—" : lastFps;
+        float hz = getWindowManager().getDefaultDisplay().getRefreshRate();
+        fpsLabel.setText(wantsInterpolation()
+            ? "Salida: " + fps + " FPS · mezcla 2×\nPantalla: " + String.format(Locale.US, "%.0f", hz) + " Hz"
+            : "FPS: " + fps);
+    }
+    @Override protected void onResume() {
+        super.onResume(); activityResumed = true; applyPresentationMode();
+    }
+    @Override protected void onPause() {
+        activityResumed = false; applyPresentationMode(); super.onPause();
+    }
     private AlertDialog optionsDialog;
     private OnBackInvokedCallback optionsBackCallback;
 
@@ -82,12 +122,18 @@ public class GbaGameActivity extends SDLActivity {
         }
         optionsDialog = new AlertDialog.Builder(this)
             .setTitle("Opciones")
-            .setMultiChoiceItems(new String[]{"Mostrar FPS"},
-                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false)},
+            .setMultiChoiceItems(new String[]{"Mostrar FPS", "120 FPS experimentales (mezcla)"},
+                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), wantsInterpolation()},
                 (dialog, which, checked) -> {
-                    getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("show-fps", checked).apply();
+                    getSharedPreferences("sma3-options", MODE_PRIVATE).edit()
+                        .putBoolean(which == 0 ? "show-fps" : "interpolation-120", checked).apply();
                     updateFpsVisibility();
+                    if (which == 1) { lastFps = null; applyPresentationMode(); }
                 })
+            .setNeutralButton("Sobre 120 FPS", (dialog, which) ->
+                new AlertDialog.Builder(this).setTitle("120 FPS experimentales")
+                    .setMessage("Mezcla imágenes consecutivas para presentar hasta 119,5 FPS. El juego mantiene su velocidad original. Puede dejar estelas y añadir algo de latencia. No son 120 fotogramas de juego independientes. En el Pixel 7 Pro activa Pantalla fluida y desactiva Ahorro de batería. Android decide la frecuencia final.")
+                    .setPositiveButton("Entendido", null).show())
             .setPositiveButton("Continuar", null)
             .create();
         optionsDialog.setOnDismissListener(dialog -> {
@@ -118,6 +164,7 @@ public class GbaGameActivity extends SDLActivity {
             getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(optionsBackCallback);
         }
         if (optionsDialog != null) optionsDialog.dismiss();
+        if (mSurface != null && refreshCallback != null) mSurface.getHolder().removeCallback(refreshCallback);
         super.onDestroy();
     }
 
@@ -128,7 +175,7 @@ public class GbaGameActivity extends SDLActivity {
         super.setTitle(title);
         if (fpsLabel == null || title == null) return;
         Matcher value = FPS_TITLE.matcher(title);
-        if (value.find()) fpsLabel.setText("FPS: " + value.group(1));
+        if (value.find()) { lastFps = value.group(1); updateFpsText(); }
     }
 
 
@@ -143,6 +190,14 @@ public class GbaGameActivity extends SDLActivity {
         }
         super.onCreate(savedInstanceState);
         installFpsOptions();
+        refreshCallback = new SurfaceHolder.Callback() {
+            public void surfaceCreated(SurfaceHolder holder) { applyPresentationMode(); }
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { applyPresentationMode(); }
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                try { GbaNative.setInterpolationEnabled(false); } catch (UnsatisfiedLinkError ignored) {}
+            }
+        };
+        if (mSurface != null) mSurface.getHolder().addCallback(refreshCallback);
         if (Build.VERSION.SDK_INT >= 33) {
             optionsBackCallback = this::showOptions;
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(

@@ -9,6 +9,7 @@ package org.gbarecomp;
  */
 public final class GbaNative {
     private GbaNative() {}
+    public static native void setInterpolationEnabled(boolean enabled);
 
     /**
      * Safe-area insets in physical pixels: display cutouts and mandatory
