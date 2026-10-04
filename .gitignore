@@ -1,0 +1,43 @@
+# User assets and saves
+*.gba
+*.bin
+*.sav
+*.srm
+*.state
+assets-private/
+# Locally generated game / BIOS code
+generated-project/generated/
+generated-bios/
+generated-ram/
+generated-overlays/
+# Build products and caches
+build/
+**/build/
+.gradle/
+**/.gradle/
+.cxx/
+**/.cxx/
+native-cache/
+host-linux/
+__pycache__/
+*.pyc
+*.o
+*.a
+*.so
+*.apk
+*.aab
+*.hprof
+core
+core.*
+*.log
+# Local configuration and signing
+local.properties
+**/local.properties
+*.keystore
+*.jks
+signing.local.properties
+.env
+.env.*
+# Generated test captures
+validation/*.png
+validation/*.json

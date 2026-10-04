@@ -1,0 +1,10 @@
+[program]
+name = "GBA BIOS local recompilation"
+id = "gba_bios"
+load_address = 0x00000000
+size = 0x00004000
+entry_pc = 0x00000000
+static_resume_all = true
+speculative_literal_harvest = false
+[identity]
+sha1 = "300c20df6731a33952ded8c436f7f186d25d3492"

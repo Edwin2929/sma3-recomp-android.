@@ -1,0 +1,66 @@
+[program]
+name = "Yoshi's Island: Super Mario Advance 3 (USA)"
+id = "sma3_usa"
+load_address = 0x08000000
+size = 0x00400000
+entry_pc = 0x08000000
+speculative_literal_harvest = false
+static_resume_all = true
+codegen_shards = 64
+
+[identity]
+sha1 = "7352d2bd064d9ebaec579e264228aa21c7345b80"
+md5 = "bb09508c782f37934c9519c5f8a7350c"
+
+[[data_range]]
+start = 0x08000004
+end = 0x080000C0
+note = "Cartridge header and Nintendo logo data"
+
+[[data_range]]
+start = 0x081643BC
+end = 0x08400000
+note = "Data region following game code, from sma3-disasm"
+
+[[code_copy]]
+runtime_start = 0x030065AC
+source_start = 0x080000FC
+size = 0x400
+name = "main_irq_handler"
+
+[[extra_func]]
+addr = 0x030065AC
+mode = "arm"
+name = "sma3_iwram_interrupt_handler"
+
+[[code_copy]]
+runtime_start = 0x03001368
+source_start = 0x0812F3FC
+size = 0x360
+name = "sound_mixer_iwram"
+
+[[code_copy]]
+runtime_start = 0x0300639C
+source_start = 0x08043298
+size = 0x210
+name = "graphics_iwram"
+
+[[extra_func]]
+addr = 0x03001368
+mode = "arm"
+name = "sma3_iwram_sound_0"
+
+[[extra_func]]
+addr = 0x03001488
+mode = "arm"
+name = "sma3_iwram_sound_1"
+
+[[extra_func]]
+addr = 0x03001580
+mode = "arm"
+name = "sma3_iwram_sound_2"
+
+[[extra_func]]
+addr = 0x0300639C
+mode = "thumb"
+name = "sma3_iwram_graphics"

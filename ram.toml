@@ -1,0 +1,51 @@
+[program]
+name = "SMA3 observed RAM code"
+id = "sma3_ram"
+load_address = 0x08000000
+size = 0x00400000
+entry_pc = 0x03004110
+speculative_literal_harvest = false
+static_resume_all = true
+codegen_shards = 2
+[identity]
+sha1 = "7352d2bd064d9ebaec579e264228aa21c7345b80"
+
+[[code_copy]]
+runtime_start = 0x03004110
+source_start = 0x08033224
+size = 0x3A4
+name = "intro_33224"
+[[extra_func]]
+addr = 0x03004110
+mode = "thumb"
+name = "intro_33224"
+
+[[code_copy]]
+runtime_start = 0x03003DF8
+source_start = 0x080335C8
+size = 0x258
+name = "intro_335c8"
+[[extra_func]]
+addr = 0x03003DF8
+mode = "thumb"
+name = "intro_335c8"
+
+[[code_copy]]
+runtime_start = 0x03004054
+source_start = 0x0802F2A4
+size = 0xB8
+name = "intro_2f2a4"
+[[extra_func]]
+addr = 0x03004054
+mode = "thumb"
+name = "intro_2f2a4"
+
+[[code_copy]]
+runtime_start = 0x03002474
+source_start = 0x08000288
+size = 0x100
+name = "title_00288"
+[[extra_func]]
+addr = 0x03002474
+mode = "arm"
+name = "title_00288"
