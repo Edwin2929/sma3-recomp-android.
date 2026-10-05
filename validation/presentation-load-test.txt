@@ -1,0 +1,5 @@
+work=0ms guest=59.53/s available-presentation-slots=119.06/s midpoints=120/120
+work=6ms guest=59.55/s available-presentation-slots=119.10/s midpoints=120/120
+work=10ms guest=57.80/s available-presentation-slots=115.11/s midpoints=119/120
+work=14ms guest=59.67/s available-presentation-slots=59.67/s midpoints=0/120
+PASS: preserves guest speed, recovers moderate lateness, drops overloaded extra slots without catch-up bursts

@@ -1,8 +1,8 @@
 plugins { id 'com.android.application' }
 ext.gbaGame = [
     applicationId: 'org.sma3.recomp.experimental',
-    versionCode: 7,
-    versionName: '0.7-languages-experimental',
+    versionCode: 8,
+    versionName: '0.8-menu-refresh-experimental',
     title: 'SMA3 Recomp experimental',
     romSha1: ['7352d2bd064d9ebaec579e264228aa21c7345b80'],
     romSize: 4194304,
@@ -41,4 +41,5 @@ android.sourceSets.main.java.srcDirs = [
 ]
 
 android.sourceSets.main.manifest.srcFile file('../AndroidManifest.xml')
+
 

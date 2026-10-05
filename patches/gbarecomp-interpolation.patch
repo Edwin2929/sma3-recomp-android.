@@ -9,11 +9,11 @@ index 99c7813..4fa3c4e 100644
 +bool FramePacer::wait_for_midpoint() {
 +    if (uncapped_) return false;
 +    const auto deadline = next_ - period_ / 2;
-+    if (clock::now() > deadline + std::chrono::microseconds(1000)) return false;
++    if (clock::now() >= next_ - period_ / 4) return false;
 +    const auto sleep_end = deadline - std::chrono::microseconds(300);
 +    if (clock::now() < sleep_end) std::this_thread::sleep_until(sleep_end);
 +    while (clock::now() < deadline) std::this_thread::yield();
-+    return clock::now() < next_ - std::chrono::milliseconds(2);
++    return clock::now() < next_ - period_ / 4;
 +}
 +
  void FramePacer::wait_for_next_frame() {
@@ -69,7 +69,7 @@ index b560791..6a26685 100644
 +        sma3_was_enabled = enabled;
 +        if (enabled) {
 +            const bool has_middle = sma3_blend.prepare(live_fb.data(), live_fb.size(), ppu.frame_count());
-+            if (has_middle && pacer->wait_for_midpoint()) win.present(sma3_blend.middle());
++            if (pacer->wait_for_midpoint()) win.present(has_middle ? sma3_blend.middle() : live_fb.data());
 +            // ONE full-period wait per guest frame. The ordinary wait below
 +            // is skipped, keeping guest simulation at its original rate.
 +            pacer->wait_for_next_frame();

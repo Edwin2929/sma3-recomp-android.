@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.Surface;
+import android.view.Display;
+import android.hardware.display.DisplayManager;
 import android.view.SurfaceHolder;
 import java.util.Locale;
 import android.view.KeyEvent;
@@ -74,22 +76,64 @@ public class GbaGameActivity extends SDLActivity {
         updateFpsVisibility();
     }
 
+    private String tr(String es, String en, String pt) {
+        int lang = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1);
+        return lang == 0 ? en : lang == 2 ? pt : es;
+    }
+    private void showMenuLanguageOptions() {
+        int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1);
+        AlertDialog menu = new AlertDialog.Builder(this)
+            .setTitle(tr("Idioma del menú", "Menu language", "Idioma do menu"))
+            .setSingleChoiceItems(new String[]{"English", "Español", "Português"}, selected, (dialog, which) -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("menu-language", which).apply();
+                updateFpsText(); dialog.dismiss(); showOptions();
+            }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (dialog, which) -> showOptions()).create();
+        menu.setOnCancelListener(dialog -> showOptions());
+        menu.show(); setMenuOpen(true);
+    }
     private boolean activityResumed;
     private String lastFps;
     private SurfaceHolder.Callback refreshCallback;
+    private DisplayManager displayManager;
+    private final DisplayManager.DisplayListener displayListener = new DisplayManager.DisplayListener() {
+        public void onDisplayAdded(int id) {}
+        public void onDisplayRemoved(int id) {}
+        public void onDisplayChanged(int id) {
+            if (id == getWindowManager().getDefaultDisplay().getDisplayId()) updateFpsText();
+        }
+    };
     private boolean wantsInterpolation() {
         return getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("interpolation-120", false);
     }
     private void applyPresentationMode() {
         boolean enabled = activityResumed && wantsInterpolation();
+        // Keep the exact content cadence on Surface; select the physical 120 Hz mode below.
         float rate = enabled ? 119.455f : 59.7275f;
+        Display display = getWindowManager().getDefaultDisplay();
+        Display.Mode currentMode = display.getMode();
+        int preferredMode = 0;
+        float bestDifference = Float.MAX_VALUE;
+        if (enabled) for (Display.Mode mode : display.getSupportedModes()) {
+            // Never change the user's display resolution.
+            if (mode.getPhysicalWidth() != currentMode.getPhysicalWidth()
+                    || mode.getPhysicalHeight() != currentMode.getPhysicalHeight()) continue;
+            float difference = Math.abs(mode.getRefreshRate() - 120f);
+            if (mode.getRefreshRate() >= 119f && difference < bestDifference) {
+                preferredMode = mode.getModeId(); bestDifference = difference;
+            }
+        }
         WindowManager.LayoutParams attributes = getWindow().getAttributes();
-        attributes.preferredRefreshRate = activityResumed ? rate : 0f;
+        attributes.preferredRefreshRate = activityResumed ? (enabled ? 120f : 60f) : 0f;
+        attributes.preferredDisplayModeId = preferredMode;
         getWindow().setAttributes(attributes);
         if (Build.VERSION.SDK_INT >= 30 && mSurface != null) {
             Surface surface = mSurface.getHolder().getSurface();
             if (surface != null && surface.isValid()) {
-                try { surface.setFrameRate(activityResumed ? rate : 0f, Surface.FRAME_RATE_COMPATIBILITY_DEFAULT); }
+                try {
+                    if (Build.VERSION.SDK_INT >= 31) surface.setFrameRate(activityResumed ? rate : 0f,
+                        Surface.FRAME_RATE_COMPATIBILITY_DEFAULT, Surface.CHANGE_FRAME_RATE_ALWAYS);
+                    else surface.setFrameRate(activityResumed ? rate : 0f, Surface.FRAME_RATE_COMPATIBILITY_DEFAULT);
+                }
                 catch (IllegalArgumentException ignored) { /* device retains its mode */ }
             }
         }
@@ -103,8 +147,12 @@ public class GbaGameActivity extends SDLActivity {
         String fps = lastFps == null ? "—" : lastFps;
         float hz = getWindowManager().getDefaultDisplay().getRefreshRate();
         fpsLabel.setText(wantsInterpolation()
-            ? "Salida: " + fps + " FPS · mezcla 2×\nPantalla: " + String.format(Locale.US, "%.0f", hz) + " Hz"
+            ? tr("Salida: ", "Output: ", "Saída: ") + fps + tr(" FPS · mezcla 2×\nPantalla: ", " FPS · 2× blend\nDisplay: ", " FPS · mistura 2×\nTela: ") + String.format(Locale.US, "%.0f", hz) + " Hz"
             : "FPS: " + fps);
+        if (wantsInterpolation() && hz < 119f) fpsLabel.append("\n" + tr(
+            "Pantalla por debajo de 120 Hz: revisa Pantalla fluida y ahorro de batería.",
+            "Display below 120 Hz: check Smooth Display and Battery Saver.",
+            "Tela abaixo de 120 Hz: verifique Tela fluida e economia de bateria."));
     }
     @Override protected void onResume() {
         super.onResume(); activityResumed = true; applyPresentationMode();
@@ -115,8 +163,8 @@ public class GbaGameActivity extends SDLActivity {
     private AlertDialog optionsDialog;
     private OnBackInvokedCallback optionsBackCallback;
 
-    private static final String[] GBA_BUTTONS = {"A", "B", "Select", "Start", "Derecha", "Izquierda", "Arriba", "Abajo", "R", "L"};
-    private static final String[] PAD_BUTTONS = {"A / Cruz", "B / Círculo", "X / Cuadrado", "Y / Triángulo", "Back / Share", "Guía", "Start / Options", "Stick izquierdo (L3)", "Stick derecho (R3)", "L1 / LB", "R1 / RB", "Cruceta arriba", "Cruceta abajo", "Cruceta izquierda", "Cruceta derecha", "Misc", "Palanca 1", "Palanca 2", "Palanca 3", "Palanca 4", "Panel táctil", "Sin asignar"};
+    private String[] gbaButtons() { return new String[]{"A", "B", "Select", "Start", tr("Derecha", "Right", "Direita"), tr("Izquierda", "Left", "Esquerda"), tr("Arriba", "Up", "Cima"), tr("Abajo", "Down", "Baixo"), "R", "L"}; }
+    private String[] padButtons() { return new String[]{tr("A / Cruz", "A / Cross", "A / Cruz"), tr("B / Círculo", "B / Circle", "B / Círculo"), tr("X / Cuadrado", "X / Square", "X / Quadrado"), tr("Y / Triángulo", "Y / Triangle", "Y / Triângulo"), "Back / Share", tr("Guía", "Guide", "Guia"), "Start / Options", tr("Stick izquierdo (L3)", "Left stick (L3)", "Analógico esquerdo (L3)"), tr("Stick derecho (R3)", "Right stick (R3)", "Analógico direito (R3)"), "L1 / LB", "R1 / RB", tr("Cruceta arriba", "D-pad up", "Direcional cima"), tr("Cruceta abajo", "D-pad down", "Direcional baixo"), tr("Cruceta izquierda", "D-pad left", "Direcional esquerda"), tr("Cruceta derecha", "D-pad right", "Direcional direita"), "Misc", tr("Palanca 1", "Paddle 1", "Alavanca 1"), tr("Palanca 2", "Paddle 2", "Alavanca 2"), tr("Palanca 3", "Paddle 3", "Alavanca 3"), tr("Palanca 4", "Paddle 4", "Alavanca 4"), tr("Panel táctil", "Touchpad", "Painel de toque"), tr("Sin asignar", "Unassigned", "Sem atribuição")}; }
     private static final int[] DEFAULT_PAD = {0,1,4,6,14,13,11,12,10,9};
     private int padBinding(int bit) {
         int button = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("pad-" + bit, DEFAULT_PAD[bit]);
@@ -136,24 +184,24 @@ public class GbaGameActivity extends SDLActivity {
     }
     private void showControllerOptions() {
         String[] rows = new String[10];
-        for (int bit = 0; bit < 10; ++bit) rows[bit] = GBA_BUTTONS[bit] + " → " + PAD_BUTTONS[padBinding(bit) < 0 ? 21 : padBinding(bit)];
-        AlertDialog menu = new AlertDialog.Builder(this).setTitle("Mapeo del mando")
+        for (int bit = 0; bit < 10; ++bit) rows[bit] = gbaButtons()[bit] + " → " + padButtons()[padBinding(bit) < 0 ? 21 : padBinding(bit)];
+        AlertDialog menu = new AlertDialog.Builder(this).setTitle(tr("Mapeo del mando", "Controller mapping", "Mapeamento do controle"))
             .setItems(rows, (dialog, bit) -> {
                 AlertDialog chooser = new AlertDialog.Builder(this)
-                    .setTitle("Botón para " + GBA_BUTTONS[bit])
-                    .setSingleChoiceItems(PAD_BUTTONS, padBinding(bit) < 0 ? 21 : padBinding(bit), (selection, index) -> {
+                    .setTitle(tr("Botón para ", "Button for ", "Botão para ") + gbaButtons()[bit])
+                    .setSingleChoiceItems(padButtons(), padBinding(bit) < 0 ? 21 : padBinding(bit), (selection, index) -> {
                         getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("pad-" + bit, index == 21 ? -1 : index).apply();
                         applyInputOptions(); selection.dismiss(); showControllerOptions();
-                    }).setNegativeButton("Cancelar", (selection, which) -> showControllerOptions()).create();
+                    }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (selection, which) -> showControllerOptions()).create();
                 chooser.setOnCancelListener(ignored -> showControllerOptions());
                 chooser.show(); setMenuOpen(true);
             })
-            .setNeutralButton("Restablecer", (dialog, which) -> {
+            .setNeutralButton(tr("Restablecer", "Reset", "Restaurar"), (dialog, which) -> {
                 android.content.SharedPreferences.Editor editor = getSharedPreferences("sma3-options", MODE_PRIVATE).edit();
                 for (int bit = 0; bit < 10; ++bit) editor.remove("pad-" + bit);
                 editor.apply(); applyInputOptions(); showControllerOptions();
             })
-            .setPositiveButton("Listo", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
+            .setPositiveButton(tr("Listo", "Done", "Concluído"), (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
         menu.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
         menu.show(); setMenuOpen(true);
     }
@@ -166,7 +214,7 @@ public class GbaGameActivity extends SDLActivity {
         android.widget.RadioGroup qualities = new android.widget.RadioGroup(this);
         int saved = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
         int[] values = {0, 720, 1080};
-        String[] names = {"Automática (resolución de pantalla)", "720p · HD", "1080p · Full HD"};
+        String[] names = {tr("Automática (resolución de pantalla)", "Automatic (display resolution)", "Automática (resolução da tela)"), "720p · HD", "1080p · Full HD"};
         for (int i = 0; i < values.length; ++i) {
             android.widget.RadioButton button = new android.widget.RadioButton(this);
             button.setId(i + 100); button.setText(names[i]); qualities.addView(button);
@@ -180,7 +228,7 @@ public class GbaGameActivity extends SDLActivity {
         });
         panel.addView(qualities);
         android.widget.CheckBox stretch = new android.widget.CheckBox(this);
-        stretch.setText("Estirar a pantalla completa");
+        stretch.setText(tr("Estirar a pantalla completa", "Stretch to full screen", "Esticar para tela inteira"));
         stretch.setChecked(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("stretch-screen", false));
         stretch.setOnCheckedChangeListener((button, checked) -> {
             getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("stretch-screen", checked).apply();
@@ -188,10 +236,10 @@ public class GbaGameActivity extends SDLActivity {
         });
         panel.addView(stretch);
         TextView note = new TextView(this);
-        note.setText("Escalado nítido para los gráficos originales de GBA. Estirar llena la pantalla y ensancha la imagen. Desactívalo para conservar las proporciones. 1080p puede consumir más batería.");
+        note.setText(tr("Escalado nítido para los gráficos originales de GBA. Estirar llena la pantalla y ensancha la imagen. Desactívalo para conservar las proporciones. 1080p puede consumir más batería.", "Sharp scaling of the original GBA graphics. Stretching fills the screen and widens the image. Turn it off to keep the original proportions. 1080p may use more battery.", "Ampliação nítida dos gráficos originais do GBA. Esticar preenche a tela e alarga a imagem. Desative para manter as proporções. 1080p pode consumir mais bateria."));
         note.setTextSize(13); note.setPadding(0, overlayDp(8), 0, overlayDp(8)); panel.addView(note);
-        AlertDialog video = new AlertDialog.Builder(this).setTitle("Calidad de imagen")
-            .setView(panel).setPositiveButton("Listo", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
+        AlertDialog video = new AlertDialog.Builder(this).setTitle(tr("Calidad de imagen", "Image quality", "Qualidade da imagem"))
+            .setView(panel).setPositiveButton(tr("Listo", "Done", "Concluído"), (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
         video.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
         video.show(); setMenuOpen(true);
     }
@@ -199,16 +247,16 @@ public class GbaGameActivity extends SDLActivity {
     private void showLanguageOptions() {
         if (isFinishing() || isDestroyed()) return;
         int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0);
-        AlertDialog languages = new AlertDialog.Builder(this).setTitle("Idioma del juego / Game language")
+        AlertDialog languages = new AlertDialog.Builder(this).setTitle(tr("Idioma del juego / Game language", "Game language", "Idioma do jogo"))
             .setSingleChoiceItems(new String[]{"English (original)", "Español latinoamericano", "Português do Brasil"}, selected,
                 (dialog, which) -> {
                     getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("game-language", which).apply();
                     applyInputOptions();
                 })
             .setPositiveButton("OK", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); })
-            .setNeutralButton("Información", (dialog, which) -> {
-                new AlertDialog.Builder(this).setTitle("Traducción experimental")
-                    .setMessage("Traduce diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés. Se aplica al siguiente mensaje o al volver a abrir la pantalla; un mensaje abierto conserva su idioma.")
+            .setNeutralButton(tr("Información", "Information", "Informações"), (dialog, which) -> {
+                new AlertDialog.Builder(this).setTitle(tr("Traducción experimental", "Experimental translation", "Tradução experimental"))
+                    .setMessage(tr("Traduce diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés. Se aplica al siguiente mensaje o al volver a abrir la pantalla; un mensaje abierto conserva su idioma.", "Translates dialogue, tutorials, levels, story and file text. Graphic labels, credits and Mario Bros remain in English. Applies to the next message or when reopening a screen; an open message keeps its language.", "Traduz diálogos, tutoriais, fases, história e textos de arquivos. Rótulos gráficos, créditos e Mario Bros continuam em inglês. Aplica-se à próxima mensagem ou ao reabrir a tela; uma mensagem aberta mantém seu idioma."))
                     .setPositiveButton("OK", (info, button) -> { setMenuOpen(false); enterImmersiveMode(); })
                     .setOnCancelListener(info -> setMenuOpen(false)).show();
             }).create();
@@ -223,10 +271,13 @@ public class GbaGameActivity extends SDLActivity {
             return;
         }
         optionsDialog = new AlertDialog.Builder(this)
-            .setTitle("Opciones")
-            .setMultiChoiceItems(new String[]{"Mostrar FPS", "120 FPS experimentales (mezcla)", "Mostrar controles táctiles", "Idioma / Language / Idioma…"},
-                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), wantsInterpolation(), getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true), false},
+            .setTitle(tr("Opciones", "Options", "Opções"))
+            .setMultiChoiceItems(new String[]{tr("Mostrar FPS", "Show FPS", "Mostrar FPS"), tr("120 FPS experimentales (mezcla)", "Experimental 120 FPS (blend)", "120 FPS experimentais (mistura)"), tr("Mostrar controles táctiles", "Show touch controls", "Mostrar controles de toque"), tr("Idioma del juego…", "Game language…", "Idioma do jogo…"), tr("Idioma del menú…", "Menu language…", "Idioma do menu…")},
+                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), wantsInterpolation(), getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true), false, false},
                 (dialog, which, checked) -> {
+                    if (which == 4) {
+                        dialog.dismiss(); getWindow().getDecorView().post(this::showMenuLanguageOptions); return;
+                    }
                     if (which == 3) {
                         dialog.dismiss(); getWindow().getDecorView().post(this::showLanguageOptions); return;
                     }
@@ -235,9 +286,9 @@ public class GbaGameActivity extends SDLActivity {
                     updateFpsVisibility(); applyInputOptions();
                     if (which == 1) { lastFps = null; applyPresentationMode(); }
                 })
-            .setNeutralButton("Mapear mando", (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showControllerOptions); })
-            .setNegativeButton("Imagen", (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showVideoOptions); })
-            .setPositiveButton("Continuar", null)
+            .setNeutralButton(tr("Mapear mando", "Map controller", "Mapear controle"), (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showControllerOptions); })
+            .setNegativeButton(tr("Imagen", "Image", "Imagem"), (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showVideoOptions); })
+            .setPositiveButton(tr("Continuar", "Continue", "Continuar"), null)
             .create();
         optionsDialog.setOnDismissListener(dialog -> {
             optionsDialog = null;
@@ -268,6 +319,7 @@ public class GbaGameActivity extends SDLActivity {
         if (Build.VERSION.SDK_INT >= 33 && optionsBackCallback != null) {
             getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(optionsBackCallback);
         }
+        if (displayManager != null) displayManager.unregisterDisplayListener(displayListener);
         if (optionsDialog != null) optionsDialog.dismiss();
         if (mSurface != null && refreshCallback != null) mSurface.getHolder().removeCallback(refreshCallback);
         setMenuOpen(false);
@@ -297,6 +349,8 @@ public class GbaGameActivity extends SDLActivity {
         super.onCreate(savedInstanceState);
         setMenuOpen(false);
         installFpsOptions();
+        displayManager = (DisplayManager) getSystemService(DISPLAY_SERVICE);
+        if (displayManager != null) displayManager.registerDisplayListener(displayListener, null);
         refreshCallback = new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) { applyPresentationMode(); }
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { applyPresentationMode(); }

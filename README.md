@@ -2,7 +2,9 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.7 experimental
+## Versión actual: 0.8 experimental
+
+- **0.8:** idioma independiente del menú (ES/EN/PT), solicitud del modo de pantalla de 120 Hz y recuperación de retrasos moderados del temporizador. **120 FPS estables en Pixel 7 Pro todavía no verificados.** [Cambios y prueba en el teléfono](docs/MENU_Y_120FPS.md).
 
 - **0.5:** cobertura nativa de la rutina de transformación, mapeo de mando y opción para ocultar los controles táctiles. [Detalles](docs/CORRECCION_TRANSFORMACIONES.md).
 - **0.6:** escalado de presentación Automático, 720p y 1080p, con opción para estirar la imagen. Los gráficos originales siguen siendo de 240 × 160. [Detalles](docs/CALIDAD_IMAGEN.md).
@@ -13,18 +15,18 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ## Descargar e instalar
 
-**La carga del APK 0.7 en GitHub queda pendiente: Edwin lo subirá manualmente.** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
+**La carga del APK 0.8 en GitHub queda pendiente: Edwin lo subirá manualmente.** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
 
-Archivo previsto: `sma3-recomp-0.7-es-pt-arm64.apk` (31.731.619 bytes), Android 9 o posterior, ARM64.
+Archivo previsto: `sma3-recomp-0.8-menu-refresh-arm64.apk` (31.795.083 bytes), Android 9 o posterior, ARM64.
 
 SHA-256:
 ```text
-4a31372f8fda47cb56195d0cf8490637246f547634c5ea70feed0c4dbae5cd2d
+28f1693f5050bd0a286d397d567af056831958a58454aab281faa8425db6e240
 ```
 
-El APK de desarrollo 0.7 conserva la firma de las versiones anteriores: instálalo encima para conservar partidas y archivos importados. Las compilaciones de otras personas tendrán otra firma.
+El APK de desarrollo 0.8 conserva la firma de las versiones anteriores: instálalo encima para conservar partidas y archivos importados. Las compilaciones de otras personas tendrán otra firma.
 
-[Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.7-experimental.md).
+[Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.8-experimental.md).
 
 ## Estado de validación
 
@@ -127,4 +129,5 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 Proyecto preparado para Edwin Rodríguez. Las dependencias conservan sus autores y licencias. GBARecomp usa PolyForm Noncommercial 1.0.0; arm-recomp-core usa MIT. Consulta [THIRD_PARTY.md](THIRD_PARTY.md) y `licenses/`. Las licencias del motor no conceden derechos sobre el juego ni sobre la BIOS. No existe afiliación con Nintendo.
 
 Para subir este contenido: [docs/SUBIR_A_GITHUB.md](docs/SUBIR_A_GITHUB.md).
+
 

@@ -19,6 +19,8 @@ int main() {
     for(int i=0;i<60;++i) { if(p.wait_for_midpoint()) ++middle; p.wait_for_next_frame(); }
     double seconds=std::chrono::duration<double>(Clock::now()-start).count();
     assert(seconds>0.99 && seconds<1.5); assert(middle>40);
+    p.reset(); std::this_thread::sleep_for(std::chrono::milliseconds(10)); assert(p.wait_for_midpoint());
+    p.wait_for_next_frame();
     p.reset(); std::this_thread::sleep_for(std::chrono::milliseconds(14)); assert(!p.wait_for_midpoint());
     p.set_uncapped(true); assert(!p.wait_for_midpoint());
     std::printf("PASS: blend/cuts/reset/resize; 60 guest periods in %.4fs; %d midpoint slots\n",seconds,middle);
