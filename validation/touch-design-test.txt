@@ -1,0 +1,1 @@
+PASS: factory geometry, independent movement/size, safe-area clamps, orientation, invalid data rejection and reset

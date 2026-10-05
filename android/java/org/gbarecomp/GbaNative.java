@@ -9,6 +9,9 @@ package org.gbarecomp;
  */
 public final class GbaNative {
     private GbaNative() {}
+    public static native float[] getTouchDesign(boolean defaults);
+    public static native boolean setTouchDesign(float[] values, boolean enabled);
+    public static native void setTouchEditing(boolean editing);
     public static native void setLanguage(int language);
     public static native void setVideoOptions(int quality, boolean stretch);
     public static native void setTouchControlsVisible(boolean visible);

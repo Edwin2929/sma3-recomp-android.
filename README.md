@@ -2,9 +2,12 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.8 experimental
+## Versión actual: 0.9 experimental
 
-- **0.8:** idioma independiente del menú (ES/EN/PT), solicitud del modo de pantalla de 120 Hz y recuperación de retrasos moderados del temporizador. **120 FPS estables en Pixel 7 Pro todavía no verificados.** [Cambios y prueba en el teléfono](docs/MENU_Y_120FPS.md).
+- **0.9:** ajustes agrupados en Rendimiento, Imagen, Controles e Idiomas; salto de la animación de BIOS; editor de posición/tamaño de botones con tres diseños guardables. [Guía](docs/AJUSTES_Y_DISENOS.md).
+- **Reporte de Edwin, 5 de octubre de 2026:** 0.8 alcanza 120 FPS en su Pixel 7 Pro. Es un reporte del usuario; 0.9 aún necesita prueba física del editor y navegación.
+
+- **0.8:** idioma independiente del menú (ES/EN/PT), solicitud del modo de pantalla de 120 Hz y recuperación de retrasos moderados del temporizador. El usuario confirmó 120 FPS; no se ha medido independientemente su estabilidad prolongada. [Cambios y prueba en el teléfono](docs/MENU_Y_120FPS.md).
 
 - **0.5:** cobertura nativa de la rutina de transformación, mapeo de mando y opción para ocultar los controles táctiles. [Detalles](docs/CORRECCION_TRANSFORMACIONES.md).
 - **0.6:** escalado de presentación Automático, 720p y 1080p, con opción para estirar la imagen. Los gráficos originales siguen siendo de 240 × 160. [Detalles](docs/CALIDAD_IMAGEN.md).
@@ -15,18 +18,18 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ## Descargar e instalar
 
-**La carga del APK 0.8 en GitHub queda pendiente: Edwin lo subirá manualmente.** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
+**La carga del APK 0.9 en GitHub queda pendiente: Edwin lo subirá manualmente.** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
 
-Archivo previsto: `sma3-recomp-0.8-menu-refresh-arm64.apk` (31.795.083 bytes), Android 9 o posterior, ARM64.
+Archivo previsto: `sma3-recomp-0.9-layouts-arm64.apk` (31.838.319 bytes), Android 9 o posterior, ARM64.
 
 SHA-256:
 ```text
-28f1693f5050bd0a286d397d567af056831958a58454aab281faa8425db6e240
+7110024294051368945fd4ceb127cfaf4edb3a09f0e138ae6b81ae350a3dee3d
 ```
 
-El APK de desarrollo 0.8 conserva la firma de las versiones anteriores: instálalo encima para conservar partidas y archivos importados. Las compilaciones de otras personas tendrán otra firma.
+El APK de desarrollo 0.9 conserva la firma de las versiones anteriores: instálalo encima para conservar partidas y archivos importados. Las compilaciones de otras personas tendrán otra firma.
 
-[Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.8-experimental.md).
+[Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.9-experimental.md).
 
 ## Estado de validación
 
@@ -38,7 +41,7 @@ Las pruebas de desarrollo cubren la rutina de transformación, el escalador y lo
 
 El código de CPU del juego y de la BIOS se traduce a C++ y se compila para el dispositivo. El motor sigue reproduciendo el funcionamiento del hardware de GBA. No es una reescritura completa del juego independiente de ese hardware.
 
-El inicio activa `GBARECOMP_STRICT_STATIC=1`, `GBARECOMP_FORCE_INTERP=0`, `GBARECOMP_BIOS_HLE=0` y `GBARECOMP_BIOS_SKIP_INTRO=0`. Una rutina no cubierta detiene la ejecución; no se utiliza el intérprete para ocultar fallos de cobertura.
+El inicio activa `GBARECOMP_STRICT_STATIC=1`, `GBARECOMP_FORCE_INTERP=0`, `GBARECOMP_BIOS_HLE=0` y `GBARECOMP_BIOS_SKIP_INTRO=1`. Una rutina no cubierta detiene la ejecución; no se utiliza el intérprete para ocultar fallos de cobertura.
 
 ## Contenido del repositorio
 
@@ -129,5 +132,6 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 Proyecto preparado para Edwin Rodríguez. Las dependencias conservan sus autores y licencias. GBARecomp usa PolyForm Noncommercial 1.0.0; arm-recomp-core usa MIT. Consulta [THIRD_PARTY.md](THIRD_PARTY.md) y `licenses/`. Las licencias del motor no conceden derechos sobre el juego ni sobre la BIOS. No existe afiliación con Nintendo.
 
 Para subir este contenido: [docs/SUBIR_A_GITHUB.md](docs/SUBIR_A_GITHUB.md).
+
 
 

@@ -16,6 +16,7 @@ parser.add_argument('--timeout', type=int, default=120)
 parser.add_argument('--output', type=Path, default=ROOT / 'smoke-frame.png')
 parser.add_argument('--input', type=Path)
 parser.add_argument('--save', type=Path)
+parser.add_argument('--bios-intro', action='store_true', help='Include the original BIOS animation for diagnostics')
 args = parser.parse_args()
 if args.frames < 1 or args.timeout < 1:
     parser.error('frames and timeout must be positive')
@@ -33,7 +34,7 @@ env = os.environ.copy()
 env['GBARECOMP_STRICT_STATIC'] = '1'
 env['GBARECOMP_FORCE_INTERP'] = '0'
 env['GBARECOMP_BIOS_HLE'] = '0'
-env['GBARECOMP_BIOS_SKIP_INTRO'] = '0'
+env['GBARECOMP_BIOS_SKIP_INTRO'] = '0' if args.bios_intro else '1'
 env.pop('GBARECOMP_INPUT_REPLAY', None)
 env.pop('GBARECOMP_INPUT_RECORD', None)
 if args.input:

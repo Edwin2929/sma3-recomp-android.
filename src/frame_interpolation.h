@@ -1,4 +1,5 @@
 #pragma once
+#include "touch_layout.h"
 #include <atomic>
 #include <cstdint>
 #include <cstdlib>

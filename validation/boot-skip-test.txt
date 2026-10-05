@@ -1,0 +1,6 @@
+cpu_backend=static-recompiled
+bios_backend=LLE (recompiled BIOS)
+bios_boot=LLE (intro skipped)
+strict_static=ENABLED self_heal_recompile=DISABLED cache_load=DISABLED interpreter_bridge=ABORT
+final_pc=0x0812f6c2 unmapped=0 io_unhandled=0 steps=64403 cycles=0 ppu_vcount=14 ppu_frames=7200 frames_presented=0
+self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0

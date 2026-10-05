@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     SDL_setenv("GBARECOMP_STRICT_STATIC", "1", 1);
     SDL_setenv("GBARECOMP_FORCE_INTERP", "0", 1);
     SDL_setenv("GBARECOMP_BIOS_HLE", "0", 1);
-    SDL_setenv("GBARECOMP_BIOS_SKIP_INTRO", "0", 1);
+    SDL_setenv("GBARECOMP_BIOS_SKIP_INTRO", "1", 1);
     std::vector<std::string> arguments = {
         root + "/sma3_runner", "--config", root + "/variants/sma3-usa/game.toml",
         "--rom", root + "/roms/sma3-usa.gba",

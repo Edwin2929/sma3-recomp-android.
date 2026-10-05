@@ -35,3 +35,13 @@ Cobertura del juego completo, persistencia de partidas, audio, pausa/reanudació
 - APK 0.7 ARM64 compilado y firmado con el mismo certificado del desarrollo anterior; código de versión 7, nombre `0.7-languages-experimental`.
 
 Estas pruebas no sustituyen jugar todas las transformaciones, revisar cada diálogo o probar un mando físico. No se midieron 0.5–0.7 en Android ni 120 FPS en Pixel 7 Pro. No se repitió una compilación limpia completa de esta distribución pública.
+
+
+## 0.9: arranque y editor
+
+Edwin confirmó 120 FPS con 0.8 en su Pixel 7 Pro el 5 de octubre de 2026.
+Para 0.9: arranque sin animación de BIOS en Linux, 7200 fotogramas nativos con
+cero faltas de despacho e instrucciones interpretadas; tutorial revisado en
+captura. Pruebas de geometría táctil, datos inválidos, límites y aplicación de
+parches aprobadas. APK ARM64 firmado con el certificado anterior. Los submenús,
+perfiles y gestos del editor aún necesitan prueba en teléfono físico.

@@ -1,0 +1,45 @@
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -1,5 +1,6 @@
+ #if defined(SMA3_FRAME_INTERPOLATION)
+ #include "controller_options.h"
++#include "touch_layout.h"
+ #include "video_scaler.h"
+ #endif
+ // host_window.cpp — SDL2-backed window. Stubs out when SDL2 isn't found.
+@@ -712,6 +713,9 @@
+     cx = std::clamp(cx, left + tw * 0.5f, std::max(left + tw * 0.5f, right - tw * 0.5f));
+     cy = std::clamp(cy, top + th * 0.5f, std::max(top + th * 0.5f, bottom - th * 0.5f));
+     p.toggle = {cx - tw * 0.5f, cy - th * 0.5f, tw, th};
++#if defined(SMA3_FRAME_INTERPOLATION)
++    sma3::apply_touch_design(p,left,top,right,bottom);
++#endif
+     return p;
+ }
+ 
+@@ -3016,7 +3020,7 @@
+         keys &= static_cast<uint16_t>(~touch_buttons);
+     }
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-    if (sma3::menu_open.load()) keys = 0x03FFu;
++    if (sma3::menu_open.load()) { clear_touches(b); keys = 0x03FFu; }
+ #endif
+     ev.keyinput = keys;
+ #if defined(GBARECOMP_RUNTIME_UI)
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -3645,6 +3645,14 @@
+     bool sma3_was_enabled = false;
+ #endif
+     auto present_game_frame = [&]() {
++#ifdef SMA3_FRAME_INTERPOLATION
++        const bool was_editing=sma3::touch_editing.load();
++        while(sma3::touch_editing.load()&&!host_quit){
++            pump_host_input();
++            std::this_thread::sleep_for(std::chrono::milliseconds(10));
++        }
++        if(was_editing&&pacer)pacer->reset();
++#endif
+         sma3_frame_paced = false;
+ #ifdef SMA3_FRAME_INTERPOLATION
+         const bool enabled = sma3::interpolation_enabled.load(std::memory_order_relaxed)

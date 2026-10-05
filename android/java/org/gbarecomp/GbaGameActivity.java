@@ -86,10 +86,10 @@ public class GbaGameActivity extends SDLActivity {
             .setTitle(tr("Idioma del menú", "Menu language", "Idioma do menu"))
             .setSingleChoiceItems(new String[]{"English", "Español", "Português"}, selected, (dialog, which) -> {
                 getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("menu-language", which).apply();
-                updateFpsText(); dialog.dismiss(); showOptions();
-            }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (dialog, which) -> showOptions()).create();
-        menu.setOnCancelListener(dialog -> showOptions());
-        menu.show(); setMenuOpen(true);
+                updateFpsText(); showLanguageMenu();
+            }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (dialog, which) -> showLanguageMenu()).create();
+        menu.setOnCancelListener(dialog -> showLanguageMenu());
+        openSettings(menu, this::showLanguageMenu);
     }
     private boolean activityResumed;
     private String lastFps;
@@ -172,6 +172,7 @@ public class GbaGameActivity extends SDLActivity {
     }
     private void applyInputOptions() {
         try {
+            applyTouchDesign();
             GbaNative.setLanguage(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0));
             GbaNative.setVideoOptions(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0),
                 getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("stretch-screen", false));
@@ -194,16 +195,16 @@ public class GbaGameActivity extends SDLActivity {
                         applyInputOptions(); selection.dismiss(); showControllerOptions();
                     }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (selection, which) -> showControllerOptions()).create();
                 chooser.setOnCancelListener(ignored -> showControllerOptions());
-                chooser.show(); setMenuOpen(true);
+                openSettings(chooser, this::showControllerOptions);
             })
             .setNeutralButton(tr("Restablecer", "Reset", "Restaurar"), (dialog, which) -> {
                 android.content.SharedPreferences.Editor editor = getSharedPreferences("sma3-options", MODE_PRIVATE).edit();
                 for (int bit = 0; bit < 10; ++bit) editor.remove("pad-" + bit);
                 editor.apply(); applyInputOptions(); showControllerOptions();
             })
-            .setPositiveButton(tr("Listo", "Done", "Concluído"), (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
+            .setPositiveButton(backText(), (dialog, which) -> showControlsMenu()).create();
         menu.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
-        menu.show(); setMenuOpen(true);
+        openSettings(menu, this::showControlsMenu);
     }
 
     private void showVideoOptions() {
@@ -238,72 +239,110 @@ public class GbaGameActivity extends SDLActivity {
         TextView note = new TextView(this);
         note.setText(tr("Escalado nítido para los gráficos originales de GBA. Estirar llena la pantalla y ensancha la imagen. Desactívalo para conservar las proporciones. 1080p puede consumir más batería.", "Sharp scaling of the original GBA graphics. Stretching fills the screen and widens the image. Turn it off to keep the original proportions. 1080p may use more battery.", "Ampliação nítida dos gráficos originais do GBA. Esticar preenche a tela e alarga a imagem. Desative para manter as proporções. 1080p pode consumir mais bateria."));
         note.setTextSize(13); note.setPadding(0, overlayDp(8), 0, overlayDp(8)); panel.addView(note);
+        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+        scroll.addView(panel);
         AlertDialog video = new AlertDialog.Builder(this).setTitle(tr("Calidad de imagen", "Image quality", "Qualidade da imagem"))
-            .setView(panel).setPositiveButton(tr("Listo", "Done", "Concluído"), (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
+            .setView(scroll).setPositiveButton(backText(), (dialog, which) -> showOptions()).create();
         video.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
-        video.show(); setMenuOpen(true);
+        openSettings(video, this::showOptions);
     }
 
     private void showLanguageOptions() {
-        if (isFinishing() || isDestroyed()) return;
-        int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0);
-        AlertDialog languages = new AlertDialog.Builder(this).setTitle(tr("Idioma del juego / Game language", "Game language", "Idioma do jogo"))
-            .setSingleChoiceItems(new String[]{"English (original)", "Español latinoamericano", "Português do Brasil"}, selected,
-                (dialog, which) -> {
-                    getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("game-language", which).apply();
-                    applyInputOptions();
-                })
-            .setPositiveButton("OK", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); })
-            .setNeutralButton(tr("Información", "Information", "Informações"), (dialog, which) -> {
-                new AlertDialog.Builder(this).setTitle(tr("Traducción experimental", "Experimental translation", "Tradução experimental"))
-                    .setMessage(tr("Traduce diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés. Se aplica al siguiente mensaje o al volver a abrir la pantalla; un mensaje abierto conserva su idioma.", "Translates dialogue, tutorials, levels, story and file text. Graphic labels, credits and Mario Bros remain in English. Applies to the next message or when reopening a screen; an open message keeps its language.", "Traduz diálogos, tutoriais, fases, história e textos de arquivos. Rótulos gráficos, créditos e Mario Bros continuam em inglês. Aplica-se à próxima mensagem ou ao reabrir a tela; uma mensagem aberta mantém seu idioma."))
-                    .setPositiveButton("OK", (info, button) -> { setMenuOpen(false); enterImmersiveMode(); })
-                    .setOnCancelListener(info -> setMenuOpen(false)).show();
-            }).create();
-        languages.setOnCancelListener(dialog -> { setMenuOpen(false); enterImmersiveMode(); });
-        languages.show(); setMenuOpen(true);
+        int selected=getSharedPreferences("sma3-options",MODE_PRIVATE).getInt("game-language",0);
+        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Idioma del juego","Game language","Idioma do jogo"))
+            .setSingleChoiceItems(new String[]{"English (original)","Español latinoamericano","Português do Brasil"},selected,(d,w)->{
+                getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putInt("game-language",w).apply();applyInputOptions();
+            }).setPositiveButton(backText(),(d,w)->showLanguageMenu())
+            .setNeutralButton(tr("Información","Information","Informações"),(d,w)->{
+                AlertDialog info=new AlertDialog.Builder(this).setTitle(tr("Traducción parcial","Partial translation","Tradução parcial"))
+                    .setMessage(tr("Traduce diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés. Se aplica al siguiente mensaje.","Translates dialogue, tutorials, levels, story and file text. Graphic labels, credits and Mario Bros remain in English. Applies to the next message.","Traduz diálogos, tutoriais, fases, história e textos de arquivos. Rótulos gráficos, créditos e Mario Bros continuam em inglês. Aplica-se à próxima mensagem."))
+                    .setPositiveButton(backText(),(dialog,which)->showLanguageOptions()).create();openSettings(info,this::showLanguageOptions);
+            }).create();openSettings(menu,this::showLanguageMenu);
     }
 
-    private void showOptions() {
-        if (isFinishing() || isDestroyed()) return;
-        if (optionsDialog != null && optionsDialog.isShowing()) {
-            optionsDialog.dismiss();
-            return;
-        }
-        optionsDialog = new AlertDialog.Builder(this)
-            .setTitle(tr("Opciones", "Options", "Opções"))
-            .setMultiChoiceItems(new String[]{tr("Mostrar FPS", "Show FPS", "Mostrar FPS"), tr("120 FPS experimentales (mezcla)", "Experimental 120 FPS (blend)", "120 FPS experimentais (mistura)"), tr("Mostrar controles táctiles", "Show touch controls", "Mostrar controles de toque"), tr("Idioma del juego…", "Game language…", "Idioma do jogo…"), tr("Idioma del menú…", "Menu language…", "Idioma do menu…")},
-                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), wantsInterpolation(), getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true), false, false},
-                (dialog, which, checked) -> {
-                    if (which == 4) {
-                        dialog.dismiss(); getWindow().getDecorView().post(this::showMenuLanguageOptions); return;
-                    }
-                    if (which == 3) {
-                        dialog.dismiss(); getWindow().getDecorView().post(this::showLanguageOptions); return;
-                    }
-                    getSharedPreferences("sma3-options", MODE_PRIVATE).edit()
-                        .putBoolean(which == 0 ? "show-fps" : which == 1 ? "interpolation-120" : "touch-visible", checked).apply();
-                    updateFpsVisibility(); applyInputOptions();
-                    if (which == 1) { lastFps = null; applyPresentationMode(); }
-                })
-            .setNeutralButton(tr("Mapear mando", "Map controller", "Mapear controle"), (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showControllerOptions); })
-            .setNegativeButton(tr("Imagen", "Image", "Imagem"), (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showVideoOptions); })
-            .setPositiveButton(tr("Continuar", "Continue", "Continuar"), null)
-            .create();
-        optionsDialog.setOnDismissListener(dialog -> {
-            optionsDialog = null;
-            setMenuOpen(false);
-            if (!isFinishing() && !isDestroyed()) enterImmersiveMode();
-        });
-        optionsDialog.show();
-        setMenuOpen(true);
+    private String backText(){return tr("Volver","Back","Voltar");}
+    private TouchDesignEditor designEditor;
+    private boolean settingsDestroyed;
+    private void openSettings(AlertDialog next,Runnable parent){
+        if(settingsDestroyed||isFinishing()||isDestroyed())return;
+        AlertDialog old=optionsDialog;optionsDialog=next;if(old!=null)old.dismiss();
+        next.setOnCancelListener(d->{if(parent!=null)getWindow().getDecorView().post(parent);});
+        next.setOnDismissListener(d->{if(optionsDialog==next){optionsDialog=null;setMenuOpen(false);if(!settingsDestroyed)enterImmersiveMode();}});
+        next.show();setMenuOpen(true);
     }
+    private void showOptions(){
+        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Ajustes","Settings","Configurações"))
+            .setItems(new String[]{tr("Rendimiento y FPS","Performance and FPS","Desempenho e FPS"),tr("Imagen","Image","Imagem"),tr("Controles","Controls","Controles"),tr("Idiomas","Languages","Idiomas")},(d,w)->{
+                if(w==0)showPerformanceMenu();else if(w==1)showVideoOptions();else if(w==2)showControlsMenu();else showLanguageMenu();
+            }).setPositiveButton(tr("Continuar","Continue","Continuar"),null).create();
+        openSettings(menu,null);
+    }
+    private void showPerformanceMenu(){
+        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Rendimiento","Performance","Desempenho"))
+            .setMultiChoiceItems(new String[]{tr("Mostrar FPS","Show FPS","Mostrar FPS"),tr("120 FPS (mezcla temporal)","120 FPS (temporal blend)","120 FPS (mistura temporal)")},new boolean[]{getSharedPreferences("sma3-options",MODE_PRIVATE).getBoolean("show-fps",false),wantsInterpolation()},(d,w,checked)->{
+                getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putBoolean(w==0?"show-fps":"interpolation-120",checked).apply();updateFpsVisibility();if(w==1){lastFps=null;applyPresentationMode();}
+            }).setPositiveButton(backText(),(d,w)->showOptions()).create();
+        openSettings(menu,this::showOptions);
+    }
+    private void showControlsMenu(){
+        boolean shown=getSharedPreferences("sma3-options",MODE_PRIVATE).getBoolean("touch-visible",true);
+        String visibility=tr("Controles táctiles: ","Touch controls: ","Controles de toque: ")+(shown?tr("visibles","visible","visíveis"):tr("ocultos","hidden","ocultos"));
+        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Controles","Controls","Controles"))
+            .setItems(new String[]{visibility,tr("Mapear mando","Map controller","Mapear controle"),tr("Diseños personalizados","Custom layouts","Layouts personalizados")},(d,w)->{
+                if(w==0){getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putBoolean("touch-visible",!shown).apply();applyInputOptions();showControlsMenu();}
+                else if(w==1)showControllerOptions();else showDesignMenu();
+            }).setPositiveButton(backText(),(d,w)->showOptions()).create();
+        openSettings(menu,this::showOptions);
+    }
+    private void showLanguageMenu(){
+        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Idiomas","Languages","Idiomas"))
+            .setItems(new String[]{tr("Idioma del menú","Menu language","Idioma do menu"),tr("Idioma del juego","Game language","Idioma do jogo")},(d,w)->{if(w==0)showMenuLanguageOptions();else showLanguageOptions();})
+            .setPositiveButton(backText(),(d,w)->showOptions()).create();
+        openSettings(menu,this::showOptions);
+    }
+    private float[] storedDesign(int slot){
+        try{
+            org.json.JSONArray array=new org.json.JSONArray(getSharedPreferences("sma3-options",MODE_PRIVATE).getString("touch-design-"+slot,"[]"));if(array.length()!=28)return null;
+            float[] data=new float[28];for(int i=0;i<28;i++){data[i]=(float)array.getDouble(i);if(!Float.isFinite(data[i]))return null;}
+            for(int i=0;i<28;i+=4)if(data[i]<0||data[i]>1||data[i+1]<0||data[i+1]>1||data[i+2]<.015f||data[i+2]>1||data[i+3]<.015f||data[i+3]>1)return null;
+            return data;
+        }catch(org.json.JSONException error){return null;}
+    }
+    private void applyTouchDesign(){
+        int slot=getSharedPreferences("sma3-options",MODE_PRIVATE).getInt("touch-design-active",0);
+        float[] data=slot>=1&&slot<=3?storedDesign(slot):null;GbaNative.setTouchDesign(data,data!=null);
+    }
+    private void showDesignMenu(){
+        int active=getSharedPreferences("sma3-options",MODE_PRIVATE).getInt("touch-design-active",0);
+        String[] names={tr("Predeterminado","Default","Padrão"),tr("Diseño 1","Layout 1","Layout 1"),tr("Diseño 2","Layout 2","Layout 2"),tr("Diseño 3","Layout 3","Layout 3")};for(int i=0;i<4;i++)if(i==active)names[i]+=" ✓";
+        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Diseños personalizados","Custom layouts","Layouts personalizados"))
+            .setItems(names,(d,slot)->{if(slot==0){getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putInt("touch-design-active",0).apply();applyInputOptions();showDesignMenu();}else showTouchEditor(slot);})
+            .setPositiveButton(backText(),(d,w)->showControlsMenu()).create();
+        openSettings(menu,this::showControlsMenu);
+    }
+    private void showTouchEditor(int slot){
+        float[] defaults=GbaNative.getTouchDesign(true);
+        if(defaults==null||defaults.length!=28||defaults[2]<=0){openSettings(new AlertDialog.Builder(this).setMessage(tr("Espera a que aparezca el juego y vuelve a abrir el editor.","Wait for the game to appear, then reopen the editor.","Espere o jogo aparecer e reabra o editor.")).setPositiveButton(backText(),(d,w)->showDesignMenu()).create(),this::showDesignMenu);return;}
+        float[] saved=storedDesign(slot);View view=getWindow().getDecorView();
+        float width=view.getWidth()-fpsOverlay.getPaddingLeft()-fpsOverlay.getPaddingRight(),height=view.getHeight()-fpsOverlay.getPaddingTop()-fpsOverlay.getPaddingBottom();
+        float aspect=width>0&&height>0?width/height:16f/9f;
+        designEditor=new TouchDesignEditor(this,this::tr,saved==null?defaults:saved,defaults,aspect,data->{
+            try{
+                org.json.JSONArray array=new org.json.JSONArray();for(float value:data)array.put((double)value);
+                getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putString("touch-design-"+slot,array.toString()).putInt("touch-design-active",slot).apply();applyInputOptions();
+            }catch(org.json.JSONException error){android.widget.Toast.makeText(this,tr("No se pudo guardar el diseño","Could not save layout","Não foi possível salvar o layout"),android.widget.Toast.LENGTH_LONG).show();}
+        });
+        designEditor.setOnDismissListener(d->{designEditor=null;GbaNative.setTouchEditing(false);if(!settingsDestroyed&&!isFinishing()&&!isDestroyed())showDesignMenu();else setMenuOpen(false);});
+        if(optionsDialog!=null){optionsDialog.dismiss();optionsDialog=null;}
+        GbaNative.setTouchEditing(true);setMenuOpen(true);designEditor.show();
+    }
+    private void handleSettingsBack(){if(designEditor!=null)designEditor.cancel();else if(optionsDialog!=null&&optionsDialog.isShowing())optionsDialog.cancel();else showOptions();}
 
     // Consume navigation Back before SDL can translate it into a game key.
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) showOptions();
+            if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) handleSettingsBack();
             return true;
         }
         return super.dispatchKeyEvent(event);
@@ -311,11 +350,14 @@ public class GbaGameActivity extends SDLActivity {
 
     @Override
     public void onBackPressed() {
-        showOptions();
+        handleSettingsBack();
     }
 
     @Override
     protected void onDestroy() {
+        settingsDestroyed=true;
+        if(designEditor!=null)designEditor.dismiss();
+        try { GbaNative.setTouchEditing(false); } catch(UnsatisfiedLinkError ignored) {}
         if (Build.VERSION.SDK_INT >= 33 && optionsBackCallback != null) {
             getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(optionsBackCallback);
         }
@@ -360,7 +402,7 @@ public class GbaGameActivity extends SDLActivity {
         };
         if (mSurface != null) mSurface.getHolder().addCallback(refreshCallback);
         if (Build.VERSION.SDK_INT >= 33) {
-            optionsBackCallback = this::showOptions;
+            optionsBackCallback = this::handleSettingsBack;
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT, optionsBackCallback);
         }
