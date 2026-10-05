@@ -9,6 +9,11 @@ package org.gbarecomp;
  */
 public final class GbaNative {
     private GbaNative() {}
+    public static native void setLanguage(int language);
+    public static native void setVideoOptions(int quality, boolean stretch);
+    public static native void setTouchControlsVisible(boolean visible);
+    public static native void setControllerButton(int bit, int button);
+    public static native void setOptionsOpen(boolean open);
     public static native void setInterpolationEnabled(boolean enabled);
 
     /**

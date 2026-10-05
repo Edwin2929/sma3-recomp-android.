@@ -1,0 +1,10 @@
+PASS quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080
+PASS quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080
+PASS quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080
+PASS quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080
+PASS quality=1080 stretch=0 buffer=1920x1080 viewport=390,0 1620x1080
+PASS quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 2400x1080
+PASS quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080
+PASS quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080
+PASS quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080
+PASS quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080

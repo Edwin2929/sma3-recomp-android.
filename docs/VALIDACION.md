@@ -4,7 +4,7 @@
 
 El 3 de octubre de 2026, Edwin informó: «Ya se probó en android y funcionó a 60 fps».
 
-Este dato se registra como una prueba reportada por el usuario. No se aportaron el modelo, la versión de Android, la versión concreta del APK, la duración ni un registro de rendimiento. No se han inventado esos datos.
+Este dato se registra como una prueba reportada por el usuario. El usuario identificó después su teléfono como Google Pixel 7 Pro. No se registraron la versión de Android, el APK concreto, la duración ni una captura de rendimiento de esa prueba.
 
 Antes de este reporte, el usuario también observó que el botón flotante de opciones se superponía al botón R. La versión 0.3 elimina ese botón y usa Atrás para abrir las opciones.
 
@@ -24,3 +24,14 @@ Cuenta presentaciones del motor SDL por tiempo transcurrido; se actualiza aproxi
 ## Por confirmar
 
 Cobertura del juego completo, persistencia de partidas, audio, pausa/reanudación, estabilidad térmica y rendimiento en otros teléfonos. La organización pública de este repositorio no recibió una compilación completa desde cero durante su preparación.
+
+
+## Actualización 0.5–0.7
+
+- Transformaciones: 18 casos diferenciales, tres direcciones RAM, distintas entradas y reanudación; comparación de registros y memoria con el intérprete de referencia. El juego sigue ejecutándose en modo nativo estricto. Resultado: `validation/morph-test.txt`.
+- Vídeo: 10 escenarios con renderizador SDL software; tamaños de buffers, proporción, estiramiento, colores interiores, restauración de destino y cambios de calidad. Resultado: `validation/video-scaler-test.txt`.
+- Idiomas: 267 posiciones de punteros por tres idiomas, bancos inmutables, espejos de ROM y comprobaciones de valor/ancho. Resultado: `validation/localization-test.txt`.
+- Ejecución nativa: 7.200 fotogramas por idioma ES/PT, sin faltas de despacho ni instrucciones interpretadas. Inspección visual de historia ES/PT y tutorial PT, sin desbordamiento observado en esas escenas.
+- APK 0.7 ARM64 compilado y firmado con el mismo certificado del desarrollo anterior; código de versión 7, nombre `0.7-languages-experimental`.
+
+Estas pruebas no sustituyen jugar todas las transformaciones, revisar cada diálogo o probar un mando físico. No se midieron 0.5–0.7 en Android ni 120 FPS en Pixel 7 Pro. No se repitió una compilación limpia completa de esta distribución pública.

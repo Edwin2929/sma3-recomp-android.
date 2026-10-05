@@ -41,3 +41,8 @@ signing.local.properties
 # Generated test captures
 validation/*.png
 validation/*.json
+
+
+# Generated transformation code and private font data
+generated-morph/
+src/localization_data.h

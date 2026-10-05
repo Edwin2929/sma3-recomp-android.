@@ -1,0 +1,110 @@
+diff --git a/src/runtime/host_window.cpp b/src/runtime/host_window.cpp
+index 22ca157..45c9988 100644
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -1,3 +1,7 @@
++#if defined(SMA3_FRAME_INTERPOLATION)
++#include "controller_options.h"
++#include "video_scaler.h"
++#endif
+ // host_window.cpp — SDL2-backed window. Stubs out when SDL2 isn't found.
+ 
+ #include "host_window.h"
+@@ -468,6 +472,9 @@ struct Backend {
+     int          fps_presents = 0;
+     // MC-WS-002: opt-in per-present timing/scanout ring (see above).
+     PresentCadence cadence;
++#if defined(SMA3_FRAME_INTERPOLATION)
++    sma3::VideoScaler video_scaler;
++#endif
+ };
+ 
+ void destroy_sharp_texture(Backend* b) {
+@@ -1413,6 +1420,10 @@ PresentationLayout current_presentation_layout(Backend* b, int* out_w, int* out_
+         SDL_GetWindowSize(b->window, &drawable_w, &drawable_h);
+     }
+     PresentationLayout layout{};
++#if defined(SMA3_FRAME_INTERPOLATION)
++    const auto rect = sma3::video_destination(drawable_w, drawable_h, b->base_w, b->base_h, sma3::stretch_screen.load());
++    layout = {rect.x, rect.y, rect.w, rect.h, 0};
++#else
+     if (b->resize_driven_view || b->expanded_view || b->touch_policy) {
+         // Responsive games fill the whole display (live rotation included);
+         // touch-first games also fill it, since their controls are gestures.
+@@ -1442,6 +1453,7 @@ PresentationLayout current_presentation_layout(Backend* b, int* out_w, int* out_
+         layout = {(drawable_w - game_w) / 2, (drawable_h - game_h) / 2,
+                   game_w, game_h, scale_out};
+     }
++#endif
+ #else
+     PresentationLayout layout{};
+     if (!b->expanded_view && !b->resize_driven_view) {
+@@ -2114,6 +2126,9 @@ void HostWindow::close() {
+     runtime_imgui_shutdown(b);
+ #endif
+     destroy_sharp_texture(b);
++#if defined(SMA3_FRAME_INTERPOLATION)
++    b->video_scaler.reset();
++#endif
+     if (b->texture)   SDL_DestroyTexture(b->texture);
+     if (b->renderer)  SDL_DestroyRenderer(b->renderer);
+     if (b->window)    SDL_DestroyWindow(b->window);
+@@ -2263,7 +2278,15 @@ void HostWindow::present(const uint8_t* rgb888) {
+     if (touch_input_enabled(b)) publish_touch_presentation(b);
+ #if defined(__ANDROID__)
+     const SDL_Rect destination{layout.x, layout.y, layout.width, layout.height};
++#if defined(SMA3_FRAME_INTERPOLATION)
++    if (!b->video_scaler.draw(b->renderer, b->texture, b->base_w, b->base_h,
++                              destination, sma3::video_quality.load())) {
++        SDL_SetRenderTarget(b->renderer, nullptr);
++        SDL_RenderCopy(b->renderer, b->texture, nullptr, &destination);
++    }
++#else
+     SDL_RenderCopy(b->renderer, b->texture, nullptr, &destination);
++#endif
+ #else
+     if (!b->expanded_view && !b->resize_driven_view) {
+         SDL_RenderCopy(b->renderer, b->texture, nullptr, nullptr);
+@@ -2704,6 +2727,10 @@ HostWindow::Events HostWindow::pump() {
+     if (!open_) { ev.quit = true; return ev; }
+     auto* b = static_cast<Backend*>(impl_);
+ 
++#if defined(SMA3_FRAME_INTERPOLATION)
++    const bool visible = sma3::touch_visible.load();
++    if (b->pad_visible != visible) set_touch_pad_visible(visible);
++#endif
+     SDL_Event e;
+     while (SDL_PollEvent(&e)) {
+ #if defined(GBARECOMP_RUNTIME_UI)
+@@ -2967,14 +2994,30 @@ HostWindow::Events HostWindow::pump() {
+             {9, SDL_CONTROLLER_BUTTON_LEFTSHOULDER},
+         };
+         for (const auto& binding : pad_map) {
+-            if (SDL_GameControllerGetButton(b->controller, binding.button))
++#if defined(SMA3_FRAME_INTERPOLATION)
++            int button = sma3::controller_buttons[binding.bit].load();
++#else
++            int button = binding.button;
++#endif
++            if (button >= 0 && button < SDL_CONTROLLER_BUTTON_MAX &&
++                SDL_GameControllerGetButton(b->controller, static_cast<SDL_GameControllerButton>(button)))
+                 keys &= static_cast<uint16_t>(~(1u << binding.bit));
+         }
++        // Analog left stick complements the rebindable digital D-pad.
++        const int x = SDL_GameControllerGetAxis(b->controller, SDL_CONTROLLER_AXIS_LEFTX);
++        const int y = SDL_GameControllerGetAxis(b->controller, SDL_CONTROLLER_AXIS_LEFTY);
++        if (x > 16000) keys &= ~(1u << 4);
++        if (x < -16000) keys &= ~(1u << 5);
++        if (y < -16000) keys &= ~(1u << 6);
++        if (y > 16000) keys &= ~(1u << 7);
+     }
+     if (b->touch_controls) {
+         const uint16_t touch_buttons = active_touch_buttons(b);
+         keys &= static_cast<uint16_t>(~touch_buttons);
+     }
++#if defined(SMA3_FRAME_INTERPOLATION)
++    if (sma3::menu_open.load()) keys = 0x03FFu;
++#endif
+     ev.keyinput = keys;
+ #if defined(GBARECOMP_RUNTIME_UI)
+     if (b->runtime_ui && recomp_runtime_ui_is_open(b->runtime_ui))

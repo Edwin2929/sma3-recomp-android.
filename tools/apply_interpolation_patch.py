@@ -8,6 +8,7 @@ expected = 'e7728148c6829ba526f682876430a0c9022dc6c0'
 actual = subprocess.check_output(['git', '-C', str(engine), 'rev-parse', 'HEAD'], text=True).strip()
 if actual != expected: raise SystemExit('Interpolation requires GBARecomp commit ' + expected)
 command = ['git', '-C', str(engine), 'apply']
-if subprocess.run(command + ['--reverse', '--check', str(patch)], capture_output=True).returncode == 0: raise SystemExit(0)
-subprocess.run(command + ['--check', str(patch)], check=True)
-subprocess.run(command + [str(patch)], check=True)
+for patch in [patch, patch.with_name('gbarecomp-controls.patch'), patch.with_name('gbarecomp-localization.patch')]:
+    if subprocess.run(command + ['--reverse', '--check', str(patch)], capture_output=True).returncode == 0: continue
+    subprocess.run(command + ['--check', str(patch)], check=True)
+    subprocess.run(command + [str(patch)], check=True)

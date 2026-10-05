@@ -7,6 +7,7 @@ p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--rom',type=Path,required=True)
 p.add_argument('--bios',type=Path,required=True)
 p.add_argument('--recompiler',type=Path,default=root.parent/'gbarecomp/build/gba_recompile')
+p.add_argument('--disasm',type=Path,required=True,help='sma3-disasm checkout')
 a=p.parse_args()
 for path,size,sha in [(a.rom,4194304,'7352d2bd064d9ebaec579e264228aa21c7345b80'),(a.bios,16384,'300c20df6731a33952ded8c436f7f186d25d3492')]:
  if not path.is_file() or path.stat().st_size!=size or hashlib.sha1(path.read_bytes()).hexdigest()!=sha:
@@ -17,4 +18,7 @@ run(exe,'--rom',rom,'--config',root/'game.toml','--symbols',root/'symbols.tsv','
 run(exe,'--bios',bios,'--config',root/'bios.toml','--out',root/'generated-bios')
 run(exe,'--rom',rom,'--config',root/'ram.toml','--out',root/'generated-ram','--output-prefix','sma3ram_','--codegen-shards','2')
 run(sys.executable,root/'tools/generate_overlays.py','--rom',rom,'--recompiler',exe)
+run(sys.executable,root/'tools/generate_morph.py','--rom',rom,'--recompiler',exe)
+run(sys.executable,root/'tools/generate_localization.py','--rom',rom,'--disasm',a.disasm.resolve())
 print('Generated sources are local build inputs and are ignored by Git.')
+

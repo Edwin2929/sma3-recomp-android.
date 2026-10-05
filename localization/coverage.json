@@ -1,0 +1,1698 @@
+{
+  "records": [
+    {
+      "label": "Message_FlipCards",
+      "address": "0x82f215c",
+      "category": "messages",
+      "bytes": [
+        249,
+        223
+      ]
+    },
+    {
+      "label": "Message_ScratchAndMatch",
+      "address": "0x82f22ad",
+      "category": "messages",
+      "bytes": [
+        251,
+        245
+      ]
+    },
+    {
+      "label": "Message_DrawingLots",
+      "address": "0x82f23e0",
+      "category": "messages",
+      "bytes": [
+        144,
+        136
+      ]
+    },
+    {
+      "label": "Message_MatchCards",
+      "address": "0x82f24d6",
+      "category": "messages",
+      "bytes": [
+        183,
+        179
+      ]
+    },
+    {
+      "label": "Message_Roulette",
+      "address": "0x82f25fd",
+      "category": "messages",
+      "bytes": [
+        341,
+        347
+      ]
+    },
+    {
+      "label": "Message_SlotMachine",
+      "address": "0x82f27b4",
+      "category": "messages",
+      "bytes": [
+        93,
+        73
+      ]
+    },
+    {
+      "label": "Message_ThrowingBalloons1up",
+      "address": "0x82f284b",
+      "category": "messages",
+      "bytes": [
+        248,
+        252
+      ]
+    },
+    {
+      "label": "Message_ThrowingBalloons2up",
+      "address": "0x82f29cd",
+      "category": "messages",
+      "bytes": [
+        249,
+        254
+      ]
+    },
+    {
+      "label": "Message_ThrowingBalloons3up",
+      "address": "0x82f2b4f",
+      "category": "messages",
+      "bytes": [
+        250,
+        254
+      ]
+    },
+    {
+      "label": "Message_GatherCoins",
+      "address": "0x82f2cd1",
+      "category": "messages",
+      "bytes": [
+        185,
+        179
+      ]
+    },
+    {
+      "label": "Message_PoppingBalloons",
+      "address": "0x82f2de1",
+      "category": "messages",
+      "bytes": [
+        211,
+        181
+      ]
+    },
+    {
+      "label": "Message_SeedSpitting",
+      "address": "0x82f2f1e",
+      "category": "messages",
+      "bytes": [
+        257,
+        280
+      ]
+    },
+    {
+      "label": "Message_IntroCutscene1",
+      "address": "0x82f30bc",
+      "category": "messages",
+      "bytes": [
+        181,
+        180
+      ]
+    },
+    {
+      "label": "Message_IntroCutscene2",
+      "address": "0x82f3189",
+      "category": "messages",
+      "bytes": [
+        422,
+        393
+      ]
+    },
+    {
+      "label": "Message_IntroLevel",
+      "address": "0x82f3371",
+      "category": "messages",
+      "bytes": [
+        504,
+        508
+      ]
+    },
+    {
+      "label": "Message_1_1_FirstFlower",
+      "address": "0x82f35d3",
+      "category": "messages",
+      "bytes": [
+        105,
+        128
+      ]
+    },
+    {
+      "label": "Message_1_1_GrabBabyMario",
+      "address": "0x82f361d",
+      "category": "messages",
+      "bytes": [
+        189,
+        180
+      ]
+    },
+    {
+      "label": "Message_1_2_FirstMiddleRing",
+      "address": "0x82f36f2",
+      "category": "messages",
+      "bytes": [
+        77,
+        67
+      ]
+    },
+    {
+      "label": "Message_1_C_3",
+      "address": "0x82f380e",
+      "category": "messages",
+      "bytes": [
+        134,
+        129
+      ]
+    },
+    {
+      "label": "Message_1_1_0",
+      "address": "0x82f38b2",
+      "category": "messages",
+      "bytes": [
+        187,
+        208
+      ]
+    },
+    {
+      "label": "Message_1_1_1_Patient",
+      "address": "0x82f39af",
+      "category": "messages",
+      "bytes": [
+        392,
+        365
+      ]
+    },
+    {
+      "label": "Message_1_1_1_Hasty",
+      "address": "0x82f3b62",
+      "category": "messages",
+      "bytes": [
+        368,
+        312
+      ]
+    },
+    {
+      "label": "Message_1_1_2",
+      "address": "0x82f3d4b",
+      "category": "messages",
+      "bytes": [
+        143,
+        147
+      ]
+    },
+    {
+      "label": "Message_1_1_3",
+      "address": "0x82f3df2",
+      "category": "messages",
+      "bytes": [
+        189,
+        234
+      ]
+    },
+    {
+      "label": "Message_1_2_0",
+      "address": "0x82f3f1a",
+      "category": "messages",
+      "bytes": [
+        211,
+        212
+      ]
+    },
+    {
+      "label": "Message_1_2_1",
+      "address": "0x82f3fe4",
+      "category": "messages",
+      "bytes": [
+        217,
+        208
+      ]
+    },
+    {
+      "label": "Message_1_2_2",
+      "address": "0x82f40bc",
+      "category": "messages",
+      "bytes": [
+        139,
+        138
+      ]
+    },
+    {
+      "label": "Message_1_3_0",
+      "address": "0x82f413b",
+      "category": "messages",
+      "bytes": [
+        185,
+        205
+      ]
+    },
+    {
+      "label": "Message_1_3_2",
+      "address": "0x82f42cc",
+      "category": "messages",
+      "bytes": [
+        194,
+        187
+      ]
+    },
+    {
+      "label": "Message_1_5_2",
+      "address": "0x82f4394",
+      "category": "messages",
+      "bytes": [
+        208,
+        195
+      ]
+    },
+    {
+      "label": "Message_1_6_1",
+      "address": "0x82f4445",
+      "category": "messages",
+      "bytes": [
+        102,
+        75
+      ]
+    },
+    {
+      "label": "Message_1_6_2",
+      "address": "0x82f448e",
+      "category": "messages",
+      "bytes": [
+        135,
+        135
+      ]
+    },
+    {
+      "label": "Message_1_8_0",
+      "address": "0x82f44dd",
+      "category": "messages",
+      "bytes": [
+        85,
+        95
+      ]
+    },
+    {
+      "label": "Message_1_8_1",
+      "address": "0x82f4527",
+      "category": "messages",
+      "bytes": [
+        97,
+        91
+      ]
+    },
+    {
+      "label": "Message_2_1_0",
+      "address": "0x82f4574",
+      "category": "messages",
+      "bytes": [
+        280,
+        249
+      ]
+    },
+    {
+      "label": "Message_2_1_2",
+      "address": "0x82f4687",
+      "category": "messages",
+      "bytes": [
+        113,
+        143
+      ]
+    },
+    {
+      "label": "Message_2_1_3",
+      "address": "0x82f472f",
+      "category": "messages",
+      "bytes": [
+        108,
+        108
+      ]
+    },
+    {
+      "label": "Message_2_2_1",
+      "address": "0x82f4782",
+      "category": "messages",
+      "bytes": [
+        207,
+        176
+      ]
+    },
+    {
+      "label": "Message_2_2_2",
+      "address": "0x82f4858",
+      "category": "messages",
+      "bytes": [
+        62,
+        53
+      ]
+    },
+    {
+      "label": "Message_2_2_3",
+      "address": "0x82f4895",
+      "category": "messages",
+      "bytes": [
+        271,
+        250
+      ]
+    },
+    {
+      "label": "Message_2_3_0",
+      "address": "0x82f4994",
+      "category": "messages",
+      "bytes": [
+        64,
+        66
+      ]
+    },
+    {
+      "label": "Message_2_3_1",
+      "address": "0x82f49d4",
+      "category": "messages",
+      "bytes": [
+        58,
+        62
+      ]
+    },
+    {
+      "label": "Message_2_3_3",
+      "address": "0x82f4a14",
+      "category": "messages",
+      "bytes": [
+        68,
+        62
+      ]
+    },
+    {
+      "label": "Message_2_5_0",
+      "address": "0x82f4a56",
+      "category": "messages",
+      "bytes": [
+        122,
+        139
+      ]
+    },
+    {
+      "label": "Message_2_5_2",
+      "address": "0x82f4af7",
+      "category": "messages",
+      "bytes": [
+        69,
+        63
+      ]
+    },
+    {
+      "label": "Message_2_7_2",
+      "address": "0x82f4b3c",
+      "category": "messages",
+      "bytes": [
+        102,
+        103
+      ]
+    },
+    {
+      "label": "Message_2_8_1",
+      "address": "0x82f4bdf",
+      "category": "messages",
+      "bytes": [
+        115,
+        114
+      ]
+    },
+    {
+      "label": "Message_2_8_2",
+      "address": "0x82f4c84",
+      "category": "messages",
+      "bytes": [
+        237,
+        211
+      ]
+    },
+    {
+      "label": "Message_3_2_2",
+      "address": "0x82f4da2",
+      "category": "messages",
+      "bytes": [
+        111,
+        131
+      ]
+    },
+    {
+      "label": "Message_3_8_2",
+      "address": "0x82f4e38",
+      "category": "messages",
+      "bytes": [
+        166,
+        146
+      ]
+    },
+    {
+      "label": "Message_3_8_1",
+      "address": "0x82f4f05",
+      "category": "messages",
+      "bytes": [
+        153,
+        144
+      ]
+    },
+    {
+      "label": "Message_3_8_3",
+      "address": "0x82f4fd7",
+      "category": "messages",
+      "bytes": [
+        241,
+        216
+      ]
+    },
+    {
+      "label": "Message_4_2_1",
+      "address": "0x82f50b0",
+      "category": "messages",
+      "bytes": [
+        173,
+        169
+      ]
+    },
+    {
+      "label": "Message_4_3_1",
+      "address": "0x82f517c",
+      "category": "messages",
+      "bytes": [
+        102,
+        109
+      ]
+    },
+    {
+      "label": "Message_4_5_1",
+      "address": "0x82f51ca",
+      "category": "messages",
+      "bytes": [
+        109,
+        102
+      ]
+    },
+    {
+      "label": "Message_5_1_1",
+      "address": "0x82f5218",
+      "category": "messages",
+      "bytes": [
+        257,
+        303
+      ]
+    },
+    {
+      "label": "Message_5_3_1",
+      "address": "0x82f534c",
+      "category": "messages",
+      "bytes": [
+        135,
+        110
+      ]
+    },
+    {
+      "label": "Message_5_4_1",
+      "address": "0x82f53f4",
+      "category": "messages",
+      "bytes": [
+        140,
+        134
+      ]
+    },
+    {
+      "label": "Message_5_8_1",
+      "address": "0x82f5443",
+      "category": "messages",
+      "bytes": [
+        34,
+        30
+      ]
+    },
+    {
+      "label": "Message_1_4_Boss",
+      "address": "0x82f548f",
+      "category": "messages",
+      "bytes": [
+        73,
+        64
+      ]
+    },
+    {
+      "label": "Message_1_8_Boss",
+      "address": "0x82f54e1",
+      "category": "messages",
+      "bytes": [
+        147,
+        141
+      ]
+    },
+    {
+      "label": "Message_2_4_Boss",
+      "address": "0x82f5595",
+      "category": "messages",
+      "bytes": [
+        149,
+        144
+      ]
+    },
+    {
+      "label": "Message_2_8_Boss",
+      "address": "0x82f5650",
+      "category": "messages",
+      "bytes": [
+        172,
+        171
+      ]
+    },
+    {
+      "label": "Message_3_4_Boss",
+      "address": "0x82f56ff",
+      "category": "messages",
+      "bytes": [
+        104,
+        83
+      ]
+    },
+    {
+      "label": "Message_3_8_Boss",
+      "address": "0x82f5748",
+      "category": "messages",
+      "bytes": [
+        63,
+        74
+      ]
+    },
+    {
+      "label": "Message_3_8_OHMY",
+      "address": "0x82f578f",
+      "category": "messages",
+      "bytes": [
+        24,
+        22
+      ]
+    },
+    {
+      "label": "Message_4_4_Boss",
+      "address": "0x82f57a9",
+      "category": "messages",
+      "bytes": [
+        51,
+        60
+      ]
+    },
+    {
+      "label": "Message_4_8_Boss",
+      "address": "0x82f57f1",
+      "category": "messages",
+      "bytes": [
+        70,
+        72
+      ]
+    },
+    {
+      "label": "Message_5_4_Boss",
+      "address": "0x82f583b",
+      "category": "messages",
+      "bytes": [
+        168,
+        147
+      ]
+    },
+    {
+      "label": "Message_5_8_Boss",
+      "address": "0x82f58c9",
+      "category": "messages",
+      "bytes": [
+        144,
+        140
+      ]
+    },
+    {
+      "label": "Message_6_4_Boss",
+      "address": "0x82f5988",
+      "category": "messages",
+      "bytes": [
+        162,
+        159
+      ]
+    },
+    {
+      "label": "Message_6_8_PreBoss1",
+      "address": "0x82f5a46",
+      "category": "messages",
+      "bytes": [
+        92,
+        69
+      ]
+    },
+    {
+      "label": "Message_6_8_PreBoss2",
+      "address": "0x82f5a94",
+      "category": "messages",
+      "bytes": [
+        72,
+        75
+      ]
+    },
+    {
+      "label": "Message_6_8_PreBoss3",
+      "address": "0x82f5ad3",
+      "category": "messages",
+      "bytes": [
+        49,
+        51
+      ]
+    },
+    {
+      "label": "Message_6_8_PreBoss4",
+      "address": "0x82f5b16",
+      "category": "messages",
+      "bytes": [
+        133,
+        108
+      ]
+    },
+    {
+      "label": "Message_6_8_KamekEnlarge",
+      "address": "0x82f5c20",
+      "category": "messages",
+      "bytes": [
+        77,
+        74
+      ]
+    },
+    {
+      "label": "Message_6_8_PostBoss",
+      "address": "0x82f5c6d",
+      "category": "messages",
+      "bytes": [
+        132,
+        134
+      ]
+    },
+    {
+      "label": "Message_FlipCardsExit",
+      "address": "0x82f228e",
+      "category": "choices",
+      "bytes": [
+        30,
+        29
+      ]
+    },
+    {
+      "label": "Message_TryAgain",
+      "address": "0x82f3739",
+      "category": "choices",
+      "bytes": [
+        81,
+        84
+      ]
+    },
+    {
+      "label": "Message_RestartFromMiddleRing",
+      "address": "0x82f3788",
+      "category": "choices",
+      "bytes": [
+        87,
+        82
+      ]
+    },
+    {
+      "label": "Message_GameOver",
+      "address": "0x82f37df",
+      "category": "choices",
+      "bytes": [
+        39,
+        36
+      ]
+    },
+    {
+      "label": "Message_1_3_1",
+      "address": "0x82f422d",
+      "category": "choices",
+      "bytes": [
+        128,
+        121
+      ]
+    },
+    {
+      "label": "LevelName_Intro",
+      "address": "0x82f90ac",
+      "category": "levels",
+      "bytes": [
+        35,
+        31
+      ]
+    },
+    {
+      "label": "LevelName1_1",
+      "address": "0x82f90cb",
+      "category": "levels",
+      "bytes": [
+        32,
+        31
+      ]
+    },
+    {
+      "label": "LevelName1_2",
+      "address": "0x82f90eb",
+      "category": "levels",
+      "bytes": [
+        30,
+        30
+      ]
+    },
+    {
+      "label": "LevelName1_3",
+      "address": "0x82f9106",
+      "category": "levels",
+      "bytes": [
+        33,
+        35
+      ]
+    },
+    {
+      "label": "LevelName1_4",
+      "address": "0x82f9127",
+      "category": "levels",
+      "bytes": [
+        38,
+        36
+      ]
+    },
+    {
+      "label": "LevelName1_5",
+      "address": "0x82f9149",
+      "category": "levels",
+      "bytes": [
+        33,
+        30
+      ]
+    },
+    {
+      "label": "LevelName1_6",
+      "address": "0x82f9169",
+      "category": "levels",
+      "bytes": [
+        32,
+        39
+      ]
+    },
+    {
+      "label": "LevelName1_7",
+      "address": "0x82f9186",
+      "category": "levels",
+      "bytes": [
+        39,
+        37
+      ]
+    },
+    {
+      "label": "LevelName1_8",
+      "address": "0x82f91a6",
+      "category": "levels",
+      "bytes": [
+        31,
+        29
+      ]
+    },
+    {
+      "label": "LevelName1_E",
+      "address": "0x82f91c9",
+      "category": "levels",
+      "bytes": [
+        33,
+        32
+      ]
+    },
+    {
+      "label": "LevelName1_S",
+      "address": "0x82f91eb",
+      "category": "levels",
+      "bytes": [
+        32,
+        33
+      ]
+    },
+    {
+      "label": "LevelName2_1",
+      "address": "0x82f9210",
+      "category": "levels",
+      "bytes": [
+        37,
+        35
+      ]
+    },
+    {
+      "label": "LevelName2_2",
+      "address": "0x82f9235",
+      "category": "levels",
+      "bytes": [
+        33,
+        30
+      ]
+    },
+    {
+      "label": "LevelName2_3",
+      "address": "0x82f9251",
+      "category": "levels",
+      "bytes": [
+        29,
+        35
+      ]
+    },
+    {
+      "label": "LevelName2_4",
+      "address": "0x82f9274",
+      "category": "levels",
+      "bytes": [
+        33,
+        32
+      ]
+    },
+    {
+      "label": "LevelName2_5",
+      "address": "0x82f9290",
+      "category": "levels",
+      "bytes": [
+        29,
+        29
+      ]
+    },
+    {
+      "label": "LevelName2_6",
+      "address": "0x82f92af",
+      "category": "levels",
+      "bytes": [
+        33,
+        33
+      ]
+    },
+    {
+      "label": "LevelName2_7",
+      "address": "0x82f92d6",
+      "category": "levels",
+      "bytes": [
+        28,
+        27
+      ]
+    },
+    {
+      "label": "LevelName2_8",
+      "address": "0x82f92ee",
+      "category": "levels",
+      "bytes": [
+        42,
+        40
+      ]
+    },
+    {
+      "label": "LevelName2_E",
+      "address": "0x82f9312",
+      "category": "levels",
+      "bytes": [
+        38,
+        39
+      ]
+    },
+    {
+      "label": "LevelName2_S",
+      "address": "0x82f9332",
+      "category": "levels",
+      "bytes": [
+        38,
+        36
+      ]
+    },
+    {
+      "label": "LevelName3_1",
+      "address": "0x82f935b",
+      "category": "levels",
+      "bytes": [
+        41,
+        42
+      ]
+    },
+    {
+      "label": "LevelName3_2",
+      "address": "0x82f937e",
+      "category": "levels",
+      "bytes": [
+        32,
+        27
+      ]
+    },
+    {
+      "label": "LevelName3_3",
+      "address": "0x82f9399",
+      "category": "levels",
+      "bytes": [
+        38,
+        34
+      ]
+    },
+    {
+      "label": "LevelName3_4",
+      "address": "0x82f93b5",
+      "category": "levels",
+      "bytes": [
+        40,
+        37
+      ]
+    },
+    {
+      "label": "LevelName3_5",
+      "address": "0x82f93d4",
+      "category": "levels",
+      "bytes": [
+        37,
+        35
+      ]
+    },
+    {
+      "label": "LevelName3_6",
+      "address": "0x82f93f8",
+      "category": "levels",
+      "bytes": [
+        37,
+        39
+      ]
+    },
+    {
+      "label": "LevelName3_7",
+      "address": "0x82f941d",
+      "category": "levels",
+      "bytes": [
+        40,
+        38
+      ]
+    },
+    {
+      "label": "LevelName3_8",
+      "address": "0x82f943e",
+      "category": "levels",
+      "bytes": [
+        39,
+        37
+      ]
+    },
+    {
+      "label": "LevelName3_E",
+      "address": "0x82f945f",
+      "category": "levels",
+      "bytes": [
+        35,
+        38
+      ]
+    },
+    {
+      "label": "LevelName3_S",
+      "address": "0x82f9481",
+      "category": "levels",
+      "bytes": [
+        34,
+        35
+      ]
+    },
+    {
+      "label": "LevelName4_1",
+      "address": "0x82f94a5",
+      "category": "levels",
+      "bytes": [
+        32,
+        31
+      ]
+    },
+    {
+      "label": "LevelName4_2",
+      "address": "0x82f94c0",
+      "category": "levels",
+      "bytes": [
+        34,
+        32
+      ]
+    },
+    {
+      "label": "LevelName4_3",
+      "address": "0x82f94e2",
+      "category": "levels",
+      "bytes": [
+        33,
+        30
+      ]
+    },
+    {
+      "label": "LevelName4_4",
+      "address": "0x82f94fe",
+      "category": "levels",
+      "bytes": [
+        29,
+        27
+      ]
+    },
+    {
+      "label": "LevelName4_5",
+      "address": "0x82f951e",
+      "category": "levels",
+      "bytes": [
+        32,
+        32
+      ]
+    },
+    {
+      "label": "LevelName4_6",
+      "address": "0x82f9538",
+      "category": "levels",
+      "bytes": [
+        40,
+        37
+      ]
+    },
+    {
+      "label": "LevelName4_7",
+      "address": "0x82f9556",
+      "category": "levels",
+      "bytes": [
+        31,
+        29
+      ]
+    },
+    {
+      "label": "LevelName4_8",
+      "address": "0x82f9573",
+      "category": "levels",
+      "bytes": [
+        40,
+        38
+      ]
+    },
+    {
+      "label": "LevelName4_E",
+      "address": "0x82f9599",
+      "category": "levels",
+      "bytes": [
+        36,
+        36
+      ]
+    },
+    {
+      "label": "LevelName4_S",
+      "address": "0x82f95bc",
+      "category": "levels",
+      "bytes": [
+        39,
+        39
+      ]
+    },
+    {
+      "label": "LevelName5_1",
+      "address": "0x82f95e7",
+      "category": "levels",
+      "bytes": [
+        19,
+        17
+      ]
+    },
+    {
+      "label": "LevelName5_2",
+      "address": "0x82f95fe",
+      "category": "levels",
+      "bytes": [
+        27,
+        29
+      ]
+    },
+    {
+      "label": "LevelName5_3",
+      "address": "0x82f961b",
+      "category": "levels",
+      "bytes": [
+        36,
+        33
+      ]
+    },
+    {
+      "label": "LevelName5_4",
+      "address": "0x82f9643",
+      "category": "levels",
+      "bytes": [
+        30,
+        28
+      ]
+    },
+    {
+      "label": "LevelName5_5",
+      "address": "0x82f9668",
+      "category": "levels",
+      "bytes": [
+        34,
+        30
+      ]
+    },
+    {
+      "label": "LevelName5_6",
+      "address": "0x82f9680",
+      "category": "levels",
+      "bytes": [
+        39,
+        40
+      ]
+    },
+    {
+      "label": "LevelName5_7",
+      "address": "0x82f96a1",
+      "category": "levels",
+      "bytes": [
+        39,
+        38
+      ]
+    },
+    {
+      "label": "LevelName5_8",
+      "address": "0x82f96c4",
+      "category": "levels",
+      "bytes": [
+        43,
+        40
+      ]
+    },
+    {
+      "label": "LevelName5_E",
+      "address": "0x82f96e9",
+      "category": "levels",
+      "bytes": [
+        35,
+        34
+      ]
+    },
+    {
+      "label": "LevelName5_S",
+      "address": "0x82f9707",
+      "category": "levels",
+      "bytes": [
+        37,
+        34
+      ]
+    },
+    {
+      "label": "LevelName6_1",
+      "address": "0x82f9725",
+      "category": "levels",
+      "bytes": [
+        43,
+        41
+      ]
+    },
+    {
+      "label": "LevelName6_2",
+      "address": "0x82f9747",
+      "category": "levels",
+      "bytes": [
+        35,
+        33
+      ]
+    },
+    {
+      "label": "LevelName6_3",
+      "address": "0x82f9769",
+      "category": "levels",
+      "bytes": [
+        45,
+        44
+      ]
+    },
+    {
+      "label": "LevelName6_4",
+      "address": "0x82f978c",
+      "category": "levels",
+      "bytes": [
+        42,
+        44
+      ]
+    },
+    {
+      "label": "LevelName6_5",
+      "address": "0x82f97b2",
+      "category": "levels",
+      "bytes": [
+        33,
+        35
+      ]
+    },
+    {
+      "label": "LevelName6_6",
+      "address": "0x82f97d4",
+      "category": "levels",
+      "bytes": [
+        35,
+        34
+      ]
+    },
+    {
+      "label": "LevelName6_7",
+      "address": "0x82f97f9",
+      "category": "levels",
+      "bytes": [
+        27,
+        29
+      ]
+    },
+    {
+      "label": "LevelName6_8",
+      "address": "0x82f9813",
+      "category": "levels",
+      "bytes": [
+        37,
+        34
+      ]
+    },
+    {
+      "label": "LevelName6_E",
+      "address": "0x82f9833",
+      "category": "levels",
+      "bytes": [
+        40,
+        42
+      ]
+    },
+    {
+      "label": "LevelName6_S",
+      "address": "0x82f985b",
+      "category": "levels",
+      "bytes": [
+        41,
+        41
+      ]
+    },
+    {
+      "label": "StoryIntroText00",
+      "address": "0x816b0ec",
+      "category": "story",
+      "bytes": [
+        57,
+        55
+      ]
+    },
+    {
+      "label": "StoryIntroText01",
+      "address": "0x816b126",
+      "category": "story",
+      "bytes": [
+        53,
+        53
+      ]
+    },
+    {
+      "label": "StoryIntroText03",
+      "address": "0x816b161",
+      "category": "story",
+      "bytes": [
+        59,
+        56
+      ]
+    },
+    {
+      "label": "StoryIntroText04",
+      "address": "0x816b19d",
+      "category": "story",
+      "bytes": [
+        47,
+        50
+      ]
+    },
+    {
+      "label": "StoryIntroText05",
+      "address": "0x816b1d5",
+      "category": "story",
+      "bytes": [
+        56,
+        57
+      ]
+    },
+    {
+      "label": "StoryIntroText06",
+      "address": "0x816b218",
+      "category": "story",
+      "bytes": [
+        52,
+        55
+      ]
+    },
+    {
+      "label": "StoryIntroText08",
+      "address": "0x816b254",
+      "category": "story",
+      "bytes": [
+        22,
+        19
+      ]
+    },
+    {
+      "label": "StoryIntroText09",
+      "address": "0x816b26a",
+      "category": "story",
+      "bytes": [
+        28,
+        26
+      ]
+    },
+    {
+      "label": "StoryIntroText0B",
+      "address": "0x816b286",
+      "category": "story",
+      "bytes": [
+        18,
+        15
+      ]
+    },
+    {
+      "label": "StoryIntroText0C",
+      "address": "0x816b297",
+      "category": "story",
+      "bytes": [
+        53,
+        51
+      ]
+    },
+    {
+      "label": "StoryIntroText0D",
+      "address": "0x816b2d2",
+      "category": "story",
+      "bytes": [
+        53,
+        45
+      ]
+    },
+    {
+      "label": "StoryIntroText0F",
+      "address": "0x816b305",
+      "category": "story",
+      "bytes": [
+        51,
+        53
+      ]
+    },
+    {
+      "label": "StoryIntroText10",
+      "address": "0x816b339",
+      "category": "story",
+      "bytes": [
+        23,
+        28
+      ]
+    },
+    {
+      "label": "StoryIntroText11",
+      "address": "0x816b356",
+      "category": "story",
+      "bytes": [
+        19,
+        19
+      ]
+    },
+    {
+      "label": "StoryIntroText13",
+      "address": "0x816b369",
+      "category": "story",
+      "bytes": [
+        55,
+        60
+      ]
+    },
+    {
+      "label": "StoryIntroText14",
+      "address": "0x816b3ac",
+      "category": "story",
+      "bytes": [
+        53,
+        55
+      ]
+    },
+    {
+      "label": "StoryIntroText15",
+      "address": "0x816b3e7",
+      "category": "story",
+      "bytes": [
+        14,
+        12
+      ]
+    },
+    {
+      "label": "StoryIntroText16",
+      "address": "0x816b3f7",
+      "category": "story",
+      "bytes": [
+        53,
+        53
+      ]
+    },
+    {
+      "label": "StoryIntroText17",
+      "address": "0x816b439",
+      "category": "story",
+      "bytes": [
+        55,
+        54
+      ]
+    },
+    {
+      "label": "StoryIntroText18",
+      "address": "0x816b472",
+      "category": "story",
+      "bytes": [
+        52,
+        51
+      ]
+    },
+    {
+      "label": "StoryIntroText19",
+      "address": "0x816b4b0",
+      "category": "story",
+      "bytes": [
+        24,
+        31
+      ]
+    },
+    {
+      "label": "StoryIntroText1B",
+      "address": "0x816b4cc",
+      "category": "story",
+      "bytes": [
+        54,
+        56
+      ]
+    },
+    {
+      "label": "StoryIntroText1C",
+      "address": "0x816b50e",
+      "category": "story",
+      "bytes": [
+        55,
+        54
+      ]
+    },
+    {
+      "label": "StoryIntroText1D",
+      "address": "0x816b549",
+      "category": "story",
+      "bytes": [
+        49,
+        52
+      ]
+    },
+    {
+      "label": "StoryIntroText1F",
+      "address": "0x816b583",
+      "category": "story",
+      "bytes": [
+        21,
+        18
+      ]
+    },
+    {
+      "label": "StoryIntroText20",
+      "address": "0x816b59a",
+      "category": "story",
+      "bytes": [
+        58,
+        57
+      ]
+    },
+    {
+      "label": "StoryIntroText21",
+      "address": "0x816b5d8",
+      "category": "story",
+      "bytes": [
+        51,
+        49
+      ]
+    },
+    {
+      "label": "StoryIntroText22",
+      "address": "0x816b611",
+      "category": "story",
+      "bytes": [
+        53,
+        53
+      ]
+    },
+    {
+      "label": "StoryIntroText24",
+      "address": "0x816b64e",
+      "category": "story",
+      "bytes": [
+        62,
+        57
+      ]
+    },
+    {
+      "label": "StoryIntroText25",
+      "address": "0x816b689",
+      "category": "story",
+      "bytes": [
+        49,
+        49
+      ]
+    },
+    {
+      "label": "StoryIntroText26",
+      "address": "0x816b6c5",
+      "category": "story",
+      "bytes": [
+        58,
+        56
+      ]
+    },
+    {
+      "label": "StoryIntroText28",
+      "address": "0x816b703",
+      "category": "story",
+      "bytes": [
+        59,
+        56
+      ]
+    },
+    {
+      "label": "FileSelectText0",
+      "address": "0x81994f8",
+      "category": "file_menu",
+      "bytes": [
+        18,
+        18
+      ]
+    },
+    {
+      "label": "FileSelectText1",
+      "address": "0x819950d",
+      "category": "file_menu",
+      "bytes": [
+        18,
+        17
+      ]
+    },
+    {
+      "label": "FileSelectText2",
+      "address": "0x8199522",
+      "category": "file_menu",
+      "bytes": [
+        17,
+        17
+      ]
+    },
+    {
+      "label": "FileSelectText3",
+      "address": "0x8199534",
+      "category": "file_menu",
+      "bytes": [
+        19,
+        20
+      ]
+    },
+    {
+      "label": "FileSelectText4",
+      "address": "0x819954a",
+      "category": "file_menu",
+      "bytes": [
+        19,
+        22
+      ]
+    },
+    {
+      "label": "FileSelectText5",
+      "address": "0x8199560",
+      "category": "file_menu",
+      "bytes": [
+        19,
+        15
+      ]
+    },
+    {
+      "label": "FileSelectText6",
+      "address": "0x8199572",
+      "category": "file_menu",
+      "bytes": [
+        18,
+        17
+      ]
+    },
+    {
+      "label": "FileSelectText8",
+      "address": "0x8199588",
+      "category": "file_menu",
+      "bytes": [
+        21,
+        22
+      ]
+    },
+    {
+      "label": "FileSelectText9",
+      "address": "0x819959d",
+      "category": "file_menu",
+      "bytes": [
+        22,
+        22
+      ]
+    },
+    {
+      "label": "FileSelectTextA",
+      "address": "0x81995b3",
+      "category": "file_menu",
+      "bytes": [
+        22,
+        22
+      ]
+    },
+    {
+      "label": "FileSelectTextB",
+      "address": "0x81995c9",
+      "category": "file_menu",
+      "bytes": [
+        22,
+        22
+      ]
+    },
+    {
+      "label": "EndingText",
+      "address": "0x82f5d11",
+      "category": "ending",
+      "bytes": [
+        221,
+        210
+      ]
+    }
+  ],
+  "pointer_slots": 267,
+  "bytes": [
+    16915,
+    16499
+  ],
+  "untranslated": [
+    "Graphical title and pause-menu labels",
+    "Credits role labels and text",
+    "Mario Bros bonus game"
+  ],
+  "rom_sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80"
+}

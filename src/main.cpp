@@ -1,5 +1,7 @@
+#include <cstdlib>
 #include "runtime.h"
 #include "runtime_arm.h"
+#include "localization.h"
 int sma3_ram_dispatch(uint32_t, int);
 
 #ifdef __ANDROID__
@@ -11,6 +13,10 @@ int sma3_ram_dispatch(uint32_t, int);
 
 int main(int argc, char** argv) {
     g_runtime_ram_dispatch_hook = sma3_ram_dispatch;
+    g_runtime_bus_read_override = sma3::localized_read;
+#ifndef __ANDROID__
+    if (const char* lang = std::getenv("SMA3_LANGUAGE")) sma3::language.store(std::atoi(lang));
+#endif
     gbarecomp::RunOptions options;
     options.builtin_game_name = "SMA3 USA experimental recompilation";
     options.builtin_rom_sha1 = "7352d2bd064d9ebaec579e264228aa21c7345b80";

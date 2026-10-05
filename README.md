@@ -2,23 +2,35 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Novedad: v0.4 experimental
+## Versión actual: 0.7 experimental
 
-Modo opcional **Atrás → 120 FPS experimentales (mezcla)**. Conserva el ritmo original y añade mezcla temporal entre imágenes, con un objetivo de 119,455 presentaciones/s. Puede producir estelas y añadir latencia; no son 120 estados independientes del juego.
+- **0.5:** cobertura nativa de la rutina de transformación, mapeo de mando y opción para ocultar los controles táctiles. [Detalles](docs/CORRECCION_TRANSFORMACIONES.md).
+- **0.6:** escalado de presentación Automático, 720p y 1080p, con opción para estirar la imagen. Los gráficos originales siguen siendo de 240 × 160. [Detalles](docs/CALIDAD_IMAGEN.md).
+- **0.7:** selector de inglés, español latinoamericano y portugués de Brasil. Traducción parcial de 187 entradas por idioma; incluye 61 nombres de niveles. Créditos, rótulos gráficos y Mario Bros siguen en inglés. [Cobertura](docs/IDIOMAS.md).
+- Se conservan el contador de FPS y la mezcla temporal opcional de 120 FPS de 0.4. No son 120 estados independientes del juego; puede producir estelas. [Límites](docs/INTERPOLACION_120.md).
 
-APK ARM64 compilado y firmado con la misma firma que v0.3. La prueba de temporización pasó; **todavía no se ha medido el rendimiento de v0.4 en Pixel 7 Pro**. [Activación, funcionamiento y límites](docs/INTERPOLACION_120.md).
+Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre sesiones.
 
-La descarga del APK en GitHub está pendiente de publicación. El repositorio contiene las fuentes y el parche del motor para compilarlo.
+## Descargar e instalar
 
-## Estado
+**La carga del APK 0.7 en GitHub queda pendiente: Edwin lo subirá manualmente.** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
 
-- **Prueba del usuario:** Edwin reportó el 3 de octubre de 2026 que el juego funciona en Android a **60 FPS**. Modelo del teléfono, versión de Android, versión exacta del APK y duración de la prueba: pendientes de registrar.
-- Prueba automatizada en Linux: recorrido de **18.000 fotogramas** completado con recompilación estática, cero fallos de despacho y cero instrucciones ejecutadas mediante el intérprete.
-- APK ARM64 compilado y firmado; versión actual del código: **0.4-interpolation-experimental**, `versionCode=4`.
-- Contador de FPS opcional. Durante la partida, **Atrás del teléfono → Opciones → Mostrar FPS**. **Continuar** cierra el menú.
-- La opción también aparece en la pantalla inicial y se conserva entre sesiones.
+Archivo previsto: `sma3-recomp-0.7-es-pt-arm64.apk` (31.731.619 bytes), Android 9 o posterior, ARM64.
 
-La prueba de 60 FPS corresponde al dispositivo del usuario; no constituye una medición en todos los teléfonos ni una validación de todos los niveles. Véase [docs/VALIDACION.md](docs/VALIDACION.md).
+SHA-256:
+```text
+4a31372f8fda47cb56195d0cf8490637246f547634c5ea70feed0c4dbae5cd2d
+```
+
+El APK de desarrollo 0.7 conserva la firma de las versiones anteriores: instálalo encima para conservar partidas y archivos importados. Las compilaciones de otras personas tendrán otra firma.
+
+[Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.7-experimental.md).
+
+## Estado de validación
+
+Edwin reportó 60 FPS con una versión anterior en Android y posteriormente identificó su teléfono como Google Pixel 7 Pro. Ese reporte **no valida el rendimiento de 0.5–0.7 ni confirma 120 FPS**.
+
+Las pruebas de desarrollo cubren la rutina de transformación, el escalador y los punteros de traducción. Se ejecutaron 7.200 fotogramas nativos por idioma sin faltas de despacho ni instrucciones interpretadas. Falta comprobar estas novedades en el teléfono, todas las transformaciones y el juego completo. [Resultados y límites](docs/VALIDACION.md).
 
 ## Qué significa «nativo» aquí
 
@@ -66,8 +78,10 @@ git -C gbarecomp checkout e7728148c6829ba526f682876430a0c9022dc6c0
 git -C gbarecomp submodule update --init external/arm-recomp-core external/rbengine external/recomp-net platform/android/third_party/SDL
 cmake -S gbarecomp -B gbarecomp/build -DCMAKE_BUILD_TYPE=Release
 cmake --build gbarecomp/build --target gba_recompile -j2
+git clone https://github.com/KarisaAdvynia/sma3-disasm.git
+git -C sma3-disasm checkout c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071
 cd sma3-recomp
-python3 tools/generate_sources.py --rom /ruta/sma3-usa.gba --bios /ruta/gba_bios.bin
+python3 tools/generate_sources.py --rom /ruta/sma3-usa.gba --bios /ruta/gba_bios.bin --disasm ../sma3-disasm
 python3 tools/bootstrap_android_build.py
 ```
 
@@ -101,7 +115,9 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 
 ## Pendientes
 
-- Registrar el teléfono, Android, APK y duración de la prueba de 60 FPS.
+- Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
+- Probar 0.7 en Pixel 7 Pro: transformaciones, mando, escalado y ambos idiomas.
+- Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.
 - Documentar sonido, guardado, segundo plano y mandos físicos.
 - Medir estabilidad de FPS en sesiones largas y en más dispositivos.
@@ -111,3 +127,4 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 Proyecto preparado para Edwin Rodríguez. Las dependencias conservan sus autores y licencias. GBARecomp usa PolyForm Noncommercial 1.0.0; arm-recomp-core usa MIT. Consulta [THIRD_PARTY.md](THIRD_PARTY.md) y `licenses/`. Las licencias del motor no conceden derechos sobre el juego ni sobre la BIOS. No existe afiliación con Nintendo.
 
 Para subir este contenido: [docs/SUBIR_A_GITHUB.md](docs/SUBIR_A_GITHUB.md).
+

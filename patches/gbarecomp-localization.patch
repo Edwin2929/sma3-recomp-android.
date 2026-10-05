@@ -1,0 +1,24 @@
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -38,6 +38,9 @@
+ #include "runtime_arm.h"
+ #include "runtime_bus_bridge.h"
+ #include "save_config.h"
++#ifdef SMA3_LOCALIZATION
++#include "localization.h"
++#endif
+ #include "self_heal.h"
+ #include "overlay_loader.h"
+ #include "../gba/mod_audio.h"
+@@ -1292,7 +1295,11 @@
+     gba::g_ws_pillarbox_right = 0;
+     g_runtime_fn_entry_hook = nullptr;
+     g_runtime_thumb_alu_imm_override = nullptr;
++#ifdef SMA3_LOCALIZATION
++    g_runtime_bus_read_override = sma3::localized_read;
++#else
+     g_runtime_bus_read_override = nullptr;
++#endif
+     Args args;
+ 
+     // Seed built-in defaults from the caller (the per-game runner).

@@ -96,6 +96,7 @@ public class GbaGameActivity extends SDLActivity {
         try { GbaNative.setInterpolationEnabled(enabled); }
         catch (UnsatisfiedLinkError notLoadedYet) { /* retried on resume/surface creation */ }
         updateFpsText();
+        applyInputOptions();
     }
     private void updateFpsText() {
         if (fpsLabel == null) return;
@@ -114,6 +115,107 @@ public class GbaGameActivity extends SDLActivity {
     private AlertDialog optionsDialog;
     private OnBackInvokedCallback optionsBackCallback;
 
+    private static final String[] GBA_BUTTONS = {"A", "B", "Select", "Start", "Derecha", "Izquierda", "Arriba", "Abajo", "R", "L"};
+    private static final String[] PAD_BUTTONS = {"A / Cruz", "B / Círculo", "X / Cuadrado", "Y / Triángulo", "Back / Share", "Guía", "Start / Options", "Stick izquierdo (L3)", "Stick derecho (R3)", "L1 / LB", "R1 / RB", "Cruceta arriba", "Cruceta abajo", "Cruceta izquierda", "Cruceta derecha", "Misc", "Palanca 1", "Palanca 2", "Palanca 3", "Palanca 4", "Panel táctil", "Sin asignar"};
+    private static final int[] DEFAULT_PAD = {0,1,4,6,14,13,11,12,10,9};
+    private int padBinding(int bit) {
+        int button = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("pad-" + bit, DEFAULT_PAD[bit]);
+        return button >= -1 && button <= 20 ? button : DEFAULT_PAD[bit];
+    }
+    private void applyInputOptions() {
+        try {
+            GbaNative.setLanguage(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0));
+            GbaNative.setVideoOptions(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0),
+                getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("stretch-screen", false));
+            GbaNative.setTouchControlsVisible(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true));
+            for (int bit = 0; bit < 10; ++bit) GbaNative.setControllerButton(bit, padBinding(bit));
+        } catch (UnsatisfiedLinkError notLoadedYet) { /* retried with surface */ }
+    }
+    private void setMenuOpen(boolean open) {
+        try { GbaNative.setOptionsOpen(open); } catch (UnsatisfiedLinkError ignored) {}
+    }
+    private void showControllerOptions() {
+        String[] rows = new String[10];
+        for (int bit = 0; bit < 10; ++bit) rows[bit] = GBA_BUTTONS[bit] + " → " + PAD_BUTTONS[padBinding(bit) < 0 ? 21 : padBinding(bit)];
+        AlertDialog menu = new AlertDialog.Builder(this).setTitle("Mapeo del mando")
+            .setItems(rows, (dialog, bit) -> {
+                AlertDialog chooser = new AlertDialog.Builder(this)
+                    .setTitle("Botón para " + GBA_BUTTONS[bit])
+                    .setSingleChoiceItems(PAD_BUTTONS, padBinding(bit) < 0 ? 21 : padBinding(bit), (selection, index) -> {
+                        getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("pad-" + bit, index == 21 ? -1 : index).apply();
+                        applyInputOptions(); selection.dismiss(); showControllerOptions();
+                    }).setNegativeButton("Cancelar", (selection, which) -> showControllerOptions()).create();
+                chooser.setOnCancelListener(ignored -> showControllerOptions());
+                chooser.show(); setMenuOpen(true);
+            })
+            .setNeutralButton("Restablecer", (dialog, which) -> {
+                android.content.SharedPreferences.Editor editor = getSharedPreferences("sma3-options", MODE_PRIVATE).edit();
+                for (int bit = 0; bit < 10; ++bit) editor.remove("pad-" + bit);
+                editor.apply(); applyInputOptions(); showControllerOptions();
+            })
+            .setPositiveButton("Listo", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
+        menu.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
+        menu.show(); setMenuOpen(true);
+    }
+
+    private void showVideoOptions() {
+        if (isFinishing() || isDestroyed()) return;
+        android.widget.LinearLayout panel = new android.widget.LinearLayout(this);
+        panel.setOrientation(android.widget.LinearLayout.VERTICAL);
+        panel.setPadding(overlayDp(20), overlayDp(8), overlayDp(20), 0);
+        android.widget.RadioGroup qualities = new android.widget.RadioGroup(this);
+        int saved = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
+        int[] values = {0, 720, 1080};
+        String[] names = {"Automática (resolución de pantalla)", "720p · HD", "1080p · Full HD"};
+        for (int i = 0; i < values.length; ++i) {
+            android.widget.RadioButton button = new android.widget.RadioButton(this);
+            button.setId(i + 100); button.setText(names[i]); qualities.addView(button);
+            if (saved == values[i]) qualities.check(i + 100);
+        }
+        qualities.setOnCheckedChangeListener((group, id) -> {
+            int index = id - 100;
+            if (index < 0 || index >= values.length) return;
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("video-quality", values[index]).apply();
+            applyInputOptions();
+        });
+        panel.addView(qualities);
+        android.widget.CheckBox stretch = new android.widget.CheckBox(this);
+        stretch.setText("Estirar a pantalla completa");
+        stretch.setChecked(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("stretch-screen", false));
+        stretch.setOnCheckedChangeListener((button, checked) -> {
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("stretch-screen", checked).apply();
+            applyInputOptions();
+        });
+        panel.addView(stretch);
+        TextView note = new TextView(this);
+        note.setText("Escalado nítido para los gráficos originales de GBA. Estirar llena la pantalla y ensancha la imagen. Desactívalo para conservar las proporciones. 1080p puede consumir más batería.");
+        note.setTextSize(13); note.setPadding(0, overlayDp(8), 0, overlayDp(8)); panel.addView(note);
+        AlertDialog video = new AlertDialog.Builder(this).setTitle("Calidad de imagen")
+            .setView(panel).setPositiveButton("Listo", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); }).create();
+        video.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
+        video.show(); setMenuOpen(true);
+    }
+
+    private void showLanguageOptions() {
+        if (isFinishing() || isDestroyed()) return;
+        int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0);
+        AlertDialog languages = new AlertDialog.Builder(this).setTitle("Idioma del juego / Game language")
+            .setSingleChoiceItems(new String[]{"English (original)", "Español latinoamericano", "Português do Brasil"}, selected,
+                (dialog, which) -> {
+                    getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("game-language", which).apply();
+                    applyInputOptions();
+                })
+            .setPositiveButton("OK", (dialog, which) -> { setMenuOpen(false); enterImmersiveMode(); })
+            .setNeutralButton("Información", (dialog, which) -> {
+                new AlertDialog.Builder(this).setTitle("Traducción experimental")
+                    .setMessage("Traduce diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés. Se aplica al siguiente mensaje o al volver a abrir la pantalla; un mensaje abierto conserva su idioma.")
+                    .setPositiveButton("OK", (info, button) -> { setMenuOpen(false); enterImmersiveMode(); })
+                    .setOnCancelListener(info -> setMenuOpen(false)).show();
+            }).create();
+        languages.setOnCancelListener(dialog -> { setMenuOpen(false); enterImmersiveMode(); });
+        languages.show(); setMenuOpen(true);
+    }
+
     private void showOptions() {
         if (isFinishing() || isDestroyed()) return;
         if (optionsDialog != null && optionsDialog.isShowing()) {
@@ -122,25 +224,28 @@ public class GbaGameActivity extends SDLActivity {
         }
         optionsDialog = new AlertDialog.Builder(this)
             .setTitle("Opciones")
-            .setMultiChoiceItems(new String[]{"Mostrar FPS", "120 FPS experimentales (mezcla)"},
-                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), wantsInterpolation()},
+            .setMultiChoiceItems(new String[]{"Mostrar FPS", "120 FPS experimentales (mezcla)", "Mostrar controles táctiles", "Idioma / Language / Idioma…"},
+                new boolean[]{getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), wantsInterpolation(), getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true), false},
                 (dialog, which, checked) -> {
+                    if (which == 3) {
+                        dialog.dismiss(); getWindow().getDecorView().post(this::showLanguageOptions); return;
+                    }
                     getSharedPreferences("sma3-options", MODE_PRIVATE).edit()
-                        .putBoolean(which == 0 ? "show-fps" : "interpolation-120", checked).apply();
-                    updateFpsVisibility();
+                        .putBoolean(which == 0 ? "show-fps" : which == 1 ? "interpolation-120" : "touch-visible", checked).apply();
+                    updateFpsVisibility(); applyInputOptions();
                     if (which == 1) { lastFps = null; applyPresentationMode(); }
                 })
-            .setNeutralButton("Sobre 120 FPS", (dialog, which) ->
-                new AlertDialog.Builder(this).setTitle("120 FPS experimentales")
-                    .setMessage("Mezcla imágenes consecutivas para presentar hasta 119,5 FPS. El juego mantiene su velocidad original. Puede dejar estelas y añadir algo de latencia. No son 120 fotogramas de juego independientes. En el Pixel 7 Pro activa Pantalla fluida y desactiva Ahorro de batería. Android decide la frecuencia final.")
-                    .setPositiveButton("Entendido", null).show())
+            .setNeutralButton("Mapear mando", (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showControllerOptions); })
+            .setNegativeButton("Imagen", (dialog, which) -> { dialog.dismiss(); getWindow().getDecorView().post(this::showVideoOptions); })
             .setPositiveButton("Continuar", null)
             .create();
         optionsDialog.setOnDismissListener(dialog -> {
             optionsDialog = null;
+            setMenuOpen(false);
             if (!isFinishing() && !isDestroyed()) enterImmersiveMode();
         });
         optionsDialog.show();
+        setMenuOpen(true);
     }
 
     // Consume navigation Back before SDL can translate it into a game key.
@@ -165,6 +270,7 @@ public class GbaGameActivity extends SDLActivity {
         }
         if (optionsDialog != null) optionsDialog.dismiss();
         if (mSurface != null && refreshCallback != null) mSurface.getHolder().removeCallback(refreshCallback);
+        setMenuOpen(false);
         super.onDestroy();
     }
 
@@ -189,6 +295,7 @@ public class GbaGameActivity extends SDLActivity {
             throw new IllegalStateException("Unable to install game payload", error);
         }
         super.onCreate(savedInstanceState);
+        setMenuOpen(false);
         installFpsOptions();
         refreshCallback = new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) { applyPresentationMode(); }
@@ -261,6 +368,7 @@ public class GbaGameActivity extends SDLActivity {
             getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
             GbaNative.setDisplayDpi(metrics.xdpi, metrics.ydpi);
             nativeReady = true;
+            applyInputOptions();
         } catch (UnsatisfiedLinkError notLoadedYet) {
             // libmain loads during super.onCreate; later passes succeed.
             nativeReady = false;
