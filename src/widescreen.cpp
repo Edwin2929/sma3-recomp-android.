@@ -1,6 +1,8 @@
 #include "widescreen.h"
 #include "widescreen_tiles.h"
 #include "widescreen_objects.h"
+#include "widescreen_bounds.h"
+#include <cstdlib>
 #include <cstdio>
 #include "runtime_bus_bridge.h"
 #include "runtime_arm.h"
@@ -17,6 +19,7 @@ bool gameplay = false;
 ObjectPositions positions;
 std::array<ObjectPositions,3> submissions;
 unsigned submission_count=0;
+uint64_t bounds_calls=0,bounds_extra_candidates=0;
 uint64_t epoch=~uint64_t(0);
 
 uint32_t read(uint32_t address, unsigned width) {
@@ -42,6 +45,16 @@ uint16_t reg(unsigned offset) {
     return uint16_t(registers[offset] | (unsigned(registers[offset+1]) << 8));
 }
 void object_submission(uint32_t pc) {
+    if(pc==0x0804ce1c) {
+        ++bounds_calls;
+        if(sma3_object_x_bias>16 && g_cpu.R[2]==0) {
+            const auto x=read(g_cpu.R[6]+10,2), y=read(g_cpu.R[6]+12,2);
+            if(uint16_t(y+32)<=223 && uint16_t(x+16)>255 &&
+               uint16_t(x+sma3_object_x_bias)<=sma3_object_x_limit)
+                ++bounds_extra_candidates;
+        }
+        return;
+    }
     if (pc!=0x080004a0 || g_cpu.R[0]!=0x03005a00 || g_cpu.R[1]!=0x0201a800) return;
     // Observe completed staging immediately before compaction. Frame-start
     // staging can already belong to the next frame. Never alter guest state.
@@ -78,7 +91,10 @@ int tile(int layer, int x, int y, uint16_t* output) {
 
 void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (!info) return;
-    if (epoch!=info->state_epoch) { submissions={}; submission_count=0; epoch=info->state_epoch; }
+    if (epoch!=info->state_epoch) {
+        submissions={}; submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
+        epoch=info->state_epoch;
+    }
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
         g_runtime_fn_entry_hook=object_submission;
     memory=gbarecomp::active_bus();
@@ -86,6 +102,10 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     gameplay=memory && registers && info->view_width<=356 &&
         read(0x03006d64,1)==0 && read(0x03006b05,1)==0x0d &&
         read(0x03007010,4)==0x0200000c && (reg(0)&7)==0;
+    const char* bounds=std::getenv("SMA3_WIDE_OBJECT_BOUNDS");
+    const bool expand_bounds=gameplay && bounds && bounds[0]=='1';
+    sma3_object_x_bias=16+(expand_bounds ? info->extra_left : 0);
+    sma3_object_x_limit=255+(expand_bounds ? info->extra_left+info->extra_right : 0);
     for (unsigned i=0;i<2;++i) {
         image_rows[i]=0;
         if (!gameplay) continue;
@@ -120,6 +140,10 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
                  info->frame_count==16000 || info->frame_count==17999)) {
         std::fprintf(stderr,"[sma3:wide] frame=%llu matched_object_positions=%u submission_age=%d\n",
             static_cast<unsigned long long>(info->frame_count),matched,submission_age);
+        std::fprintf(stderr,"[sma3:bounds] calls=%llu extra_candidates=%llu bias=%u limit=%u\n",
+            static_cast<unsigned long long>(bounds_calls),
+            static_cast<unsigned long long>(bounds_extra_candidates),
+            sma3_object_x_bias,sma3_object_x_limit);
     }
 }
 }

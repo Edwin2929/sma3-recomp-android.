@@ -1,0 +1,83 @@
+{
+  "private-bounds-coverage": {
+    "observations": [
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      }
+    ]
+  },
+  "private-long-jumps-expanded-2": {
+    "observations": [
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 16,
+        "limit": 255
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 16,
+        "limit": 255
+      },
+      {
+        "calls": 0,
+        "extra_candidates": 0,
+        "bias": 74,
+        "limit": 371
+      }
+    ]
+  },
+  "conclusion": "The widened filter was not reached in either replay. No claim of extra object rendering is established."
+}

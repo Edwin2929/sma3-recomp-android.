@@ -156,3 +156,41 @@ los objetos restantes. Los activos incluyen componentes de personajes y HUD;
 no todos deben extenderse a los márgenes. Queda identificar sus rutinas de
 dibujo y ampliar los límites de los objetos pequeños y de aparición, después
 validar transiciones y Android. La panorámica todavía no está lista para un APK.
+
+## Límite experimental de dibujo de objetos pequeños
+
+Se añadió un parche optativo de las constantes de `0804CE30` y `0804CE36`.
+El intervalo original X=[−16,239] se conserva por defecto. Con una vista de
+356 píxeles y 58 adicionales por lado, el diagnóstico usa X=[−74,297]. Las
+operaciones que calculan las banderas de CPU reciben los mismos operandos
+que las operaciones aritméticas modificadas. No se cambia el límite vertical.
+
+El script `tools/patch_widescreen_bounds.py` comprueba el SHA-256 del fragmento
+generado original, admite repetir su aplicación y rechaza otras modificaciones.
+Los archivos generados siguen siendo privados. El parche requiere reconstruir
+el archivo de código generado; activar solo la variable de entorno no modifica
+un archivo precompilado anterior. El ejecutor de diagnóstico acepta
+`--object-bounds` y `--replay`, y el reconstructor acepta `--object-bounds`.
+
+```sh
+python3 tools/rebuild_host.py --object-bounds --cmake /ruta/cmake
+python3 validation/run_widescreen_probe.py --rom /ruta/juego.gba --bios /ruta/bios.bin --output /ruta/nueva --frames 18000 --width 356 --object-bounds
+```
+
+El código sigue desactivado en Android. `widescreen-bounds-default-regression.json`
+comprueba que los valores por defecto conservan el resultado del control anterior.
+`widescreen-bounds-expanded-regression.json` compara el ancho original con el
+ampliado: 30 capturas y centro final idénticos en el recorrido original. La prueba
+instrumentada posterior detectó cero entradas al filtro en ese recorrido: por
+ello estos resultados **no demuestran todavía el dibujo de objetos adicionales**.
+Se añadió `panorama-long-jumps.csv` para investigar un recorrido distinto; no se
+considera una prueba de cobertura solo por terminar sin errores.
+
+Resultado del segundo recorrido: `widescreen-long-jumps-regression.json` pasa
+la comparación de 18.000 fotogramas (30 capturas y centro final idénticos).
+Registra 1.568 accesos no mapeados en ambos lados, con las mismas direcciones y
+valores, frente a 448 del primer recorrido. No son fallos nuevos del parche,
+pero siguen pendientes de explicación. `widescreen-bounds-coverage.json`
+confirma cero llamadas observadas a `0804CE1C` en ambos recorridos: el parche
+está preparado y compilado, pero su efecto de ampliar objetos no está validado.
+No se debe activar en una entrega Android basándose en estas pruebas.
