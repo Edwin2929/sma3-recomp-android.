@@ -15,7 +15,8 @@ const uint8_t* registers = nullptr;
 unsigned image_rows[2]{};
 bool gameplay = false;
 ObjectPositions positions;
-ObjectPositions submitted;
+std::array<ObjectPositions,3> submissions;
+unsigned submission_count=0;
 uint64_t epoch=~uint64_t(0);
 
 uint32_t read(uint32_t address, unsigned width) {
@@ -45,7 +46,10 @@ void object_submission(uint32_t pc) {
     // Observe completed staging immediately before compaction. Frame-start
     // staging can already belong to the next frame. Never alter guest state.
     memory=gbarecomp::active_bus();
-    resolve_object_positions(read,submitted,false);
+    submissions[2]=submissions[1];
+    submissions[1]=submissions[0];
+    resolve_object_positions(read,submissions[0],false);
+    if(submission_count<submissions.size()) ++submission_count;
 }
 bool object_matches(int index, uint16_t a0, uint16_t a1, uint16_t a2) {
     if (!gameplay || index<0 || index>=128) return false;
@@ -74,7 +78,7 @@ int tile(int layer, int x, int y, uint16_t* output) {
 
 void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (!info) return;
-    if (epoch!=info->state_epoch) { submitted={}; epoch=info->state_epoch; }
+    if (epoch!=info->state_epoch) { submissions={}; submission_count=0; epoch=info->state_epoch; }
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
         g_runtime_fn_entry_hook=object_submission;
     memory=gbarecomp::active_bus();
@@ -97,13 +101,14 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     gba::g_ws_pillarbox=gameplay ? 0 : 1;
     positions={};
     unsigned matched=0;
+    int submission_age=-1;
     if (gameplay && g_runtime_fn_entry_hook==object_submission) {
-        for(unsigned i=0;i<positions.size();++i) {
-            const auto& p=submitted[i];
-            const unsigned a=0x07000000+i*8;
-            if(p.valid && p.a0==read(a,2) && p.a1==read(a+2,2) && p.a2==read(a+4,2)) {
-                positions[i]=p; ++matched;
-            }
+        for(unsigned age=0;age<submission_count;++age) {
+            if(!matches_display(read,submissions[age])) continue;
+            positions=submissions[age];
+            submission_age=int(age);
+            for(const auto& p:positions) if(p.valid) ++matched;
+            break;
         }
     }
     gba::g_ws_obj_x_provider=nullptr;
@@ -113,8 +118,8 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (info && (info->frame_count==7200 || info->frame_count==8000 ||
                  info->frame_count==9599 || info->frame_count==12000 ||
                  info->frame_count==16000 || info->frame_count==17999)) {
-        std::fprintf(stderr,"[sma3:wide] frame=%llu matched_object_positions=%u\n",
-            static_cast<unsigned long long>(info->frame_count),matched);
+        std::fprintf(stderr,"[sma3:wide] frame=%llu matched_object_positions=%u submission_age=%d\n",
+            static_cast<unsigned long long>(info->frame_count),matched,submission_age);
     }
 }
 }

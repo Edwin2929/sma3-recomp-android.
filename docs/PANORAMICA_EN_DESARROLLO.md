@@ -124,3 +124,35 @@ Objetos resueltos en los fotogramas 7200, 8000, 9599, 12000, 16000 y 17999:
 6, 6, 1, 3, 3 y 3 respectivamente. **La cobertura sigue siendo parcial.**
 Esto valida la ausencia de cambios observados en ese recorrido, no todos los
 objetos ni todas las transiciones. No se ha generado un APK panorámico.
+
+## Selección coherente de OAM
+
+Ahora se compara la lista completa de atributos con OAM antes de aceptar sus
+coordenadas. Se conservan hasta tres envíos recientes, se elige un único envío
+completo y se vacía el historial al cambiar la época del estado. No se mezclan
+coincidencias de objetos de distintos envíos. Los atributos de objetos sin
+coordenadas verificadas también intervienen en la comprobación; esos objetos
+siguen recortados a la vista original.
+
+`validation/widescreen-coherent-regression.json` registra 18.000 fotogramas:
+30 capturas idénticas al control, centro final idéntico, despacho nativo sin
+fallos y los mismos 448 accesos no mapeados heredados. En las seis muestras se
+eligió el envío más reciente; este recorrido no demuestra que los otros dos
+sean necesarios. La prueba independiente comprueba además el rechazo de una
+lista con un atributo discordante.
+
+| Fotograma | Objetos OAM activos | Posiciones verificadas |
+| --- | ---: | ---: |
+| 7200 | 23 | 6 |
+| 8000 | 17 | 6 |
+| 9599 | 16 | 1 |
+| 12000 | 10 | 3 |
+| 16000 | 10 | 3 |
+| 17999 | 10 | 3 |
+
+Una prueba adicional observando X/Y en `080007A8` antes de dibujar produjo la
+misma cobertura en las seis muestras. Se descartó ese añadido por no resolver
+los objetos restantes. Los activos incluyen componentes de personajes y HUD;
+no todos deben extenderse a los márgenes. Queda identificar sus rutinas de
+dibujo y ampliar los límites de los objetos pequeños y de aparición, después
+validar transiciones y Android. La panorámica todavía no está lista para un APK.
