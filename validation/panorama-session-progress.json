@@ -1,0 +1,96 @@
+{
+  "scope": "Native TCP input and private savestate investigation; not Android or full-game validation",
+  "initial_frame": 6000,
+  "sessions": [
+    {
+      "name": "close-dialog",
+      "frames_requested": 600,
+      "final_frame": 6599,
+      "final_player_xy_velocity": [
+        135.25,
+        1888.99609375,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "jumps",
+      "frames_requested": 510,
+      "final_frame": 7109,
+      "final_player_xy_velocity": [
+        706.30859375,
+        1821.296875,
+        0.375,
+        4.0
+      ]
+    },
+    {
+      "name": "flutter",
+      "frames_requested": 610,
+      "final_frame": 7719,
+      "final_player_xy_velocity": [
+        736.99609375,
+        1850.99609375,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "flutter-reset",
+      "frames_requested": 312,
+      "final_frame": 8031,
+      "final_player_xy_velocity": [
+        736.99609375,
+        1850.99609375,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "backtrack",
+      "frames_requested": 184,
+      "final_frame": 8215,
+      "final_player_xy_velocity": [
+        621.0,
+        1765.19921875,
+        1.3984375,
+        0.171875
+      ]
+    },
+    {
+      "name": "cross-hill",
+      "frames_requested": 318,
+      "final_frame": 8533,
+      "final_player_xy_velocity": [
+        736.99609375,
+        1850.99609375,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "hill-launch",
+      "frames_requested": 250,
+      "final_frame": 8783,
+      "final_player_xy_velocity": [
+        860.1328125,
+        1784.18359375,
+        2.5,
+        2.59375
+      ]
+    },
+    {
+      "name": "advance",
+      "frames_requested": 1580,
+      "final_frame": 10363,
+      "final_player_xy_velocity": [
+        992.99609375,
+        1888.99609375,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "bounds_filter_exercised": false,
+  "new_apk": false
+}

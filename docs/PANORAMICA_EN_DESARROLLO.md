@@ -194,3 +194,27 @@ pero siguen pendientes de explicación. `widescreen-bounds-coverage.json`
 confirma cero llamadas observadas a `0804CE1C` en ambos recorridos: el parche
 está preparado y compilado, pero su efecto de ampliar objetos no está validado.
 No se debe activar en una entrega Android basándose en estas pruebas.
+
+## Pruebas cortas desde estados guardados
+
+`validation/run_panorama_session.py` inicia su propio servidor de diagnóstico
+local, carga un estado privado y aplica una lista acotada de entradas. Valida
+los hashes de ROM/BIOS, permite como máximo 6.000 fotogramas por sesión y guarda
+una captura y posición de Yoshi por acción, además del estado final. Cierra su
+proceso al terminar o fallar. Los archivos de salida deben permanecer privados.
+Requiere Python y Pillow, además del ejecutable Linux compilado.
+
+```sh
+python3 validation/run_panorama_session.py --rom /ruta/juego.gba --bios /ruta/bios.bin --state /ruta/estado.state --actions validation/panorama-hill-route.json --output /ruta/nueva
+```
+
+El estado privado inicial se obtuvo mediante las entradas originales hasta el
+fotograma 6000, durante el mensaje inicial. Las sesiones cortas verificaron que
+A produce el salto y que retroceder permite tomar altura en la pendiente.
+`panorama-session-progress.json` conserva sus resultados: se alcanzó X≈860,
+superando el tramo previo, y después X≈993, donde falta resolver otro desnivel.
+`panorama-hill-route.json` reúne las acciones realizadas hasta X≈860; incluye
+intentos fallidos conservados para investigación. Las sesiones se ejecutaron
+por segmentos con restauraciones entre ellos; la lista concatenada todavía no
+ha sido reproducida de una sola vez. No demuestra un recorrido completo, la
+activación del filtro de objetos pequeños ni funcionamiento en Android.
