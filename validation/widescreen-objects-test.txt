@@ -1,0 +1,1 @@
+PASS: OAM compaction, signed X ambiguity, mismatches, reset and capacity

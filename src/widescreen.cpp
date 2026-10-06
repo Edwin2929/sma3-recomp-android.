@@ -1,6 +1,9 @@
 #include "widescreen.h"
 #include "widescreen_tiles.h"
+#include "widescreen_objects.h"
+#include <cstdio>
 #include "runtime_bus_bridge.h"
+#include "runtime_arm.h"
 #include "gba_bus.h"
 #include "gba_ppu.h"
 #include <cstddef>
@@ -11,6 +14,9 @@ const gba::GbaBus* memory = nullptr;
 const uint8_t* registers = nullptr;
 unsigned image_rows[2]{};
 bool gameplay = false;
+ObjectPositions positions;
+ObjectPositions submitted;
+uint64_t epoch=~uint64_t(0);
 
 uint32_t read(uint32_t address, unsigned width) {
     if (!memory || (width != 1 && width != 2 && width != 4)) return 0;
@@ -21,6 +27,8 @@ uint32_t read(uint32_t address, unsigned width) {
         bytes=memory->ewram_ptr(); offset=address-0x02000000; size=0x40000;
     } else if (address >= 0x03000000 && address < 0x03008000) {
         bytes=memory->iwram_ptr(); offset=address-0x03000000; size=0x8000;
+    } else if (address >= 0x07000000 && address < 0x07000400) {
+        bytes=memory->oam_ptr(); offset=address-0x07000000; size=0x400;
     } else if (address >= 0x08000000 && address < 0x08400000) {
         bytes=memory->rom_ptr(); offset=address-0x08000000; size=memory->rom_size();
     }
@@ -31,6 +39,26 @@ uint32_t read(uint32_t address, unsigned width) {
 }
 uint16_t reg(unsigned offset) {
     return uint16_t(registers[offset] | (unsigned(registers[offset+1]) << 8));
+}
+void object_submission(uint32_t pc) {
+    if (pc!=0x080004a0 || g_cpu.R[0]!=0x03005a00 || g_cpu.R[1]!=0x0201a800) return;
+    // Observe completed staging immediately before compaction. Frame-start
+    // staging can already belong to the next frame. Never alter guest state.
+    memory=gbarecomp::active_bus();
+    resolve_object_positions(read,submitted,false);
+}
+bool object_matches(int index, uint16_t a0, uint16_t a1, uint16_t a2) {
+    if (!gameplay || index<0 || index>=128) return false;
+    const auto& p=positions[index];
+    return p.valid && p.a0==a0 && p.a1==a1 && p.a2==a2;
+}
+int object_x(int index,uint16_t a0,uint16_t a1,uint16_t a2,int* output) {
+    if (!output || !object_matches(index,a0,a1,a2)) return 0;
+    *output=positions[index].x;
+    return 1;
+}
+int object_clip(int index,uint16_t a0,uint16_t a1,uint16_t a2) {
+    return object_matches(index,a0,a1,a2) ? 0 : 1;
 }
 int tile(int layer, int x, int y, uint16_t* output) {
     if (!gameplay || !registers || layer<0 || layer>3 || !output) return gba::kWsTilemapUnavailable;
@@ -45,6 +73,10 @@ int tile(int layer, int x, int y, uint16_t* output) {
 }
 
 void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
+    if (!info) return;
+    if (epoch!=info->state_epoch) { submitted={}; epoch=info->state_epoch; }
+    if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
+        g_runtime_fn_entry_hook=object_submission;
     memory=gbarecomp::active_bus();
     registers=info && info->io_size>=0x60 ? info->io : nullptr;
     gameplay=memory && registers && info->view_width<=356 &&
@@ -63,11 +95,26 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     gba::g_ws_tilemap_provider=tile;
     gba::g_ws_authored_margin_layers=0;
     gba::g_ws_pillarbox=gameplay ? 0 : 1;
-    // Deliberately isolate scenery diagnostics. Raw OAM X is ambiguous beyond
-    // 255; guessing moves off-screen sprites into the opposite margin. The
-    // previous metadata candidate did not match captured OAM and is rejected.
+    positions={};
+    unsigned matched=0;
+    if (gameplay && g_runtime_fn_entry_hook==object_submission) {
+        for(unsigned i=0;i<positions.size();++i) {
+            const auto& p=submitted[i];
+            const unsigned a=0x07000000+i*8;
+            if(p.valid && p.a0==read(a,2) && p.a1==read(a+2,2) && p.a2==read(a+4,2)) {
+                positions[i]=p; ++matched;
+            }
+        }
+    }
     gba::g_ws_obj_x_provider=nullptr;
-    gba::g_ws_obj_attr_x_provider=nullptr;
-    gba::g_ws_obj_native_clip=1;
+    gba::g_ws_obj_attr_x_provider=object_x;
+    gba::g_ws_obj_native_clip=0;
+    gba::g_ws_obj_native_clip_provider=object_clip;
+    if (info && (info->frame_count==7200 || info->frame_count==8000 ||
+                 info->frame_count==9599 || info->frame_count==12000 ||
+                 info->frame_count==16000 || info->frame_count==17999)) {
+        std::fprintf(stderr,"[sma3:wide] frame=%llu matched_object_positions=%u\n",
+            static_cast<unsigned long long>(info->frame_count),matched);
+    }
 }
 }

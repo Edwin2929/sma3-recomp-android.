@@ -5,8 +5,9 @@ import hashlib,subprocess,sys,tempfile
 engine=Path(sys.argv[1]).resolve();root=Path(__file__).resolve().parents[1]
 expected='e7728148c6829ba526f682876430a0c9022dc6c0'
 if subprocess.check_output(['git','-C',str(engine),'rev-parse','HEAD'],text=True).strip()!=expected:raise SystemExit('SMA3 requires GBARecomp commit '+expected)
-patches=[root/'patches'/('gbarecomp-'+n+'.patch') for n in ['interpolation','controls','localization','touch-design']]
+patches=[root/'patches'/('gbarecomp-'+n+'.patch') for n in ['interpolation','controls','localization','touch-design','widescreen-objects']]
 paths=['src/runtime/'+n for n in ['host_platform.cpp','host_platform.h','host_window.cpp','runtime.cpp']]
+paths += ['src/gba/gba_ppu.h','src/gba/gba_ppu.cpp']
 def snapshot(folder):return tuple(hashlib.sha256((folder/p).read_bytes()).digest() for p in paths)
 # Later patches may overlap earlier reverse-check context. Reconstruct each
 # recognized state rather than relying on independent reverse checks.

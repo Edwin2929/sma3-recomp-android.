@@ -1,0 +1,50 @@
+--- a/src/gba/gba_ppu.h
++++ b/src/gba/gba_ppu.h
+@@ -275,6 +275,10 @@
+ // providers above run first and may re-place known-safe sprites. Default 0
+ // keeps the established expanded-viewport OBJ test.
+ extern "C" int g_ws_obj_native_clip;
++// Per-object fallback: keep unresolved objects faithful in the native center,
++// while allowing objects with verified full positions into authored margins.
++extern "C" int (*g_ws_obj_native_clip_provider)(int oam_index, uint16_t attr0,
++                                                uint16_t attr1, uint16_t attr2);
+ 
+ // Read-only, game-authored OBJ coverage for expanded margins. RGB555 bit 15
+ // marks a transparent pixel. Priority uses the hardware 0..3 BG/OBJ order.
+--- a/src/gba/gba_ppu.cpp
++++ b/src/gba/gba_ppu.cpp
+@@ -48,6 +48,7 @@
+ // still run first, so a game can re-place known-safe HUD sprites and clip the
+ // rest.
+ extern "C" int g_ws_obj_native_clip = 0;
++extern "C" int (*g_ws_obj_native_clip_provider)(int, uint16_t, uint16_t, uint16_t) = nullptr;
+ extern "C" const WsMarginObjPixel* (*g_ws_obj_margin_provider)(int, int*, int*) = nullptr;
+ 
+ namespace {
+@@ -1870,12 +1871,15 @@
+             // into the next priority's BG band.
+             int key = priority * 256 + idx;
+             bool obj_target2 = (second_targets & (1u << 4)) != 0;
++            const bool native_clip = g_ws_obj_native_clip ||
++                (g_ws_obj_native_clip_provider &&
++                 g_ws_obj_native_clip_provider(idx, attr0, attr1, attr2));
+             auto emit_obj = [&](int tex_x, int tex_y, int screen_x) {
+                 if (screen_x < 0 || screen_x >= static_cast<int>(out_w)) return;
+                 // Opt-in policy: hardware-faithful OBJ placement only within
+                 // the native viewport; margin columns never show sprites the
+                 // guest believed were off-screen.
+-                if (g_ws_obj_native_clip &&
++                if (native_clip &&
+                     (screen_x < static_cast<int>(ox) ||
+                      screen_x >= static_cast<int>(ox) + static_cast<int>(kVanW)))
+                     return;
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -1282,6 +1282,7 @@
+     gba::g_ws_obj_x_provider = nullptr;
+     gba::g_ws_obj_attr_x_provider = nullptr;
+     gba::g_ws_obj_native_clip = 0;
++    gba::g_ws_obj_native_clip_provider = nullptr;
+     gba::g_ws_obj_margin_provider = nullptr;
+     gba::g_ws_bg_x_provider = nullptr;
+     gba::g_ws_bg_x_provider_layers = 0xFu;

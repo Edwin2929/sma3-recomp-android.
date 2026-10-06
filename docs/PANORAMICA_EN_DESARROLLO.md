@@ -27,24 +27,35 @@ La imagen ampliada mostró terreno adicional y su centro de 240 × 160 coincidi�
 píxel a píxel con el control. La reconstrucción coincidió con 600 muestras por
 capa en los fotogramas 7200, 8000 y 9599 del recorrido del tutorial.
 
-La prueba posterior de 18.000 fotogramas terminó con los mismos tres contadores
-de despacho a cero, pero **registró `unmapped=448`**. Falta compararla con un
-control equivalente; no se considera una prueba de estabilidad aprobada.
-Las capturas temporales de esas sesiones no se incluyen en el repositorio.
+La comparación nueva de 18.000 fotogramas enfrenta un control de 240 × 160
+con el prototipo de 356 × 160 usando la misma partida nueva y las mismas entradas.
+El informe `validation/widescreen-regression-before-sync.json` conserva el
+resultado anterior a la sincronización de objetos: las 30 capturas de memoria
+coinciden byte a byte y el centro de la imagen final coincide píxel a píxel.
+Los dos recorridos registran exactamente los mismos 448 accesos no mapeados,
+con las mismas direcciones y valores. Esto demuestra que esos avisos no fueron
+introducidos por el dibujo ampliado en este recorrido; no demuestra que sean
+inofensivos ni valida el juego completo.
 
-La versión del código guardada aquí incorpora una corrección conservadora:
-limita los objetos a la vista original durante el diagnóstico del terreno.
-Por tanto, las observaciones anteriores no equivalen a validar este código
-completo en Android. La prueba actual independiente del decodificador supera
-16 casos de bloques, límites y volteos, además de entradas inválidas, con
-AddressSanitizer y UndefinedBehaviorSanitizer. LeakSanitizer se desactiva porque
-el entorno de ejecución no permite inspeccionar los procesos que necesita.
+El resolvedor de objetos conserva los índices originales durante la compactación
+de OAM. Solo extiende objetos cuyos atributos y coordenadas completas coinciden;
+los demás conservan el recorte original. La lectura directa al comienzo del
+fotograma resultó insuficiente, porque la lista temporal puede estar preparando
+el siguiente. El observador de `080004A0` captura las posiciones antes de
+compactar, sin modificar registros ni memoria del juego. El consumidor vuelve
+a contrastar los atributos con OAM y descarta los datos al cambiar de época de
+estado. No sustituye otros observadores instalados por el motor.
+
+Las pruebas independientes cubren compactación con huecos, posiciones negativas,
+la ambigüedad +272/−240, datos discordantes, reinicio y capacidad de 128 objetos.
+Se ejecutan con AddressSanitizer y UndefinedBehaviorSanitizer. LeakSanitizer se
+desactiva por las limitaciones de inspección de procesos del entorno.
 
 ## Pendiente antes de entregar el APK
 
-1. Resolver las posiciones completas de los objetos. OAM conserva solo nueve
-   bits de X; interpretar todos los valores 256–319 como positivos puede mover
-   objetos ocultos al lado contrario. Se descartó esa suposición.
+1. Completar la cobertura de posiciones de objetos en todas las escenas.
+   La resolución por metadatos es conservadora: cualquier objeto no verificado
+   permanece limitado a la vista original.
 2. Ampliar y comprobar los límites de dibujo y aparición. No basta con ampliar
    el fondo: enemigos y coleccionables deben aparecer correctamente.
 3. Probar cambios de nivel, cuadros de texto, transformaciones, jefes y modos
@@ -70,9 +81,12 @@ SMA3 USA, SHA-1 `7352d2bd064d9ebaec579e264228aa21c7345b80`:
 | Búsqueda de objetos para aparecer | `08000868–08000914` | Escaneo de filas y columnas |
 | Límites de aparición | `0817209E`; lector `0804E710` | +288 / −48 originales |
 
-La zona `0202C8B0` parecía conservar coordenadas completas de OAM, pero no
-coincidió con ninguno de los diez objetos visibles de la captura examinada.
-No debe usarse como solución sin localizar primero su correspondencia real.
+`0202C8B0` conserva coordenadas completas por índice de la lista temporal
+`03005A00`, no por índice final de OAM. `080004A0` compacta 256 posiciones,
+omitiendo Y=160, hacia `0201A800`. La captura debe realizarse antes de esa
+compactación; leer la lista al comenzar el fotograma no garantiza sincronía.
+El límite de salida del resolvedor es 128 objetos. No amplía aún la aparición
+ni los límites de dibujo que aplica el propio juego.
 
 ## Reproducir
 
@@ -84,10 +98,29 @@ partidas, claves de firma ni archivos generados del juego.
 cmake -S . -B build -DSMA3_WIDESCREEN_DIAGNOSTICS=ON
 cmake --build build --target sma3_runner -j2
 python3 validation/run_widescreen_probe.py --rom /ruta/juego.gba --bios /ruta/bios.bin --output /ruta/prueba-nueva
-# Repetir con --generic y otra carpeta para obtener el control.
+# Para la comparación larga: usar --frames 18000 en ambos recorridos.
+# Control: --generic --width 240; candidato: --width 356.
+# Los avisos heredados hacen terminar el ejecutor con código 1; revisar el informe.
+python3 validation/compare_widescreen_runs.py /ruta/control /ruta/candidato --report /ruta/informe.json
 g++ -std=c++20 -Wall -Wextra -Werror -fsanitize=address,undefined -g validation/widescreen_tiles_test.cpp -o /tmp/widescreen_tiles_test
 ASAN_OPTIONS=detect_leaks=0 /tmp/widescreen_tiles_test
 ```
 
 Referencia de ingeniería: [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm),
 especialmente `LevelCode.asm`, `CodeStart.asm` y `SpriteShared08049E80.asm`.
+
+El parche `gbarecomp-widescreen-objects.patch` añade el recorte por objeto al motor.
+Sin el diagnóstico activado, su callback permanece nulo y no habilita panorámica
+en Android. El aplicador verifica la revisión del motor y rechaza cambios locales
+que no correspondan a una etapa reconocida de los parches.
+
+## Resultado del observador sincronizado
+
+`validation/widescreen-regression.json` registra otra comparación completa de
+18.000 fotogramas con el observador activo: 30 capturas idénticas al control,
+centro final idéntico y los mismos 448 avisos heredados. Los contadores de fallos
+de despacho, instrucciones interpretadas y reparación dinámica permanecen en cero.
+Objetos resueltos en los fotogramas 7200, 8000, 9599, 12000, 16000 y 17999:
+6, 6, 1, 3, 3 y 3 respectivamente. **La cobertura sigue siendo parcial.**
+Esto valida la ausencia de cambios observados en ese recorrido, no todos los
+objetos ni todas las transiciones. No se ha generado un APK panorámico.

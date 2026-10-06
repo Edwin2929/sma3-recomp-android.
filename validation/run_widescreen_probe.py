@@ -26,7 +26,7 @@ if any(a.output.iterdir()):p.error('Use a new empty output directory')
 env=os.environ.copy()
 for key in ('GBARECOMP_WS_WIP','GBARECOMP_WIDESCREEN','GBARECOMP_INPUT_RECORD'):env.pop(key,None)
 env.update(GBARECOMP_STRICT_STATIC='1',GBARECOMP_FORCE_INTERP='0',GBARECOMP_BIOS_HLE='0',
-           GBARECOMP_BIOS_SKIP_INTRO='1',SMA3_WIDE_PROBE_DIR=str(a.output.resolve()),
+           GBARECOMP_BIOS_SKIP_INTRO='1',GBARECOMP_LOG_UNMAPPED='1',SMA3_WIDE_PROBE_DIR=str(a.output.resolve()),
            SMA3_AUTHORED_WIDE='0' if a.generic else '1',
            GBARECOMP_INPUT_REPLAY=str(root/'validation/extended-gameplay.csv'))
 command=[str(root/'build/sma3_runner'),'--config',str(root/'runtime.toml'),
