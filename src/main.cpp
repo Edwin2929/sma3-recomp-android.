@@ -1,4 +1,8 @@
 #include <cstdlib>
+#ifdef SMA3_WIDESCREEN_DIAGNOSTICS
+#include "../validation/widescreen_probe.h"
+#include "widescreen.h"
+#endif
 #include "runtime.h"
 #include "runtime_arm.h"
 #include "localization.h"
@@ -18,6 +22,16 @@ int main(int argc, char** argv) {
     if (const char* lang = std::getenv("SMA3_LANGUAGE")) sma3::language.store(std::atoi(lang));
 #endif
     gbarecomp::RunOptions options;
+#ifdef SMA3_WIDESCREEN_DIAGNOSTICS
+    if (std::getenv("SMA3_WIDE_PROBE_DIR")) {
+        options.max_view_width = 356;
+        options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+            sma3_probe_frame(frame);
+            const char* authored = std::getenv("SMA3_AUTHORED_WIDE");
+            if (authored && authored[0] == '1') sma3::wide::frame(frame);
+        };
+    }
+#endif
     options.builtin_game_name = "SMA3 USA experimental recompilation";
     options.builtin_rom_sha1 = "7352d2bd064d9ebaec579e264228aa21c7345b80";
 #ifdef __ANDROID__
