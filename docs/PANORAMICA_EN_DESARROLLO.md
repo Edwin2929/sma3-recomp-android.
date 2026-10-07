@@ -268,3 +268,55 @@ en `validation/widescreen-provenance-coverage.json`.
 de estas tres capturas no demuestra todas las escenas, enemigos o efectos.
 Tampoco demuestra que el juego genere objetos fuera de sus límites originales;
 esa ampliación sigue siendo el paso 2. No se ha generado un APK panorámico.
+
+## Cobertura continua: interfaz, lengua y Toadies
+
+Se añadieron observadores específicos para distinguir el HUD, los indicadores
+limitados a la pantalla y los componentes de los mensajes. Esta clasificación
+requiere observar su rutina productora y comprobar los tres atributos finales;
+no depende únicamente del número de slot. Estos elementos conservan el recorte
+nativo, incluso si un metadato antiguo coincide accidentalmente con ellos.
+
+La revisión de **cada fotograma de juego normal admitido** detectó casos que
+no aparecían en las seis capturas anteriores. Se corrigieron:
+
+- El indicador para avanzar el mensaje (`080E9124`).
+- La punta horizontal y vertical de la lengua (`08042380`, `0804244C`).
+- Las piezas de los Toadies que se llevan a Baby Mario: posición base, traslación
+  de cada integrante, piezas compartidas y cambios de orientación (`0804F44A`,
+  `0804F51C`, `0804F5AC`).
+
+Los observadores de interfaz cubren además `0802D0CC`, `080DFDC2` y `080E98A0`.
+Los tests con ASan/UBSan incluyen reutilización de slots, plantillas truncadas,
+punteros fuera de rango, coordenadas negativas y traslaciones de objetos compuestos.
+Los resultados están en `widescreen-ui-test.txt` y `widescreen-components-test.txt`.
+
+Dos recorridos de 18.000 fotogramas aprobaron la comparación contra sus respectivos
+controles de 240 × 160: 30 capturas de memoria idénticas por recorrido y centro
+final idéntico píxel a píxel. Mantienen respectivamente 448 y 1.568 avisos de
+accesos no mapeados del control, sin fallos nuevos de despacho ni ejecución
+interpretada. Informes: `widescreen-components-regression.json` y
+`widescreen-components-jumps-regression.json`.
+
+| Cobertura de posiciones | Recorrido original | Recorrido con saltos |
+| --- | ---: | ---: |
+| Fotogramas con posiciones sin resolver antes de estas correcciones | 1.604 | 2.471 |
+| Fotogramas con posiciones sin resolver después | 44 | 170 |
+| Fotogramas con objetos sin resolver que pueden intersectar la pantalla verticalmente | 0 | 0 |
+| Fotogramas de juego admitido sin una lista coherente de objetos | 0 | 0 |
+
+Los 44 y 170 casos restantes son objetos fuera del área vertical visible.
+**Sus coordenadas X siguen sin resolverse** y mantienen el recorte original.
+El diagnóstico de visibilidad respeta el tamaño, el ajuste vertical de OAM y el
+doble tamaño afín; no cambia su dibujo ni los declara resueltos.
+
+`validation/report_object_coverage.py` genera el desglose y rechaza registros
+antiguos o incompletos. Los informes son `widescreen-visible-coverage.json` y
+`widescreen-visible-jumps-coverage.json`. El segundo recorrido atraviesa escenas
+no admitidas por el prototipo: las muestras 8000 y 16000 quedan fuera de esta
+cobertura y mantienen el comportamiento de bordes existente.
+
+Estos resultados cierran los casos visibles encontrados en ambos recorridos.
+**No completan el paso 1 para todo el juego:** quedan otros niveles, efectos y
+escenas por cubrir. No amplían por sí mismos los límites de aparición del juego,
+no prueban rendimiento en el Pixel 7 Pro y no constituyen un APK panorámico.

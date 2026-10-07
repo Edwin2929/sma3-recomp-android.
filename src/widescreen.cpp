@@ -2,6 +2,8 @@
 #include "widescreen_tiles.h"
 #include "widescreen_objects.h"
 #include "widescreen_strips.h"
+#include "widescreen_ui.h"
+#include "widescreen_components.h"
 #include "widescreen_bounds.h"
 #include <cstdlib>
 #include <cstdio>
@@ -22,6 +24,7 @@ std::array<ObjectPositions,3> submissions;
 unsigned submission_count=0;
 StagingPositions strips;
 StagingPositions emitted;
+StagingPositions screen_objects;
 uint64_t bounds_calls=0,bounds_extra_candidates=0;
 uint64_t epoch=~uint64_t(0);
 
@@ -48,6 +51,12 @@ uint16_t reg(unsigned offset) {
     return uint16_t(registers[offset] | (unsigned(registers[offset+1]) << 8));
 }
 void object_submission(uint32_t pc) {
+    if(pc==0x08042380 || pc==0x0804244c) { observe_tongue_tip(read,pc,g_cpu.R,strips);return; }
+    if(pc==0x0804f44a || pc==0x0804f51c || pc==0x0804f5ac) { observe_toadies(read,pc,g_cpu.R,strips);return; }
+
+    if(pc==0x0802d0cc || pc==0x080dfdc2 || pc==0x080e98a0 || pc==0x080e9124) {
+        observe_screen_objects(read,pc,g_cpu.R,screen_objects);return;
+    }
     if(pc==0x0804cab8 || pc==0x0804cb64) { observe_sprite_affine(read,g_cpu.R[0],strips);return; }
     if(pc==0x080d8cb4) { observe_sprite_bob(read,g_cpu.R[0],strips);return; }
     if(pc==0x080007a8) { observe_generic(read,g_cpu.R,emitted);return; }
@@ -82,9 +91,11 @@ void object_submission(uint32_t pc) {
         // Require the complete emitted attributes. Known animation changes
         // have their own observers; a partial match cannot authorize a slot.
         if(!p.valid && e.valid && e.a0==p.a0 && e.a1==p.a1 && e.a2==p.a2) p=e;
+        apply_screen_observation(p,screen_objects[p.source]);
     }
     strips={};
     emitted={};
+    screen_objects={};
     if(submission_count<submissions.size()) ++submission_count;
 }
 bool object_matches(int index, uint16_t a0, uint16_t a1, uint16_t a2) {
@@ -115,7 +126,7 @@ int tile(int layer, int x, int y, uint16_t* output) {
 void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (!info) return;
     if (epoch!=info->state_epoch) {
-        submissions={}; strips={}; emitted={}; submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
+        submissions={}; strips={}; emitted={}; screen_objects={}; submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
         epoch=info->state_epoch;
     }
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
@@ -143,16 +154,30 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     gba::g_ws_authored_margin_layers=0;
     gba::g_ws_pillarbox=gameplay ? 0 : 1;
     positions={};
-    unsigned matched=0;
+    unsigned matched=0,screen_matched=0,unresolved=0,visible_unresolved=0;
     int submission_age=-1;
     if (gameplay && g_runtime_fn_entry_hook==object_submission) {
         for(unsigned age=0;age<submission_count;++age) {
             if(!matches_display(read,submissions[age])) continue;
             positions=submissions[age];
             submission_age=int(age);
-            for(const auto& p:positions) if(p.valid) ++matched;
+            for(const auto& p:positions) {
+                if((p.a0&255)==160) continue;
+                if(p.screen_space) ++screen_matched;
+                else if(p.valid) ++matched;
+                else { ++unresolved; if(object_intersects_vertical(p.a0,p.a1)) ++visible_unresolved; }
+            }
             break;
         }
+    }
+    // Log gaps on every gameplay frame, not only the six memory samples.
+    // A missing coherent submission is a gap too, never an empty success.
+    if(gameplay && info && (submission_age<0 || unresolved)) {
+        std::fprintf(stderr,"[sma3:object-gap] frame=%llu coherent=%d unresolved=%u visible_unresolved=%u slots=",
+            static_cast<unsigned long long>(info->frame_count),int(submission_age>=0),unresolved,visible_unresolved);
+        for(const auto& p:positions)
+            if((p.a0&255)!=160 && !p.valid && !p.screen_space) std::fprintf(stderr,"%u,",p.source);
+        std::fprintf(stderr,"\n");
     }
     gba::g_ws_obj_x_provider=nullptr;
     gba::g_ws_obj_attr_x_provider=object_x;
@@ -161,8 +186,8 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (info && (info->frame_count==7200 || info->frame_count==8000 ||
                  info->frame_count==9599 || info->frame_count==12000 ||
                  info->frame_count==16000 || info->frame_count==17999)) {
-        std::fprintf(stderr,"[sma3:wide] frame=%llu matched_object_positions=%u submission_age=%d\n",
-            static_cast<unsigned long long>(info->frame_count),matched,submission_age);
+        std::fprintf(stderr,"[sma3:wide] frame=%llu matched_object_positions=%u submission_age=%d screen_objects=%u unresolved_objects=%u visible_unresolved_objects=%u\n",
+            static_cast<unsigned long long>(info->frame_count),matched,submission_age,screen_matched,unresolved,visible_unresolved);
         std::fprintf(stderr,"[sma3:bounds] calls=%llu extra_candidates=%llu bias=%u limit=%u\n",
             static_cast<unsigned long long>(bounds_calls),
             static_cast<unsigned long long>(bounds_extra_candidates),

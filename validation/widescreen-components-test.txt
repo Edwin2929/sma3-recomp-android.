@@ -1,0 +1,1 @@
+PASS: signed tongue tips, two orientations, compound sprite translation, shared components, flips and stale attributes

@@ -1,0 +1,65 @@
+{
+  "frames": 18000,
+  "samples": [
+    {
+      "frame": 7200,
+      "world_positions": 12,
+      "submission_age": 0,
+      "screen_objects": 11,
+      "unresolved_objects": 0,
+      "vertically_visible_unresolved_objects": 0
+    },
+    {
+      "frame": 8000,
+      "world_positions": 12,
+      "submission_age": 0,
+      "screen_objects": 5,
+      "unresolved_objects": 0,
+      "vertically_visible_unresolved_objects": 0
+    },
+    {
+      "frame": 9599,
+      "world_positions": 7,
+      "submission_age": 0,
+      "screen_objects": 9,
+      "unresolved_objects": 0,
+      "vertically_visible_unresolved_objects": 0
+    },
+    {
+      "frame": 12000,
+      "world_positions": 10,
+      "submission_age": 0,
+      "screen_objects": 0,
+      "unresolved_objects": 0,
+      "vertically_visible_unresolved_objects": 0
+    },
+    {
+      "frame": 16000,
+      "world_positions": 10,
+      "submission_age": 0,
+      "screen_objects": 0,
+      "unresolved_objects": 0,
+      "vertically_visible_unresolved_objects": 0
+    },
+    {
+      "frame": 17999,
+      "world_positions": 10,
+      "submission_age": 0,
+      "screen_objects": 0,
+      "unresolved_objects": 0,
+      "vertically_visible_unresolved_objects": 0
+    }
+  ],
+  "frames_with_unresolved_positions": 44,
+  "unresolved_slot_frame_counts": {
+    "57": 44
+  },
+  "frames_with_vertically_visible_unresolved_objects": 0,
+  "visible_gap_frames": [],
+  "frames_without_coherent_submission": [],
+  "visible_position_coverage_passed": true,
+  "supported_gameplay_only": true,
+  "samples_without_active_submission": [],
+  "step_1_complete_for_all_scenes": false,
+  "scope": "Object bounding boxes in this replay only. Vertically excluded objects retain unresolved X and native clipping. Does not prove full-game coverage, lateral spawning, Android readiness or performance."
+}

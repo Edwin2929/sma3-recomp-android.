@@ -1,0 +1,1 @@
+PASS: HUD templates, bounded indicator, message wrapping, sentinel and pointer limits, slot reuse rejection

@@ -3,8 +3,22 @@
 #include <cstdint>
 
 namespace sma3::wide {
-struct ObjectPosition { int x=0; bool valid=false; uint16_t a0=160,a1=0,a2=0; unsigned source=256; };
+struct ObjectPosition { int x=0; bool valid=false; uint16_t a0=160,a1=0,a2=0; unsigned source=256; bool screen_space=false; };
 using ObjectPositions=std::array<ObjectPosition,128>;
+
+// Visibility diagnostic only; never authorizes or changes a full X position.
+// Match the PPU's vertical wrap and affine double-size bounding box.
+inline bool object_intersects_vertical(uint16_t a0,uint16_t a1) {
+    if(!(a0&0x100) && (a0&0x200)) return false;
+    const unsigned shape=a0>>14,size=a1>>14;
+    if(shape>=3) return false;
+    constexpr unsigned heights[3][4]={{8,16,32,64},{8,8,16,32},{16,32,32,64}};
+    unsigned height=heights[shape][size];
+    if((a0&0x300)==0x300)height*=2;
+    int y=a0&255;
+    if(y>=160)y-=256;
+    return y<160 && y+int(height)>0;
+}
 
 // Sub080004A0 compacts 256 staging slots into packed OAM by skipping Y=160.
 // Metadata is indexed by the ORIGINAL staging slot, not the packed OAM slot.
