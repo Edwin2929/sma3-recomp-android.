@@ -1,6 +1,7 @@
 #include "widescreen.h"
 #include "widescreen_tiles.h"
 #include "widescreen_objects.h"
+#include "widescreen_strips.h"
 #include "widescreen_bounds.h"
 #include <cstdlib>
 #include <cstdio>
@@ -19,6 +20,8 @@ bool gameplay = false;
 ObjectPositions positions;
 std::array<ObjectPositions,3> submissions;
 unsigned submission_count=0;
+StagingPositions strips;
+StagingPositions emitted;
 uint64_t bounds_calls=0,bounds_extra_candidates=0;
 uint64_t epoch=~uint64_t(0);
 
@@ -45,6 +48,15 @@ uint16_t reg(unsigned offset) {
     return uint16_t(registers[offset] | (unsigned(registers[offset+1]) << 8));
 }
 void object_submission(uint32_t pc) {
+    if(pc==0x0804cab8 || pc==0x0804cb64) { observe_sprite_affine(read,g_cpu.R[0],strips);return; }
+    if(pc==0x080d8cb4) { observe_sprite_bob(read,g_cpu.R[0],strips);return; }
+    if(pc==0x080007a8) { observe_generic(read,g_cpu.R,emitted);return; }
+    if(pc==0x08042d28) { observe_yoshi(read,strips);return; }
+    if(pc==0x08041cbc) { observe_yoshi_affine(read,g_cpu.R[0],strips);return; }
+    if(pc==0x0804211c || pc==0x080421a8) {
+        observe_strip(read,pc,g_cpu.R,strips);
+        return;
+    }
     if(pc==0x0804ce1c) {
         ++bounds_calls;
         if(sma3_object_x_bias>16 && g_cpu.R[2]==0) {
@@ -62,6 +74,17 @@ void object_submission(uint32_t pc) {
     submissions[2]=submissions[1];
     submissions[1]=submissions[0];
     resolve_object_positions(read,submissions[0],false);
+    for(auto& p:submissions[0]) {
+        if(p.source>=strips.size()) continue;
+        const auto& s=strips[p.source];
+        if(s.valid && s.a0==p.a0 && s.a1==p.a1 && s.a2==p.a2) p=s;
+        const auto& e=emitted[p.source];
+        // Require the complete emitted attributes. Known animation changes
+        // have their own observers; a partial match cannot authorize a slot.
+        if(!p.valid && e.valid && e.a0==p.a0 && e.a1==p.a1 && e.a2==p.a2) p=e;
+    }
+    strips={};
+    emitted={};
     if(submission_count<submissions.size()) ++submission_count;
 }
 bool object_matches(int index, uint16_t a0, uint16_t a1, uint16_t a2) {
@@ -92,7 +115,7 @@ int tile(int layer, int x, int y, uint16_t* output) {
 void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (!info) return;
     if (epoch!=info->state_epoch) {
-        submissions={}; submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
+        submissions={}; strips={}; emitted={}; submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
         epoch=info->state_epoch;
     }
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
@@ -144,6 +167,10 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
             static_cast<unsigned long long>(bounds_calls),
             static_cast<unsigned long long>(bounds_extra_candidates),
             sma3_object_x_bias,sma3_object_x_limit);
+        for(unsigned i=0;i<positions.size();++i) {
+            const auto& p=positions[i];
+            if((p.a0&255)!=160) std::fprintf(stderr,"[sma3:object] slot=%u source=%u valid=%d x=%d a0=%04x a1=%04x a2=%04x\n",i,p.source,int(p.valid),p.x,p.a0,p.a1,p.a2);
+        }
     }
 }
 }

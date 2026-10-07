@@ -1,0 +1,74 @@
+{
+  "replay": "extended-gameplay.csv",
+  "frames": 18000,
+  "width": 356,
+  "object_bounds_enabled": false,
+  "samples": [
+    {
+      "frame": 7200,
+      "resolved_positions": 12,
+      "active_objects": 23,
+      "unresolved_source_slots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        28,
+        29,
+        30,
+        31,
+        32
+      ]
+    },
+    {
+      "frame": 8000,
+      "resolved_positions": 12,
+      "active_objects": 17,
+      "unresolved_source_slots": [
+        28,
+        29,
+        30,
+        31,
+        32
+      ]
+    },
+    {
+      "frame": 9599,
+      "resolved_positions": 7,
+      "active_objects": 16,
+      "unresolved_source_slots": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ]
+    },
+    {
+      "frame": 12000,
+      "resolved_positions": 10,
+      "active_objects": 10,
+      "unresolved_source_slots": []
+    },
+    {
+      "frame": 16000,
+      "resolved_positions": 10,
+      "active_objects": 10,
+      "unresolved_source_slots": []
+    },
+    {
+      "frame": 17999,
+      "resolved_positions": 10,
+      "active_objects": 10,
+      "unresolved_source_slots": []
+    }
+  ],
+  "step_1_complete": false,
+  "scope": "Sampled object position coverage only. Includes HUD and message objects. Does not establish complete scene coverage, offscreen spawning or Android readiness."
+}

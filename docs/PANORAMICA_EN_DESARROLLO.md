@@ -218,3 +218,53 @@ intentos fallidos conservados para investigación. Las sesiones se ejecutaron
 por segmentos con restauraciones entre ellos; la lista concatenada todavía no
 ha sido reproducida de una sola vez. No demuestra un recorrido completo, la
 activación del filtro de objetos pequeños ni funcionamiento en Android.
+
+## Posiciones durante animaciones — 7 de octubre de 2026
+
+El observador conserva ahora el índice de origen de cada objeto y registra
+las coordenadas completas de los componentes de Yoshi, sus dos emisores por
+franjas, el emisor genérico y los ayudantes de transformación afín. Reconstruye
+las posiciones a partir de los parámetros y las tablas de animación; no decide
+el signo de X a partir de los nueve bits de OAM. Las observaciones se descartan
+tras cada compactación y al restaurar un estado.
+
+Se corrigió además `080D8CB4`: después de la transformación afín, esa rutina
+ajusta Y según la escala. La predicción anterior dejaba de coincidir con el
+objeto real. El observador reproduce ese ajuste vertical y conserva la X
+verificada. Antes de admitir cualquier posición, exige que los tres atributos
+completos coincidan con la lista terminada y, después, con el fotograma mostrado.
+Los objetos no reconocidos conservan el recorte original.
+
+Rutinas cubiertas por los observadores:
+
+| Rutina | Observación |
+| --- | --- |
+| `08042D28` | Componentes de la animación de Yoshi y orientación |
+| `08041CBC` | Matriz afín y desplazamiento de doble tamaño de Yoshi |
+| `0804211C`, `080421A8` | Emisión de franjas de la animación |
+| `080007A8` | Coordenadas completas del emisor genérico |
+| `0804CAB8`, `0804CB64` | Objeto afín a partir de su ancla de pantalla |
+| `080D8CB4` | Ajuste vertical posterior según la escala |
+
+Pruebas independientes con ASan y UBSan: coordenadas negativas, ambigüedad
++272/−240, límites de slots, volteo, matrices, doble tamaño, ajuste vertical y
+rechazo de atributos que no coinciden. LeakSanitizer permanece desactivado por
+la limitación del entorno indicada arriba. Resultado en
+`validation/widescreen-provenance-test.txt`.
+
+La comparación final de 18.000 fotogramas conserva las 30 capturas de memoria,
+el centro de 240 × 160 píxel a píxel y los mismos 448 avisos de acceso no mapeado
+del control. Los contadores de fallos de despacho, instrucciones interpretadas
+y recuperación nativa permanecen en cero. Informe:
+`validation/widescreen-provenance-regression.json`.
+
+En los fotogramas 12000, 16000 y 17999 se verifican los 10 objetos activos,
+frente a 9 antes del ajuste vertical y 3 antes de observar las piezas de Yoshi.
+Las primeras tres muestras mantienen objetos sin resolver; entre ellos hay
+componentes del HUD y del mensaje inicial. El desglose sin datos del juego está
+en `validation/widescreen-provenance-coverage.json`.
+
+**El paso 1 sigue pendiente de cobertura completa.** Resolver todos los objetos
+de estas tres capturas no demuestra todas las escenas, enemigos o efectos.
+Tampoco demuestra que el juego genere objetos fuera de sus límites originales;
+esa ampliación sigue siendo el paso 2. No se ha generado un APK panorámico.

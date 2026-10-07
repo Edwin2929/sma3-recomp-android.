@@ -1,0 +1,1 @@
+PASS: signed generic positions, clipping, slot bounds, Yoshi offsets, facing, affine matrices, exact vertical animation and both strip emitters

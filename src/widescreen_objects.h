@@ -3,7 +3,7 @@
 #include <cstdint>
 
 namespace sma3::wide {
-struct ObjectPosition { int x=0; bool valid=false; uint16_t a0=160,a1=0,a2=0; };
+struct ObjectPosition { int x=0; bool valid=false; uint16_t a0=160,a1=0,a2=0; unsigned source=256; };
 using ObjectPositions=std::array<ObjectPosition,128>;
 
 // Sub080004A0 compacts 256 staging slots into packed OAM by skipping Y=160.
@@ -27,6 +27,7 @@ unsigned resolve_object_positions(Reader read, ObjectPositions& output, bool che
             && (unsigned(x)&511)==(a1&511) && (unsigned(y)&255)==(a0&255)) {
             output[packed]={x,true,uint16_t(a0),uint16_t(a1),uint16_t(a2)};++matched;
         }
+        output[packed].source=source;
         ++packed;
     }
     return matched;
