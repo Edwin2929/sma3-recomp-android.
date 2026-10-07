@@ -1,6 +1,20 @@
 #pragma once
 #include "widescreen_strips.h"
 namespace sma3::wide {
+// At 08084D92 the secondary component rewrites the generic emitter's XY.
+// Preserve world-minus-camera X before the guest masks it to nine OAM bits.
+template<class Reader>
+bool observe_secondary_component(Reader read,const uint32_t* r,StagingPositions& out) {
+    const unsigned address=r[4];
+    if(address<0x03005a00 || address>=0x03006200 || (address&7) ||
+       r[5]<0x03000000 || r[5]>0x03007f9c || r[6]!=r[5]+0x62)return false;
+    const unsigned slot=(address-0x03005a00)/8;
+    const int x=int16_t(uint16_t(read(r[6],2)-read(0x030069d4,2)));
+    out[slot]={x,true,uint16_t(r[3]),
+        uint16_t((read(address+2,2)&0xfe00)|(unsigned(x)&511)),
+        uint16_t(read(address+4,2)),slot};
+    return true;
+}
 template<class Reader>
 bool observe_tongue_tip(Reader read,uint32_t pc,const uint32_t* r,StagingPositions& out) {
     if((pc!=0x08042380 && pc!=0x0804244c) || r[4]>=256) return false;

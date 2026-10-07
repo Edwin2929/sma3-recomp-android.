@@ -33,5 +33,14 @@ int main() {
     check(sma3::wide::object_intersects_vertical(255,0));
     check(!sma3::wide::object_intersects_vertical(0x200,0));
     check(!sma3::wide::object_intersects_vertical(0xc000,0));
+    r[4]=0x03005b30;r[5]=0x03004000;r[6]=r[5]+0x62;r[3]=0x010a;
+    m[r[6]]=1272;m[0x030069d4]=1000;m[r[4]+2]=0xa000;m[r[4]+4]=0x296c;
+    check(sma3::wide::observe_secondary_component(read,r,out));
+    check(out[38].x==272 && out[38].a0==0x010a && out[38].a1==0xa110 && out[38].a2==0x296c);
+    m[r[6]]=760;check(sma3::wide::observe_secondary_component(read,r,out));
+    check(out[38].x==-240 && out[38].a1==0xa110);
+    ++r[4];check(!sma3::wide::observe_secondary_component(read,r,out));--r[4];
+    ++r[6];check(!sma3::wide::observe_secondary_component(read,r,out));--r[6];
+    r[4]=0x03006200;check(!sma3::wide::observe_secondary_component(read,r,out));
     std::cout<<"PASS: signed tongue tips, two orientations, compound sprite translation, shared components, flips and stale attributes\n";
 }

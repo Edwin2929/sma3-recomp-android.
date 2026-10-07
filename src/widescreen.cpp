@@ -51,6 +51,7 @@ uint16_t reg(unsigned offset) {
     return uint16_t(registers[offset] | (unsigned(registers[offset+1]) << 8));
 }
 void object_submission(uint32_t pc) {
+    if(pc==0x08084d92) { observe_secondary_component(read,g_cpu.R,strips);return; }
     if(pc==0x08042380 || pc==0x0804244c) { observe_tongue_tip(read,pc,g_cpu.R,strips);return; }
     if(pc==0x0804f44a || pc==0x0804f51c || pc==0x0804f5ac) { observe_toadies(read,pc,g_cpu.R,strips);return; }
 
