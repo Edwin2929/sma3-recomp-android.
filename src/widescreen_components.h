@@ -71,4 +71,21 @@ bool observe_toadies(Reader read,uint32_t pc,const uint32_t* r,StagingPositions&
     base.a1=uint16_t(first_a1^(read(child+28,2)<<11));
     return true;
 }
+// 080A4B0E: one of fourteen ring particles. X is the signed trigonometric
+// displacement plus the complete sprite anchor; capture it before OAM masking.
+template<class Reader>
+bool observe_ring_particle(Reader read,const uint32_t* r,StagingPositions& out) {
+    const unsigned a=r[3];
+    if(a<0x03005a00 || a>=0x03006200 || (a&7) || r[4]>255 ||
+       r[12]!=0x081af74e || r[13]<0x03000000 || r[13]>0x03007ffc ||
+       (r[13]&3) || r[5]<0x08000000 || r[5]>=0x08400000)return false;
+    const int wave=int16_t(read(r[12]+r[4]*2,2));
+    const int displacement=int32_t(uint32_t(wave)*read(r[13],4))>>9;
+    const int x=int32_t(uint32_t(displacement)+r[9]);
+    const unsigned slot=(a-0x03005a00)/8;
+    out[slot]={x,true,uint16_t(read(a,2)),uint16_t(unsigned(x)&511),
+        uint16_t(read(r[5],1)|(r[4]&128?0x3800:0x3400)),slot};
+    return true;
+}
+
 }

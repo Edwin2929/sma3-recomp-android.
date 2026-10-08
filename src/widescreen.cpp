@@ -4,6 +4,7 @@
 #include "widescreen_strips.h"
 #include "widescreen_ui.h"
 #include "widescreen_components.h"
+#include "widescreen_car.h"
 #include "widescreen_rotating.h"
 #include "widescreen_bounds.h"
 #include <cstdlib>
@@ -52,6 +53,9 @@ uint16_t reg(unsigned offset) {
     return uint16_t(registers[offset] | (unsigned(registers[offset+1]) << 8));
 }
 void object_submission(uint32_t pc) {
+    if(pc==0x080424f0) { observe_car_body_copy(read,strips);return; }
+    if(pc==0x08042608 || pc==0x0804273e) { observe_car_supports(read,pc,g_cpu.R,strips);return; }
+    if(pc==0x080a4b0e) { observe_ring_particle(read,g_cpu.R,strips);return; }
     if(pc==0x0809d49e) { observe_offset_affine(read,g_cpu.R,strips);return; }
     if(pc==0x08063b52 || pc==0x08063d32) { observe_scaled_component(read,g_cpu.R,strips,pc);return; }
     if(pc==0x0809e324) { observe_rotating_position(read,g_cpu.R,strips);return; }

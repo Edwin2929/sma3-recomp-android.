@@ -42,5 +42,16 @@ int main() {
     ++r[4];check(!sma3::wide::observe_secondary_component(read,r,out));--r[4];
     ++r[6];check(!sma3::wide::observe_secondary_component(read,r,out));--r[6];
     r[4]=0x03006200;check(!sma3::wide::observe_secondary_component(read,r,out));
+    r[3]=0x03005a00;r[4]=0;r[5]=0x081770c4;r[12]=0x081af74e;r[13]=0x03007f00;
+    m[r[3]]=128;m[r[5]]=0x84;m[r[12]]=uint16_t(-256);m[r[13]]=64;r[9]=0;
+    check(sma3::wide::observe_ring_particle(read,r,out));
+    check(out[0].x==-32 && out[0].a1==480 && out[0].a0==128 && out[0].a2==0x3484);
+    r[9]=512;check(sma3::wide::observe_ring_particle(read,r,out));
+    check(out[0].x==480 && out[0].a1==480);
+    r[4]=128;m[r[12]+256]=256;r[9]=0;
+    check(sma3::wide::observe_ring_particle(read,r,out));
+    check(out[0].x==32 && out[0].a2==0x3884);
+    ++r[3];check(!sma3::wide::observe_ring_particle(read,r,out));--r[3];
+    r[4]=256;check(!sma3::wide::observe_ring_particle(read,r,out));
     std::cout<<"PASS: signed tongue tips, two orientations, compound sprite translation, shared components, flips and stale attributes\n";
 }
