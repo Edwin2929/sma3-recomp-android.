@@ -1,4 +1,5 @@
 #include "../src/widescreen_rotating.h"
+#include "../src/widescreen_ui.h"
 #include <map>
 #include <stdexcept>
 #include <iostream>
@@ -45,6 +46,14 @@ int main() {
     check(sma3::wide::observe_scaled_component(read,r,out) && out[0].x==-32);
     m[a+2]=200;check(!sma3::wide::observe_scaled_component(read,r,out));
     m[s+0x34]=4;check(!sma3::wide::observe_scaled_component(read,r,out));
+    m[s+0x34]=0;m[a]=160;m[a+2]=0;r[0]=152;r[1]=0;r[7]=s;
+    check(sma3::wide::observe_scaled_component(read,r,out));
+    check(!out[0].valid && out[0].screen_space && out[0].a0==0x398 && out[0].a1==0x83f0);
+    auto candidate=out[0];candidate.valid=true;candidate.screen_space=false;
+    sma3::wide::apply_screen_observation(candidate,out[0]);
+    check(!candidate.valid && candidate.screen_space);
+    candidate=out[0];candidate.valid=true;candidate.screen_space=false;++candidate.a2;
+    sma3::wide::apply_screen_observation(candidate,out[0]);check(candidate.valid);
     r[10]=s;r[7]=s+0x76;m[s+0x34]=0;r[5]=a+16;
     r[4]=160;r[0]=6;r[9]=0;m[s+0x20]=uint16_t(-16);
     m[a+18]=0x8000;m[a+20]=0x194;m[0x030069d2]=2;

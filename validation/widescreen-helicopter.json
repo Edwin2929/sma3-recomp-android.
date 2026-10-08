@@ -1,0 +1,54 @@
+{
+  "level_id": 1,
+  "sublevel_ids": [
+    59
+  ],
+  "frames": 4260,
+  "central_images_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "sampled_game_states": [
+    13
+  ],
+  "supported_gameplay_only": true,
+  "sampled_transformations": [
+    0,
+    6
+  ],
+  "transformation_sequence": [
+    0,
+    6,
+    0
+  ],
+  "compared_state_sections": [
+    "CPU0",
+    "BUS0",
+    "IO_0",
+    "AUD0",
+    "SAV0",
+    "META"
+  ],
+  "bus_exception": "Inactive RTC wall-clock seconds only (8 bytes)",
+  "viewport_state_compared": false,
+  "visible_unresolved_frames": 0,
+  "incoherent_frames": 0,
+  "raw_gap_frames": 0,
+  "differential_pass": true,
+  "coverage_pass": true,
+  "synthetic_entry": true,
+  "scope": "Bounded session only; does not qualify full levels, bosses, all transformations or Android"
+}

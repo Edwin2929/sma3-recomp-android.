@@ -43,11 +43,19 @@ bool observe_scaled_component(Reader read,const uint32_t* r,StagingPositions& ou
     const unsigned allocation=read(sprite+0x34,2);
     if((allocation&3) || allocation>=1024 || a!=0x03005a00+allocation*2)return false;
     const unsigned a1=read(a+2,2),slot=allocation/4;
+    const auto a0=uint16_t(pc==0x08063b52?(r[1]|(r[0]&255)|0x300):(r[1]|r[0]));
+    const auto final_a1=uint16_t(0x8000|((read(0x030069d2,2)&31)<<9)|((a1-16)&511));
+    // This routine can modify a cleared, unemitted slot during entry. Its zero
+    // X is a staging sentinel, not a world coordinate. Preserve native clipping
+    // only for this producer and these exact final attributes.
+    if(read(a,2)==160 && a1==0) {
+        out[slot]={0,false,a0,final_a1,uint16_t(read(a+4,2)),slot,true};
+        return true;
+    }
     const int anchor=int16_t(read(sprite+0x20,2));
     const int offset=int(((a1-(unsigned(anchor)&511)+256)&511))-256;
     if(offset< -64 || offset>64)return false;
-    out[slot]={anchor+offset-16,true,uint16_t(pc==0x08063b52?(r[1]|(r[0]&255)|0x300):(r[1]|r[0])),
-        uint16_t(0x8000|((read(0x030069d2,2)&31)<<9)|((a1-16)&511)),
+    out[slot]={anchor+offset-16,true,a0,final_a1,
         uint16_t(read(a+4,2)),slot};
     return true;
 }

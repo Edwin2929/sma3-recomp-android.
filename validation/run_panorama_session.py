@@ -44,7 +44,7 @@ with (a.output/'run.log').open('w') as log:
    raw=bytes.fromhex(command(cmd='read_iwram',addr=0x03006d80,len=16)['data'])
    row=dict(action=action,frame=r['frame'],player_xy_velocity=[v/256 for v in struct.unpack('<iiii',raw)])
    ram=bytes.fromhex(command(cmd='read_iwram',addr=0x03000000,len=0x8000)['data'])
-   row.update(level_id=struct.unpack_from('<H',ram,0x6288)[0],sublevel_id=struct.unpack_from('<H',ram,0x4cb8)[0],game_state=ram[0x6b05])
+   row.update(level_id=struct.unpack_from('<H',ram,0x6288)[0],sublevel_id=struct.unpack_from('<H',ram,0x4cb8)[0],game_state=ram[0x6b05],transformation=struct.unpack_from('<H',ram,0x6db2)[0])
    results.append(row);print(json.dumps(row),flush=True)
    shot=command(cmd='screenshot')
    Image.frombytes('RGB',(shot['w'],shot['h']),bytes.fromhex(shot['data'])).save(a.output/f'step-{i:03}.png')

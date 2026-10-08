@@ -97,6 +97,7 @@ void object_submission(uint32_t pc) {
         // Require the complete emitted attributes. Known animation changes
         // have their own observers; a partial match cannot authorize a slot.
         if(!p.valid && e.valid && e.a0==p.a0 && e.a1==p.a1 && e.a2==p.a2) p=e;
+        apply_screen_observation(p,s);
         apply_screen_observation(p,screen_objects[p.source]);
     }
     strips={};

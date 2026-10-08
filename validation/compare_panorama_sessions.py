@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Compare bounded private sessions. Publish only the aggregate JSON, not assets."""
 import argparse,json,re
+from itertools import groupby
 from pathlib import Path
 from PIL import Image
 from make_level_fixture import sections
@@ -42,10 +43,12 @@ def compare(control,candidate):
     return dict(level_id=left[0]['level_id'],sublevel_ids=sorted({x['sublevel_id'] for x in left}),
         frames=sum(x['action']['n'] for x in left),central_images_equal=centers,
         sampled_game_states=sorted({x['game_state'] for x in left}),supported_gameplay_only=True,
+        sampled_transformations=sorted({x['transformation'] for x in left if 'transformation' in x}),
+        transformation_sequence=[key for key,group in groupby(x['transformation'] for x in left if 'transformation' in x)],
         compared_state_sections=exact,bus_exception='Inactive RTC wall-clock seconds only (8 bytes)',
         viewport_state_compared=False,visible_unresolved_frames=visible,incoherent_frames=incoherent,
         raw_gap_frames=len(gaps),differential_pass=True,coverage_pass=not(visible or incoherent),
-        synthetic_entry=True,scope='Bounded session only; not full-level, boss, transformation or Android qualification')
+        synthetic_entry=True,scope='Bounded session only; does not qualify full levels, bosses, all transformations or Android')
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
