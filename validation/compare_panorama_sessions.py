@@ -36,14 +36,16 @@ def compare(control,candidate):
     assert 'dispatch_misses=0 interpreted_insns=0 healed_native=0' in log, 'Missing completion counters'
     assert '[sma3:wide]' in log, 'Missing widescreen instrumentation'
     gaps=re.findall(r'\[sma3:object-gap\] frame=(\d+) coherent=(\d+) unresolved=(\d+) visible_unresolved=(\d+)',log)
+    assert len(gaps)==log.count('[sma3:object-gap]'), 'Incomplete gap instrumentation'
     visible=sum(int(g[3])>0 for g in gaps)
     incoherent=sum(int(g[1])!=1 for g in gaps)
     return dict(level_id=left[0]['level_id'],sublevel_ids=sorted({x['sublevel_id'] for x in left}),
         frames=sum(x['action']['n'] for x in left),central_images_equal=centers,
+        sampled_game_states=sorted({x['game_state'] for x in left}),supported_gameplay_only=True,
         compared_state_sections=exact,bus_exception='Inactive RTC wall-clock seconds only (8 bytes)',
         viewport_state_compared=False,visible_unresolved_frames=visible,incoherent_frames=incoherent,
         raw_gap_frames=len(gaps),differential_pass=True,coverage_pass=not(visible or incoherent),
-        synthetic_entry=True,scope='Short entry session only; not full-level, boss, transformation or Android qualification')
+        synthetic_entry=True,scope='Bounded session only; not full-level, boss, transformation or Android qualification')
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
