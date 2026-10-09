@@ -1,0 +1,18 @@
+Public validation checks — 2026-10-09
+Scope: synthetic validator tests only; NOT a native game execution.
+Python 3.13.5
+
+python -m unittest discover -s validation -p test_car_cycle.py -v
+Result: 21 tests, 0 failures, 0 errors, OK.
+
+python -O -m unittest discover -s validation -p test_car_cycle.py -v
+Result: 21 tests, 0 failures, 0 errors, OK.
+
+python -m py_compile validation/run_panorama_session.py validation/compare_panorama_sessions.py validation/panorama_session_checks.py validation/test_car_cycle.py
+Result: exit 0, PASS.
+
+Reference action blob: 85b0ec9ecebabccd477267ed891b37c2b09fe9e5 (verified).
+Historical report blob: 367ff788ef54d39188bf6ae33d1eb51b1dadb012 (verified).
+Missing-private-asset preflight: exit 2; no session output created.
+Real revised native frames, screenshots and object coverage: NOT RUN.
+Android 0.9 source/APK: not changed; not rebuilt or performance-tested.

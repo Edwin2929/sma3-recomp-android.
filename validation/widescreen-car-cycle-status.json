@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-09",
+  "baseline_commit": "3e0be96b273adf30bd46d8e7cf260adf7d34dcce",
+  "status": "pending_private_execution",
+  "route": "panorama-car-actions.json",
+  "reference_route": "panorama-car-actions-reference.json",
+  "historical_report": "widescreen-car.json",
+  "route_maximum_frames": 5250,
+  "expected_transformation_sequence": [
+    0,
+    2,
+    0
+  ],
+  "required_final_normal_idle_frames": 1200,
+  "public_checks": {
+    "python_version": "3.13.5",
+    "unittest": {
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "passed": true
+    },
+    "optimized_unittest": {
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "passed": true
+    },
+    "py_compile": "passed",
+    "reference_action_git_blob": "85b0ec9ecebabccd477267ed891b37c2b09fe9e5",
+    "historical_report_git_blob": "367ff788ef54d39188bf6ae33d1eb51b1dadb012",
+    "reference_blobs_verified_unchanged": true,
+    "scope": "Synthetic tests of input control and validation logic; NOT native game or renderer evidence"
+  },
+  "native_execution": {
+    "status": "not_run",
+    "missing_in_execution_environment": [
+      "Supported SMA3 ROM",
+      "Supported GBA BIOS",
+      "Initialized private gameplay savestate / car entry fixture",
+      "Compiled build/sma3_runner and its native build resources"
+    ],
+    "preflight": "Rejected missing assets before creating a session output directory",
+    "observed_frames": null,
+    "observed_transformation_sequence": null,
+    "final_transformation": null,
+    "stable_normal_idle_frames": null,
+    "central_images_equal": null,
+    "compared_state_snapshots": null,
+    "raw_gap_frames": null,
+    "visible_unresolved_frames": null,
+    "incoherent_frames": null,
+    "differential_pass": null,
+    "coverage_pass": null,
+    "complete_cycle_pass": null
+  },
+  "android": {
+    "version": "0.9",
+    "source_or_apk_modified": false,
+    "rebuilt": false,
+    "performance_tested": false
+  }
+}

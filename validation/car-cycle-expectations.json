@@ -1,0 +1,9 @@
+{
+  "profile": "car-complete-cycle-v1",
+  "actions_sha256": "489866c4de9f3a9f2a375c602814d6e4d7945e6aa5554a5abd3267975ce227bd",
+  "gameplay_start_frame": 600,
+  "level_id": 18,
+  "sublevel_id": 119,
+  "final_idle_frames": 1200,
+  "escape_min_dx_pixels": 32
+}
