@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-18",
+  "source_commit": "8936cafabe14402f091640ff9851ff32e6ecd916",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "platform": "Linux x86_64",
+  "compiler": "13.3.0",
+  "python_version": "3.12.14",
+  "widescreen_diagnostics": true,
+  "native_runner_sha256": "c98ab86321149afe2a09378733061da6740b40c61cd29df9d030472b0b48b42d",
+  "native_runner_bytes": 149992256,
+  "runtime_config_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+  "fixture_sha256": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8",
+  "game_archive": {
+    "archive_bytes": 318260084,
+    "archive_sha256": "8d3470c6b408a9947822f387109fb4005331d2e744f44ce77de50767609dd196",
+    "elf_members": 66,
+    "declared_functions": 49507,
+    "defined_functions": 49507,
+    "missing_functions": 0,
+    "platform": "Linux x86_64",
+    "gameplay_validated": false,
+    "android_validated": false,
+    "performance_measured": false
+  },
+  "scope": "Desktop diagnostic build; no Android performance or APK qualification"
+}

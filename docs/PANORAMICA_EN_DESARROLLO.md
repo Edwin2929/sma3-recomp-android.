@@ -339,3 +339,62 @@ Estos resultados cierran los casos visibles encontrados en ambos recorridos.
 **No completan el paso 1 para todo el juego:** quedan otros niveles, efectos y
 escenas por cubrir. No amplían por sí mismos los límites de aparición del juego,
 no prueban rendimiento en el Pixel 7 Pro y no constituyen un APK panorámico.
+
+## Ciclo completo de coche — 18 de octubre de 2026
+
+El control de 240 píxeles de ancho y el candidato de 356 completaron el mismo
+recorrido nativo de **3.506 fotogramas**. La secuencia observada en cada fotograma
+fue exactamente **0 → 2 → 0** y terminó con **1.200 fotogramas consecutivos de
+Yoshi normal, en juego y sin botones pulsados**. El resultado
+`complete_cycle_pass` es `true` en el nuevo
+[informe del ciclo de coche](../validation/widescreen-car-cycle.json).
+
+| Comprobación | Resultado |
+| --- | --- |
+| Fotograma inicial / final | 6.599 / 10.105 |
+| Primera transformación en coche | Fotograma 7.535; 936 ejecutados desde el inicio |
+| Primera recuperación de Yoshi normal | Fotograma 8.815; 2.216 ejecutados desde el inicio |
+| Desplazamiento a la derecha desde la recuperación hasta el final | 58,83984375 píxeles; mínimo exigido 32 |
+| Imágenes centrales RGB de 240 × 160 idénticas | 61 pares |
+| Comparaciones de estado, incluida la final | 62 pares |
+| Fotogramas con huecos de posición, posiciones visibles sin resolver o envíos incoherentes | 0 / 0 / 0 |
+| Fallos de despacho, instrucciones interpretadas o reparaciones nativas | 0 / 0 / 0 |
+
+El estado de entrada es sintético e idéntico al utilizado para la prueba
+histórica de coche. La transformación se activa mediante entradas del juego y
+la burbuja original; no se fuerza el campo de transformación ni se restaura un
+estado durante el recorrido. La ruta calibrada conserva las primeras siete
+acciones, mueve a la izquierda durante 105 fotogramas, espera como máximo 2.400
+hasta detectar el primer fotograma normal, avanza 90 a la derecha y termina
+con 1.200 de espera. Su presupuesto máximo es de 5.265 fotogramas.
+
+Las 61 imágenes comparan el centro del candidato panorámico con la imagen
+original en puntos de captura; no son una comparación de imágenes de todos
+los fotogramas. Las 62 comparaciones de estado cubren CPU, memoria del juego,
+E/S, audio, guardado y metadatos, conservando la excepción acotada a ocho bytes
+de reloj RTC inactivo. Incluyen 61 puntos de captura y un guardado final en el
+mismo fotograma que la última captura. El estado PPU dependiente del área de presentación se
+excluye. La traza de transformación, entradas y movimiento sí se comprueba en
+cada fotograma.
+
+El resultado del **8 de octubre** permanece intacto en
+`validation/widescreen-car.json`: 3.360 fotogramas, 38 imágenes centrales y
+secuencia 0 → 2 → 0 → 2. La revisión del **9 de octubre** añadió el contrato de
+ciclo completo y superó sus pruebas sintéticas, pero registró la ejecución
+nativa como pendiente. La ejecución del 18 de octubre completa esa fase para
+la ruta calibrada; no cambia las conclusiones de los informes anteriores.
+La calibración y los criterios se detallan en
+[CAR_VALIDATION.md](../validation/CAR_VALIDATION.md).
+
+La [evidencia de compilación nativa](../validation/car-cycle-native-build.json)
+acompaña al resultado. Se corrigió el reconstructor de Linux para incluir
+`SMA3_WIDESCREEN_DIAGNOSTICS=ON`, necesario para exponer la interfaz de las
+pruebas. No se modificaron el motor ni el renderizador del coche para esta
+validación, ni se repitieron pruebas con sanitizadores o de rendimiento Android.
+
+Este resultado valida un ciclo acotado desde una entrada sintética. La espera
+final demuestra que no hubo reactivación durante esos 1.200 fotogramas; no
+establece seguridad permanente bajo otras entradas. **No completa la cobertura
+de niveles, jefes ni todas las transformaciones.** La ampliación lateral de
+aparición de objetos sigue desactivada. No se ha generado un nuevo APK con esta
+validación y la panorámica real sigue ausente de Android 0.9 y 0.9.1.

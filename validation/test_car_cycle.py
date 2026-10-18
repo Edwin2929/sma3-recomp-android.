@@ -117,8 +117,8 @@ class InputAndCycleTests(unittest.TestCase):
         old = json.loads((HERE / 'panorama-car-actions-reference.json').read_text())
         self.assertEqual((len(old), sum(a['n'] for a in old)), (38, 3360))
         self.assertEqual(PLAN[:7], old[:7])
-        self.assertEqual(PLAN[7]['keys'], 1007)
-        self.assertEqual(sum(a['n'] for a in PLAN), 5250)
+        self.assertEqual(PLAN[7], {'n': 105, 'keys': 991})
+        self.assertEqual(sum(a['n'] for a in PLAN), 5265)
         self.assertEqual(action_digest(PLAN), EXPECT['actions_sha256'])
 
     def test_action_schema_rejects_bad_inputs(self):
@@ -149,7 +149,7 @@ class InputAndCycleTests(unittest.TestCase):
         self.assertEqual(result['final_dx_from_recovery'], 90)
         self.assertEqual(len(evidence['trace']), 3291)
         self.assertEqual(evidence['trace'][2001]['keys'], 1007)
-        self.assertEqual(evidence['session'][8]['action']['n'], 440)
+        self.assertEqual(evidence['session'][8]['action']['n'], 425)
         self.assertEqual(set(c['cmd'] for c in fake.commands), {'run_frames', 'read_iwram'})
         self.assertTrue(all(c['n'] == 1 for c in fake.commands if c['cmd'] == 'run_frames'))
 

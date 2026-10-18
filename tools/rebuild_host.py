@@ -27,6 +27,7 @@ for obj in sorted((generated/'build/CMakeFiles/gbarecomp_game.dir/generated').gl
     run('ar', 'r', generated/'build/libgbarecomp_game.a', obj)
 run('python3', root/'tools/verify_archive.py', generated/'build/libgbarecomp_game.a')
 command = [args.cmake, '-S', root, '-B', root/'build', '-DCMAKE_BUILD_TYPE=Release',
+           '-DSMA3_WIDESCREEN_DIAGNOSTICS=ON',
            f'-DSMA3_PREBUILT_GAME={generated}/build/libgbarecomp_game.a']
 toml = root.parent/'gbarecomp/build/_deps/tomlplusplus-src'
 if (toml/'toml.hpp').exists(): command.append(f'-DFETCHCONTENT_SOURCE_DIR_TOMLPLUSPLUS={toml}')

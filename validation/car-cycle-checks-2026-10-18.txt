@@ -1,0 +1,83 @@
+Car complete-cycle checks — 2026-10-18
+Python 3.12.14
+
+Synthetic validator checks (not native gameplay evidence):
+
+$ python -m unittest discover -s validation -p test_car_cycle.py -v
+test_active_rtc_and_nonclock_bus_difference_rejected (test_car_cycle.DifferentialTests.test_active_rtc_and_nonclock_bus_difference_rejected) ... ok
+test_central_image_mismatch (test_car_cycle.DifferentialTests.test_central_image_mismatch) ... ok
+test_cli_protects_existing_report_and_emits_real_failure (test_car_cycle.DifferentialTests.test_cli_protects_existing_report_and_emits_real_failure) ... ok
+test_equivalent_images_states_trace_and_cycle (test_car_cycle.DifferentialTests.test_equivalent_images_states_trace_and_cycle) ... ok
+test_input_provenance_and_incomplete_execution (test_car_cycle.DifferentialTests.test_input_provenance_and_incomplete_execution) ... ok
+test_intermediate_guest_state_mismatch (test_car_cycle.DifferentialTests.test_intermediate_guest_state_mismatch) ... ok
+test_legacy_samples_cannot_certify_complete_cycle (test_car_cycle.DifferentialTests.test_legacy_samples_cannot_certify_complete_cycle) ... ok
+test_matching_but_wrong_final_mode_in_saved_states (test_car_cycle.DifferentialTests.test_matching_but_wrong_final_mode_in_saved_states) ... ok
+test_missing_malformed_instrumentation_and_static_failures (test_car_cycle.DifferentialTests.test_missing_malformed_instrumentation_and_static_failures) ... ok
+test_missing_transition_capture_on_both_sides (test_car_cycle.DifferentialTests.test_missing_transition_capture_on_both_sides) ... ok
+test_raw_visible_and_incoherent_gaps_cannot_qualify (test_car_cycle.DifferentialTests.test_raw_visible_and_incoherent_gaps_cannot_qualify) ... ok
+test_action_schema_rejects_bad_inputs (test_car_cycle.InputAndCycleTests.test_action_schema_rejects_bad_inputs) ... ok
+test_complete_cycle_and_immediate_escape (test_car_cycle.InputAndCycleTests.test_complete_cycle_and_immediate_escape) ... ok
+test_contract_cannot_be_weakened (test_car_cycle.InputAndCycleTests.test_contract_cannot_be_weakened) ... ok
+test_insufficient_final_idle_is_rejected (test_car_cycle.InputAndCycleTests.test_insufficient_final_idle_is_rejected) ... ok
+test_legacy_runner_keeps_batched_inputs (test_car_cycle.InputAndCycleTests.test_legacy_runner_keeps_batched_inputs) ... ok
+test_missing_frame_input_mismatch_reset_and_wrong_checkpoint (test_car_cycle.InputAndCycleTests.test_missing_frame_input_mismatch_reset_and_wrong_checkpoint) ... ok
+test_no_escape_and_intermediate_death_are_rejected (test_car_cycle.InputAndCycleTests.test_no_escape_and_intermediate_death_are_rejected) ... ok
+test_reentry_even_one_frame_is_rejected (test_car_cycle.InputAndCycleTests.test_reentry_even_one_frame_is_rejected) ... ok
+test_reference_bytes_and_evidence_unchanged (test_car_cycle.InputAndCycleTests.test_reference_bytes_and_evidence_unchanged) ... ok
+test_timeout_and_early_recovery_fail (test_car_cycle.InputAndCycleTests.test_timeout_and_early_recovery_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 2.087s
+
+OK
+
+$ python -O -m unittest discover -s validation -p test_car_cycle.py -v
+test_active_rtc_and_nonclock_bus_difference_rejected (test_car_cycle.DifferentialTests.test_active_rtc_and_nonclock_bus_difference_rejected) ... ok
+test_central_image_mismatch (test_car_cycle.DifferentialTests.test_central_image_mismatch) ... ok
+test_cli_protects_existing_report_and_emits_real_failure (test_car_cycle.DifferentialTests.test_cli_protects_existing_report_and_emits_real_failure) ... ok
+test_equivalent_images_states_trace_and_cycle (test_car_cycle.DifferentialTests.test_equivalent_images_states_trace_and_cycle) ... ok
+test_input_provenance_and_incomplete_execution (test_car_cycle.DifferentialTests.test_input_provenance_and_incomplete_execution) ... ok
+test_intermediate_guest_state_mismatch (test_car_cycle.DifferentialTests.test_intermediate_guest_state_mismatch) ... ok
+test_legacy_samples_cannot_certify_complete_cycle (test_car_cycle.DifferentialTests.test_legacy_samples_cannot_certify_complete_cycle) ... ok
+test_matching_but_wrong_final_mode_in_saved_states (test_car_cycle.DifferentialTests.test_matching_but_wrong_final_mode_in_saved_states) ... ok
+test_missing_malformed_instrumentation_and_static_failures (test_car_cycle.DifferentialTests.test_missing_malformed_instrumentation_and_static_failures) ... ok
+test_missing_transition_capture_on_both_sides (test_car_cycle.DifferentialTests.test_missing_transition_capture_on_both_sides) ... ok
+test_raw_visible_and_incoherent_gaps_cannot_qualify (test_car_cycle.DifferentialTests.test_raw_visible_and_incoherent_gaps_cannot_qualify) ... ok
+test_action_schema_rejects_bad_inputs (test_car_cycle.InputAndCycleTests.test_action_schema_rejects_bad_inputs) ... ok
+test_complete_cycle_and_immediate_escape (test_car_cycle.InputAndCycleTests.test_complete_cycle_and_immediate_escape) ... ok
+test_contract_cannot_be_weakened (test_car_cycle.InputAndCycleTests.test_contract_cannot_be_weakened) ... ok
+test_insufficient_final_idle_is_rejected (test_car_cycle.InputAndCycleTests.test_insufficient_final_idle_is_rejected) ... ok
+test_legacy_runner_keeps_batched_inputs (test_car_cycle.InputAndCycleTests.test_legacy_runner_keeps_batched_inputs) ... ok
+test_missing_frame_input_mismatch_reset_and_wrong_checkpoint (test_car_cycle.InputAndCycleTests.test_missing_frame_input_mismatch_reset_and_wrong_checkpoint) ... ok
+test_no_escape_and_intermediate_death_are_rejected (test_car_cycle.InputAndCycleTests.test_no_escape_and_intermediate_death_are_rejected) ... ok
+test_reentry_even_one_frame_is_rejected (test_car_cycle.InputAndCycleTests.test_reentry_even_one_frame_is_rejected) ... ok
+test_reference_bytes_and_evidence_unchanged (test_car_cycle.InputAndCycleTests.test_reference_bytes_and_evidence_unchanged) ... ok
+test_timeout_and_early_recovery_fail (test_car_cycle.InputAndCycleTests.test_timeout_and_early_recovery_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.859s
+
+OK
+
+Python compilation: PASS
+Modules: tools/rebuild_host.py, validation/run_panorama_session.py,
+validation/compare_panorama_sessions.py, validation/panorama_session_checks.py,
+validation/test_car_cycle.py
+
+Historical Git blobs: unchanged
+panorama-car-actions-reference.json 85b0ec9ecebabccd477267ed891b37c2b09fe9e5
+widescreen-car.json 367ff788ef54d39188bf6ae33d1eb51b1dadb012
+
+Real native game evidence (separate from the synthetic tests):
+Host build: Linux x86_64, 66 ELF archive members, 49,507 functions, zero missing.
+Both widths: 3506 frames, 3507 per-frame observations, exact 0 -> 2 -> 0.
+Final idle: 1200 normal gameplay frames with all buttons released.
+Measured rightward separation from first normal frame: 58.83984375 pixels.
+Central images: 61/61 equal; state comparisons: 62/62 (final save included).
+Raw gaps, visible unresolved, incoherent submissions: 0.
+Dispatch misses, interpreted instructions, healed-native counts: 0 in both runs.
+complete_cycle_pass: true
+Reports: widescreen-car-cycle.json, widescreen-car-cycle-status.json,
+car-cycle-native-build.json.
+
+No new sanitizer rerun or Android build/performance measurement in this phase.
