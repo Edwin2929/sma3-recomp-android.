@@ -1,12 +1,16 @@
-# Calidad de imagen — guía para Android 0.9
+# Calidad de imagen — guía para Android 0.9 y 0.9.1
 
-El escalado se incorporó en 0.6 y sigue disponible en el APK 0.9.
+El escalado se incorporó en 0.6 y sigue disponible en los APK 0.9 y 0.9.1.
+La versión 0.9.1 incluye la corrección del redondeo y la ayuda del menú
+aclarada en ES/EN/PT. El APK está compilado y entregado al mantenedor;
+su subida a GitHub Releases queda pendiente de publicación manual.
 
 ## Conservar las proporciones originales
 
 Durante el juego, abre **Atrás del teléfono → Imagen → Estirar a pantalla
 completa** y **desactiva** la casilla. Esta opción ya existe en el APK 0.9
-publicado y está desactivada de forma predeterminada en una instalación nueva.
+publicado, se mantiene en 0.9.1 y está desactivada de forma predeterminada
+en una instalación nueva.
 Si la activaste antes, se conserva esa preferencia hasta que la cambies.
 
 La app continúa a pantalla completa. La casilla controla cómo encaja la imagen
@@ -26,7 +30,7 @@ imagen y sus proporciones en esa superficie, esas bandas son necesarias.
 
 ## Tres comportamientos distintos
 
-| Modo | Resultado | Disponible en el APK 0.9 |
+| Modo | Resultado | Disponible en los APK 0.9 y 0.9.1 |
 | --- | --- | --- |
 | **Conservar 3:2:** Estirar desactivado | Imagen completa, centrada y con bandas cuando la superficie tiene otra proporción. | Sí |
 | **Estirar:** Estirar activado | El mismo fotograma llena el área de juego. Puede deformarse al cambiar su proporción; no muestra más escenario. | Sí |
@@ -70,15 +74,21 @@ con una corrección del redondeo en tamaños como 241 × 160 y 1081 × 720.
 Las comprobaciones del escalador en superficies horizontales y verticales son
 pruebas de escritorio. No validan la rotación ni la presentación en un teléfono:
 la configuración actual del juego en Android sigue siendo horizontal.
-Queda pendiente la comprobación visual y de rendimiento en un dispositivo físico.
+El 18 de octubre de 2026, Edwin confirmó que el APK 0.9.1 funciona en un
+Google Pixel 7 Pro. Es una confirmación general del usuario: no se aportaron
+capturas, mediciones de FPS ni resultados separados de cada ajuste o rotación.
+Las comprobaciones específicas de presentación y rendimiento en el teléfono
+siguen pendientes de documentación. Véase el
+[registro del APK 0.9.1](../validation/ANDROID_0.9.1_VALIDATION.md).
 
-## Aclaración del menú en el código fuente
+## Aclaración del menú incluida en 0.9.1
 
 La ayuda del ajuste se ha aclarado en español, inglés y portugués: desactivado
 conserva 3:2 con bandas; activado llena el área de juego y puede deformar la
 imagen, sin mostrar más escenario. Se mantienen el nombre de la casilla y la
 preferencia guardada.
 
-Estos textos nuevos corresponden a una próxima compilación desde las fuentes.
-El APK 0.9 publicado conserva su ayuda anterior; esta revisión no entrega un
-nuevo APK ni incorpora el prototipo panorámico a Android.
+Los textos nuevos y la corrección del escalador se han verificado en el APK
+`sma3-recomp-0.9.1-aspect-arm64.apk`. El APK 0.9 publicado conserva su ayuda
+anterior. Ninguna de estas dos versiones incorpora el prototipo panorámico.
+[Notas de 0.9.1 y publicación manual](releases/v0.9.1-experimental.md).

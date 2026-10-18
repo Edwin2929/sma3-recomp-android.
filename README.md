@@ -2,10 +2,13 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.9 experimental
+## Versión actual: 0.9.1 experimental
+
+- **0.9.1:** corrige el redondeo del escalador al conservar la proporción original **3:2** y aclara la ayuda de imagen en español, inglés y portugués. El APK está compilado y entregado; **su subida manual a GitHub está pendiente**. [Notas de versión](docs/releases/v0.9.1-experimental.md).
+- **Reporte de Edwin, 18 de octubre de 2026:** probó este APK en un **Google Pixel 7 Pro** y confirmó que funciona. No especificó la versión de Android, la duración de la prueba, los FPS ni las funciones comprobadas. [Verificación del APK y alcance de la prueba](validation/ANDROID_0.9.1_VALIDATION.md).
 
 - **0.9:** ajustes agrupados en Rendimiento, Imagen, Controles e Idiomas; salto de la animación de BIOS; editor de posición/tamaño de botones con tres diseños guardables. [Guía](docs/AJUSTES_Y_DISENOS.md).
-- **Reporte de Edwin, 5 de octubre de 2026:** 0.8 alcanza 120 FPS en su Pixel 7 Pro. Es un reporte del usuario; 0.9 aún necesita prueba física del editor y navegación.
+- **Reporte de Edwin, 5 de octubre de 2026:** 0.8 alcanza 120 FPS en su Pixel 7 Pro. Es un reporte del usuario; no constituye una validación del editor y la navegación incorporados en 0.9.
 
 - **0.8:** idioma independiente del menú (ES/EN/PT), solicitud del modo de pantalla de 120 Hz y recuperación de retrasos moderados del temporizador. El usuario confirmó 120 FPS; no se ha medido independientemente su estabilidad prolongada. [Cambios y prueba en el teléfono](docs/MENU_Y_120FPS.md).
 
@@ -18,26 +21,50 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En el **APK 0.9 publicado**, abre **Atrás → Imagen → Estirar a pantalla
+En **0.9 y 0.9.1**, abre **Atrás → Imagen → Estirar a pantalla
 completa** y **desactiva** la casilla. La imagen original de GBA es de
 **240 × 160 píxeles (3:2)**. El juego conserva esa proporción y se centra con
 bandas si la pantalla tiene otra proporción. Estirar llena el área de juego,
 pero puede deformar la imagen y no muestra más escenario.
 
 La **panorámica real**, que dibuja escenario adicional, sigue siendo un
-**prototipo de escritorio y no está integrada en Android 0.9**.
-La ayuda del menú se ha aclarado en las fuentes para una próxima compilación;
-el APK publicado conserva los textos anteriores.
+**prototipo de escritorio y no está integrada en Android 0.9 ni 0.9.1**.
+El APK 0.9.1 ya incluye la ayuda del menú aclarada y la corrección de redondeo
+integradas en la [PR #2](https://github.com/Edwin2929/sma3-recomp-android./pull/2).
+El APK 0.9 publicado en GitHub conserva los textos y el escalador anteriores.
 [Guía de imagen y pruebas del escalador](docs/CALIDAD_IMAGEN.md) ·
 [Estado del prototipo panorámico](docs/PANORAMICA_EN_DESARROLLO.md).
 
 ## Descargar e instalar
+
+### APK 0.9.1 entregado, pendiente de subida manual
+
+Archivo: `sma3-recomp-0.9.1-aspect-arm64.apk` (31.759.347 bytes), versión
+`0.9.1-aspect-experimental`, código de versión `10`, Android 9 o posterior, ARM64.
+Se entregó a Edwin el 18 de octubre de 2026 y todavía **no está disponible en
+GitHub Releases**.
+
+SHA-256:
+
+```text
+3885b7447455fd16c4af8882de88175d5d1efc361b7e9b618708839772d97d18
+```
+
+El APK conserva el identificador de aplicación y la firma de 0.9, con un código
+de versión superior, por lo que está preparado para instalarse encima como
+actualización. El reporte del usuario confirma que funciona en su Pixel 7 Pro;
+no detalla el procedimiento de instalación ni la conservación de partidas.
+
+[Notas e instrucciones para publicar 0.9.1 manualmente](docs/releases/v0.9.1-experimental.md).
+
+### APK 0.9 disponible en GitHub
 
 **El APK 0.9 está publicado en la release «Descarga».** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
 
 Archivo: `sma3-recomp-0.9-layouts-arm64.apk` (31.838.319 bytes), Android 9 o posterior, ARM64.
 
 SHA-256:
+
 ```text
 7110024294051368945fd4ceb127cfaf4edb3a09f0e138ae6b81ae350a3dee3d
 ```
@@ -48,9 +75,18 @@ El APK de desarrollo 0.9 conserva la firma de las versiones anteriores: instála
 
 ## Estado de validación
 
+**0.9.1:** la compilación ARM64 terminó correctamente y se verificaron la firma,
+su coincidencia con 0.9, la integridad y alineación del APK, los textos de ayuda
+en ES/EN/PT y la correspondencia de las bibliotecas empaquetadas con esta
+compilación. El APK no incorpora ROM, BIOS ni clave de firma.
+La confirmación de Edwin del **18 de octubre de 2026** aporta una prueba de
+funcionamiento en **Google Pixel 7 Pro**. No equivale a una medición de rendimiento
+ni a una validación específica de cada ajuste, orientación o transformación.
+[Registro completo y comprobaciones pendientes](validation/ANDROID_0.9.1_VALIDATION.md).
+
 Edwin reportó 60 FPS con una versión anterior en Android y posteriormente identificó su teléfono como Google Pixel 7 Pro. Ese reporte **no valida el rendimiento de 0.5–0.7 ni confirma 120 FPS**.
 
-Las pruebas de desarrollo cubren la rutina de transformación, el escalador y los punteros de traducción. Se ejecutaron 7.200 fotogramas nativos por idioma sin faltas de despacho ni instrucciones interpretadas. Falta comprobar estas novedades en el teléfono, todas las transformaciones y el juego completo. [Resultados y límites](docs/VALIDACION.md).
+Las pruebas de desarrollo cubren la rutina de transformación, el escalador y los punteros de traducción. Se ejecutaron 7.200 fotogramas nativos por idioma sin faltas de despacho ni instrucciones interpretadas. Siguen pendientes las comprobaciones específicas de estas funciones en el teléfono, todas las transformaciones y el juego completo. [Resultados y límites](docs/VALIDACION.md).
 
 ## Qué significa «nativo» aquí
 
@@ -111,7 +147,13 @@ APK resultante: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 Para compilar únicamente las bibliotecas nativas: `python3 tools/bootstrap_android_build.py --native-only`.
 
-Los scripts de regeneración y esta organización pública se revisaron estáticamente; **no se repitió una compilación completa desde este ZIP público**. La compilación y pruebas anteriores corresponden al proyecto de desarrollo del que se extrajeron estos archivos.
+Para el APK 0.9.1 se compilaron desde cero las bibliotecas nativas ARM64 y se
+empaquetó la aplicación con las fuentes públicas actualizadas. Se reutilizaron
+las fuentes generadas privadas del proyecto de desarrollo; **no se regeneró el
+conjunto de fuentes a partir de la ROM y la BIOS en esta ejecución**. Los scripts
+de regeneración se habían revisado estáticamente y ese flujo completo de
+regeneración sigue sin repetirse como parte de esta compilación.
+[Detalle de la compilación y verificación](validation/ANDROID_0.9.1_VALIDATION.md).
 
 ## Archivos compatibles
 
@@ -136,7 +178,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.7 en Pixel 7 Pro: transformaciones, mando, escalado y ambos idiomas.
+- Completar pruebas específicas de 0.9.1 en Pixel 7 Pro: transformaciones, mando, escalado, idiomas, editor de controles y navegación del menú.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de la prueba de 0.9.1.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.
 - Documentar sonido, guardado, segundo plano y mandos físicos.

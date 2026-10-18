@@ -1,5 +1,39 @@
 # Validación y límites
 
+## 0.9.1: escalado y prueba reportada en Pixel 7 Pro
+
+El 18 de octubre de 2026 se compiló y verificó
+`sma3-recomp-0.9.1-aspect-arm64.apk`, versión `0.9.1-aspect-experimental`,
+código 10. Incluye la corrección de redondeo del escalador y la ayuda de
+imagen en ES/EN/PT de la PR #2. Las bibliotecas nativas se compilaron para
+ARM64 desde las fuentes generadas privadas ya disponibles, sin reutilizar
+un archivo nativo precompilado. No se regeneró el corpus desde ROM/BIOS
+durante esta compilación.
+
+La firma v2 coincide con la del APK 0.9 publicado. Se verificaron la integridad
+y alineación del ZIP, la arquitectura ELF64 AArch64, las bibliotecas
+empaquetadas y las tres traducciones de la ayuda. El paquete contiene la
+configuración de ejecución y no incorpora ROM, BIOS ni almacenes de claves
+de firma.
+
+Ese mismo día, Edwin informó que probó el APK en un **Google Pixel 7 Pro**
+y que **funciona**. Se registra como confirmación del usuario. No se
+documentaron la versión de Android, la duración, las escenas, el tipo de
+instalación ni mediciones de FPS. Esta confirmación no acredita por sí sola
+todos los ajustes, rotaciones, estabilidad prolongada o compatibilidad con
+otros dispositivos. La panorámica real sigue desactivada en Android.
+
+Los 45 casos de geometría y 110 renderizados del escalador corresponden a
+las pruebas de escritorio registradas durante la revisión de la incidencia
+#1. No son mediciones del teléfono.
+
+[Verificación y huellas del APK 0.9.1](../validation/ANDROID_0.9.1_VALIDATION.md) ·
+[Pruebas del escalador](../validation/VIDEO_ASPECT_RATIO.md) ·
+[Notas de versión](releases/v0.9.1-experimental.md).
+
+Los apartados siguientes conservan los resultados y límites de las
+versiones anteriores.
+
 ## Reporte del usuario
 
 El 3 de octubre de 2026, Edwin informó: «Ya se probó en android y funcionó a 60 fps».

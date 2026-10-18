@@ -1,8 +1,8 @@
 plugins { id 'com.android.application' }
 ext.gbaGame = [
     applicationId: 'org.sma3.recomp.experimental',
-    versionCode: 9,
-    versionName: '0.9-layouts-experimental',
+    versionCode: 10,
+    versionName: '0.9.1-aspect-experimental',
     title: 'SMA3 Recomp experimental',
     romSha1: ['7352d2bd064d9ebaec579e264228aa21c7345b80'],
     romSize: 4194304,

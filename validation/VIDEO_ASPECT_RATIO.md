@@ -122,16 +122,21 @@ un servidor gráfico ni el motor completo.
 ## Alcance
 
 Las superficies verticales comprueban el cálculo y el escalador. **No
-habilitan ni validan orientación vertical en Android 0.9**, cuya
+habilitan ni validan orientación vertical en Android 0.9 o 0.9.1**, cuya
 configuración del juego es horizontal. Sigue pendiente la prueba visual,
 de GPU y de cambios de superficie en un dispositivo físico, incluido el
 POCO X7 Pro mencionado en la incidencia.
 
-La ayuda nueva del menú en ES/EN/PT y la corrección del cálculo son cambios
-en las fuentes para una próxima compilación. Esta revisión no publica un
-APK nuevo ni mide estabilidad a 120 FPS.
+La ayuda nueva del menú en ES/EN/PT y la corrección del cálculo se incorporaron
+al APK `sma3-recomp-0.9.1-aspect-arm64.apk`, compilado y verificado después de
+integrar la PR #2. El 18 de octubre de 2026, Edwin confirmó que ese APK
+funciona en un Google Pixel 7 Pro. Es una confirmación general del usuario,
+sin resultados separados de cada ajuste ni mediciones de FPS. Su subida a
+GitHub Releases queda pendiente de publicación manual; el APK 0.9 publicado
+no ha sido sustituido. Véase el
+[registro de la compilación y la prueba reportada](ANDROID_0.9.1_VALIDATION.md).
 
 La panorámica real sigue siendo un prototipo de escritorio.
 [`CMakeLists.txt`](../CMakeLists.txt) la desactiva por defecto y rechaza su
-activación para Android. **No está disponible en el APK 0.9**. Su estado
+activación para Android. **No está disponible en los APK 0.9 y 0.9.1**. Su estado
 se documenta en [PANORAMICA_EN_DESARROLLO.md](../docs/PANORAMICA_EN_DESARROLLO.md).

@@ -3,11 +3,14 @@
 Objetivo: sustituir el estiramiento por una vista que muestre más escenario,
 mantenga las proporciones y se adapte a la pantalla del teléfono.
 
-La versión Android entregada sigue siendo 0.9. Este cambio **no está activado
-en Android** y no demuestra todavía pantalla completa correcta en todas las
-escenas ni rendimiento a 120 FPS.
+La versión Android entregada al mantenedor es 0.9.1, con la corrección del
+escalado 3:2 y la ayuda del menú actualizada. El APK publicado en la release
+«Descarga» sigue siendo 0.9 mientras se prepara la subida manual de 0.9.1.
+La panorámica real **no está activada en ninguna de estas versiones** y
+no demuestra todavía pantalla completa correcta en todas las escenas ni
+rendimiento a 120 FPS.
 
-## Qué puede hacer el APK 0.9
+## Qué pueden hacer los APK 0.9 y 0.9.1
 
 Para conservar las proporciones, abre **Atrás → Imagen → Estirar a pantalla
 completa** y desactiva la casilla. El fotograma original de **240 × 160** tiene
@@ -17,8 +20,10 @@ puede deformarlo y **no muestra más escenario**.
 
 La panorámica real descrita aquí necesita dibujar contenido adicional fuera
 de ese fotograma. No se activa con Estirar ni al elegir 720p o 1080p.
-La aclaración de la ayuda del menú en las fuentes es para una próxima
-compilación y **no integra este prototipo en el APK 0.9 publicado**.
+La aclaración de la ayuda del menú está incluida en el APK 0.9.1 y
+**no integra este prototipo en Android**. La confirmación de funcionamiento
+de 0.9.1 en un Google Pixel 7 Pro corresponde al APK con el campo de visión
+original, no a una compilación panorámica.
 Más detalles en la [guía de calidad de imagen](CALIDAD_IMAGEN.md).
 
 ## Implementado
@@ -31,7 +36,7 @@ Más detalles en la [guía de calidad de imagen](CALIDAD_IMAGEN.md).
   del bus. El prototipo admite hasta 356 × 160, frente a 240 × 160 originales.
 - Captura de diagnóstico por fotograma y pruebas independientes del decodificador.
 - Opción CMake `SMA3_WIDESCREEN_DIAGNOSTICS`, desactivada por defecto y exclusiva
-  de escritorio. No cambia la compilación Android de 0.9.
+  de escritorio. Permanece desactivada en las compilaciones Android.
 
 ## Comprobaciones y límites de la evidencia
 
