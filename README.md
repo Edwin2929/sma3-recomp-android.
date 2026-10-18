@@ -16,11 +16,26 @@ Proyecto experimental de recompilación estática de **Yoshi’s Island: Super M
 
 Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre sesiones.
 
+### Imagen completa sin deformaciones
+
+En el **APK 0.9 publicado**, abre **Atrás → Imagen → Estirar a pantalla
+completa** y **desactiva** la casilla. La imagen original de GBA es de
+**240 × 160 píxeles (3:2)**. El juego conserva esa proporción y se centra con
+bandas si la pantalla tiene otra proporción. Estirar llena el área de juego,
+pero puede deformar la imagen y no muestra más escenario.
+
+La **panorámica real**, que dibuja escenario adicional, sigue siendo un
+**prototipo de escritorio y no está integrada en Android 0.9**.
+La ayuda del menú se ha aclarado en las fuentes para una próxima compilación;
+el APK publicado conserva los textos anteriores.
+[Guía de imagen y pruebas del escalador](docs/CALIDAD_IMAGEN.md) ·
+[Estado del prototipo panorámico](docs/PANORAMICA_EN_DESARROLLO.md).
+
 ## Descargar e instalar
 
-**La carga del APK 0.9 en GitHub queda pendiente: Edwin lo subirá manualmente.** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
+**El APK 0.9 está publicado en la release «Descarga».** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
 
-Archivo previsto: `sma3-recomp-0.9-layouts-arm64.apk` (31.838.319 bytes), Android 9 o posterior, ARM64.
+Archivo: `sma3-recomp-0.9-layouts-arm64.apk` (31.838.319 bytes), Android 9 o posterior, ARM64.
 
 SHA-256:
 ```text

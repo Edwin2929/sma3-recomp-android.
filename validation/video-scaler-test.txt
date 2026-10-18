@@ -1,10 +1,135 @@
-PASS quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080
-PASS quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080
-PASS quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080
-PASS quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080
-PASS quality=1080 stretch=0 buffer=1920x1080 viewport=390,0 1620x1080
-PASS quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 2400x1080
-PASS quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080
-PASS quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080
-PASS quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080
-PASS quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080
+INFO SDL runtime=2.30.0 GBA=240x160 aspect=3:2
+PASS geometry GBA native surface=240x160 source=240x160 viewport=0,0 240x160
+PASS geometry GBA integer scale surface=720x480 source=240x160 viewport=0,0 720x480
+PASS geometry landscape 16:9 surface=1920x1080 source=240x160 viewport=150,0 1620x1080
+PASS geometry landscape phone surface=2400x1080 source=240x160 viewport=390,0 1620x1080
+PASS geometry portrait phone surface=1080x2400 source=240x160 viewport=0,840 1080x720
+PASS geometry square surface=1080x1080 source=240x160 viewport=0,180 1080x720
+PASS geometry landscape tablet 4:3 surface=2048x1536 source=240x160 viewport=0,85 2048x1365
+PASS geometry portrait tablet surface=1536x2048 source=240x160 viewport=0,512 1536x1024
+PASS geometry ultrawide surface=3440x1440 source=240x160 viewport=640,0 2160x1440
+PASS geometry odd landscape surface=2341x1081 source=240x160 viewport=360,0 1621x1081
+PASS geometry odd portrait surface=1081x2341 source=240x160 viewport=0,810 1081x720
+PASS geometry rounding boundary native surface=241x160 source=240x160 viewport=0,0 240x160
+PASS geometry rounding boundary scaled surface=1081x720 source=240x160 viewport=0,0 1080x720
+PASS geometry rounding boundary odd surface=1001x667 source=240x160 viewport=0,0 1000x667
+PASS geometry downscale surface=120x80 source=240x160 viewport=0,0 120x80
+PASS geometry tiny representable surface=3x2 source=240x160 viewport=0,0 3x2
+PASS geometry tiny unrepresentable surface=1x1 source=240x160 viewport=0,0 1x0
+PASS geometry largest GBA surface surface=2147483647x2147483647 source=240x160 viewport=0,357913941 2147483647x1431655764
+PASS geometry large surface tall source surface=2147483647x1080 source=160x240 viewport=1073741463,0 720x1080
+PASS geometry extreme tall source surface=2147483647x1080 source=1x2147483647 viewport=1073741823,0 0x1080
+PASS geometry extreme wide source surface=2147483647x1080 source=2147483647x1 viewport=0,539 2147483647x1
+PASS geometry invalid inputs=24
+INFO renderer=software target-textures=yes; host validation, no Android device
+PASS render 2400x1080 quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=1080 stretch=0 buffer=1920x1080 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080 pattern=ok
+PASS render 1080x2400 quality=0 stretch=0 buffer=0x0 viewport=0,840 1080x720 pattern=ok
+PASS render 1080x2400 quality=0 stretch=1 buffer=0x0 viewport=0,0 1080x2400 pattern=ok
+PASS render 1080x2400 quality=720 stretch=0 buffer=1280x720 viewport=0,840 1080x720 pattern=ok
+PASS render 1080x2400 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1080x2400 pattern=ok
+PASS render 1080x2400 quality=1080 stretch=0 buffer=1920x1080 viewport=0,840 1080x720 pattern=ok
+PASS render 1080x2400 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 1080x2400 pattern=ok
+PASS render 1080x2400 quality=720 stretch=0 buffer=1280x720 viewport=0,840 1080x720 pattern=ok
+PASS render 1080x2400 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1080x2400 pattern=ok
+PASS render 1080x2400 quality=0 stretch=0 buffer=0x0 viewport=0,840 1080x720 pattern=ok
+PASS render 1080x2400 quality=0 stretch=1 buffer=0x0 viewport=0,0 1080x2400 pattern=ok
+PASS render 1080x1080 quality=0 stretch=0 buffer=0x0 viewport=0,180 1080x720 pattern=ok
+PASS render 1080x1080 quality=0 stretch=1 buffer=0x0 viewport=0,0 1080x1080 pattern=ok
+PASS render 1080x1080 quality=720 stretch=0 buffer=1280x720 viewport=0,180 1080x720 pattern=ok
+PASS render 1080x1080 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1080x1080 pattern=ok
+PASS render 1080x1080 quality=1080 stretch=0 buffer=1920x1080 viewport=0,180 1080x720 pattern=ok
+PASS render 1080x1080 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 1080x1080 pattern=ok
+PASS render 1080x1080 quality=720 stretch=0 buffer=1280x720 viewport=0,180 1080x720 pattern=ok
+PASS render 1080x1080 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1080x1080 pattern=ok
+PASS render 1080x1080 quality=0 stretch=0 buffer=0x0 viewport=0,180 1080x720 pattern=ok
+PASS render 1080x1080 quality=0 stretch=1 buffer=0x0 viewport=0,0 1080x1080 pattern=ok
+PASS render 2048x1536 quality=0 stretch=0 buffer=0x0 viewport=0,85 2048x1365 pattern=ok
+PASS render 2048x1536 quality=0 stretch=1 buffer=0x0 viewport=0,0 2048x1536 pattern=ok
+PASS render 2048x1536 quality=720 stretch=0 buffer=1280x720 viewport=0,85 2048x1365 pattern=ok
+PASS render 2048x1536 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2048x1536 pattern=ok
+PASS render 2048x1536 quality=1080 stretch=0 buffer=1920x1080 viewport=0,85 2048x1365 pattern=ok
+PASS render 2048x1536 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 2048x1536 pattern=ok
+PASS render 2048x1536 quality=720 stretch=0 buffer=1280x720 viewport=0,85 2048x1365 pattern=ok
+PASS render 2048x1536 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2048x1536 pattern=ok
+PASS render 2048x1536 quality=0 stretch=0 buffer=0x0 viewport=0,85 2048x1365 pattern=ok
+PASS render 2048x1536 quality=0 stretch=1 buffer=0x0 viewport=0,0 2048x1536 pattern=ok
+PASS render 1536x2048 quality=0 stretch=0 buffer=0x0 viewport=0,512 1536x1024 pattern=ok
+PASS render 1536x2048 quality=0 stretch=1 buffer=0x0 viewport=0,0 1536x2048 pattern=ok
+PASS render 1536x2048 quality=720 stretch=0 buffer=1280x720 viewport=0,512 1536x1024 pattern=ok
+PASS render 1536x2048 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1536x2048 pattern=ok
+PASS render 1536x2048 quality=1080 stretch=0 buffer=1920x1080 viewport=0,512 1536x1024 pattern=ok
+PASS render 1536x2048 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 1536x2048 pattern=ok
+PASS render 1536x2048 quality=720 stretch=0 buffer=1280x720 viewport=0,512 1536x1024 pattern=ok
+PASS render 1536x2048 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1536x2048 pattern=ok
+PASS render 1536x2048 quality=0 stretch=0 buffer=0x0 viewport=0,512 1536x1024 pattern=ok
+PASS render 1536x2048 quality=0 stretch=1 buffer=0x0 viewport=0,0 1536x2048 pattern=ok
+PASS render 2341x1081 quality=0 stretch=0 buffer=0x0 viewport=360,0 1621x1081 pattern=ok
+PASS render 2341x1081 quality=0 stretch=1 buffer=0x0 viewport=0,0 2341x1081 pattern=ok
+PASS render 2341x1081 quality=720 stretch=0 buffer=1280x720 viewport=360,0 1621x1081 pattern=ok
+PASS render 2341x1081 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2341x1081 pattern=ok
+PASS render 2341x1081 quality=1080 stretch=0 buffer=1920x1080 viewport=360,0 1621x1081 pattern=ok
+PASS render 2341x1081 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 2341x1081 pattern=ok
+PASS render 2341x1081 quality=720 stretch=0 buffer=1280x720 viewport=360,0 1621x1081 pattern=ok
+PASS render 2341x1081 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2341x1081 pattern=ok
+PASS render 2341x1081 quality=0 stretch=0 buffer=0x0 viewport=360,0 1621x1081 pattern=ok
+PASS render 2341x1081 quality=0 stretch=1 buffer=0x0 viewport=0,0 2341x1081 pattern=ok
+PASS render 1081x2341 quality=0 stretch=0 buffer=0x0 viewport=0,810 1081x720 pattern=ok
+PASS render 1081x2341 quality=0 stretch=1 buffer=0x0 viewport=0,0 1081x2341 pattern=ok
+PASS render 1081x2341 quality=720 stretch=0 buffer=1280x720 viewport=0,810 1081x720 pattern=ok
+PASS render 1081x2341 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1081x2341 pattern=ok
+PASS render 1081x2341 quality=1080 stretch=0 buffer=1920x1080 viewport=0,810 1081x720 pattern=ok
+PASS render 1081x2341 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 1081x2341 pattern=ok
+PASS render 1081x2341 quality=720 stretch=0 buffer=1280x720 viewport=0,810 1081x720 pattern=ok
+PASS render 1081x2341 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1081x2341 pattern=ok
+PASS render 1081x2341 quality=0 stretch=0 buffer=0x0 viewport=0,810 1081x720 pattern=ok
+PASS render 1081x2341 quality=0 stretch=1 buffer=0x0 viewport=0,0 1081x2341 pattern=ok
+PASS render 241x160 quality=0 stretch=0 buffer=0x0 viewport=0,0 240x160 pattern=ok
+PASS render 241x160 quality=0 stretch=1 buffer=0x0 viewport=0,0 241x160 pattern=ok
+PASS render 241x160 quality=720 stretch=0 buffer=1280x720 viewport=0,0 240x160 pattern=ok
+PASS render 241x160 quality=720 stretch=1 buffer=1280x720 viewport=0,0 241x160 pattern=ok
+PASS render 241x160 quality=1080 stretch=0 buffer=1920x1080 viewport=0,0 240x160 pattern=ok
+PASS render 241x160 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 241x160 pattern=ok
+PASS render 241x160 quality=720 stretch=0 buffer=1280x720 viewport=0,0 240x160 pattern=ok
+PASS render 241x160 quality=720 stretch=1 buffer=1280x720 viewport=0,0 241x160 pattern=ok
+PASS render 241x160 quality=0 stretch=0 buffer=0x0 viewport=0,0 240x160 pattern=ok
+PASS render 241x160 quality=0 stretch=1 buffer=0x0 viewport=0,0 241x160 pattern=ok
+PASS render 1081x720 quality=0 stretch=0 buffer=0x0 viewport=0,0 1080x720 pattern=ok
+PASS render 1081x720 quality=0 stretch=1 buffer=0x0 viewport=0,0 1081x720 pattern=ok
+PASS render 1081x720 quality=720 stretch=0 buffer=1280x720 viewport=0,0 1080x720 pattern=ok
+PASS render 1081x720 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1081x720 pattern=ok
+PASS render 1081x720 quality=1080 stretch=0 buffer=1920x1080 viewport=0,0 1080x720 pattern=ok
+PASS render 1081x720 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 1081x720 pattern=ok
+PASS render 1081x720 quality=720 stretch=0 buffer=1280x720 viewport=0,0 1080x720 pattern=ok
+PASS render 1081x720 quality=720 stretch=1 buffer=1280x720 viewport=0,0 1081x720 pattern=ok
+PASS render 1081x720 quality=0 stretch=0 buffer=0x0 viewport=0,0 1080x720 pattern=ok
+PASS render 1081x720 quality=0 stretch=1 buffer=0x0 viewport=0,0 1081x720 pattern=ok
+PASS render 240x160 quality=0 stretch=0 buffer=0x0 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=0 stretch=1 buffer=0x0 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=720 stretch=0 buffer=1280x720 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=720 stretch=1 buffer=1280x720 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=1080 stretch=0 buffer=1920x1080 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=720 stretch=0 buffer=1280x720 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=720 stretch=1 buffer=1280x720 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=0 stretch=0 buffer=0x0 viewport=0,0 240x160 pattern=ok
+PASS render 240x160 quality=0 stretch=1 buffer=0x0 viewport=0,0 240x160 pattern=ok
+PASS render 2400x1080 quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=1080 stretch=0 buffer=1920x1080 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=1080 stretch=1 buffer=1920x1080 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=0 buffer=1280x720 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=720 stretch=1 buffer=1280x720 viewport=0,0 2400x1080 pattern=ok
+PASS render 2400x1080 quality=0 stretch=0 buffer=0x0 viewport=390,0 1620x1080 pattern=ok
+PASS render 2400x1080 quality=0 stretch=1 buffer=0x0 viewport=0,0 2400x1080 pattern=ok
+PASS summary geometry=45 render=110

@@ -237,7 +237,10 @@ public class GbaGameActivity extends SDLActivity {
         });
         panel.addView(stretch);
         TextView note = new TextView(this);
-        note.setText(tr("Escalado nítido para los gráficos originales de GBA. Estirar llena la pantalla y ensancha la imagen. Desactívalo para conservar las proporciones. 1080p puede consumir más batería.", "Sharp scaling of the original GBA graphics. Stretching fills the screen and widens the image. Turn it off to keep the original proportions. 1080p may use more battery.", "Ampliação nítida dos gráficos originais do GBA. Esticar preenche a tela e alarga a imagem. Desative para manter as proporções. 1080p pode consumir mais bateria."));
+        note.setText(tr(
+            "Desactivado: conserva la proporción original 3:2 y centra la imagen con bandas si hace falta.\nActivado: llena el área de juego y puede deformar la imagen. No muestra más escenario.\n1080p puede consumir más batería.",
+            "Off: keeps the original 3:2 aspect ratio and centers the image with bars if needed.\nOn: fills the game area and may distort the image. It does not show more of the level.\n1080p may use more battery.",
+            "Desativado: mantém a proporção original 3:2 e centraliza a imagem com faixas se necessário.\nAtivado: preenche a área do jogo e pode deformar a imagem. Não mostra mais cenário.\n1080p pode consumir mais bateria."));
         note.setTextSize(13); note.setPadding(0, overlayDp(8), 0, overlayDp(8)); panel.addView(note);
         android.widget.ScrollView scroll = new android.widget.ScrollView(this);
         scroll.addView(panel);
