@@ -10,30 +10,38 @@ import subprocess
 import time
 from pathlib import Path
 from PIL import Image
-from panorama_session_checks import (action_digest, check_car_cycle, require,
+from castle_route_checks import CASTLE_STATUS_PROFILE, IWRAM_SIZE, parse_castle_status
+from panorama_session_checks import (action_digest, check_car_cycle, require, transition_changed,
                                      validate_actions, validate_expectations)
 
 ROOT = Path(__file__).resolve().parents[1]
 RAM_START, RAM_END = 0x4cb8, 0x6db4
 
 
-def observe(command):
-    raw = bytes.fromhex(command(cmd='read_iwram', addr=0x03000000 + RAM_START,
-                                len=RAM_END - RAM_START)['data'])
+def observe(command, castle_status=False):
+    start, end = (0, IWRAM_SIZE) if castle_status else (RAM_START, RAM_END)
+    snapshot = bytes.fromhex(command(cmd='read_iwram', addr=0x03000000 + start,
+                                     len=end - start)['data'])
+    require(len(snapshot) == end - start, 'Truncated IWRAM observation')
+    raw = snapshot[RAM_START:RAM_END] if castle_status else snapshot
     require(len(raw) == RAM_END - RAM_START, 'Truncated IWRAM observation')
-    return dict(player_xy_velocity=[v / 256 for v in struct.unpack_from('<iiii', raw, 0x6d80 - RAM_START)],
-                level_id=struct.unpack_from('<H', raw, 0x6288 - RAM_START)[0],
-                sublevel_id=struct.unpack_from('<H', raw, 0x4cb8 - RAM_START)[0],
-                game_state=raw[0x6b05 - RAM_START],
-                transformation=struct.unpack_from('<H', raw, 0x6db2 - RAM_START)[0])
+    row = dict(player_xy_velocity=[v / 256 for v in struct.unpack_from('<iiii', raw, 0x6d80 - RAM_START)],
+               level_id=struct.unpack_from('<H', raw, 0x6288 - RAM_START)[0],
+               sublevel_id=struct.unpack_from('<H', raw, 0x4cb8 - RAM_START)[0],
+               game_state=raw[0x6b05 - RAM_START],
+               transformation=struct.unpack_from('<H', raw, 0x6db2 - RAM_START)[0])
+    if castle_status:
+        row['castle_status'] = parse_castle_status(snapshot)
+    return row
 
 
-def execute_session(command, actions, capture, evidence, trace_enabled=False, capture_start=0):
+def execute_session(command, actions, capture, evidence, trace_enabled=False, capture_start=0,
+                    castle_status=False):
     """Conditional waits stop on the FIRST target frame, never on a 60-frame sample."""
     validate_actions(actions)
-    trace_enabled = trace_enabled or any('until_transformation' in a for a in actions)
+    trace_enabled = trace_enabled or castle_status or any('until_transformation' in a for a in actions)
     session, trace, shots = evidence['session'], evidence['trace'], evidence['captures']
-    current = observe(command)
+    current = observe(command, castle_status)
     elapsed = 0
     if trace_enabled:
         trace.append(dict(current, frame=None, elapsed_frame=0, action_index=-1, keys=None))
@@ -45,11 +53,11 @@ def execute_session(command, actions, capture, evidence, trace_enabled=False, ca
         executed = 0
         while executed < action['n']:
             n = 1 if trace_enabled else action['n']
-            previous = current['transformation']
+            previous = current
             reply = command(cmd='run_frames', n=n, keyinput=action['keys'])
             executed += n
             elapsed += n
-            current = dict(observe(command), frame=reply['frame'])
+            current = dict(observe(command, castle_status), frame=reply['frame'])
             if trace_enabled:
                 if trace[0]['frame'] is None:
                     trace[0]['frame'] = reply['frame'] - 1
@@ -59,7 +67,7 @@ def execute_session(command, actions, capture, evidence, trace_enabled=False, ca
             endpoint = reached or executed == action['n']
             if trace_enabled:
                 if elapsed >= capture_start and (elapsed % 60 == 0 or endpoint or
-                                                previous != current['transformation']):
+                                                transition_changed(previous, current)):
                     shots.append(capture(f'frame-{elapsed:05}', current, elapsed, True))
             elif endpoint:
                 capture(f'step-{index:03}', current, elapsed, False)
@@ -74,13 +82,33 @@ def execute_session(command, actions, capture, evidence, trace_enabled=False, ca
     return trace_enabled
 
 
+def session_environment(output):
+    """Keep native diagnostics inside this session, including inherited opt-ins."""
+    output = output.resolve()
+    env = os.environ.copy()
+    for name in ('GBARECOMP_INPUT_REPLAY', 'GBARECOMP_INPUT_RECORD', 'GBARECOMP_WS_WIP',
+                 'GBARECOMP_WIDESCREEN', 'GBARECOMP_FP_SAVE', 'GBARECOMP_IRQ_LOG',
+                 'GBARECOMP_SWI_LOG', 'GBARECOMP_IWRAM_DUMP', 'GBARECOMP_WRAM_TRACE',
+                 'GBARECOMP_MISS_EWRAM_DUMP', 'GBARECOMP_MISS_IWRAM_DUMP'):
+        env.pop(name, None)
+    env.update(GBARECOMP_STRICT_STATIC='1', GBARECOMP_FORCE_INTERP='0', GBARECOMP_BIOS_HLE='0',
+               GBARECOMP_BIOS_SKIP_INTRO='1', SMA3_WIDE_PROBE_DIR=str(output),
+               SMA3_AUTHORED_WIDE='1', SMA3_WIDE_OBJECT_BOUNDS='0',
+               GBARECOMP_COVERAGE_JSON=str(output / 'native-coverage.json'),
+               GBARECOMP_MISS_FRAG=str(output / 'native-misses.toml.frag'))
+    return env
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('rom', 'bios', 'state', 'actions', 'output'):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--width', type=int, default=356)
     p.add_argument('--trace-every-frame', action='store_true')
-    p.add_argument('--expectations', type=Path, help='Cycle contract; also enables per-frame tracing')
+    profile = p.add_mutually_exclusive_group()
+    profile.add_argument('--expectations', type=Path, help='Cycle contract; also enables per-frame tracing')
+    profile.add_argument('--castle-status', action='store_true',
+                         help='Observe castle health from full IWRAM; also enables per-frame tracing')
     a = p.parse_args()
     if not 240 <= a.width <= 356:
         p.error('width must be 240..356')
@@ -104,7 +132,7 @@ def main():
     a.output.mkdir(parents=True, exist_ok=True)
     if any(a.output.iterdir()):
         p.error('Use a new empty output directory')
-    tracing = bool(a.trace_every_frame or expectations or
+    tracing = bool(a.trace_every_frame or expectations or a.castle_status or
                    any('until_transformation' in x for x in actions))
     start = expectations['gameplay_start_frame'] if expectations else 0
     settings = dict(width=a.width, trace_every_frame=tracing, capture_start=start,
@@ -112,6 +140,8 @@ def main():
                                   for name, path in (('rom', a.rom), ('bios', a.bios),
                                                      ('state', a.state), ('runner', binary),
                                                      ('config', config))})
+    if a.castle_status:
+        settings['observation_profile'] = CASTLE_STATUS_PROFILE
     with socket.socket() as sock:
         sock.bind(('127.0.0.1', 0))
         port = sock.getsockname()[1]
@@ -134,13 +164,8 @@ def main():
             command(cmd='savestate_save', path=str(a.output / result['state']))
         return result
 
-    env = os.environ.copy()
-    for name in ('GBARECOMP_INPUT_REPLAY', 'GBARECOMP_INPUT_RECORD', 'GBARECOMP_WS_WIP', 'GBARECOMP_WIDESCREEN'):
-        env.pop(name, None)
-    env.update(GBARECOMP_STRICT_STATIC='1', GBARECOMP_FORCE_INTERP='0', GBARECOMP_BIOS_HLE='0',
-               GBARECOMP_BIOS_SKIP_INTRO='1', SMA3_WIDE_PROBE_DIR=str(a.output),
-               SMA3_AUTHORED_WIDE='1', SMA3_WIDE_OBJECT_BOUNDS='0')
-    args = [str(binary), '--config', str(config), '--rom', str(a.rom.resolve()),
+    env = session_environment(a.output)
+    args = [binary.name, '--config', str(config), '--rom', str(a.rom.resolve()),
             '--bios', str(a.bios.resolve()), '--tcp', str(port), '--view-width', str(a.width),
             '--save-path', str(a.output / 'fresh.sav')]
     evidence = dict(session=[], trace=[], captures=[])
@@ -149,7 +174,11 @@ def main():
     error = None
     try:
         with (a.output / 'run.log').open('w') as log:
-            proc = subprocess.Popen(args, env=env, stdout=log, stderr=subprocess.STDOUT, cwd=ROOT)
+            # Asset-picker caches use argv[0]'s directory. A plain name and a
+            # private cwd keep rom.cfg/bios.cfg here; executable selects the
+            # real, hashed binary without copying it into each session.
+            proc = subprocess.Popen(args, executable=str(binary), env=env, stdout=log,
+                                    stderr=subprocess.STDOUT, cwd=a.output)
             for _ in range(50):
                 try:
                     command(cmd='ping')
@@ -160,7 +189,8 @@ def main():
             else:
                 raise ValueError('Local debug server unavailable')
             command(cmd='savestate_load', path=str(a.state.resolve()))
-            execute_session(command, actions, capture, evidence, tracing, start)
+            execute_session(command, actions, capture, evidence, tracing, start,
+                            castle_status=a.castle_status)
             command(cmd='savestate_save', path=str(a.output / 'final.state'))
             command(cmd='quit')
             proc.wait(timeout=10)

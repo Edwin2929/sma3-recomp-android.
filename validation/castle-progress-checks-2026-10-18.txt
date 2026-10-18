@@ -1,0 +1,66 @@
+Castle progress validation — 2026-10-18
+Recorded results; synthetic checks and native game evidence are separate.
+
+Python validator tests, reviewed and executed before the native pair:
+$ python -B -m unittest discover -s validation -p 'test_*.py' -v
+66 tests: PASS
+$ python -B -O -m unittest discover -s validation -p 'test_*.py' -v
+66 tests: PASS
+Includes 21 car checks, 8 transition checks, 12 castle health checks,
+19 castle progress checks and 6 aggregate comparison checks.
+No new Python test rerun after those modules were frozen.
+
+C++ observer tests:
+$ g++ -std=c++20 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined validation/widescreen_rotating_test.cpp -o /tmp/sma3-castle-rotating-test
+$ ASAN_OPTIONS=detect_leaks=0 /tmp/sma3-castle-rotating-test
+PASS: unclamped signed X, guest clamp boundaries, affine groups, final rotating pairs, stale attributes and capacity
+Exit 0. LeakSanitizer disabled due to environment limits.
+Independent source/disassembly review: no blockers.
+
+Native rebuild:
+$ cmake --build build --target sma3_runner -j2
+[1/2] Building CXX object CMakeFiles/sma3_runner.dir/src/widescreen.cpp.o
+[2/2] Linking CXX executable sma3_runner
+Exit 0; diagnostic interface enabled; no game archive or engine changes.
+Before/after runner identities: castle-progress-native-build.json.
+
+Castle native pair (240x160 / 356x160):
+37 actions; 2238 executed frames; 2239 per-frame observations.
+Native frames 6599 through 8837; each session completed normally.
+73/73 sampled center images equal; 74/74 state comparisons equivalent.
+The extra final save shares the last capture's frame.
+CPU0, BUS0, IO_0, AUD0, SAV0 and META compared.
+Only 8 inactive-RTC wall-clock bytes masked; viewport-specific PPU0 excluded.
+State/input/health traces match at every observed frame.
+Wall/post-elevator checkpoints complete at elapsed 1459 and 1745.
+Final X=2662.93359375, Y=1952.99609375, velocity=0.
+337 stable healthy idle frames; lives 3 -> 3; deaths=0; no baby-loss episodes.
+Before fix: 132 raw gaps, 132 visible unresolved frames, 0 incoherent frames.
+After fix: 0 raw gaps, 0 visible unresolved frames, 0 incoherent frames.
+Both native logs: dispatch_misses=0 interpreted_insns=0 healed_native=0.
+No unmapped diagnostics in either corrected castle log.
+complete_castle_progress_pass: true
+Reports: widescreen-castle-progress-before-fix.json, widescreen-castle-progress.json.
+
+Independent before/after fix comparison:
+Same inputs, 2239 observations, 73 captures and 74 states per width.
+No changed control pixels and no changed panorama center pixels.
+Real changes in the 58-pixel margins: 3 captures, 1129 pixels total.
+Elapsed 1758: 339 right; 1860: 429 left; 1878: 361 left.
+correction_effect_pass: true
+Report: widescreen-castle-fix-effect.json.
+Visual inspection of elapsed 1758 and 1860 confirms the additional flipper pieces.
+
+Targeted car regression with the corrected native binary:
+3506 frames; exact transformation sequence 0 -> 2 -> 0.
+1200 final normal idle frames; final rightward separation 58.83984375 pixels.
+61/61 sampled center pairs; 62/62 state comparisons.
+0 raw/visible/incoherent gaps; static native counters 0/0/0 in both runs.
+complete_cycle_pass: true
+Report: widescreen-car-post-castle-fix.json.
+
+Scope:
+Continuous bounded castle route from a synthetic entry, without an intermediate
+restore or guest-memory writes. The next wall near X=2720 and a natural room
+transition remain unqualified. No full-castle, boss, expanded spawning, Android
+or frame-rate qualification. No APK generated in this phase.

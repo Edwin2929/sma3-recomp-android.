@@ -1,0 +1,26 @@
+{
+  "profile": "castle-route-progress-v1",
+  "actions_sha256": "af302618d4858bbd150047e1db7b6c637e0dd011cf8b4f990ef56eade64e7a37",
+  "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+  "gameplay_start_frame": 300,
+  "level_id": 3,
+  "sublevel_id": 3,
+  "final_idle_frames": 300,
+  "final_min_x_pixels": 2600,
+  "waypoints": [
+    {
+      "id": "wall",
+      "x_min_pixels": 1930,
+      "x_max_pixels": 2096,
+      "y_max_pixels": 1825,
+      "min_consecutive_frames": 5
+    },
+    {
+      "id": "post_elevator",
+      "x_min_pixels": 2224,
+      "x_max_pixels": 2360,
+      "y_max_pixels": 1825,
+      "min_consecutive_frames": 5
+    }
+  ]
+}

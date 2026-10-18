@@ -60,6 +60,7 @@ void object_submission(uint32_t pc) {
     if(pc==0x08063b52 || pc==0x08063d32) { observe_scaled_component(read,g_cpu.R,strips,pc);return; }
     if(pc==0x0809e324) { observe_rotating_position(read,g_cpu.R,strips);return; }
     if(pc==0x0809e774) { observe_rotating_affine(read,g_cpu.R[0],strips);return; }
+    if(pc==0x08075e7a) { observe_rotating_pair(read,g_cpu.R,strips);return; }
     if(pc==0x08084d92) { observe_secondary_component(read,g_cpu.R,strips);return; }
     if(pc==0x08042380 || pc==0x0804244c) { observe_tongue_tip(read,pc,g_cpu.R,strips);return; }
     if(pc==0x0804f44a || pc==0x0804f51c || pc==0x0804f5ac) { observe_toadies(read,pc,g_cpu.R,strips);return; }

@@ -1,0 +1,90 @@
+{
+  "comparison": "sprite-13c-before-after-v1-v2",
+  "correction_effect_pass": true,
+  "actions_sha256": "af302618d4858bbd150047e1db7b6c637e0dd011cf8b4f990ef56eade64e7a37",
+  "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+  "new_runner_sha256": "90e0a93db1cda3a058b34609d8b2189c56236d76c091850802d4cd13b3fbd8be",
+  "control": {
+    "width": 240,
+    "frames": 2238,
+    "actions": 37,
+    "identical_trace_observations": 2239,
+    "identical_inputs": true,
+    "identical_action_checkpoints": true,
+    "identical_capture_schedule": true,
+    "compared_images": 73,
+    "compared_state_snapshots": 74,
+    "compared_state_sections": [
+      "CPU0",
+      "BUS0",
+      "IO_0",
+      "AUD0",
+      "SAV0",
+      "META"
+    ],
+    "nonviewport_state_unchanged": true,
+    "viewport_state_compared": false,
+    "pixel_format": "RGB",
+    "inactive_rtc_exception": "8 wall-clock seconds bytes; RTC must remain inactive",
+    "changed_images": 0,
+    "changed_pixels": 0,
+    "all_control_images_unchanged": true
+  },
+  "panorama": {
+    "width": 356,
+    "frames": 2238,
+    "actions": 37,
+    "identical_trace_observations": 2239,
+    "identical_inputs": true,
+    "identical_action_checkpoints": true,
+    "identical_capture_schedule": true,
+    "compared_images": 73,
+    "compared_state_snapshots": 74,
+    "compared_state_sections": [
+      "CPU0",
+      "BUS0",
+      "IO_0",
+      "AUD0",
+      "SAV0",
+      "META"
+    ],
+    "nonviewport_state_unchanged": true,
+    "viewport_state_compared": false,
+    "pixel_format": "RGB",
+    "inactive_rtc_exception": "8 wall-clock seconds bytes; RTC must remain inactive",
+    "center_width_pixels": 240,
+    "center_changed_images": 0,
+    "center_changed_pixels": 0,
+    "all_centers_unchanged": true,
+    "margin_width_pixels": 58,
+    "changed_margin_captures": 3,
+    "left_changed_captures": 2,
+    "right_changed_captures": 1,
+    "left_changed_pixels": 790,
+    "right_changed_pixels": 339,
+    "total_changed_margin_pixels": 1129,
+    "changes_exclusively_in_margins": true,
+    "real_margin_change_observed": true,
+    "captures_with_margin_changes": [
+      {
+        "elapsed_frame": 1758,
+        "native_frame": 8357,
+        "left_changed_pixels": 0,
+        "right_changed_pixels": 339
+      },
+      {
+        "elapsed_frame": 1860,
+        "native_frame": 8459,
+        "left_changed_pixels": 429,
+        "right_changed_pixels": 0
+      },
+      {
+        "elapsed_frame": 1878,
+        "native_frame": 8477,
+        "left_changed_pixels": 361,
+        "right_changed_pixels": 0
+      }
+    ]
+  },
+  "scope": "Same 2238-frame synthetic-entry route before and after the rendering observer fix. Pixel claims cover 73 captures per width; per-frame traces cover 2239 observations. No claim of a natural transition, castle completion, Android or frame rate."
+}

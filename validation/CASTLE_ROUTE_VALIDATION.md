@@ -1,5 +1,12 @@
 # Extended castle route — 2026-10-07
 
+Follow-up, 2026-10-18: the [castle progress validation](CASTLE_PROGRESS_VALIDATION.md)
+extends this same synthetic entry beyond the former wall and the moving platform,
+to X=2662.93359375 in the lower corridor. It includes a new fix for sprite `0x13C`
+and a stricter per-frame progress/health contract. The original route and result
+below remain historical evidence; the follow-up does not qualify a natural room
+transition or Android widescreen.
+
 The synthetic 1-4 entry fixture now has a 1,920-frame route of repeated right,
 jump and tongue inputs (`panorama-route-actions.json`). This is a bounded route,
 not completion of the castle. Yoshi reaches X=1872.996 and remains blocked there;

@@ -3,9 +3,10 @@ import hashlib
 import json
 import math
 from itertools import groupby
+from castle_route_checks import validate_castle_history
 
-OBSERVABLES = ('frame', 'player_xy_velocity', 'level_id', 'sublevel_id',
-               'game_state', 'transformation')
+TRANSITION_FIELDS = ('level_id', 'sublevel_id', 'game_state', 'transformation')
+OBSERVABLES = ('frame', 'player_xy_velocity', *TRANSITION_FIELDS)
 
 
 def require(condition, message):
@@ -17,6 +18,11 @@ def require(condition, message):
 def action_digest(actions):
     encoded = json.dumps(actions, sort_keys=True, separators=(',', ':')).encode()
     return hashlib.sha256(encoded).hexdigest()
+
+
+def transition_changed(previous, current):
+    """Use the same scene boundaries when recording and verifying captures."""
+    return any(previous[field] != current[field] for field in TRANSITION_FIELDS)
 
 
 def validate_actions(actions):
@@ -85,6 +91,7 @@ def validate_trace(actions, session, trace):
         require(end['elapsed_frame'] == cursor and
                 all(end[k] == trace[cursor][k] for k in OBSERVABLES),
                 'Action checkpoint differs from frame trace')
+    validate_castle_history(session, trace)
     return total
 
 
@@ -92,7 +99,7 @@ def required_capture_frames(session, trace, start=0, interval=60):
     endpoints = {r['elapsed_frame'] for r in session}
     return {i for i in range(max(1, start), len(trace))
             if i % interval == 0 or i in endpoints or
-            trace[i]['transformation'] != trace[i - 1]['transformation']}
+            transition_changed(trace[i - 1], trace[i])}
 
 
 def validate_expectations(value):

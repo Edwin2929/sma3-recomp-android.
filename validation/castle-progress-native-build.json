@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-18",
+  "source_base_commit": "041c176ebc2596fe4092d3d12eed206e55b905a7",
+  "modified_native_source_sha256": {
+    "src/widescreen.cpp": "1ead873ff6184410db7934137c1ef647c8bd0123117d8b0ecea54954df4afe29",
+    "src/widescreen_rotating.h": "ae2500c0271e25d5f5dc6b0ba5f7b1db6bdbcec898d13ddd60318f9fba45d687"
+  },
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "platform": "Linux x86_64",
+  "compiler": "13.3.0",
+  "python_version": "3.12.14",
+  "cmake_version": "3.22.1",
+  "build_type": "Release",
+  "widescreen_diagnostics": true,
+  "build_command": "cmake --build build --target sma3_runner -j2",
+  "before_fix_runner_sha256": "c98ab86321149afe2a09378733061da6740b40c61cd29df9d030472b0b48b42d",
+  "native_runner_sha256": "90e0a93db1cda3a058b34609d8b2189c56236d76c091850802d4cd13b3fbd8be",
+  "native_runner_bytes": 149992328,
+  "runtime_config_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+  "fixture_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+  "generated_game_archive_sha256": "8d3470c6b408a9947822f387109fb4005331d2e744f44ce77de50767609dd196",
+  "generated_game_archive_bytes": 318260084,
+  "generated_game_archive_rebuilt": false,
+  "changed_native_translation_units": [
+    "src/widescreen.cpp"
+  ],
+  "native_test": {
+    "source_sha256": "7341d5d760c97456e77f2cae8c221c33e31e4c3b0bf9143965e27f1ec6109ecc",
+    "standard": "c++20",
+    "warnings": [
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "leak_detection": false,
+    "passed": true
+  },
+  "expanded_object_spawning": false,
+  "android_build": false,
+  "performance_measured": false,
+  "scope": "Desktop diagnostic build for the bounded castle route and the car-cycle regression. ROM, BIOS, generated game code, binary, images and savestates are not included."
+}

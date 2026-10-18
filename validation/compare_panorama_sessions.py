@@ -7,6 +7,8 @@ import struct
 from itertools import groupby
 from pathlib import Path
 from PIL import Image
+from castle_route_checks import (CASTLE_STATUS_PROFILE, IWRAM_SIZE, parse_castle_status,
+                                 validate_castle_status)
 from make_level_fixture import sections
 from panorama_session_checks import (check_car_cycle, require, required_capture_frames,
                                      validate_trace)
@@ -46,6 +48,11 @@ def compare_state(left, right, expected=None):
                       player_xy_velocity=[v / 256 for v in struct.unpack_from('<iiii', a, base + 0x6d80)])
         require(all(expected[k] == v for k, v in actual.items()),
                 'Serialized game state differs from the observed checkpoint')
+        if 'castle_status' in expected:
+            validate_castle_status(expected['castle_status'], expected['game_state'])
+            status = parse_castle_status(a[base:base + IWRAM_SIZE])
+            require(status == expected['castle_status'],
+                    'Serialized castle_status differs from the observed checkpoint')
     return exact
 
 
@@ -84,6 +91,11 @@ def compare(control, candidate, expectations=None):
                 'Different starting assets, native build, configuration or capture settings')
         require(set(settings['asset_sha256']) == {'rom', 'bios', 'state', 'runner', 'config'},
                 'Missing input provenance')
+        castle_status = 'castle_status' in trace[0]
+        require(settings.get('observation_profile') == (CASTLE_STATUS_PROFILE if castle_status else None),
+                'Observation profile differs from castle_status history')
+        require(expectations is None or not castle_status,
+                'Castle observations cannot use the car cycle contract')
         for folder in (control, candidate):
             require(read_json(folder / 'run-status.json')['execution_complete'] is True,
                     'Session execution did not complete')
@@ -126,11 +138,14 @@ def compare(control, candidate, expectations=None):
     require(all(g[1] in ('0', '1') and int(g[3]) <= int(g[2]) for g in gaps), 'Invalid gap counters')
     visible = sum(int(g[3]) > 0 for g in gaps)
     incoherent = sum(int(g[1]) != 1 for g in gaps)
-    modes = [x['transformation'] for x in (trace or left) if 'transformation' in x]
-    result = dict(level_id=left[0]['level_id'], sublevel_ids=sorted({x['sublevel_id'] for x in left}),
+    observations = trace if trace is not None else left
+    modes = [x['transformation'] for x in observations if 'transformation' in x]
+    # Keep the legacy first-checkpoint level while listing every observed level.
+    result = dict(level_id=left[0]['level_id'], level_ids=sorted({x['level_id'] for x in observations}),
+                  sublevel_ids=sorted({x['sublevel_id'] for x in observations}),
                   frames=sum(x['action']['n'] for x in left), central_images_equal=centers,
-                  sampled_game_states=sorted({x['game_state'] for x in left}),
-                  supported_gameplay_only=all(x['game_state'] == 13 for x in left),
+                  sampled_game_states=sorted({x['game_state'] for x in observations}),
+                  supported_gameplay_only=all(x['game_state'] == 13 for x in observations),
                   sampled_transformations=sorted(set(modes)),
                   transformation_sequence=[key for key, _ in groupby(modes)],
                   final_transformation=left[-1].get('transformation'),
@@ -143,7 +158,10 @@ def compare(control, candidate, expectations=None):
                   observation_interval_frames=1 if trace else None,
                   scope='Bounded session only; does not qualify full levels, bosses, all transformations or Android')
     if cycle is not None:
-        result.update(cycle)
+        # The cycle's supported segment starts after warm-up; the report above
+        # describes all observations, including the initial synthetic entry.
+        result.update({key: value for key, value in cycle.items() if key != 'supported_gameplay_only'})
+        result['cycle_supported_gameplay_only'] = cycle['supported_gameplay_only']
         result['complete_cycle_pass'] = cycle['cycle_pass'] and result['coverage_pass'] and not gaps
     return result
 

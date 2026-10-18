@@ -1,0 +1,287 @@
+{
+  "level_id": 3,
+  "level_ids": [
+    3
+  ],
+  "sublevel_ids": [
+    3,
+    57
+  ],
+  "frames": 2238,
+  "central_images_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "sampled_game_states": [
+    10,
+    12,
+    13
+  ],
+  "supported_gameplay_only": false,
+  "sampled_transformations": [
+    0
+  ],
+  "transformation_sequence": [
+    0
+  ],
+  "final_transformation": 0,
+  "compared_state_sections": [
+    "CPU0",
+    "BUS0",
+    "IO_0",
+    "AUD0",
+    "SAV0",
+    "META"
+  ],
+  "compared_state_snapshots": 74,
+  "bus_exception": "Inactive RTC wall-clock seconds only (8 bytes)",
+  "viewport_state_compared": false,
+  "visible_unresolved_frames": 132,
+  "incoherent_frames": 0,
+  "raw_gap_frames": 132,
+  "differential_pass": true,
+  "coverage_pass": false,
+  "cycle_pass": null,
+  "complete_cycle_pass": null,
+  "synthetic_entry": true,
+  "observation_interval_frames": 1,
+  "scope": "Spatial progress through the first castle wall and moving platform, then a stable stop in the lower corridor of sublevel 3. Does not qualify a natural room transition, the next wall, castle completion, expanded spawning, Android or frame rate.",
+  "route_contract": {
+    "profile": "castle-route-progress-v1",
+    "actions_sha256": "af302618d4858bbd150047e1db7b6c637e0dd011cf8b4f990ef56eade64e7a37",
+    "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+    "gameplay_start_frame": 300,
+    "level_id": 3,
+    "sublevel_id": 3,
+    "final_idle_frames": 300,
+    "final_min_x_pixels": 2600,
+    "waypoints": [
+      {
+        "id": "wall",
+        "x_min_pixels": 1930,
+        "x_max_pixels": 2096,
+        "y_max_pixels": 1825,
+        "min_consecutive_frames": 5
+      },
+      {
+        "id": "post_elevator",
+        "x_min_pixels": 2224,
+        "x_max_pixels": 2360,
+        "y_max_pixels": 1825,
+        "min_consecutive_frames": 5
+      }
+    ]
+  },
+  "route_checks": {
+    "profile": "castle-route-progress-v1",
+    "progress_pass": true,
+    "progress_errors": [],
+    "actions_sha256": "af302618d4858bbd150047e1db7b6c637e0dd011cf8b4f990ef56eade64e7a37",
+    "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+    "frames": 2238,
+    "observation_interval_frames": 1,
+    "scene_sequence": [
+      {
+        "level_id": 3,
+        "sublevel_id": 57,
+        "game_state": 10,
+        "transformation": 0,
+        "start_elapsed_frame": 0,
+        "end_elapsed_frame": 0,
+        "observed_frames": 1
+      },
+      {
+        "level_id": 3,
+        "sublevel_id": 3,
+        "game_state": 10,
+        "transformation": 0,
+        "start_elapsed_frame": 1,
+        "end_elapsed_frame": 32,
+        "observed_frames": 32
+      },
+      {
+        "level_id": 3,
+        "sublevel_id": 3,
+        "game_state": 12,
+        "transformation": 0,
+        "start_elapsed_frame": 33,
+        "end_elapsed_frame": 263,
+        "observed_frames": 231
+      },
+      {
+        "level_id": 3,
+        "sublevel_id": 3,
+        "game_state": 13,
+        "transformation": 0,
+        "start_elapsed_frame": 264,
+        "end_elapsed_frame": 2238,
+        "observed_frames": 1975
+      }
+    ],
+    "game_state_sequence": [
+      10,
+      12,
+      13
+    ],
+    "transformation_sequence": [
+      0
+    ],
+    "level_ids": [
+      3
+    ],
+    "sublevel_ids": [
+      3,
+      57
+    ],
+    "supported_gameplay_only": true,
+    "unexpected_entry_frames": [],
+    "unexpected_post_warmup_frames": [],
+    "waypoints": [
+      {
+        "id": "wall",
+        "x_min_pixels": 1930,
+        "x_max_pixels": 2096,
+        "y_max_pixels": 1825,
+        "min_consecutive_frames": 5,
+        "passed": true,
+        "longest_consecutive_frames": 56,
+        "first_start_elapsed_frame": 1455,
+        "first_completed_elapsed_frame": 1459
+      },
+      {
+        "id": "post_elevator",
+        "x_min_pixels": 2224,
+        "x_max_pixels": 2360,
+        "y_max_pixels": 1825,
+        "min_consecutive_frames": 5,
+        "passed": true,
+        "longest_consecutive_frames": 46,
+        "first_start_elapsed_frame": 1741,
+        "first_completed_elapsed_frame": 1745
+      }
+    ],
+    "final_player_xy_velocity": [
+      2662.93359375,
+      1952.99609375,
+      0.0,
+      0.0
+    ],
+    "final_game_state": 13,
+    "final_transformation": 0,
+    "stable_normal_idle_frames": 337,
+    "final_baby_safe": true,
+    "initial_lives": 3,
+    "final_lives": 3,
+    "life_decrement_events": [],
+    "total_lives_lost": 0,
+    "negative_life_frames": [],
+    "death_counter_changes": [],
+    "death_counter_nonzero_frames": [],
+    "inhibition_nonzero_frames": [],
+    "baby_loss_episodes": [],
+    "observed_limits": {
+      "x_min_pixels": -32.0,
+      "x_max_pixels": 2662.93359375,
+      "y_min_pixels": 1817.21484375,
+      "y_max_pixels": 132928.796875,
+      "lives_min": 3,
+      "lives_max": 3,
+      "deaths_min": 0,
+      "deaths_max": 0
+    },
+    "natural_transition_validated": false,
+    "scope": "Spatial progress and continuity within level 3/sublevel 3 from a synthetic entry.",
+    "limitations": [
+      "The route ends in the lower corridor; the next wall near X=2720 remains beyond this route.",
+      "No natural room transition, castle completion, boss, or Android qualification is established."
+    ]
+  },
+  "complete_castle_progress_pass": false,
+  "input_provenance": {
+    "asset_sha256": {
+      "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+      "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+      "state": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+      "runner": "c98ab86321149afe2a09378733061da6740b40c61cd29df9d030472b0b48b42d",
+      "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+    },
+    "observation_profile": "castle-status-v1"
+  },
+  "evidence_sha256": {
+    "actions.json": "880c2e97d1a71ae681ab6fc6fcface3f8b9834605f13f152871f465473b48e94",
+    "trace.json": "3a5d6b8925a0fee86df0260c2367f148690b04b32a08145a50397f196213586e",
+    "captures.json": "049d88537088abae3957bcf065a27689fa037654884710399a2a4a9d07e78a94"
+  },
+  "natural_room_transition_qualified": false
+}

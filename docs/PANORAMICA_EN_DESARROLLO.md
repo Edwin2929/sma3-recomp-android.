@@ -398,3 +398,48 @@ establece seguridad permanente bajo otras entradas. **No completa la cobertura
 de niveles, jefes ni todas las transformaciones.** La ampliación lateral de
 aparición de objetos sigue desactivada. No se ha generado un nuevo APK con esta
 validación y la panorámica real sigue ausente de Android 0.9 y 0.9.1.
+
+## Avance del castillo 1-4 — 18 de octubre de 2026
+
+La nueva ruta continua desde la misma entrada sintética supera el bloqueo
+histórico en X=1872.99609375, cruza el primer muro y utiliza el elevador.
+Termina en X=2662.93359375 dentro del corredor inferior: **789.9375 píxeles
+más adelante**, con tres vidas, cero muertes y Baby Mario sobre Yoshi.
+El [informe del avance](../validation/widescreen-castle-progress.json) y su
+[explicación reproducible](../validation/CASTLE_PROGRESS_VALIDATION.md)
+documentan el criterio y sus límites.
+
+| Comprobación | Resultado |
+| --- | --- |
+| Ruta nativa en 240 × 160 y 356 × 160 | 2.238 fotogramas por ejecución |
+| Imágenes centrales RGB idénticas | 73 pares |
+| Comparaciones de estado, incluida la final | 74 pares |
+| Espera final estable, sin entradas y con el bebé seguro | 337 fotogramas consecutivos |
+| Huecos brutos / visibles sin resolver / envíos incoherentes | 0 / 0 / 0 |
+| Fallos de despacho / instrucciones interpretadas / reparaciones nativas | 0 / 0 / 0 |
+
+El recorrido ampliado descubrió 132 fotogramas con posiciones visibles sin
+resolver en las dos paletas del sprite `0x13C`. La corrección observa sus
+coordenadas completas después del dibujo y de los ajustes afines, y conserva
+la comprobación de los atributos finales. La repetición eliminó esos huecos
+sin modificar la trayectoria ni el estado del juego. El
+[resultado anterior a la corrección](../validation/widescreen-castle-progress-before-fix.json)
+permanece separado y rechazado por su cobertura insuficiente.
+
+La [comparación antes/después](../validation/widescreen-castle-fix-effect.json)
+confirma cambios reales de las paletas en los márgenes de tres capturas,
+sin cambios en los centros ni en los estados comparados. La
+[regresión del coche](../validation/widescreen-car-post-castle-fix.json)
+también vuelve a superar el ciclo completo con el mismo binario corregido.
+
+Las imágenes y los estados se comparan en puntos de captura; el guardado final
+comparte fotograma con la última captura. Las entradas, el movimiento y la
+salud sí se observan en cada fotograma. La excepción de comparación de estado
+sigue limitada al reloj RTC inactivo y al estado de presentación PPU descritos
+en la documentación de la prueba.
+
+La ruta termina antes de la siguiente pared, situada en X=2720. **Todavía no
+acredita una transición de sala natural ni completar el castillo.** El cambio
+de subnivel de la inicialización sintética se registra, pero no cuenta como
+transición jugada. La aparición lateral ampliada sigue desactivada y esta
+validación de escritorio no añade panorámica a Android 0.9 ni 0.9.1.

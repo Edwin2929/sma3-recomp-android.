@@ -33,6 +33,48 @@ bool observe_rotating_affine(Reader read,unsigned sprite,StagingPositions& out) 
     }
     return true;
 }
+
+// 08075E7A is sprite 13C's common return, after 08075E84 draws both
+// components, 080755E4 assigns their matrices and 0805EDA0 adjusts priority.
+// The drawing/matrix order differs while paused. Observe their final triples
+// here, deriving full signed coordinates from the same anchors and ROM table
+// as 0808CE0C; never reconstruct X from its nine-bit OAM representation.
+template<class Reader>
+bool observe_rotating_pair(Reader read,const uint32_t* r,StagingPositions& out) {
+    const unsigned sprite=r[4],base=0x03002460;
+    if(sprite<base || sprite>=base+24*0xb0 || (sprite-base)%0xb0)return false;
+    const unsigned allocation=read(sprite+0x34,2);
+    if((allocation&3) || allocation>254*4)return false;
+    const unsigned first=allocation/4;
+    // A failed observation of either owned component invalidates the pair.
+    // Do not leave an earlier observation attached to a reused allocation.
+    out[first]={};out[first+1]={};
+    if(read(0x0300702c,4)!=base || read(sprite+0x32,2)!=0x13c ||
+       read(sprite+0x24,2)!=8 || (read(sprite+0x2a,2)>>11)!=2)return false;
+    const unsigned next_matrix=read(0x030069d2,2);
+    if(next_matrix<2 || next_matrix>32)return false;
+    const unsigned angle=read(sprite+0x7a,2)&0x1fe;
+    const int dx=(8*int(int16_t(read(0x081af6ce + angle,2)))+128)>>8;
+    const int dy=(8*int(int16_t(read(0x081af74e + angle,2)))+128)>>8;
+    const int wx=uint16_t(read(sprite+0x5a,2)),wy=uint16_t(read(sprite+0x5c,2));
+    const int cx=uint16_t(read(0x030069d4,2)),cy=uint16_t(read(0x030069dc,2));
+    const int x[2]={int16_t(uint16_t(wx+dx-40-cx)),int16_t(uint16_t(wx-dx+8-cx))};
+    const int y=int16_t(uint16_t(wy+dy-cy-16));
+    const unsigned stored_y=y>=-32 && y<160 ? unsigned(y)&255 : 160;
+    std::array<ObjectPosition,2> observed{};
+    for(unsigned i=0;i<2;++i) {
+        const unsigned a=0x03005a00+(first+i)*8;
+        const auto a0=uint16_t(read(a,2)),a1=uint16_t(read(a+2,2)),a2=uint16_t(read(a+4,2));
+        const unsigned expected_a1=0x8000|((next_matrix-2+i)<<9)|(unsigned(x[i])&511);
+        if((a0&0x3ff)!=(0x100|stored_y) || a1!=expected_a1)return false;
+        observed[i]={x[i],true,a0,a1,a2,first+i};
+    }
+    // 08075F6C copies the first tile/palette/priority to the second piece;
+    // the post-draw priority routine treats both allocated pieces equally.
+    if(observed[0].a2!=observed[1].a2)return false;
+    out[first]=observed[0];out[first+1]=observed[1];
+    return true;
+}
 // 08063B52 and 08063D32 expand one component's affine box and shifts its origin left 16.
 template<class Reader>
 bool observe_scaled_component(Reader read,const uint32_t* r,StagingPositions& out,uint32_t pc=0x08063b52) {
