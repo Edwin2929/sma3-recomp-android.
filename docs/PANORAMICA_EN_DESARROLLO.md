@@ -7,6 +7,20 @@ La versión Android entregada sigue siendo 0.9. Este cambio **no está activado
 en Android** y no demuestra todavía pantalla completa correcta en todas las
 escenas ni rendimiento a 120 FPS.
 
+## Qué puede hacer el APK 0.9
+
+Para conservar las proporciones, abre **Atrás → Imagen → Estirar a pantalla
+completa** y desactiva la casilla. El fotograma original de **240 × 160** tiene
+proporción **3:2**; se centra y deja bandas cuando la superficie tiene otra
+proporción. Activar Estirar llena el área de juego con ese mismo fotograma,
+puede deformarlo y **no muestra más escenario**.
+
+La panorámica real descrita aquí necesita dibujar contenido adicional fuera
+de ese fotograma. No se activa con Estirar ni al elegir 720p o 1080p.
+La aclaración de la ayuda del menú en las fuentes es para una próxima
+compilación y **no integra este prototipo en el APK 0.9 publicado**.
+Más detalles en la [guía de calidad de imagen](CALIDAD_IMAGEN.md).
+
 ## Implementado
 
 - Reconstrucción del terreno desde el mapa completo del nivel, fuera del anillo

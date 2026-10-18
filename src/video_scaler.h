@@ -6,8 +6,14 @@ namespace sma3 {
 inline SDL_Rect video_destination(int w, int h, int sw, int sh, bool stretch) {
     if (w<=0 || h<=0 || sw<=0 || sh<=0) return {0,0,0,0};
     if (stretch) return {0,0,w,h};
-    int dw=w, dh=static_cast<int>(static_cast<long long>(w)*sh/sw);
-    if (dh>h) { dh=h; dw=static_cast<int>(static_cast<long long>(h)*sw/sh); }
+    // Compare the exact aspect ratios before rounding to raster pixels. A
+    // rounded height could pick the wrong axis (241x160 for a 240x160 source).
+    // Wide products also keep extreme input sizes out of an overflowing int.
+    int dw=w, dh=h;
+    if (static_cast<long long>(w)*sh > static_cast<long long>(h)*sw)
+        dw=static_cast<int>(static_cast<long long>(h)*sw/sh);
+    else
+        dh=static_cast<int>(static_cast<long long>(w)*sh/sw);
     return {(w-dw)/2,(h-dh)/2,dw,dh};
 }
 struct VideoScaler {

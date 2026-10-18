@@ -10,6 +10,25 @@ El botón Atrás abre cuatro apartados:
 Volver o Atrás regresa al apartado anterior. Continuar cierra Ajustes.
 Los textos del menú y del editor están en español, inglés y portugués.
 
+## Imagen sin deformaciones
+
+En el **APK 0.9 publicado**, abre **Atrás → Imagen → Estirar a pantalla
+completa** y desactiva la casilla. El juego conserva su proporción original
+**3:2**, porque los gráficos de GBA miden **240 × 160 píxeles**. La imagen se
+centra y aparecen bandas si la superficie disponible tiene otra proporción.
+La elección se aplica sin reiniciar y queda guardada.
+
+Activar Estirar llena el área de juego con el mismo fotograma: puede deformar
+la imagen y no amplía el campo de visión. Automática, 720p y 1080p cambian el
+escalado de presentación; tampoco añaden escenario.
+
+La ayuda del menú se ha aclarado en las fuentes para una próxima compilación,
+manteniendo el nombre del ajuste y las preferencias existentes. El APK 0.9
+conserva los textos anteriores. La panorámica que dibuja escenario adicional
+sigue siendo un prototipo de escritorio y **no está integrada en Android 0.9**.
+Consulta la [guía de imagen](CALIDAD_IMAGEN.md) y el
+[estado de la panorámica](PANORAMICA_EN_DESARROLLO.md).
+
 ## Diseños personalizados
 
 Controles → Diseños personalizados → Diseño 1, 2 o 3.
