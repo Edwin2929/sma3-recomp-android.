@@ -1,0 +1,66 @@
+Castle natural pipe transition validation — 2026-10-19 UTC
+Recorded results; synthetic tests and native game evidence are separate.
+
+$ python -B -m unittest discover -s validation -p 'test_*.py' -v
+114 tests: PASS; exit 0; 6.657 seconds.
+$ python -B -O -m unittest discover -s validation -p 'test_*.py' -v
+114 tests: PASS; exit 0; 7.188 seconds.
+66 inherited validator checks, 28 new pipe-transition checks and 20 new aggregate checks.
+Tests were executed after the new validator, aggregator, tests and final contract were frozen.
+The suite uses synthetic evidence; it does not run the game.
+
+Native continuous paired replay (240x160 / 356x160):
+65 actions; 3907 executed frames; 3908 observations per session.
+Native frames 6599 through 10506; both runs completed normally.
+One initial fixture load and no intermediate restores per qualification session.
+Fixture SHA-256: 02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2
+Actions canonical SHA-256: e87a2b74b03b8ac9871254617ab2d7a3698f54a966f4b53f55a51aa0e5c12d93
+Unchanged runner SHA-256: 90e0a93db1cda3a058b34609d8b2189c56236d76c091850802d4cd13b3fbd8be
+133/133 sampled center images equal; 134/134 state comparisons equivalent.
+The extra final save shares the last capture frame.
+CPU0, BUS0, IO_0, AUD0, SAV0 and META compared.
+Eight inactive-RTC bytes masked; viewport-specific PPU0 excluded.
+Inputs, movement, scene and health compared at every observed frame.
+Raw gaps=0; visible unresolved frames=0; incoherent frames=0.
+Both native logs: dispatch_misses=0 interpreted_insns=0 healed_native=0.
+Post-warm-up game-state sequence: 13 -> 9 -> 10 -> 11 -> 13.
+State 9: elapsed 3374..3421 (48 observations).
+State 10: elapsed 3422..3453 (32 observations); load X=368/Y=1024 at 3423.
+State 11: elapsed 3454..3520 (67 observations).
+Normal return: elapsed 3521; final elapsed 3907.
+Exit index 1016 persists; entry_type 1 during 9/10, then 0.
+Final player X=368/Y=1152.99609375; both velocities zero.
+354 stable final idle frames; 3 lives -> 3 lives; deaths=0; no baby-loss episodes.
+complete_castle_transition_pass=true; natural_room_transition_qualified=true.
+Report: widescreen-castle-transition.json.
+
+Real negative case retained:
+65 actions; 3793 executed frames; 3794 observations per session.
+127/127 center images and 128/128 states match; raw/visible/incoherent gaps=0/0/0.
+No pipe transition; exit_index=0; final X=3926.65234375/Y=1888.99609375.
+Baby loss elapsed 3017..3645 (629 observations), recovered at 3646.
+differential_pass=true; coverage_pass=true; complete_castle_transition_pass=false.
+Report: widescreen-castle-transition-first-replay.json.
+Historical first-replay actions and contract are retained separately.
+
+Native build scope:
+Reused the previous castle-progress native runner unchanged; no engine/game archive rebuild.
+No new C++ source changes; previous observer build/test evidence remains in castle-progress-native-build.json.
+This phase changes the input tape and Python qualification gates, with new public evidence and documentation.
+
+Reviewed, tested file SHA-256:
+validation/castle_transition_checks.py: 4bd855f2e1ec88b8225e9740838dc75d3c7bf1ca2f1f5b2e92d2b247542ed23c
+validation/compare_castle_transition.py: 73012dcd858421cf1f2f2c1efb34fa1c084345e97972090b0febd96c84504880
+validation/test_castle_transition_checks.py: 4517abd45ee7c81f9c15b56cdc9742f994815d27e98739ef9300cac5c2adf6d3
+validation/test_castle_transition_comparison.py: 7be9cd0cd01723741eb5be261dc731ae3548482f6814a3f2c3f4292633cbc6e2
+validation/castle-transition-expectations.json: 404328ddf535d2e0b0d16617c1789193b98fb95671a4fe0b0b82bde95ff0fdbe
+validation/panorama-castle-transition-actions.json: 3d23f686159db5cadb7679272a4f5558ccaf64519bec09f252ddeb6d6ac0e9b8
+
+Private test-log SHA-256:
+normal: a7e333a2988b284dd5b206b7e39ebca267606f547cb18dd8df782ee6529b158c
+optimized: ca02f7672599e7177a6ecfd7985fb210fe5ee0678f2dca0355c129d4cb6aaf0f
+
+Limitations:
+One bounded played pipe transition after a synthetic initial entry.
+No complete-castle, boss, other-exit, expanded-spawning, hot-restore, Android or frame-rate qualification.
+No APK, ROM, BIOS, generated game code, binary, savestate, screenshot or full private trace included.

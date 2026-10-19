@@ -88,6 +88,15 @@ Edwin reportó 60 FPS con una versión anterior en Android y posteriormente iden
 
 Las pruebas de desarrollo cubren la rutina de transformación, el escalador y los punteros de traducción. Se ejecutaron 7.200 fotogramas nativos por idioma sin faltas de despacho ni instrucciones interpretadas. Siguen pendientes las comprobaciones específicas de estas funciones en el teléfono, todas las transformaciones y el juego completo. [Resultados y límites](docs/VALIDACION.md).
 
+### Prototipo panorámico de escritorio
+
+Se ha verificado una transición natural por tubería del corredor inferior a la
+zona superior del nivel 3/subnivel 3, comparando **240 × 160 y 356 × 160** desde
+la misma entrada sintética. La ruta continua de **3.907 fotogramas** cubre ese
+recorrido y una sola salida; no certifica el castillo completo ni el rendimiento.
+La panorámica real sigue fuera de los APK Android **0.9 y 0.9.1**.
+[Resultado y límites de la transición](validation/CASTLE_TRANSITION_VALIDATION.md).
+
 ## Qué significa «nativo» aquí
 
 El código de CPU del juego y de la BIOS se traduce a C++ y se compila para el dispositivo. El motor sigue reproduciendo el funcionamiento del hardware de GBA. No es una reescritura completa del juego independiente de ese hardware.

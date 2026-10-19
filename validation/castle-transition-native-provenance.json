@@ -1,0 +1,50 @@
+{
+  "date_utc": "2026-10-19",
+  "source_base_commit": "b196d69c79db5ed9004ec6b7794e8c96450b7ac0",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "disassembly_commit": "c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071",
+  "platform": "Linux x86_64",
+  "compiler": "13.3.0",
+  "python_version": "3.12.14",
+  "build_type": "Release",
+  "widescreen_diagnostics": true,
+  "native_runner_sha256": "90e0a93db1cda3a058b34609d8b2189c56236d76c091850802d4cd13b3fbd8be",
+  "native_runner_bytes": 149992328,
+  "runtime_config_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+  "fixture_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+  "native_source_sha256": {
+    "src/widescreen.cpp": "1ead873ff6184410db7934137c1ef647c8bd0123117d8b0ecea54954df4afe29",
+    "src/widescreen_rotating.h": "ae2500c0271e25d5f5dc6b0ba5f7b1db6bdbcec898d13ddd60318f9fba45d687"
+  },
+  "native_source_changed_this_phase": false,
+  "native_runner_rebuilt_this_phase": false,
+  "previous_native_build_report": "castle-progress-native-build.json",
+  "generated_game_archive_sha256": "8d3470c6b408a9947822f387109fb4005331d2e744f44ce77de50767609dd196",
+  "generated_game_archive_rebuilt_this_phase": false,
+  "qualified_widths": [
+    240,
+    356
+  ],
+  "height_pixels": 160,
+  "actions_sha256": "e87a2b74b03b8ac9871254617ab2d7a3698f54a966f4b53f55a51aa0e5c12d93",
+  "actions_count": 65,
+  "frames_per_session": 3907,
+  "initial_state_loads_per_qualification_session": 1,
+  "intermediate_state_loads_per_qualification_session": 0,
+  "expanded_object_spawning": false,
+  "android_build": false,
+  "performance_measured": false,
+  "scope": "Desktop diagnostic runner reused unchanged from the prior castle-progress build for one continuous played pipe transition. No game assets, savestates, screenshots or binaries are included.",
+  "native_completion_counters": {
+    "control": {
+      "dispatch_misses": 0,
+      "interpreted_insns": 0,
+      "healed_native": 0
+    },
+    "wide": {
+      "dispatch_misses": 0,
+      "interpreted_insns": 0,
+      "healed_native": 0
+    }
+  }
+}

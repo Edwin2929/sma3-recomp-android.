@@ -443,3 +443,38 @@ acredita una transición de sala natural ni completar el castillo.** El cambio
 de subnivel de la inicialización sintética se registra, pero no cuenta como
 transición jugada. La aparición lateral ampliada sigue desactivada y esta
 validación de escritorio no añade panorámica a Android 0.9 ni 0.9.1.
+
+## Una transición natural por tubería del castillo 1-4
+
+La continuación conserva las 37 acciones del avance anterior y se reproduce
+de una sola vez desde la misma entrada sintética, sin restaurar estados durante
+el recorrido. La ruta completa de **65 acciones y 3.907 fotogramas** atraviesa
+la tubería del extremo derecho del corredor inferior y regresa al juego en la
+zona superior del **nivel 3/subnivel 3**.
+
+El identificador de subnivel permanece en 3. La prueba reconoce la transición
+por la secuencia **13 → 9 → 10 → 11 → 13**, el índice de salida 1016 y la
+reubicación de Yoshi en **X=368, Y=1024** durante la carga. Termina en
+X=368, Y=1152.99609375, con velocidad cero y Baby Mario sobre Yoshi.
+El [informe agregado](../validation/widescreen-castle-transition.json) supera
+`complete_castle_transition_pass` y `natural_room_transition_qualified`.
+
+| Comprobación | Resultado |
+| --- | --- |
+| Ejecuciones de 240 × 160 y 356 × 160 | 3.907 fotogramas y 3.908 observaciones por sesión |
+| Imágenes centrales RGB idénticas | 133 pares |
+| Comparaciones de estado, incluida la final | 134 pares |
+| Espera final estable, sin entradas y con el bebé seguro | 354 fotogramas consecutivos |
+| Vidas iniciales / finales; muertes; episodios de separación del bebé | 3 / 3; 0; 0 |
+| Huecos brutos / visibles sin resolver / envíos incoherentes | 0 / 0 / 0 |
+
+Las entradas, el movimiento, la escena y la salud se comparan en cada fotograma.
+Las imágenes y los estados se comparan en los puntos programados; el guardado
+final comparte fotograma con la última captura. Los criterios, la procedencia
+y las excepciones de comparación están en el
+[informe de validación y reproducción](../validation/CASTLE_TRANSITION_VALIDATION.md).
+
+Este hito acredita **una sola transición por tubería**, no el castillo completo
+ni otras salidas. La aparición lateral ampliada sigue desactivada. Es una
+validación de escritorio: **los APK Android 0.9 y 0.9.1 siguen sin panorámica
+real** y esta prueba no aporta una medición de FPS.
