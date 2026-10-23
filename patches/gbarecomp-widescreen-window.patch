@@ -1,0 +1,169 @@
+--- a/src/gba/gba_ppu.h
++++ b/src/gba/gba_ppu.h
+@@ -269,6 +269,15 @@
+                                             std::uint16_t attr1,
+                                             std::uint16_t attr2,
+                                             int* out_x);
++// Explicit opt-in for horizontal OBJ-window continuation. Return exactly 1
++// with a verified signed 16-bit full X matching attr1's low nine bits; 0 (or
++// any other result) leaves the row under the established conservative policy.
++// Every enabled window object intersecting the row must resolve. Only the
++// margins use these coordinates; the native stencil remains unchanged.
++// WIN0/WIN1, disabled OBJ, pillarboxing and unauthored vertical rows never opt in.
++extern "C" int (*g_ws_obj_window_x_provider)(int oam_index, uint16_t attr0,
++                                              uint16_t attr1, uint16_t attr2,
++                                              int* out_x);
+ // Opt-in policy for expanded rendering: when nonzero, OBJ pixels are clipped
+ // to the native 240px viewport so sprites the guest parked just off-screen
+ // (signed 9-bit X idiom) never appear inside widescreen margins. The OBJ x
+--- a/src/gba/gba_ppu.cpp
++++ b/src/gba/gba_ppu.cpp
+@@ -40,6 +40,8 @@
+ extern "C" int (*g_ws_obj_attr_x_provider)(int, std::uint16_t,
+                                             std::uint16_t, std::uint16_t,
+                                             int*) = nullptr;
++extern "C" int (*g_ws_obj_window_x_provider)(int, uint16_t, uint16_t,
++                                               uint16_t, int*) = nullptr;
+ // Opt-in OBJ margin policy: clip OBJ pixels to the native 240px viewport in
+ // expanded rendering. Games routinely park sprites just past the visible edge
+ // (signed 9-bit OAM X, or Y-wrapped); without this clip those parked sprites
+@@ -713,6 +715,76 @@
+             }
+         }
+     }
++}
++
++// Extend only the stencil's margins from verified full positions. Keep the
++// native stencil builder above independent: even an X alias differing by 512
++// must not move, erase or add a pixel inside the original 240 columns.
++// A partial row is never usable. Unresolved objects may be offscreen under
++// their hardware alias yet intersect a margin at their actual full position.
++bool mark_obj_window_margin_scanline(bool* mask, int y, uint16_t dispcnt,
++                                     const uint8_t* vram, const uint8_t* oam,
++                                     uint32_t out_w, uint32_t ox) {
++    const uint32_t bg_mode = dispcnt & 0x07u;
++    const bool obj_1d_mapping = (dispcnt & 0x0040u) != 0;
++    for (int idx = 127; idx >= 0; --idx) {
++        const uint8_t* entry = oam + idx * 8;
++        const uint16_t attr0 = load_u16_le(&entry[0]);
++        const uint16_t attr1 = load_u16_le(&entry[2]);
++        const uint16_t attr2 = load_u16_le(&entry[4]);
++        const bool affine = (attr0 & 0x0100u) != 0;
++        const bool disable_or_double = (attr0 & 0x0200u) != 0;
++        if ((!affine && disable_or_double) || ((attr0 >> 10) & 3u) != 2u)
++            continue;
++        const uint32_t shape = (attr0 >> 14) & 3u;
++        if (shape >= 3) continue;
++        const uint32_t size = (attr1 >> 14) & 3u;
++        const int sw = kSpriteWH[shape][size][0];
++        const int sh = kSpriteWH[shape][size][1];
++        const int bw = affine && disable_or_double ? sw * 2 : sw;
++        const int bh = affine && disable_or_double ? sh * 2 : sh;
++        int sy = attr0 & 255u;
++        if (sy >= 160) sy -= 256;
++        const int line = y - sy;
++        if (line < 0 || line >= bh) continue;
++        const uint32_t tile_num = attr2 & 0x3FFu;
++        if (bg_mode >= 3 && tile_num < 512u) continue;
++
++        int sx = 0;
++        if (g_ws_obj_window_x_provider(idx, attr0, attr1, attr2, &sx) != 1 ||
++            sx < -32768 || sx > 32767 ||
++            (static_cast<unsigned>(sx) & 511u) != (attr1 & 511u))
++            return false;
++        const bool color256 = (attr0 & 0x2000u) != 0;
++        const auto mark = [&](int dx, int tex_x, int tex_y) {
++            const int hx = sx + dx;
++            if (hx >= 0 && hx < static_cast<int>(GbaPpu::kScreenWidth)) return;
++            const int x = hx + static_cast<int>(ox);
++            if (x < 0 || x >= static_cast<int>(out_w)) return;
++            if (obj_texel_opaque(vram, 0x10000u, obj_1d_mapping, tile_num,
++                                 sw / 8, color256, tex_x, tex_y))
++                mask[x] = true;
++        };
++        if (affine) {
++            const uint8_t* matrix = oam + ((attr1 >> 9) & 31u) * 0x20u;
++            const int32_t pa = read_s16(matrix, 0x06);
++            const int32_t pb = read_s16(matrix, 0x0E);
++            const int32_t pc = read_s16(matrix, 0x16);
++            const int32_t pd = read_s16(matrix, 0x1E);
++            const int dy = line - bh / 2;
++            for (int i = 0; i < bw; ++i) {
++                const int dx = i - bw / 2;
++                const int tx = ((pa * dx + pb * dy) >> 8) + sw / 2;
++                const int ty = ((pc * dx + pd * dy) >> 8) + sh / 2;
++                if (tx >= 0 && tx < sw && ty >= 0 && ty < sh) mark(i, tx, ty);
++            }
++        } else {
++            const int ty = (attr1 & 0x2000u) ? sh - 1 - line : line;
++            for (int i = 0; i < sw; ++i)
++                mark(i, (attr1 & 0x1000u) ? sw - 1 - i : i, ty);
++        }
++    }
++    return true;
+ }
+ 
+ void render_scanline_internal(uint8_t* rgb,
+@@ -1366,21 +1438,32 @@
+     };
+     const bool win0_row = win0_en && win_v_row(0x44, y);
+     const bool win1_row = win1_en && win_v_row(0x46, y);
+-    // OBJ-window stencil is built in vanilla 240-space; margin columns (hx
+-    // outside [0,240)) get no OBJ-window (WINOUT), consistent with WIN0/1.
++    // The native stencil always retains hardware placement and its original
++    // decoder. A separate, explicitly authorized stencil may cover margins.
+     bool obj_window_storage[GbaPpu::kScreenWidth] = {};
++    bool obj_window_margins[GbaPpu::kMaxRenderWidth] = {};
+     bool* obj_window_mask = nullptr;
+     if (objwin_en && native_row) {
+         mark_obj_window_scanline(obj_window_storage, y, dispcnt, vram, oam,
+                                  kVanW, kVanH);
+         obj_window_mask = obj_window_storage;
+     }
++    const bool authored_obj_window_row = native_row && objwin_en &&
++        (dispcnt & 0x1000u) && !win0_en && !win1_en &&
++        !g_ws_pillarbox && g_ws_obj_window_x_provider &&
++        mark_obj_window_margin_scanline(obj_window_margins, y, dispcnt,
++                                        vram, oam, out_w, ox);
+     auto window_control_at_hx = [&](int hx) -> uint16_t {
+         if (!any_window) return 0x3Fu;
+         if (win0_row && win_h_in(0x40, hx)) return winin & 0x3Fu;
+         if (win1_row && win_h_in(0x42, hx)) return (winin >> 8) & 0x3Fu;
+         if (obj_window_mask && hx >= 0 && hx < static_cast<int>(kVanW) &&
+             obj_window_mask[hx])
++            return static_cast<uint16_t>((winout >> 8) & 0x3Fu);
++        const int output_x = hx + static_cast<int>(ox);
++        if (authored_obj_window_row && (hx < 0 || hx >= static_cast<int>(kVanW)) &&
++            output_x >= 0 && output_x < static_cast<int>(out_w) &&
++            obj_window_margins[output_x])
+             return static_cast<uint16_t>((winout >> 8) & 0x3Fu);
+         return static_cast<uint16_t>(winout & 0x3Fu);
+     };
+@@ -1409,7 +1492,7 @@
+     }
+     const bool black_nonuniform_window_margins =
+         g_ws_tilemap_provider && any_window && !window_control_is_uniform &&
+-        !g_ws_authored_margin_layers;
++        !g_ws_authored_margin_layers && !authored_obj_window_row;
+     auto window_control = [&](uint32_t x) -> uint16_t {
+         int hx = static_cast<int>(x) - static_cast<int>(ox);
+         if (g_ws_tilemap_provider &&
+@@ -1417,7 +1500,7 @@
+             // Minish's room provider treats expanded columns as lying outside
+             // every native WIN0/WIN1 rectangle, so WINOUT controls the world
+             // there. Other providers retain the established fail-closed rule.
+-            if (g_ws_authored_margin_layers)
++            if (g_ws_authored_margin_layers || authored_obj_window_row)
+                 return window_control_at_hx(hx);
+             return window_control_is_uniform ? uniform_window_control : 0u;
+         }
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -1281,6 +1281,7 @@
+     gba::g_ws_tilemap_provider = nullptr;
+     gba::g_ws_obj_x_provider = nullptr;
+     gba::g_ws_obj_attr_x_provider = nullptr;
++    gba::g_ws_obj_window_x_provider = nullptr;
+     gba::g_ws_obj_native_clip = 0;
+     gba::g_ws_obj_native_clip_provider = nullptr;
+     gba::g_ws_obj_margin_provider = nullptr;

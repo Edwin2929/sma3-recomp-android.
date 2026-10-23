@@ -205,6 +205,9 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     }
     gba::g_ws_obj_x_provider=nullptr;
     gba::g_ws_obj_attr_x_provider=object_x;
+    // The engine requires every window object on a row to match before it
+    // extends that row's lighting stencil; other window types stay closed.
+    gba::g_ws_obj_window_x_provider=gameplay && submission_age>=0 ? object_x : nullptr;
     gba::g_ws_obj_native_clip=0;
     gba::g_ws_obj_native_clip_provider=object_clip;
     if (info && (info->frame_count==7200 || info->frame_count==8000 ||

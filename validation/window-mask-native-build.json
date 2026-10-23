@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "verification_date_utc": "2026-10-23",
+  "scope": "Desktop native runner and focused OBJ-window margin-mask validation. Reuses the preceding milestone baseline sessions; four new candidate sessions (two castle, two car). No Android or frame-rate claim.",
+  "source_base_commit": "820685309644c274deb2095a6174574fdabb48b0",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "platform": "Linux x86_64",
+  "toolchain": {
+    "cmake_version": "cmake version 4.4.4",
+    "cmake_executable_sha256": "d03a52669f3c9c7ee2718d733f61a05d9e768f5a2120b7c71a166c0b22e2f8cd",
+    "cmake_availability": "Recovered CMake executable; version checked directly. Private toolchain path omitted.",
+    "compiler_version": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "cxx_standard": 20,
+    "python_version_reported_by_cmake": "3.12.14"
+  },
+  "build": {
+    "target": "sma3_runner",
+    "build_type": "Release",
+    "release_flags": "-O3 -DNDEBUG",
+    "SMA3_WIDESCREEN_DIAGNOSTICS": true,
+    "command_template": "cmake --build build --target sma3_runner -j2",
+    "build_completed": true,
+    "private_build_log_sha256": "02e331f7d2216eaf39cf9c20ce6bd41cee2324a3a1e7cf33a5f5737cc8082b35",
+    "private_cmake_cache_sha256": "469e0b16a12ba8e4f469445371a5d0d93510cb5b343b68dcf385050a201b7ce3",
+    "new_android_build": false,
+    "default_all_targets_build_claimed": false
+  },
+  "generated_inputs": {
+    "game_archive": {
+      "sha256": "c9b218c574672023bf18a217e7bd98dd2d9b9b9711ac4ca1a59ee6d18725c7e0",
+      "bytes": 306791028
+    },
+    "archive_verification_reference": "validation/castle-post-pipe-native-build.json",
+    "archive_reused_and_hash_rechecked": true,
+    "game_sources_regenerated": false,
+    "private_localization_header": {
+      "sha256": "a41582d5a4502b18923d152044c7be7f6c8ac58950a1fee2c2fdb54705de4a3b",
+      "bytes": 138737
+    },
+    "other_generated_bios_ram_overlay_morph_sources": "Reused unchanged local generated inputs from the preceding reconstruction; not regenerated or published."
+  },
+  "engine_patch_stack": {
+    "patches_in_application_order": [
+      {
+        "path": "patches/gbarecomp-interpolation.patch",
+        "sha256": "06d0ff62eff2c022a742aa2d6be2e563b8ee671193d7447e3c3109a5de401e66"
+      },
+      {
+        "path": "patches/gbarecomp-controls.patch",
+        "sha256": "943dbbdcf3fd6a87bd32b75fc98909a58a4f3b3258b71d000fac22deb6b430ea"
+      },
+      {
+        "path": "patches/gbarecomp-localization.patch",
+        "sha256": "e8278231e53514ec71fc23188a7faa16b3a117e23484d56c1413b2bfdfb89a3a"
+      },
+      {
+        "path": "patches/gbarecomp-touch-design.patch",
+        "sha256": "57b402afc07da1f48d7cab147434748702b0ee2e2dfebc4dff8f0838aadd1407"
+      },
+      {
+        "path": "patches/gbarecomp-widescreen-objects.patch",
+        "sha256": "1f4bec37e78adc366df4f62a50e24bb5d5a60dfc8b457fbb1a8e48746908caea"
+      },
+      {
+        "path": "patches/gbarecomp-widescreen-window.patch",
+        "sha256": "1b8c36450cdb9f4dc57e841e08fc01ea96c24200c1e4607efa54b64845b22d47"
+      }
+    ],
+    "applicator_sha256": "e8fa67b94cd5ca2bd57b4b79129ee76d04eefce85145f566c871fbc04aecfd8e",
+    "patched_engine_files_sha256": {
+      "src/runtime/host_platform.cpp": "1cca1e11576efb7c68229791803b725842da0703a172cb08142ce49187c089b8",
+      "src/runtime/host_platform.h": "47380b1a0155b7572a2297ee48294c9d8d0b5b52751893cd599784d09dd75db2",
+      "src/runtime/host_window.cpp": "421b2663ceb1ba8e1b1cc552fcbc55ff945f00a75db86908983f774b1ad9e3fd",
+      "src/runtime/runtime.cpp": "552a61fb6af953233df6b97de2975741773bfff7f47be5690a4000d0f81a4550",
+      "src/gba/gba_ppu.h": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+      "src/gba/gba_ppu.cpp": "e45fd02a690534fcb14544670521ab007a40d10148c4427cca7a940b21399c56"
+    }
+  },
+  "runners": {
+    "baseline": {
+      "sha256": "45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b",
+      "bytes": 138539672
+    },
+    "after": {
+      "sha256": "8ac49f1a6de65dc3f9462e7eeb26d759a76a8ba2cbe22e9cec270b8074daf5e0",
+      "bytes": 138548000
+    }
+  },
+  "public_project_source_sha256": {
+    "src/controller_options.h": "4575c3a8ddd90aca5e61d499a454640a3f62f0c08fb8ca7c150bbf6cfc0748fd",
+    "src/frame_interpolation.h": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897",
+    "src/frame_interpolation_jni.cpp": "f59446679af74a595c9818b33de9c17552fec7f88194fa2c847772ff037e1859",
+    "src/localization.cpp": "a1d4c3664465a6cf8a01be39bfa10857fb69c396bb05ac5add81c4d5f4332b18",
+    "src/localization.h": "b0570acdb82bc5876911f76e3a438e72efed1edb418f3cd018070d6a4022199a",
+    "src/main.cpp": "ad0017005e2947ee411aa8f5d27edf8a7378281ece54174f3bc6b8546869e2b4",
+    "src/morph_dispatch.cpp": "dafa5302b5cfa2b45c7290f86d0a1b279a87c64f37337720074ab7c7b2057dd0",
+    "src/overlay_dispatch.cpp": "0eacc1961d6d008cc2af034e44e2418533cecca710ee62fb6b84ef9dd10d06e3",
+    "src/ram_dispatch.cpp": "b1f6299a8a4a844cea1c9175fd72a2edb6430279528391e329d694bea3a3e779",
+    "src/touch_layout.h": "e775782019b940043aab6c4c2b93a9c9825a5ba546cf83649c8dd9a1fcfcec2f",
+    "src/video_scaler.h": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f",
+    "src/widescreen.cpp": "c06bb7c1e00a01abccdd539f90a692d3168925fc1c083f43718d939178766e49",
+    "src/widescreen.h": "ece193774eb072180e4b8fd5272869a1d17fbff71f3d4f629d3d22e0bb013700",
+    "src/widescreen_bounds.cpp": "8c6076f77105cf9a82b28abaebe4b7402f8de908f74dad3a711b1749f5eca3cc",
+    "src/widescreen_bounds.h": "007671cb18dd031ea63ce46e52eeddd13b2a48c5dc500aa656da581f9d27da3c",
+    "src/widescreen_car.h": "7fee9d50c5290abc234e4f2ae72f2db30545868c389fdee94591094d8d2b3d22",
+    "src/widescreen_components.h": "bf98712a80bce208aa074bba8d042daf2459eb400a729b634bc18310f93624df",
+    "src/widescreen_hazards.h": "78bb4b040097b2206954a9b320c24eeefb95527a3093d39dca71892a9514e304",
+    "src/widescreen_objects.h": "e9748a9bf72a427f84dd99918a43123db81ce43bfd8afe081e58b200a936d95a",
+    "src/widescreen_rotating.h": "5e93818ec5fcf2a0e5f0d6da5239681819813cc4fb46287b9aa4aab273cc39c3",
+    "src/widescreen_strips.h": "2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b",
+    "src/widescreen_tiles.h": "affce67e442b6194aaa2e9b0ff1d5a663c7559efe65a89a779ee0cd746abcd5d",
+    "src/widescreen_ui.h": "6a1561342ef2250b0e7a0373fbdc983b62c420bca2eafc1ae770ce086dce5164",
+    "src/widescreen_window.h": "1b9b32ec27a421d3111b67cc25e26fe465f99195282412395049e541f522d35f",
+    "CMakeLists.txt": "4c99f9b4a7cb2de5b6b52cdd6f8c47711ce02ae181aa8d5f2d9b3daf99945324",
+    "tools/apply_interpolation_patch.py": "e8fa67b94cd5ca2bd57b4b79129ee76d04eefce85145f566c871fbc04aecfd8e"
+  },
+  "input_assets": {
+    "game.gba": {
+      "sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+      "bytes": 4194304
+    },
+    "bios.bin": {
+      "sha256": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+      "bytes": 16384
+    },
+    "castle-entry.state": {
+      "sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+      "bytes": 553424
+    },
+    "car-entry.state": {
+      "sha256": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8",
+      "bytes": 553424
+    }
+  },
+  "runtime_config_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+  "checks": {
+    "synthetic_renderer": {
+      "started_utc": "2026-10-23T03:17:48.762808+00:00",
+      "duration_seconds": 11.803,
+      "returncode": 0,
+      "stdout": "PASS: 488 synthetic scenarios, 8102978 internal assertions; real PPU, native center unchanged\n",
+      "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+      "flags": [
+        "-std=c++20",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-fno-sanitize-recover=all"
+      ],
+      "binary_sha256": "ea1e9466ffdd2be4e0ce4e1843fa01d68a000eace637792fe21851ed7cc77497",
+      "test_sha256": "46769e4967da88fe0d302f4c53da1422a553ddc2d8b040c1a174b9362359a771",
+      "engine_ppu_sha256": "e45fd02a690534fcb14544670521ab007a40d10148c4427cca7a940b21399c56",
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      }
+    },
+    "patch_stack": {
+      "test_script_sha256": "a701cb222ffa44e2adacf3af80fe68b2521df059dc8f4cc8be189292e75efa8d",
+      "methods": 3,
+      "exit_code": 0,
+      "coverage": {
+        "recognized_prefix_states": 7,
+        "successful_completion_and_idempotence_invocations": 14,
+        "unknown_guarded_file_rejections": 6,
+        "wrong_pin_rejections": 1,
+        "unrelated_sentinel_checked": true,
+        "private_assets_required": false
+      },
+      "private_log_sha256": "5ac6201c594a9d9a3c5e8d847ad1264e6eb6f3bdf4e737c253f6e0906fd2b855"
+    },
+    "frozen_native_mask": {
+      "report": "validation/widescreen-native-window-mask.json",
+      "report_sha256": "c1d080ffa852cd58890a261f3a351ab3fad6f2c801ddffbfd1b7b109d0efa54b",
+      "state_count": 9,
+      "window_copies": 99,
+      "pass": true,
+      "public_source_replay": true
+    }
+  },
+  "new_candidate_sessions": {
+    "after-240": {
+      "new_execution": true,
+      "execution_complete": true,
+      "evidence_sha256": {
+        "actions.json": "cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da",
+        "session.json": "633d32eb1154337639ce89c33692b90be77cf6d4c0faa89a6c4a57a2c49d6d46",
+        "trace.json": "d7bbdaa5b3e25c7e7101c6b8fef5736730f6c90c0e61a55325e3c00c82ed00be",
+        "captures.json": "2c1174f983e71ac4be66b2d109ee2bc69c55349a5026fda092636c76035d67f3",
+        "run-settings.json": "9fcfdb38eba67413e36a21236d95c51fe6e69f49e3f445cfdd441e828edab994",
+        "run-status.json": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "run.log": "a94f987c2b7f416310199f7a512b22564b936ca6c46ee5b7c207f25510352c40"
+      }
+    },
+    "after-356": {
+      "new_execution": true,
+      "execution_complete": true,
+      "evidence_sha256": {
+        "actions.json": "cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da",
+        "session.json": "633d32eb1154337639ce89c33692b90be77cf6d4c0faa89a6c4a57a2c49d6d46",
+        "trace.json": "d7bbdaa5b3e25c7e7101c6b8fef5736730f6c90c0e61a55325e3c00c82ed00be",
+        "captures.json": "2c1174f983e71ac4be66b2d109ee2bc69c55349a5026fda092636c76035d67f3",
+        "run-settings.json": "284cf13a0e05fbf7de60b79520f9ae8c9643a15b694d63a2a06e97a09651e5be",
+        "run-status.json": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "run.log": "3d27b75c472f968b6a3dc35485f01bdda7977cf31187835ae3d4522beaf239ee"
+      }
+    },
+    "car-after-240": {
+      "new_execution": true,
+      "execution_complete": true,
+      "evidence_sha256": {
+        "actions.json": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+        "session.json": "b41fc73a5586cf59a72e2a0947c861f93d828e425341ccbdfc90927cc860d30f",
+        "trace.json": "e1f9b6558219153e1b6911a9443377343a139b3ba96d608329335ac72cee85b9",
+        "captures.json": "2242b6eed998a0a0677ab5f5083546b79e3307d7854d1e73cd478bcbdd148936",
+        "run-settings.json": "a0572e8576dd8b4e6c5088ae996c6ed99899b2a64b93d0f5b063730feb2dc00c",
+        "run-status.json": "f48362be378b71fbaee8283b4132529233dfd3d34bdfd78cc74f61921c94ec75",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "run.log": "914bc8049c6c4b7b07cd9b09cb2ba1e9324f028118d024c4e8343c200034969e"
+      }
+    },
+    "car-after-356": {
+      "new_execution": true,
+      "execution_complete": true,
+      "evidence_sha256": {
+        "actions.json": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+        "session.json": "b41fc73a5586cf59a72e2a0947c861f93d828e425341ccbdfc90927cc860d30f",
+        "trace.json": "e1f9b6558219153e1b6911a9443377343a139b3ba96d608329335ac72cee85b9",
+        "captures.json": "2242b6eed998a0a0677ab5f5083546b79e3307d7854d1e73cd478bcbdd148936",
+        "run-settings.json": "49cb5402c047046022b7b61f3ed0b9ccdd4a09169ef98e966954524c04208ff1",
+        "run-status.json": "f48362be378b71fbaee8283b4132529233dfd3d34bdfd78cc74f61921c94ec75",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "run.log": "7a1427ba48ba45aca7a8aa471bbb6ecf289cdbb1a54afcb16e65f19d8bce96b5"
+      }
+    }
+  },
+  "reused_baseline_sessions": {
+    "source_commit": "820685309644c274deb2095a6174574fdabb48b0",
+    "role": "The previous milestone corrected after-240/after-356 sessions become this milestone before sessions; neither is re-executed here.",
+    "previous_public_report": "validation/widescreen-castle-post-pipe.json",
+    "previous_public_report_sha256": "1a632f82a5f7d788b125add2cf132761a79a3374beadf6b2a9233528d1d660ca",
+    "runner_sha256": "45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b"
+  },
+  "public_validation_reports_sha256": {
+    "widescreen-castle-window-mask.json": "c17c01fd129e78c9d53a30d43218fa74d905981cd80366dc0e37148a6a73d29a",
+    "widescreen-window-mask-effect.json": "6f0c6a58cce495cb65065f1cceaa736046967f04155743625e3353f5aefb9bb8",
+    "widescreen-car-window-mask.json": "e516f0e18444df912b6a748d82c6ed7703da83ce7f8d71b23af8156c8dd4b292",
+    "widescreen-native-window-mask.json": "c1d080ffa852cd58890a261f3a351ab3fad6f2c801ddffbfd1b7b109d0efa54b"
+  },
+  "native_image_audit": {
+    "scope": "All-black rows require all 58 margin pixels on both sides to be RGB zero; sampled PNGs only. This is separate from the frozen-state mask oracle.",
+    "private_source_sha256": "9f7bd39b1c4f59ccd171dc15e5497554511af964d7d6d3b262b8f79bc09de2a6",
+    "changed_captures": [
+      {
+        "frame": "frame-06420",
+        "changed_pixels": 5568,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          29,
+          355,
+          124
+        ],
+        "old_allblack_margin_rows": 48,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06480",
+        "changed_pixels": 7772,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          29,
+          355,
+          126
+        ],
+        "old_allblack_margin_rows": 67,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06501",
+        "changed_pixels": 8932,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          28,
+          355,
+          134
+        ],
+        "old_allblack_margin_rows": 77,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06540",
+        "changed_pixels": 10672,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          28,
+          355,
+          150
+        ],
+        "old_allblack_margin_rows": 92,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06600",
+        "changed_pixels": 6844,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          28,
+          355,
+          159
+        ],
+        "old_allblack_margin_rows": 59,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06660",
+        "changed_pixels": 6935,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          28,
+          355,
+          159
+        ],
+        "old_allblack_margin_rows": 60,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06720",
+        "changed_pixels": 5285,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          28,
+          355,
+          159
+        ],
+        "old_allblack_margin_rows": 43,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06780",
+        "changed_pixels": 5797,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          29,
+          355,
+          159
+        ],
+        "old_allblack_margin_rows": 45,
+        "new_allblack_margin_rows": 0
+      },
+      {
+        "frame": "frame-06801",
+        "changed_pixels": 5425,
+        "center_changed": 0,
+        "changed_bbox": [
+          0,
+          29,
+          355,
+          159
+        ],
+        "old_allblack_margin_rows": 45,
+        "new_allblack_margin_rows": 0
+      }
+    ]
+  },
+  "limitations": [
+    "Synthetic gameplay entry fixture and bounded route/cycle only.",
+    "Image/state comparisons are scheduled samples; input/state trace observables are recorded every frame.",
+    "Native-state comparison retains only the pre-existing PPU0 exclusion and eight inactive RTC bytes.",
+    "Frozen native mask data originate in the reused baseline session and use a synthetic background, not a screenshot-phase or full-scene oracle.",
+    "WIN0/WIN1 continuation, vertical margins, expanded spawning, bosses, complete levels, Android integration and FPS remain unqualified.",
+    "LeakSanitizer disabled; ASan and UBSan enabled in focused PPU tests.",
+    "Generated private assets and intermediate evidence are not published."
+  ]
+}

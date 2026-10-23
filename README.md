@@ -107,11 +107,21 @@ estado equivalentes y cero huecos de posiciones**. La regresión del ciclo
 normal → coche → normal también pasa con esta compilación. Las cinco pruebas
 de C++ pasan con ASan/UBSan y las 166 pruebas Python pasan normal y con `-O`.
 
-El motor conserva la máscara OBJ-window original de 240 píxeles: la sala de
-destino todavía muestra franjas negras en parte de los márgenes. Este resultado
-califica el recorrido y la procedencia de objetos observados; no extiende esa
-máscara ni certifica el castillo completo, un APK panorámico o los FPS.
+Esa reconstrucción calificó el recorrido y la procedencia de los objetos,
+pero dejó la máscara OBJ-window limitada a los 240 píxeles originales.
 [Resultados nuevos, procedencia y límites](validation/CASTLE_POST_PIPE_VALIDATION.md).
+
+**Iluminación lateral, 23 de octubre de 2026 (UTC):** el prototipo amplía ahora
+la máscara OBJ-window a los márgenes cuando todas las posiciones de esa fila
+están verificadas y no intervienen WIN0/WIN1. La nueva pareja de recorridos
+conserva **250 centros RGB idénticos, 251 estados equivalentes y cero huecos de
+posiciones**. La comparación con la revisión anterior solo cambia los márgenes
+de nueve capturas de la sala iluminada; desaparecen las franjas negras de
+precaución y se conserva la forma de la luz. Pasan las pruebas del compositor
+real con ASan/UBSan y la regresión del coche. Los tipos de ventana todavía no
+admitidos mantienen la política anterior. Este avance continúa siendo de
+escritorio; no certifica el castillo completo, un APK panorámico o los FPS.
+[Pruebas de la máscara, reproducción y límites](validation/WINDOW_MASK_VALIDATION.md).
 
 ## Qué significa «nativo» aquí
 

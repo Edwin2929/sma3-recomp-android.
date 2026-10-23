@@ -1,0 +1,85 @@
+OBJ-window margin validation — 2026-10-23 UTC
+Scope: desktop SMA3 diagnostic, mode 0, horizontal OBJ-window without WIN0/WIN1.
+
+Baseline source commit:
+820685309644c274deb2095a6174574fdabb48b0
+Baseline runner SHA-256:
+45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b
+New runner SHA-256:
+8ac49f1a6de65dc3f9462e7eeb26d759a76a8ba2cbe22e9cec270b8074daf5e0
+Engine pin: e7728148c6829ba526f682876430a0c9022dc6c0
+
+Native build:
+cmake --build build --target sma3_runner -j2
+PASS, Release -O3 -DNDEBUG, GCC 13.3, C++20, CMake 4.4.4.
+SMA3_WIDESCREEN_DIAGNOSTICS=ON. Existing generated game archive reused.
+No Android build, no default-all-targets build claim, no FPS measurement.
+
+Synthetic real-PPU renderer:
+c++ -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined
+    -fno-omit-frame-pointer -fno-sanitize-recover=all
+    -I<engine>/src/gba -I<engine>/src/debug -I<engine>/src/runtime
+    validation/widescreen_obj_window_render_test.cpp <engine>/src/gba/gba_ppu.cpp
+    -o <private-output>/obj-window-render-test
+ASAN_OPTIONS=detect_leaks=0:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1
+PASS: 488 synthetic scenarios, 8102978 internal assertions, 11.803 seconds.
+No ASan/UBSan diagnostic; LeakSanitizer disabled.
+Test source SHA-256:
+46769e4967da88fe0d302f4c53da1422a553ddc2d8b040c1a174b9362359a771
+PPU source SHA-256:
+e45fd02a690534fcb14544670521ab007a40d10148c4427cca7a940b21399c56
+The native compositor with translated synthetic objects is the geometry oracle.
+Explicit transparency, color, fallback and boundary checks supplement it.
+This compares against the existing PPU, not independent hardware conformance.
+
+Real patch applicator:
+python -B validation/test_window_patch_stack.py
+PASS: 3 unittest methods, 7 recognized prefix states, 14 successful applicator
+calls including idempotence, 6 unknown-file-edit rejections and 1 wrong-pin
+rejection. Disposable local clones only. Rejected worktrees remain unchanged;
+an unrelated sentinel remains unchanged in every accepted/rejected state.
+
+Castle route:
+Two NEW full sessions at 240x160 and 356x160 from the unchanged entry fixture.
+130 actions, 6801 frames, 6802 observations, no intermediate state loads.
+PASS: 250 native center images, 251 state comparisons, both natural pipes,
+health contract, 418 stable final idle frames, 0 raw object-position gaps.
+dispatch_misses=0 interpreted_insns=0 healed_native=0 on both runs.
+Report: widescreen-castle-window-mask.json.
+
+Before/after conservation and effect:
+Uses the two preserved complete baseline sessions from the preceding milestone
+and the two NEW sessions above; does not claim four new runs in this milestone.
+PASS: all actions/observations/capture schedules equal; 250 full native images,
+250 panoramic centers and 251 state comparisons per width unchanged.
+9 panoramic captures change, only in margins: 32142 RGB pixels left,
+31088 right, total 63230. Remaining 241 panoramic captures identical.
+Report: widescreen-window-mask-effect.json.
+The report alone proves invariance/effect, not stencil correctness.
+
+Car regression:
+Two NEW full sessions use the unchanged action tape, fixture and contract.
+PASS: normal -> car -> normal, 3506 frames, 3507 observations,
+61 center images, 62 states, recovery frame 2216, final 1200 idle frames,
+post-recovery movement 58.83984375 pixels, 0 raw gaps.
+dispatch_misses=0 interpreted_insns=0 healed_native=0 on both runs.
+Report: widescreen-car-window-mask.json.
+
+State comparison scope:
+CPU0 BUS0 IO_0 AUD0 SAV0 META compared. PPU0 excluded as viewport-dependent.
+BUS0 exclusion is exactly 8 inactive RTC bytes [395310,395318), with size 395416
+and required inactive flag 0 at 395277. No new state exceptions.
+
+Frozen native mask:
+Nine real saved OAM/OBJ-texture states on a synthetic mask background;
+99 verified copied windows. Center 345600 pixels exact, margins 167040 pixels
+equal to translated faithful native PPU; opaque left-mask pixels 2076,
+right 0. Independent state provenance; no PNG/savestate phase assumption.
+ASan/UBSan PASS; LeakSanitizer disabled.
+Report: widescreen-native-window-mask.json.
+
+Limits:
+Synthetic initial gameplay fixture, bounded castle route and car cycle.
+No claim of full levels, bosses, WIN0/WIN1 continuation, expanded spawning,
+vertical margins, Android panorama, APK 0.9/0.9.1 integration, or frame rate.
+Internal assertion counts are not independent test cases or game frames.

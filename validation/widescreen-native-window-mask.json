@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "scope": "Nine frozen native castle OAM/OBJ-VRAM snapshots on a synthetic mask-visualization background. No screenshot/state phase equivalence; no complete native-scene oracle; no Android claim.",
+  "state_frames": [
+    6420,
+    6480,
+    6501,
+    6540,
+    6600,
+    6660,
+    6720,
+    6780,
+    6801
+  ],
+  "window_copies": 99,
+  "provenance": "Read-only coherent window-buffer prefix and complete normal compacted submission, all matching staging candidates agree on one full X. Affine triplet owners076/077 match allocation, status, metadata XY, minus8 bounding-box transform and ROM dynamic-tile table.",
+  "center_pixels_equal": 345600,
+  "margin_pixels_equal_to_translated_faithful": 167040,
+  "left_opaque_mask_pixels_by_frame": {
+    "6420": 0,
+    "6480": 0,
+    "6501": 0,
+    "6540": 0,
+    "6600": 0,
+    "6660": 181,
+    "6720": 313,
+    "6780": 739,
+    "6801": 843
+  },
+  "right_opaque_mask_pixels": 0,
+  "assertions": 1705417,
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "leak_sanitizer_enabled": false,
+  "compiler": "GCC13.3 C++20",
+  "compile_flags": [
+    "-O1",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-fno-sanitize-recover=all"
+  ],
+  "test_pass": true,
+  "private_evidence_sha256": {
+    "audit_mask.py": "2e1453d79ccb0e4921ade08564fbc9fe46e3bbc2636570de4e9ce2bae20cac90",
+    "prepare_native_mask.py": "00125b19d15fb23ccac230088fc045a2ba15be87654c00e6759431b19be497d6",
+    "native_mask_oracle.cpp": "d65014d6b0a250be7eb66888a8239627db63ae63ea0129ddf49837e61532d2ad",
+    "native_mask_oracle": "b19e4aaef88b9132aa9deac174fb0357dae0d7f4a6bbcdda17ee616fd6520b45",
+    "native-mask-test.txt": "cb29337d48e97ba5a29eac3f1312723f0e41a826bd0b08e92a5b75a5e6dabfa6",
+    "native-mask-build.log": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640",
+    "native-mask-provenance.json": "2a1547265de28052d6a1fb3e798b8c39225ca4476a41af0fed598b8b3bc84704",
+    "native-image-effect-audit.json": "9f7bd39b1c4f59ccd171dc15e5497554511af964d7d6d3b262b8f79bc09de2a6"
+  },
+  "engine_sha256": {
+    "src/gba/gba_ppu.cpp": "e45fd02a690534fcb14544670521ab007a40d10148c4427cca7a940b21399c56",
+    "src/gba/gba_ppu.h": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce"
+  },
+  "public_source_replay": {
+    "fixture_hashes_identical": true,
+    "provenance_sha256_identical": true,
+    "test_output_identical": true,
+    "public_source_sha256": {
+      "validation/prepare_window_mask_fixtures.py": "7df29d676f092e6ea6ea938630472e645c8f7fa02fec0839868901f03058f328",
+      "validation/widescreen_native_window_mask_test.cpp": "3275f8d5cb05e647b47d4ffeaeddc246588c3a7d6423a8c18e4ed48cf4eb1b5b"
+    },
+    "replay_evidence_sha256": {
+      "window-mask-test": "2edf3ef38f32614bcbe33756fd2ef2f96a62c49c3f2a04b17b20733dc8a18996",
+      "build.log": "d02dd5b7d9eff11f0c2011ec871c6ff51f0fb61ae6394eeb48a7c9d1d9da98ff",
+      "test.txt": "cb29337d48e97ba5a29eac3f1312723f0e41a826bd0b08e92a5b75a5e6dabfa6",
+      "native-mask-provenance.json": "2a1547265de28052d6a1fb3e798b8c39225ca4476a41af0fed598b8b3bc84704"
+    },
+    "input_sha256": {
+      "native-mask-06420.bin": "c45bd7c3ae94f70faf134fbabfd2f27f0d8af3f94b03ca8b26b172bced5612d4",
+      "native-mask-06480.bin": "81306bfe5ba2df83c75afe42d6a098ef17a8d093f7bb6395a8ffbc5a2261d9f0",
+      "native-mask-06501.bin": "6df151133f28ace0dffab80ae2095a360ebd987333ae57de85a13b4e0a2370c1",
+      "native-mask-06540.bin": "4f227f2aa33719fac2605cc8a1124c6c7ef52fd24d756967f7b6c6248a533d3c",
+      "native-mask-06600.bin": "3641c0fce550643c526318f2fd09b72fc1ef5803290c98f131d0a68d40f19bf2",
+      "native-mask-06660.bin": "6821137284ef683410106c7f6bdf017268962bd50b084d78aa6e9e63a1ced3dc",
+      "native-mask-06720.bin": "bcd21b85110c5970e7b0ee7333e0e3eba3747867f4a5683f8c26809750931308",
+      "native-mask-06780.bin": "e67ace6f75e0ec5923b44e0f838fa3b59b7fc011ff3794fda399cdc46e0243b1",
+      "native-mask-06801.bin": "3ff7ec91ffcbad52a84d0be7b58678f5dffeb55d768aafe026d6c2c9be15abda"
+    },
+    "optimized_input_rejections": [
+      {
+        "case": "existing_output",
+        "optimized_python": true,
+        "exit_code": 2,
+        "rejected": true
+      },
+      {
+        "case": "wrong_rom",
+        "optimized_python": true,
+        "exit_code": 2,
+        "rejected": true
+      }
+    ],
+    "rejections_preserved_outputs": true,
+    "source_fixture_checks_passed": 9,
+    "final_replay_reused_verified_fixtures": true
+  },
+  "frozen_inputs_origin": {
+    "source_commit": "820685309644c274deb2095a6174574fdabb48b0",
+    "source_session": "Previous castle second-pipe milestone: after-356",
+    "reused_baseline_states": true,
+    "candidate_capture_states": false,
+    "explanation": "The new PPU renders reused baseline frozen state data. The extractor also accepts other compatible sessions; this evidence specifically uses the preceding milestone.",
+    "state_sha256": {
+      "6420": "dbaeb8d0bb68fb07ccddf5888a644b8c0c29d7d817ebffb851d1cfc53f544b50",
+      "6480": "1d07a6cd27c4e6d7a3325e1211945a907d1f3203762ce6afff2320570734dde6",
+      "6501": "ab3897df28fde89c1e594d181dfa647e0d0987a980daa439065556e2e9f28b3e",
+      "6540": "4b4aab87eaeba5e782227d8b64f485451604f249304a0e957868a2587632761d",
+      "6600": "fc3643578e752a9496bcde5732a8c4a2c4e7422dfc0d3941d019ce03a14a5ac9",
+      "6660": "5a84bfe6f8daeacd70b55c1f2c986b9da612a79eb473ca1c6dad98d243604bb7",
+      "6720": "1bcba7fe331dc9f382c64ac08f1578b42abbd49783d8e51dc075a10773f615ba",
+      "6780": "2f7c6e963a95e026e0a6db3c3bfa7f9b16f4fd9484c42943d02e817b2820a5f9",
+      "6801": "b2fba604728563fe42c5f28d4c784f7ce0544d57654561128d49eebeb3ac90bc"
+    }
+  }
+}

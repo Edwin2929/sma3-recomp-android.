@@ -66,15 +66,47 @@ finales sin botones. Las 166 pruebas Python pasan normal y con `-O`.
 [Resultados, criterios y límites](../validation/CASTLE_POST_PIPE_VALIDATION.md) ·
 [Procedencia de la reconstrucción](../validation/castle-post-pipe-native-build.json).
 
-**Límite de presentación:** el motor sigue construyendo la máscara OBJ-window
-en los 240 píxeles originales. Cuando sus controles de ventana varían dentro
-de una línea, el adaptador conserva la política de márgenes negros. Corregir
-la procedencia de los objetos y sus copias no extiende esa máscara al escenario
-adicional. Las imágenes nuevas del destino muestran franjas negras en ambos
-márgenes a ciertas alturas. La aprobación de este recorrido no equivale a una
-extensión completa del efecto de ventana del destino ni a cobertura del jefe,
-otras salidas o el castillo completo. No añade panorámica a los APK 0.9/0.9.1
-ni constituye una medición de FPS.
+**Límite de aquella revisión:** la máscara OBJ-window todavía se construía
+en los 240 píxeles originales. Las filas con controles de ventana distintos
+conservaban los márgenes negros, aunque la procedencia de los objetos ya
+estuviera corregida. Las capturas de esa fase y su informe se conservan como
+base histórica; la ampliación de la máscara se comprueba por separado abajo.
+
+## Iluminación en los márgenes, 23 de octubre de 2026 (UTC)
+
+El nuevo parche `gbarecomp-widescreen-window.patch` añade una máscara exclusiva
+para las columnas adicionales. Usa la X completa verificada, los atributos,
+las matrices afines y la transparencia del objeto original. La máscara central
+conserva su decodificador y sus coordenadas de hardware; el adaptador no escribe
+memoria, registros ni estado del juego.
+
+La autorización es por fila y exige OBJ y OBJ-window activos, WIN0/WIN1
+desactivados, juego normal, una presentación coherente y posiciones comprobadas
+para todos los objetos de ventana que tocan esa fila. Si falta una posición,
+se conserva la política anterior de esa fila. No se activa globalmente
+`g_ws_authored_margin_layers` ni se amplían ventanas rectangulares, escenas
+de transición o márgenes verticales.
+
+La sala iluminada del subnivel 153 cumple estas condiciones. Sus siluetas
+deciden qué capas y efectos se ven en cada píxel lateral, incluso cuando
+una ventana queda completamente fuera de la imagen central. La nueva pareja
+de ejecuciones de **6.801 fotogramas** supera de nuevo el contrato de las dos
+tuberías: **250 centros idénticos, 251 estados equivalentes y cero huecos de
+posiciones**. Frente al ejecutor anterior, cambian únicamente los márgenes de
+**nueve capturas** de esa sala, con **63.230 píxeles RGB** distintos sumados.
+La regresión del coche también pasa con el ejecutor nuevo.
+
+Las pruebas independientes usan el compositor real con texturas sintéticas
+y comparan la máscara ampliada con objetos trasladados dentro del compositor
+nativo. Cubren transparencias, colores de 4/8 bits, mapas 1D/2D, volteos,
+transformaciones afines, coordenadas completas, prioridades de ventanas y
+rechazo de procedencia inválida, bajo ASan/UBSan. El aplicador reconoce las
+siete etapas de la pila de seis parches y rechaza modificaciones ajenas.
+[Resultados, reproducción y alcance exacto](../validation/WINDOW_MASK_VALIDATION.md).
+
+Esta ampliación no califica todas las ventanas, otras salidas, el jefe ni el
+castillo completo. La panorámica continúa fuera de los APK **0.9/0.9.1** y
+esta comprobación no mide FPS.
 
 ## Comprobaciones y límites de la evidencia
 
@@ -166,10 +198,11 @@ ASAN_OPTIONS=detect_leaks=0 /tmp/widescreen_tiles_test
 Referencia de ingeniería: [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm),
 especialmente `LevelCode.asm`, `CodeStart.asm` y `SpriteShared08049E80.asm`.
 
-El parche `gbarecomp-widescreen-objects.patch` añade el recorte por objeto al motor.
-Sin el diagnóstico activado, su callback permanece nulo y no habilita panorámica
-en Android. El aplicador verifica la revisión del motor y rechaza cambios locales
-que no correspondan a una etapa reconocida de los parches.
+El parche `gbarecomp-widescreen-objects.patch` añade el recorte por objeto al motor;
+`gbarecomp-widescreen-window.patch` añade la máscara lateral autorizada.
+Sin el diagnóstico activado, sus callbacks permanecen nulos y no habilitan
+panorámica en Android. El aplicador verifica la revisión del motor y rechaza
+cambios locales que no correspondan a una etapa reconocida de los parches.
 
 ## Resultado del observador sincronizado
 
