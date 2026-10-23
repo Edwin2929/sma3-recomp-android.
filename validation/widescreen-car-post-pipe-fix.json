@@ -1,0 +1,227 @@
+{
+  "level_id": 18,
+  "level_ids": [
+    18
+  ],
+  "sublevel_ids": [
+    57,
+    119
+  ],
+  "frames": 3506,
+  "central_images_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "sampled_game_states": [
+    10,
+    11,
+    13
+  ],
+  "supported_gameplay_only": false,
+  "sampled_transformations": [
+    0,
+    2
+  ],
+  "transformation_sequence": [
+    0,
+    2,
+    0
+  ],
+  "final_transformation": 0,
+  "compared_state_sections": [
+    "CPU0",
+    "BUS0",
+    "IO_0",
+    "AUD0",
+    "SAV0",
+    "META"
+  ],
+  "compared_state_snapshots": 62,
+  "bus_exception": "Inactive RTC wall-clock seconds only (8 bytes)",
+  "viewport_state_compared": false,
+  "visible_unresolved_frames": 0,
+  "incoherent_frames": 0,
+  "raw_gap_frames": 0,
+  "differential_pass": true,
+  "coverage_pass": true,
+  "cycle_pass": true,
+  "complete_cycle_pass": true,
+  "synthetic_entry": true,
+  "observation_interval_frames": 1,
+  "scope": "Fresh regression of the unchanged bounded normal Yoshi -> car -> normal cycle on the corrected October 23 native runner. Synthetic initial entry; no full-level, all-transformation, Android, APK or performance qualification.",
+  "cycle_errors": [],
+  "final_game_state": 13,
+  "stable_normal_idle_frames": 1200,
+  "recovery_elapsed_frame": 2216,
+  "final_dx_from_recovery": 58.83984375,
+  "cycle_supported_gameplay_only": true,
+  "validation_date_utc": "2026-10-23",
+  "source_aggregate_sha256": "e516f0e18444df912b6a748d82c6ed7703da83ce7f8d71b23af8156c8dd4b292",
+  "native_build_manifest": "validation/castle-post-pipe-native-build.json",
+  "car_cycle_contract": {
+    "profile": "car-complete-cycle-v1",
+    "actions_sha256": "4e423913bc44e14dbf27a6f22c4f9d79042d5feabf2d6b41d0166ec11567296a",
+    "gameplay_start_frame": 600,
+    "level_id": 18,
+    "sublevel_id": 119,
+    "final_idle_frames": 1200,
+    "escape_min_dx_pixels": 32
+  },
+  "car_cycle_contract_file": "validation/car-cycle-expectations.json",
+  "car_cycle_contract_file_sha256": "5792fc7f7f5c2d461b07d77f2d9bb734d66f0cab5322f213b6165a8251cb4ce7",
+  "actions_file": "validation/panorama-car-actions.json",
+  "actions_file_sha256": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+  "actions_sha256": "4e423913bc44e14dbf27a6f22c4f9d79042d5feabf2d6b41d0166ec11567296a",
+  "action_count": 12,
+  "trace_observations": 3507,
+  "trace_equal_every_frame": true,
+  "sessions_by_width": {
+    "240": {
+      "settings": {
+        "width": 240,
+        "trace_every_frame": true,
+        "capture_start": 600,
+        "asset_sha256": {
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8",
+          "runner": "45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b",
+          "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+        }
+      },
+      "execution_complete": true,
+      "trace_observations": 3507,
+      "native_frame_range": [
+        6599,
+        10105
+      ],
+      "final_player_xy_velocity": [
+        320.99609375,
+        1408.99609375,
+        0.0,
+        0.0
+      ],
+      "native_diagnostics": {
+        "coverage": "FULLY_STATIC",
+        "dispatch_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "raw_gap_frames": 0
+      },
+      "evidence_sha256": {
+        "actions.json": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+        "run-settings.json": "5bc767351fff0644b2d7d2fd2dc9c488dfa87e20fea22e7b6c78e750baa8ea4c",
+        "run-status.json": "f48362be378b71fbaee8283b4132529233dfd3d34bdfd78cc74f61921c94ec75",
+        "session.json": "b41fc73a5586cf59a72e2a0947c861f93d828e425341ccbdfc90927cc860d30f",
+        "trace.json": "e1f9b6558219153e1b6911a9443377343a139b3ba96d608329335ac72cee85b9",
+        "captures.json": "2242b6eed998a0a0677ab5f5083546b79e3307d7854d1e73cd478bcbdd148936",
+        "run.log": "7c3e93a5858778871c32f44f74b89b99fbcdc977fe7a5f82c8a74a29a7fa8839",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "final.state": "2b166521bf89a1a29d3f84d234b308c34506550b098fae5eadae65550599cbf4"
+      }
+    },
+    "356": {
+      "settings": {
+        "width": 356,
+        "trace_every_frame": true,
+        "capture_start": 600,
+        "asset_sha256": {
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8",
+          "runner": "45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b",
+          "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+        }
+      },
+      "execution_complete": true,
+      "trace_observations": 3507,
+      "native_frame_range": [
+        6599,
+        10105
+      ],
+      "final_player_xy_velocity": [
+        320.99609375,
+        1408.99609375,
+        0.0,
+        0.0
+      ],
+      "native_diagnostics": {
+        "coverage": "FULLY_STATIC",
+        "dispatch_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "raw_gap_frames": 0
+      },
+      "evidence_sha256": {
+        "actions.json": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+        "run-settings.json": "b23ec59bead55901cdfbc25c496d70eafc594efe0f5924c8e69275757bc5e18e",
+        "run-status.json": "f48362be378b71fbaee8283b4132529233dfd3d34bdfd78cc74f61921c94ec75",
+        "session.json": "b41fc73a5586cf59a72e2a0947c861f93d828e425341ccbdfc90927cc860d30f",
+        "trace.json": "e1f9b6558219153e1b6911a9443377343a139b3ba96d608329335ac72cee85b9",
+        "captures.json": "2242b6eed998a0a0677ab5f5083546b79e3307d7854d1e73cd478bcbdd148936",
+        "run.log": "2bd28b774455afd02fbb148edb27a3a717d11cba31fd7f14f3e3bafa510b50d6",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "final.state": "7b26047ccddf5762b74a22f386145e538260a9b858ad9b3393b426c06a9bcaf0"
+      }
+    }
+  }
+}

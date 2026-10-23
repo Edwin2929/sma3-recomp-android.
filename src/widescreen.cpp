@@ -6,6 +6,8 @@
 #include "widescreen_components.h"
 #include "widescreen_car.h"
 #include "widescreen_rotating.h"
+#include "widescreen_window.h"
+#include "widescreen_hazards.h"
 #include "widescreen_bounds.h"
 #include <cstdlib>
 #include <cstdio>
@@ -27,6 +29,8 @@ unsigned submission_count=0;
 StagingPositions strips;
 StagingPositions emitted;
 StagingPositions screen_objects;
+ObjectPositions window_copies;
+Hazard64Capture hazard64;
 uint64_t bounds_calls=0,bounds_extra_candidates=0;
 uint64_t epoch=~uint64_t(0);
 
@@ -61,6 +65,10 @@ void object_submission(uint32_t pc) {
     if(pc==0x0809e324) { observe_rotating_position(read,g_cpu.R,strips);return; }
     if(pc==0x0809e774) { observe_rotating_affine(read,g_cpu.R[0],strips);return; }
     if(pc==0x08075e7a) { observe_rotating_pair(read,g_cpu.R,strips);return; }
+    if(pc==0x080dc02a) { observe_bridge_cloud(read,g_cpu.R,strips);return; }
+    if(pc==0x080784ca) { observe_scaling_triplet(read,g_cpu.R,emitted,strips);return; }
+    if(pc==0x0805ee4e) { observe_window_copies(read,g_cpu.R,strips,emitted,window_copies);return; }
+    if(pc==0x0808e144 || pc==0x0808e33c) { observe_hazard64(read,pc,g_cpu.R,strips,hazard64);return; }
     if(pc==0x08084d92) { observe_secondary_component(read,g_cpu.R,strips);return; }
     if(pc==0x08042380 || pc==0x0804244c) { observe_tongue_tip(read,pc,g_cpu.R,strips);return; }
     if(pc==0x0804f44a || pc==0x0804f51c || pc==0x0804f5ac) { observe_toadies(read,pc,g_cpu.R,strips);return; }
@@ -105,9 +113,12 @@ void object_submission(uint32_t pc) {
         apply_screen_observation(p,s);
         apply_screen_observation(p,screen_objects[p.source]);
     }
+    if(!compose_window_submission(read,window_copies,submissions[0]))submissions[0]={};
     strips={};
     emitted={};
     screen_objects={};
+    window_copies={};
+    hazard64={};
     if(submission_count<submissions.size()) ++submission_count;
 }
 bool object_matches(int index, uint16_t a0, uint16_t a1, uint16_t a2) {
@@ -138,7 +149,8 @@ int tile(int layer, int x, int y, uint16_t* output) {
 void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     if (!info) return;
     if (epoch!=info->state_epoch) {
-        submissions={}; strips={}; emitted={}; screen_objects={}; submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
+        submissions={}; strips={}; emitted={}; screen_objects={}; window_copies={}; hazard64={};
+        submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
         epoch=info->state_epoch;
     }
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)

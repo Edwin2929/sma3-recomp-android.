@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "comparison_pass": true,
+  "fix_effect_pass": true,
+  "action_count": 130,
+  "frames": 6801,
+  "trace_observations": 6802,
+  "observations_equal_in_all_four_sessions": true,
+  "action_session_trace_capture_equivalence": true,
+  "settings_equivalent_except_revision_runner_hash": true,
+  "input_provenance": {
+    "asset_sha256": {
+      "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+      "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+      "state": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+      "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+    },
+    "runner_sha256": {
+      "before": "4b4725f81166763d43f8a95c2484dcb56b85104a0fedea8c6f562520d2a7ec1f",
+      "after": "45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b"
+    },
+    "runner_hash_changed": true,
+    "actions_sha256": "87bfcf6f8143bd0fc2436cb2d6b610749c1dc9183eaf688e52c2375174aa2c2e",
+    "contract_sha256": "634f3293abecc8179a6f78c853d41ae0e582ea3a5212b8fb145a6aea102208c2",
+    "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+    "observation_profile": "castle-status-v1"
+  },
+  "evidence_manifest_sha256": {
+    "before_240": "ab71c035c1c555b874b200ef1d27bf5c732fb6869497f47268ddea39d274208c",
+    "before_356": "7f9945f7cb82f262ed058276ffe371860222a7587ca53cf5394c0601f7ba00cf",
+    "after_240": "b781e2c52a3c5423310e1b77274d13f1b5a19babd3826077adca98972306e6c3",
+    "after_356": "7a32041cb8f50228a1d80ab334b4c34b6a4492d222ffe5290d1679740984aafe"
+  },
+  "comparator_sha256": "62ebf72fdb75a24431ea43c4721ad7c482db146dcdf8789b0d12c212bad81390",
+  "validator_sha256": {
+    "compare_panorama_sessions.py": "d781cf2921d22f737e0967cb96edc9ab91f8947443c1b2f82cdfcdee1372a013",
+    "panorama_session_checks.py": "34ace4865354bcfb4a99fbe3d36ea2ca25043471dde02e4998176614391a8ce7",
+    "castle_route_checks.py": "0e6b4b0c5472c328991daca1278d630214ffa23c98555426a5bbb7f8714b360c",
+    "castle_post_pipe_checks.py": "1876bec5e127c67399ed4abebf8a75a3fac2b52ec9c4c700b24f924d258528b7",
+    "castle_transition_checks.py": "4bd855f2e1ec88b8225e9740838dc75d3c7bf1ca2f1f5b2e92d2b247542ed23c",
+    "make_level_fixture.py": "41e02d869d9dbb3ddd004c1f61923981dbc303704d48ca97a6d386684a77c29c"
+  },
+  "before_after_images": {
+    "control_width": 240,
+    "control_full_images_equal": 250,
+    "panorama_width": 356,
+    "panorama_centers_equal": 250,
+    "center_x_half_open": [
+      58,
+      298
+    ],
+    "margin_x_half_open": [
+      [
+        0,
+        58
+      ],
+      [
+        298,
+        356
+      ]
+    ],
+    "height": 160,
+    "changed_captures": 21,
+    "unchanged_panorama_captures": 229,
+    "left_changed_pixels": 13611,
+    "right_changed_pixels": 500,
+    "total_changed_pixels": 14111,
+    "changed_pixel_count_unit": "RGB pixels summed over captures, not color channels",
+    "real_margin_change_observed": true,
+    "changed_captures_detail": [
+      {
+        "elapsed_frame": 5940,
+        "native_frame": 12539,
+        "left_changed_pixels": 0,
+        "right_changed_pixels": 168,
+        "total_changed_pixels": 168
+      },
+      {
+        "elapsed_frame": 5962,
+        "native_frame": 12561,
+        "left_changed_pixels": 0,
+        "right_changed_pixels": 278,
+        "total_changed_pixels": 278
+      },
+      {
+        "elapsed_frame": 5982,
+        "native_frame": 12581,
+        "left_changed_pixels": 0,
+        "right_changed_pixels": 54,
+        "total_changed_pixels": 54
+      },
+      {
+        "elapsed_frame": 6060,
+        "native_frame": 12659,
+        "left_changed_pixels": 204,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 204
+      },
+      {
+        "elapsed_frame": 6063,
+        "native_frame": 12662,
+        "left_changed_pixels": 268,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 268
+      },
+      {
+        "elapsed_frame": 6093,
+        "native_frame": 12692,
+        "left_changed_pixels": 762,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 762
+      },
+      {
+        "elapsed_frame": 6105,
+        "native_frame": 12704,
+        "left_changed_pixels": 792,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 792
+      },
+      {
+        "elapsed_frame": 6120,
+        "native_frame": 12719,
+        "left_changed_pixels": 976,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 976
+      },
+      {
+        "elapsed_frame": 6130,
+        "native_frame": 12729,
+        "left_changed_pixels": 1044,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1044
+      },
+      {
+        "elapsed_frame": 6140,
+        "native_frame": 12739,
+        "left_changed_pixels": 881,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 881
+      },
+      {
+        "elapsed_frame": 6152,
+        "native_frame": 12751,
+        "left_changed_pixels": 664,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 664
+      },
+      {
+        "elapsed_frame": 6177,
+        "native_frame": 12776,
+        "left_changed_pixels": 1166,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1166
+      },
+      {
+        "elapsed_frame": 6180,
+        "native_frame": 12779,
+        "left_changed_pixels": 1226,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1226
+      },
+      {
+        "elapsed_frame": 6191,
+        "native_frame": 12790,
+        "left_changed_pixels": 1210,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1210
+      },
+      {
+        "elapsed_frame": 6211,
+        "native_frame": 12810,
+        "left_changed_pixels": 1105,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1105
+      },
+      {
+        "elapsed_frame": 6240,
+        "native_frame": 12839,
+        "left_changed_pixels": 1091,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1091
+      },
+      {
+        "elapsed_frame": 6247,
+        "native_frame": 12846,
+        "left_changed_pixels": 1091,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1091
+      },
+      {
+        "elapsed_frame": 6660,
+        "native_frame": 13259,
+        "left_changed_pixels": 1,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 1
+      },
+      {
+        "elapsed_frame": 6720,
+        "native_frame": 13319,
+        "left_changed_pixels": 294,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 294
+      },
+      {
+        "elapsed_frame": 6780,
+        "native_frame": 13379,
+        "left_changed_pixels": 583,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 583
+      },
+      {
+        "elapsed_frame": 6801,
+        "native_frame": 13400,
+        "left_changed_pixels": 253,
+        "right_changed_pixels": 0,
+        "total_changed_pixels": 253
+      }
+    ]
+  },
+  "before_after_states": {
+    "equal_snapshots_per_width": 251,
+    "includes_final_state": true,
+    "compared_sections": [
+      "AUD0",
+      "BUS0",
+      "CPU0",
+      "IO_0",
+      "META",
+      "SAV0"
+    ],
+    "excluded_sections": [
+      "PPU0"
+    ],
+    "bus_exception": {
+      "section": "BUS0",
+      "size_bytes": 395416,
+      "required_inactive_flag_offset": 395277,
+      "required_inactive_flag_value": 0,
+      "excluded_byte_range_half_open": [
+        395310,
+        395318
+      ],
+      "excluded_bytes": 8
+    },
+    "state_comparison": "Shared compare_panorama_sessions.compare_state; no additional exclusions"
+  },
+  "cross_width": {
+    "before": {
+      "differential_pass": true,
+      "coverage_pass": false,
+      "raw_gap_frames": 759,
+      "visible_unresolved_frames": 338,
+      "incoherent_frames": 421
+    },
+    "after": {
+      "differential_pass": true,
+      "coverage_pass": true,
+      "raw_gap_frames": 0,
+      "visible_unresolved_frames": 0,
+      "incoherent_frames": 0
+    }
+  },
+  "native_diagnostics": {
+    "before_240": {
+      "fully_static": true,
+      "diagnostic_records": 1,
+      "counters": {
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0
+      },
+      "raw_gap_frames": 759,
+      "visible_unresolved_frames": 338,
+      "incoherent_frames": 421
+    },
+    "before_356": {
+      "fully_static": true,
+      "diagnostic_records": 1,
+      "counters": {
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0
+      },
+      "raw_gap_frames": 759,
+      "visible_unresolved_frames": 338,
+      "incoherent_frames": 421
+    },
+    "after_240": {
+      "fully_static": true,
+      "diagnostic_records": 1,
+      "counters": {
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0
+      },
+      "raw_gap_frames": 0,
+      "visible_unresolved_frames": 0,
+      "incoherent_frames": 0
+    },
+    "after_356": {
+      "fully_static": true,
+      "diagnostic_records": 1,
+      "counters": {
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0
+      },
+      "raw_gap_frames": 0,
+      "visible_unresolved_frames": 0,
+      "incoherent_frames": 0
+    }
+  },
+  "route_qualification_performed": false,
+  "scope": "Before/after renderer invariance for one cumulative castle replay at native widths 240 and 356. This report binds the reviewed inputs and compares complete observations, scheduled images and saved guest states. Route progress and health qualification require the separate post-pipe validator. It does not qualify the complete castle, a key, bosses, extended spawning, an extended OBJ-window mask, Android, an APK, frame rate or hot-state restores."
+}

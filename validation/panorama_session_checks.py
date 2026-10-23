@@ -7,6 +7,7 @@ from castle_route_checks import validate_castle_history
 
 TRANSITION_FIELDS = ('level_id', 'sublevel_id', 'game_state', 'transformation')
 OBSERVABLES = ('frame', 'player_xy_velocity', *TRANSITION_FIELDS)
+MAX_SESSION_FRAMES = 7200
 
 
 def require(condition, message):
@@ -45,7 +46,8 @@ def validate_actions(actions):
                     'Invalid transformation condition')
             require(action['from_transformation'] != action['until_transformation'],
                     'A conditional action must observe a change')
-    require(sum(x['n'] for x in actions) <= 6000, 'Maximum 6000 frames per session')
+    require(sum(x['n'] for x in actions) <= MAX_SESSION_FRAMES,
+            f'Maximum {MAX_SESSION_FRAMES} frames per session')
 
 
 def validate_trace(actions, session, trace):
@@ -53,7 +55,7 @@ def validate_trace(actions, session, trace):
     validate_actions(actions)
     require(len(session) == len(actions), 'Missing action checkpoints')
     total = sum(row['action']['n'] for row in session)
-    require(1 <= total <= 6000 and len(trace) == total + 1,
+    require(1 <= total <= MAX_SESSION_FRAMES and len(trace) == total + 1,
             'Missing per-frame observations (including the initial state)')
     for i, row in enumerate(trace):
         require(type(row['elapsed_frame']) is int and row['elapsed_frame'] == i and type(row['frame']) is int,

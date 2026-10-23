@@ -97,6 +97,22 @@ recorrido y una sola salida; no certifica el castillo completo ni el rendimiento
 La panorámica real sigue fuera de los APK Android **0.9 y 0.9.1**.
 [Resultado y límites de la transición](validation/CASTLE_TRANSITION_VALIDATION.md).
 
+**Reconstrucción del 23 de octubre de 2026 (UTC):** se recuperaron los
+observadores de la nube puente, el objeto compuesto `0x064`, las piezas afines
+`0x076/0x077` y las copias de objetos para ventanas. La nueva ruta continua de
+**130 acciones y 6.801 fotogramas** conserva la primera tubería y atraviesa una
+segunda, del subnivel 3 al 153. La pareja corregida supera el contrato de
+recorrido, salud y cobertura: **250 centros RGB idénticos, 251 comparaciones de
+estado equivalentes y cero huecos de posiciones**. La regresión del ciclo
+normal → coche → normal también pasa con esta compilación. Las cinco pruebas
+de C++ pasan con ASan/UBSan y las 166 pruebas Python pasan normal y con `-O`.
+
+El motor conserva la máscara OBJ-window original de 240 píxeles: la sala de
+destino todavía muestra franjas negras en parte de los márgenes. Este resultado
+califica el recorrido y la procedencia de objetos observados; no extiende esa
+máscara ni certifica el castillo completo, un APK panorámico o los FPS.
+[Resultados nuevos, procedencia y límites](validation/CASTLE_POST_PIPE_VALIDATION.md).
+
 ## Qué significa «nativo» aquí
 
 El código de CPU del juego y de la BIOS se traduce a C++ y se compila para el dispositivo. El motor sigue reproduciendo el funcionamiento del hardware de GBA. No es una reescritura completa del juego independiente de ese hardware.

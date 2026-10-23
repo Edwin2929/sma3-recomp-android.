@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "verification_date_utc": "2026-10-23",
+  "scope": "Native Linux runner reconstruction and input provenance for the bounded castle post-pipe comparison and car regression. This is fresh evidence, not an identical reproduction of the October 19 build.",
+  "source_base_commit": "1a777c609ab2ede5655b66280c2d51416d7bdf2d",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "disassembly_commit": "c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071",
+  "platform": "Linux x86_64",
+  "toolchain": {
+    "cmake_version": "cmake version 4.4.4",
+    "cmake_executable_sha256": "d03a52669f3c9c7ee2718d733f61a05d9e768f5a2120b7c71a166c0b22e2f8cd",
+    "cmake_availability": "Recovered CMake executable; version checked directly. Private toolchain path omitted.",
+    "compiler_version": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "cxx_standard": 20,
+    "python_version_reported_by_cmake": "3.12.14"
+  },
+  "build": {
+    "target": "sma3_runner",
+    "build_type": "Release",
+    "release_flags": "-O3 -DNDEBUG",
+    "SMA3_WIDESCREEN_DIAGNOSTICS": true,
+    "command_template": "cmake --build build --target sma3_runner -j2",
+    "prebuilt_game_archive_reused": true,
+    "prebuilt_archive_project_relative_path": "generated-project/build/libgbarecomp_game.a",
+    "game_sources_regenerated_for_this_runner_rebuild": false,
+    "baseline_retry_completed": true,
+    "after_build_completed": true,
+    "success_marker": "[100%] Built target sma3_runner",
+    "default_all_targets_build_claimed": false,
+    "morph_test_build_or_execution_claimed": false,
+    "private_cache_sha256": {
+      "baseline": "ee623c0989ffbf84009237ae5af9805912c36658d74a1946be45ce4573d20cf9",
+      "after": "469e0b16a12ba8e4f469445371a5d0d93510cb5b343b68dcf385050a201b7ce3"
+    },
+    "private_build_log_sha256": {
+      "baseline-build.log": "47297f7f4ba6fd62451f0021e23dab65f798617e7632a655d98cf731e0fe9dc3",
+      "baseline-build-retry.log": "a95ac8f190c699ae9d17fc1be8ec54cf1b740e81b8bec923de368e2df5ec3b12",
+      "after-configure.log": "3f1a627f3d63883ef6fa29c4747bfa7f01573d2a0ae58af9a0956ca9438ae033",
+      "after-build.log": "7966788c614813846d3b0bef360e0161a56f0d417d963b908cc9f52ad58c92e9"
+    }
+  },
+  "generated_game_archive": {
+    "bytes": 306791028,
+    "sha256": "c9b218c574672023bf18a217e7bd98dd2d9b9b9711ac4ca1a59ee6d18725c7e0",
+    "verification_script": "tools/verify_archive.py",
+    "verification_script_sha256": "67d3e6eeb3c289d7fc23bdd0478e6be2bc026fe4b6c7728ffb654f226bb5e416",
+    "verification_report_sha256": "20ac8ac1d64307e76136eb47e511571829393ee52886473fd2bd94c8f4ed4215",
+    "verification_report": {
+      "archive_bytes": 306791028,
+      "archive_sha256": "c9b218c574672023bf18a217e7bd98dd2d9b9b9711ac4ca1a59ee6d18725c7e0",
+      "elf_members": 66,
+      "declared_functions": 49507,
+      "defined_functions": 49507,
+      "missing_functions": 0,
+      "platform": "Linux x86_64",
+      "gameplay_validated": false,
+      "android_validated": false,
+      "performance_measured": false
+    },
+    "verification_pass": true,
+    "current_archive_hash_rechecked_and_matches_report": true,
+    "verification_scope": "ELF members and declared function coverage only; the false gameplay, Android and performance flags belong to archive verification, not to the separate session reports.",
+    "historical_reference": "validation/castle-transition-native-provenance.json",
+    "historical_october_19_archive_sha256": "8d3470c6b408a9947822f387109fb4005331d2e744f44ce77de50767609dd196",
+    "identical_to_october_19_archive": false
+  },
+  "engine_patch_stack": {
+    "patches_in_application_order": [
+      {
+        "path": "patches/gbarecomp-interpolation.patch",
+        "sha256": "06d0ff62eff2c022a742aa2d6be2e563b8ee671193d7447e3c3109a5de401e66"
+      },
+      {
+        "path": "patches/gbarecomp-controls.patch",
+        "sha256": "943dbbdcf3fd6a87bd32b75fc98909a58a4f3b3258b71d000fac22deb6b430ea"
+      },
+      {
+        "path": "patches/gbarecomp-localization.patch",
+        "sha256": "e8278231e53514ec71fc23188a7faa16b3a117e23484d56c1413b2bfdfb89a3a"
+      },
+      {
+        "path": "patches/gbarecomp-touch-design.patch",
+        "sha256": "57b402afc07da1f48d7cab147434748702b0ee2e2dfebc4dff8f0838aadd1407"
+      },
+      {
+        "path": "patches/gbarecomp-widescreen-objects.patch",
+        "sha256": "1f4bec37e78adc366df4f62a50e24bb5d5a60dfc8b457fbb1a8e48746908caea"
+      }
+    ],
+    "patch_application_script": "tools/apply_interpolation_patch.py",
+    "patch_application_script_sha256": "cb6d13b02482a62fbe2ad58f5df846b624c41d446921b9c51957c6e2a884cd91",
+    "patched_file_sha256": {
+      "src/runtime/host_platform.cpp": {
+        "expected_patched_sha256": "1cca1e11576efb7c68229791803b725842da0703a172cb08142ce49187c089b8",
+        "current_sha256": "1cca1e11576efb7c68229791803b725842da0703a172cb08142ce49187c089b8"
+      },
+      "src/runtime/host_platform.h": {
+        "expected_patched_sha256": "47380b1a0155b7572a2297ee48294c9d8d0b5b52751893cd599784d09dd75db2",
+        "current_sha256": "47380b1a0155b7572a2297ee48294c9d8d0b5b52751893cd599784d09dd75db2"
+      },
+      "src/runtime/host_window.cpp": {
+        "expected_patched_sha256": "421b2663ceb1ba8e1b1cc552fcbc55ff945f00a75db86908983f774b1ad9e3fd",
+        "current_sha256": "421b2663ceb1ba8e1b1cc552fcbc55ff945f00a75db86908983f774b1ad9e3fd"
+      },
+      "src/runtime/runtime.cpp": {
+        "expected_patched_sha256": "63154840fb06ca1d5bc0bb0f10c54b0b286a8af20fcecc9b7ba844f90c1729da",
+        "current_sha256": "63154840fb06ca1d5bc0bb0f10c54b0b286a8af20fcecc9b7ba844f90c1729da"
+      },
+      "src/gba/gba_ppu.h": {
+        "expected_patched_sha256": "302b363f8c8044e1fdc23e0887f2fc90cad487eeabb3c2537d57e4b0ad9e41d8",
+        "current_sha256": "302b363f8c8044e1fdc23e0887f2fc90cad487eeabb3c2537d57e4b0ad9e41d8"
+      },
+      "src/gba/gba_ppu.cpp": {
+        "expected_patched_sha256": "c6dc3a652805ba301b901baa331207db728641b285b7d3ebe1fef10bc254b1e2",
+        "current_sha256": "c6dc3a652805ba301b901baa331207db728641b285b7d3ebe1fef10bc254b1e2"
+      }
+    },
+    "current_files_match_expected_patch_stack": true,
+    "verification_method": "Apply the five public patches to temporary copies of the six files at the pinned engine commit and compare their SHA-256 hashes with the current engine files. No engine files were modified by this check."
+  },
+  "runners": {
+    "baseline": {
+      "bytes": 138527624,
+      "sha256": "4b4725f81166763d43f8a95c2484dcb56b85104a0fedea8c6f562520d2a7ec1f"
+    },
+    "after": {
+      "bytes": 138539672,
+      "sha256": "45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b"
+    }
+  },
+  "runtime_config_sha256": {
+    "baseline": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+    "after": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+  },
+  "public_project_source_sha256": {
+    "CMakeLists.txt": {
+      "base_commit_sha256": "4c99f9b4a7cb2de5b6b52cdd6f8c47711ce02ae181aa8d5f2d9b3daf99945324",
+      "baseline_sha256": "4c99f9b4a7cb2de5b6b52cdd6f8c47711ce02ae181aa8d5f2d9b3daf99945324",
+      "after_sha256": "4c99f9b4a7cb2de5b6b52cdd6f8c47711ce02ae181aa8d5f2d9b3daf99945324"
+    },
+    "runtime.toml": {
+      "base_commit_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "baseline_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "after_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+    },
+    "src/controller_options.h": {
+      "base_commit_sha256": "4575c3a8ddd90aca5e61d499a454640a3f62f0c08fb8ca7c150bbf6cfc0748fd",
+      "baseline_sha256": "4575c3a8ddd90aca5e61d499a454640a3f62f0c08fb8ca7c150bbf6cfc0748fd",
+      "after_sha256": "4575c3a8ddd90aca5e61d499a454640a3f62f0c08fb8ca7c150bbf6cfc0748fd"
+    },
+    "src/frame_interpolation.h": {
+      "base_commit_sha256": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897",
+      "baseline_sha256": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897",
+      "after_sha256": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897"
+    },
+    "src/frame_interpolation_jni.cpp": {
+      "base_commit_sha256": "f59446679af74a595c9818b33de9c17552fec7f88194fa2c847772ff037e1859",
+      "baseline_sha256": "f59446679af74a595c9818b33de9c17552fec7f88194fa2c847772ff037e1859",
+      "after_sha256": "f59446679af74a595c9818b33de9c17552fec7f88194fa2c847772ff037e1859"
+    },
+    "src/localization.cpp": {
+      "base_commit_sha256": "a1d4c3664465a6cf8a01be39bfa10857fb69c396bb05ac5add81c4d5f4332b18",
+      "baseline_sha256": "a1d4c3664465a6cf8a01be39bfa10857fb69c396bb05ac5add81c4d5f4332b18",
+      "after_sha256": "a1d4c3664465a6cf8a01be39bfa10857fb69c396bb05ac5add81c4d5f4332b18"
+    },
+    "src/localization.h": {
+      "base_commit_sha256": "b0570acdb82bc5876911f76e3a438e72efed1edb418f3cd018070d6a4022199a",
+      "baseline_sha256": "b0570acdb82bc5876911f76e3a438e72efed1edb418f3cd018070d6a4022199a",
+      "after_sha256": "b0570acdb82bc5876911f76e3a438e72efed1edb418f3cd018070d6a4022199a"
+    },
+    "src/main.cpp": {
+      "base_commit_sha256": "ad0017005e2947ee411aa8f5d27edf8a7378281ece54174f3bc6b8546869e2b4",
+      "baseline_sha256": "ad0017005e2947ee411aa8f5d27edf8a7378281ece54174f3bc6b8546869e2b4",
+      "after_sha256": "ad0017005e2947ee411aa8f5d27edf8a7378281ece54174f3bc6b8546869e2b4"
+    },
+    "src/morph_dispatch.cpp": {
+      "base_commit_sha256": "dafa5302b5cfa2b45c7290f86d0a1b279a87c64f37337720074ab7c7b2057dd0",
+      "baseline_sha256": "dafa5302b5cfa2b45c7290f86d0a1b279a87c64f37337720074ab7c7b2057dd0",
+      "after_sha256": "dafa5302b5cfa2b45c7290f86d0a1b279a87c64f37337720074ab7c7b2057dd0"
+    },
+    "src/overlay_dispatch.cpp": {
+      "base_commit_sha256": "0eacc1961d6d008cc2af034e44e2418533cecca710ee62fb6b84ef9dd10d06e3",
+      "baseline_sha256": "0eacc1961d6d008cc2af034e44e2418533cecca710ee62fb6b84ef9dd10d06e3",
+      "after_sha256": "0eacc1961d6d008cc2af034e44e2418533cecca710ee62fb6b84ef9dd10d06e3"
+    },
+    "src/ram_dispatch.cpp": {
+      "base_commit_sha256": "b1f6299a8a4a844cea1c9175fd72a2edb6430279528391e329d694bea3a3e779",
+      "baseline_sha256": "b1f6299a8a4a844cea1c9175fd72a2edb6430279528391e329d694bea3a3e779",
+      "after_sha256": "b1f6299a8a4a844cea1c9175fd72a2edb6430279528391e329d694bea3a3e779"
+    },
+    "src/touch_layout.h": {
+      "base_commit_sha256": "e775782019b940043aab6c4c2b93a9c9825a5ba546cf83649c8dd9a1fcfcec2f",
+      "baseline_sha256": "e775782019b940043aab6c4c2b93a9c9825a5ba546cf83649c8dd9a1fcfcec2f",
+      "after_sha256": "e775782019b940043aab6c4c2b93a9c9825a5ba546cf83649c8dd9a1fcfcec2f"
+    },
+    "src/video_scaler.h": {
+      "base_commit_sha256": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f",
+      "baseline_sha256": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f",
+      "after_sha256": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f"
+    },
+    "src/widescreen.cpp": {
+      "base_commit_sha256": "1ead873ff6184410db7934137c1ef647c8bd0123117d8b0ecea54954df4afe29",
+      "baseline_sha256": "1ead873ff6184410db7934137c1ef647c8bd0123117d8b0ecea54954df4afe29",
+      "after_sha256": "e7c890d74d5524f1b2edd5e7e1f19d6baa990aaaae5e1c9ee4f8b232044e9a88"
+    },
+    "src/widescreen.h": {
+      "base_commit_sha256": "ece193774eb072180e4b8fd5272869a1d17fbff71f3d4f629d3d22e0bb013700",
+      "baseline_sha256": "ece193774eb072180e4b8fd5272869a1d17fbff71f3d4f629d3d22e0bb013700",
+      "after_sha256": "ece193774eb072180e4b8fd5272869a1d17fbff71f3d4f629d3d22e0bb013700"
+    },
+    "src/widescreen_bounds.cpp": {
+      "base_commit_sha256": "8c6076f77105cf9a82b28abaebe4b7402f8de908f74dad3a711b1749f5eca3cc",
+      "baseline_sha256": "8c6076f77105cf9a82b28abaebe4b7402f8de908f74dad3a711b1749f5eca3cc",
+      "after_sha256": "8c6076f77105cf9a82b28abaebe4b7402f8de908f74dad3a711b1749f5eca3cc"
+    },
+    "src/widescreen_bounds.h": {
+      "base_commit_sha256": "007671cb18dd031ea63ce46e52eeddd13b2a48c5dc500aa656da581f9d27da3c",
+      "baseline_sha256": "007671cb18dd031ea63ce46e52eeddd13b2a48c5dc500aa656da581f9d27da3c",
+      "after_sha256": "007671cb18dd031ea63ce46e52eeddd13b2a48c5dc500aa656da581f9d27da3c"
+    },
+    "src/widescreen_car.h": {
+      "base_commit_sha256": "7fee9d50c5290abc234e4f2ae72f2db30545868c389fdee94591094d8d2b3d22",
+      "baseline_sha256": "7fee9d50c5290abc234e4f2ae72f2db30545868c389fdee94591094d8d2b3d22",
+      "after_sha256": "7fee9d50c5290abc234e4f2ae72f2db30545868c389fdee94591094d8d2b3d22"
+    },
+    "src/widescreen_components.h": {
+      "base_commit_sha256": "bf98712a80bce208aa074bba8d042daf2459eb400a729b634bc18310f93624df",
+      "baseline_sha256": "bf98712a80bce208aa074bba8d042daf2459eb400a729b634bc18310f93624df",
+      "after_sha256": "bf98712a80bce208aa074bba8d042daf2459eb400a729b634bc18310f93624df"
+    },
+    "src/widescreen_objects.h": {
+      "base_commit_sha256": "e9748a9bf72a427f84dd99918a43123db81ce43bfd8afe081e58b200a936d95a",
+      "baseline_sha256": "e9748a9bf72a427f84dd99918a43123db81ce43bfd8afe081e58b200a936d95a",
+      "after_sha256": "e9748a9bf72a427f84dd99918a43123db81ce43bfd8afe081e58b200a936d95a"
+    },
+    "src/widescreen_rotating.h": {
+      "base_commit_sha256": "ae2500c0271e25d5f5dc6b0ba5f7b1db6bdbcec898d13ddd60318f9fba45d687",
+      "baseline_sha256": "ae2500c0271e25d5f5dc6b0ba5f7b1db6bdbcec898d13ddd60318f9fba45d687",
+      "after_sha256": "5e93818ec5fcf2a0e5f0d6da5239681819813cc4fb46287b9aa4aab273cc39c3"
+    },
+    "src/widescreen_strips.h": {
+      "base_commit_sha256": "2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b",
+      "baseline_sha256": "2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b",
+      "after_sha256": "2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b"
+    },
+    "src/widescreen_tiles.h": {
+      "base_commit_sha256": "affce67e442b6194aaa2e9b0ff1d5a663c7559efe65a89a779ee0cd746abcd5d",
+      "baseline_sha256": "affce67e442b6194aaa2e9b0ff1d5a663c7559efe65a89a779ee0cd746abcd5d",
+      "after_sha256": "affce67e442b6194aaa2e9b0ff1d5a663c7559efe65a89a779ee0cd746abcd5d"
+    },
+    "src/widescreen_ui.h": {
+      "base_commit_sha256": "6a1561342ef2250b0e7a0373fbdc983b62c420bca2eafc1ae770ce086dce5164",
+      "baseline_sha256": "6a1561342ef2250b0e7a0373fbdc983b62c420bca2eafc1ae770ce086dce5164",
+      "after_sha256": "6a1561342ef2250b0e7a0373fbdc983b62c420bca2eafc1ae770ce086dce5164"
+    },
+    "src/widescreen_hazards.h": {
+      "base_commit_sha256": null,
+      "baseline_sha256": null,
+      "after_sha256": "78bb4b040097b2206954a9b320c24eeefb95527a3093d39dca71892a9514e304"
+    },
+    "src/widescreen_window.h": {
+      "base_commit_sha256": null,
+      "baseline_sha256": null,
+      "after_sha256": "1b9b32ec27a421d3111b67cc25e26fe465f99195282412395049e541f522d35f"
+    }
+  },
+  "baseline_public_sources_match_source_base_commit": true,
+  "localization_header_recovery": {
+    "project_relative_path": "src/localization_data.h",
+    "private_generated_asset": true,
+    "bytes": 138737,
+    "sha256": "a41582d5a4502b18923d152044c7be7f6c8ac58950a1fee2c2fdb54705de4a3b",
+    "baseline_after_and_recovered_reference_identical": true,
+    "initial_baseline_build_result": "Failed: localization_data.h was missing.",
+    "remediation": "Recovered the existing private generated header, then completed the baseline retry and the corrected runner build.",
+    "regenerated_from_rom_in_this_rebuild": false,
+    "header_contents_published": false
+  },
+  "input_assets": {
+    "rom": {
+      "bytes": 4194304,
+      "sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941"
+    },
+    "bios": {
+      "bytes": 16384,
+      "sha256": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570"
+    },
+    "castle_entry_fixture": {
+      "bytes": 553424,
+      "sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2"
+    },
+    "car_entry_fixture": {
+      "bytes": 553424,
+      "sha256": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8"
+    }
+  },
+  "separate_native_validation_reports": [
+    "validation/widescreen-castle-post-pipe-before.json",
+    "validation/widescreen-castle-post-pipe.json",
+    "validation/widescreen-castle-post-pipe-fix-effect.json",
+    "validation/widescreen-car-post-pipe-fix.json"
+  ],
+  "limitations": [
+    "The initial gameplay fixtures are synthetic; the complete native sessions are replayed from them without intermediate restores.",
+    "Object provenance is validated for the played routes; the original 240-pixel OBJ-window mask is not extended to the margins.",
+    "The complete castle, bosses, other exits, a collected key, expanded spawning, hot-state restores, Android and APK delivery are not qualified.",
+    "No frame-rate measurement is claimed.",
+    "ROM, BIOS, generated game sources, executables, private headers, saved states, full traces and screenshots are not included in this manifest."
+  ]
+}

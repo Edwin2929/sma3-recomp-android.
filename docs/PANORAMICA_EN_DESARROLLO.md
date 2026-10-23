@@ -38,6 +38,44 @@ Más detalles en la [guía de calidad de imagen](CALIDAD_IMAGEN.md).
 - Opción CMake `SMA3_WIDESCREEN_DIAGNOSTICS`, desactivada por defecto y exclusiva
   de escritorio. Permanece desactivada en las compilaciones Android.
 
+## Reconstrucción del 23 de octubre de 2026 (UTC)
+
+Se reconstruyeron los observadores de la nube puente `0x0BB`, los 17 componentes
+del sprite `0x064`, la tercera pieza afín de `0x076/0x077` y las copias de OAM
+usadas por el efecto OBJ-window. Las pruebas independientes de esos productores
+y la regresión de objetos giratorios pasan de nuevo con C++20, ASan y UBSan.
+El historial sigue admitiendo una sola presentación completa y coherente;
+los observadores no escriben RAM ni registros del juego.
+
+Las cuatro ejecuciones nuevas reproducen la misma cinta de **130 acciones y
+6.801 fotogramas**, desde el fixture original y sin restauraciones intermedias.
+Conservan la primera tubería y continúan por la zona superior hasta una segunda
+salida, del subnivel 3 al 153. La pareja corregida de **240 × 160 y 356 × 160**
+supera el contrato de recorrido y salud, con **250 centros RGB idénticos,
+251 comparaciones de estado equivalentes y cero huecos de posiciones**.
+Termina con tres vidas, sin muertes ni separación de Baby Mario durante el
+juego normal, y 418 fotogramas finales quietos y sin botones.
+
+La comparación antes/después conserva las trazas, las imágenes de 240 píxeles,
+los centros panorámicos y los estados comparados. Los 759 fotogramas con
+problemas de posiciones de la base pasan a cero en ambas anchuras. Las
+diferencias de imagen aparecen únicamente en los márgenes de 21 capturas.
+La [regresión del coche](../validation/widescreen-car-post-pipe-fix.json)
+también pasa: ciclo normal → coche → normal, 3.506 fotogramas y 1.200 fotogramas
+finales sin botones. Las 166 pruebas Python pasan normal y con `-O`.
+[Resultados, criterios y límites](../validation/CASTLE_POST_PIPE_VALIDATION.md) ·
+[Procedencia de la reconstrucción](../validation/castle-post-pipe-native-build.json).
+
+**Límite de presentación:** el motor sigue construyendo la máscara OBJ-window
+en los 240 píxeles originales. Cuando sus controles de ventana varían dentro
+de una línea, el adaptador conserva la política de márgenes negros. Corregir
+la procedencia de los objetos y sus copias no extiende esa máscara al escenario
+adicional. Las imágenes nuevas del destino muestran franjas negras en ambos
+márgenes a ciertas alturas. La aprobación de este recorrido no equivale a una
+extensión completa del efecto de ventana del destino ni a cobertura del jefe,
+otras salidas o el castillo completo. No añade panorámica a los APK 0.9/0.9.1
+ni constituye una medición de FPS.
+
 ## Comprobaciones y límites de la evidencia
 
 Durante la investigación previa, una prueba de 9.600 fotogramas terminó con
@@ -218,7 +256,7 @@ No se debe activar en una entrega Android basándose en estas pruebas.
 
 `validation/run_panorama_session.py` inicia su propio servidor de diagnóstico
 local, carga un estado privado y aplica una lista acotada de entradas. Valida
-los hashes de ROM/BIOS, permite como máximo 6.000 fotogramas por sesión y guarda
+los hashes de ROM/BIOS, permite como máximo 7.200 fotogramas por sesión y guarda
 una captura y posición de Yoshi por acción, además del estado final. Cierra su
 proceso al terminar o fallar. Los archivos de salida deben permanecer privados.
 Requiere Python y Pillow, además del ejecutable Linux compilado.

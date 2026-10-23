@@ -1,0 +1,61 @@
+{
+  "profile": "castle-post-pipe-progress-v1",
+  "actions_sha256": "87bfcf6f8143bd0fc2436cb2d6b610749c1dc9183eaf688e52c2375174aa2c2e",
+  "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+  "gameplay_start_frame": 300,
+  "level_id": 3,
+  "source_sublevel_id": 3,
+  "destination_sublevel_id": 153,
+  "prefix": {
+    "action_count": 65,
+    "frame_count": 3907,
+    "actions_sha256": "e87a2b74b03b8ac9871254617ab2d7a3698f54a966f4b53f55a51aa0e5c12d93",
+    "transition_contract_sha256": "0cf81e0a68d24e13d854987dd18bc990a5a214cc0fa94c77919c412d5465529b"
+  },
+  "game_state_sequence": [13, 9, 10, 11, 13],
+  "source_screen": 72,
+  "prior_exit_index": 1016,
+  "exit_index": 576,
+  "exit_entry_type": 1,
+  "return_entry_type": 0,
+  "pipe_top_y_pixels": 1152,
+  "minimum_entry_descent_pixels": 31,
+  "phase_limits": [
+    {"game_state": 9, "min_frames": 2, "max_frames": 120},
+    {"game_state": 10, "min_frames": 2, "max_frames": 180},
+    {"game_state": 11, "min_frames": 2, "max_frames": 180}
+  ],
+  "load_position_pixels": [464, 1824],
+  "load_min_consecutive_frames": 2,
+  "entry_bounds": {
+    "x_min_pixels": 2208,
+    "x_max_pixels": 2240,
+    "y_min_pixels": 1104,
+    "y_max_pixels": 1136
+  },
+  "origin_bounds": {
+    "x_min_pixels": 2208,
+    "x_max_pixels": 2240,
+    "y_min_pixels": 1136,
+    "y_max_pixels": 1168
+  },
+  "return_bounds": {
+    "x_min_pixels": 448,
+    "x_max_pixels": 480,
+    "y_min_pixels": 1808,
+    "y_max_pixels": 1840
+  },
+  "destination_bounds": {
+    "x_min_pixels": 448,
+    "x_max_pixels": 480,
+    "y_min_pixels": 1808,
+    "y_max_pixels": 1872
+  },
+  "final_bounds": {
+    "x_min_pixels": 448,
+    "x_max_pixels": 480,
+    "y_min_pixels": 1832,
+    "y_max_pixels": 1856
+  },
+  "final_idle_frames": 300
+}

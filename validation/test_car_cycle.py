@@ -128,7 +128,7 @@ class InputAndCycleTests(unittest.TestCase):
                  [{'n': 1, 'keys': 1023, 'extra': 0}],
                  [{'n': 1, 'keys': 1023, 'until_transformation': 0}],
                  [{'n': 1, 'keys': 1023, 'from_transformation': 0, 'until_transformation': 0}],
-                 [{'n': 600, 'keys': 1023}] * 11]
+                 [{'n': 600, 'keys': 1023}] * 12 + [{'n': 1, 'keys': 1023}]]
         validate_actions(PLAN)
         for value in cases:
             with self.subTest(value=value), self.assertRaises(ValueError):

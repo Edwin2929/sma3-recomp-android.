@@ -75,6 +75,106 @@ bool observe_rotating_pair(Reader read,const uint32_t* r,StagingPositions& out) 
     out[first]=observed[0];out[first+1]=observed[1];
     return true;
 }
+// 080DC02A returns from 080DBF6C after the bridge cloud's shrinking sprite
+// and affine matrix have been written. Only the two reviewed phase-2 callers
+// preserve the owning cloud in saved r6. Other users of this shared routine
+// retain their existing clipping. All reads observe guest memory unchanged.
+template<class Reader>
+bool observe_bridge_cloud(Reader read,const uint32_t* r,StagingPositions& out) {
+    const unsigned sp=r[13],base=0x03002460;
+    if(sp<0x03000000 || sp>0x03007fec || (sp&3))return false;
+    const unsigned caller=read(sp+16,4);
+    if(caller!=0x080dc487 && caller!=0x080dc495)return false;
+    const unsigned sprite=read(sp+8,4);
+    if(sprite<base || sprite>=base+24*0xb0 || (sprite-base)%0xb0)return false;
+    if(read(0x0300702c,4)!=base || read(sprite+0x32,2)!=0xbb)return false;
+    const unsigned allocation=read(sprite+0x34,2);
+    if((allocation&3) || allocation>=1024)return false;
+    const unsigned first=allocation/4,a=0x03005a00+first*8;
+    out[first]={};
+    if(read(sprite+0x24,2)!=8 || read(sprite+0x6a,2)!=2 ||
+       read(sprite+0x94,1)==255 || read(sprite+0x2a,2)!=0x0804)return false;
+
+    const unsigned next_matrix=read(0x030069d2,2);
+    if(next_matrix<1 || next_matrix>32)return false;
+    const unsigned matrix=next_matrix-1,matrix_address=0x03005a00+matrix*32;
+    // These registers distinguish a completed write from the early exits at
+    // 080DBFAA/080DBFB2, which share the same return label.
+    if(r[4]!=matrix_address || r[5]!=0x03007030 || r[6]!=0x030069d2 ||
+       r[0]!=next_matrix)return false;
+    const unsigned scale=read(sprite+0x7a,2);
+    if(scale<256 || scale>879)return false;
+    const unsigned reciprocal=read(0x081af2cc+(scale<496?scale:496)*2,2);
+    if(r[7]!=reciprocal || read(matrix_address+6,2)!=reciprocal ||
+       read(matrix_address+14,2)!=0 || read(matrix_address+22,2)!=0 ||
+       read(matrix_address+30,2)!=reciprocal)return false;
+
+    // The single 16x16 phase-2 component uses the signed screen anchor.
+    // Require its complete, unmasked staging coordinates to agree as well;
+    // two positions separated by 512 pixels must never be interchangeable.
+    const int x=int16_t(read(sprite+0x20,2)),y=int16_t(read(sprite+0x22,2));
+    const unsigned metadata=0x0202c8b0+first*4;
+    if(int16_t(read(metadata,2))!=x || int16_t(read(metadata+2,2))!=y)return false;
+    // Thumb subtracts before OR and truncates only at STRH. Preserve that
+    // behavior even when a coordinate underflows its hardware field.
+    const auto a0=uint16_t(((unsigned(y)&255)-8u) | 0x100u);
+    const auto a1=uint16_t(((unsigned(x)&511)-8u) | 0xffff8000u | (matrix<<9));
+    if(read(a,2)!=a0 || read(a+2,2)!=a1)return false;
+    out[first]={x-8,true,a0,a1,uint16_t(read(a+4,2)),first};
+    return true;
+}
+
+// 080784CA follows the completed matrix write in 08078370. For sprites
+// 076/077, the third component's enlarged affine box moves its origin by -8
+// on each axis without updating the generic coordinate metadata. Retain the
+// generic emitter's full X and verify the exact reviewed attribute transform.
+template<class Reader>
+bool observe_scaling_triplet(Reader read,const uint32_t* r,
+        const StagingPositions& emitted,StagingPositions& out) {
+    const unsigned sprite=r[7],base=0x03002460;
+    if(sprite<base || sprite>=base+24*0xb0 || (sprite-base)%0xb0 ||
+       read(0x0300702c,4)!=base)return false;
+    const unsigned id=read(sprite+0x32,2);
+    if(id!=0x76 && id!=0x77)return false;
+    const unsigned allocation=read(sprite+0x34,2);
+    if((allocation&3) || allocation>253*4)return false;
+    const unsigned slot=allocation/4+2,a=0x03005a00+slot*8;
+    out[slot]={};
+    if(read(sprite+0x24,2)!=8 || (read(sprite+0x2a,2)>>11)!=3 ||
+       read(sprite+0x94,1)>=128 || read(sprite+0x62,2)!=0 ||
+       r[4]!=0x030069d2 || r[0]!=0x080784cb)return false;
+    const auto& original=emitted[slot];
+    const int x=int16_t(read(sprite+0x20,2)),y=int16_t(read(sprite+0x22,2));
+    if(!original.valid || original.source!=slot || original.x!=x ||
+       (original.a1&511)!=(unsigned(x)&511) || (original.a0&255)!=(unsigned(y)&255) ||
+       int16_t(read(0x0202c8b0+slot*4,2))!=x ||
+       int16_t(read(0x0202c8b2+slot*4,2))!=y)return false;
+    const unsigned matrix=read(0x030069d2,2),scale=read(sprite+0x76,2),phase=read(sprite+0x72,2);
+    if(matrix>=32 || scale>=512 || phase>=4)return false;
+    const unsigned reciprocal=read(0x081af2cc+scale*2,2);
+    const unsigned flips=read(0x08174b58+phase,1);
+    const auto sx=uint16_t(flips&0x40?0u-reciprocal:reciprocal);
+    const auto sy=uint16_t(flips&0x80?0u-reciprocal:reciprocal);
+    const unsigned m=0x03005a00+matrix*32;
+    if(read(0x030021a8,2)!=sx || read(0x030021aa,2)!=sy || read(0x030021ac,2)!=0 ||
+       read(m+6,2)!=sx || read(m+14,2)!=0 || read(m+22,2)!=0 || read(m+30,2)!=sy)return false;
+    auto p=original;
+    if(uint16_t(y+40)>207) {
+        // The guest disables this component before changing its X or tile.
+        p.a0=0x0200;
+    } else {
+        const unsigned graphic=read(sprite+0x3c,2);
+        if(graphic>=32)return false; // The 32 dynamic-slot tile indices.
+        p.x-=8;
+        p.a0=uint16_t((p.a0&0xfc00)|0x300|((unsigned(y)-8)&255));
+        p.a1=uint16_t((p.a1&0x3e00)|0x4000|((unsigned(x)-8)&511));
+        p.a2=uint16_t((p.a2&0xfc00)|read(0x08171e88+graphic*2,2));
+    }
+    if(read(a,2)!=p.a0 || read(a+2,2)!=p.a1 || read(a+4,2)!=p.a2)return false;
+    out[slot]=p;
+    return true;
+}
+
 // 08063B52 and 08063D32 expand one component's affine box and shifts its origin left 16.
 template<class Reader>
 bool observe_scaled_component(Reader read,const uint32_t* r,StagingPositions& out,uint32_t pc=0x08063b52) {

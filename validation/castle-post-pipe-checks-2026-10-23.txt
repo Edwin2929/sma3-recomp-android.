@@ -1,0 +1,178 @@
+Castle second natural pipe validation — fresh reconstruction, 2026-10-23 UTC
+Recorded results from this reconstruction, not results reused from the lost patch.
+Base commit: 1a777c609ab2ede5655b66280c2d51416d7bdf2d
+Public scope: source, input tape, contract, tests, documentation and aggregate evidence.
+No ROM, BIOS, generated game code, binary, screenshot, savestate or full trace is published.
+
+PYTHON VALIDATOR REGRESSIONS
+Python 3.12.14; 114 inherited tests plus 52 new tests (26 route, 20 aggregate, 6 budget).
+$ python -B -m unittest discover -s validation -p test_*.py -v
+166 tests: PASS; exit 0; 13.417 seconds (unittest).
+Private log SHA-256: 66985f40c7a35d3f0eeeb72e347855ba3d48cc214976f33de69b96fb039e811d
+$ python -B -O -m unittest discover -s validation -p test_*.py -v
+166 tests: PASS; exit 0; 15.025 seconds (unittest).
+Private log SHA-256: 1965dbcbf6efa367d451ac664d6020a0724ad4d8686062604b595c77d4c9be43
+One complete execution per mode; all 39 recorded sources, contracts and tapes unchanged.
+Synthetic tests validate rejection/acceptance logic; they do not run the game.
+Python source-set SHA-256: d8654fa26c1dfe766de2af8f2fcf86ded148795a93de8e250f44f0eb5e318587
+
+C++ OBSERVER TESTS
+c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0
+Common flags: -std=c++20 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer
+cloud/scaling_triplet/window/rotating additionally used -fno-sanitize-recover=all.
+ASAN_OPTIONS=detect_leaks=0:halt_on_error=1
+UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
+LeakSanitizer disabled explicitly; no leak-free claim.
+validation/widescreen_cloud_test.cpp: compile exit 0, run exit 0; PASS.
+PASS cloud: 22185 checks; signed/full X, exact final attributes, matrix/scale, ABI, stale provenance, read-only guest
+Source SHA-256: 9cd6c9d543ac3f4cf8d4b69977f8a561b391c28928815dee032c5691b01934f0
+Binary SHA-256: d85d6e7667a88c2e97632accd2158ff6b091e5cb2a0947db03062835d3586c53
+Run-log SHA-256: 2159f239f13a348de80bc57cffa2ac5db2c10065e8c3e27eb01e34013fdacdb6
+validation/widescreen_scaling_triplet_test.cpp: compile exit 0, run exit 0; PASS.
+PASS scaling_triplet: 43760 checks; exact XY resize, clipping, dynamic tiles, affine phases, full provenance and window composition
+Source SHA-256: e556995a9c1b03d6d851224871fd81d49b790fbe408cc57c020554850bd15e4e
+Binary SHA-256: 3b2a8fb19a23579f20c6fb15f1b4c2302dfdc1c0a36627d75bd60e903d8f2701
+Run-log SHA-256: 337f93aef84f214fd89fc2cf8098b38b907ad059ef155ffe0e6923f63c6e46cb
+validation/widescreen_window_test.cpp: compile exit 0, run exit 0; PASS.
+PASS window: 9014 checks; exact copies/originals, full X, atomic presentation, stale triples, capacities and read-only guest
+Source SHA-256: 95b5aeef264aa6d2358bd19acce926c1a2402a3d5a8ea61b9fda3938e5a8f905
+Binary SHA-256: 80136f95012a6bca747c6872bd7f59c68fbeb334586338ce26bcc4fe16fc59d8
+Run-log SHA-256: fa7033e2dc3274c6c313acb65170e27db3ad8e83e60323551256173eff5aeca2
+validation/widescreen_rotating_test.cpp: compile exit 0, run exit 0; PASS.
+PASS: unclamped signed X, guest clamp boundaries, affine groups, final rotating pairs, stale attributes and capacity
+Source SHA-256: 7341d5d760c97456e77f2cae8c221c33e31e4c3b0bf9143965e27f1ec6109ecc
+Binary SHA-256: cd8298429ce84a2ef49bd9872e52b745ced25341991e8514b1326321440d9f6f
+Run-log SHA-256: 66373cff2a3290f9c6de405f74a83cde5682076b6613bf6672493d24061f51a2
+validation/widescreen_hazards_test.cpp: compile exit 0, run exit 0; PASS.
+PASS widescreen_hazards_test: 173094 checks
+173094 is the number of internal assertions, including reader bounds, not independent cases or game frames.
+Compile output and runtime stderr were empty. No ASan/UBSan diagnostic was emitted.
+Binary SHA-256: 629f4e5b355077db81e22eb4653273d1e0c4a982bfcead2074ea574e6d5da5c0
+Five standalone executables passed; four new observer tests plus the existing rotating regression.
+Private C++ integration record SHA-256: c9d48bbbbda86e4f92f5e3049e79cb4dbf7346610c6914938588064223680392
+Private Hazard64 record SHA-256: a709c620cd20d8838053758e8143bb6edb3a62a9000544da7c75570e8253bfa0
+
+NATIVE CONTINUOUS REPLAYS
+130 actions; 6801 executed frames; 6802 observations per session.
+Native frames 6599 through 13400. Four sessions completed normally: BEFORE/AFTER x 240/356.
+Each qualification replay loads the original entry fixture once; no intermediate state restores.
+Unchanged published prefix: 65 actions, 3907 frames; continuation: 65 actions, 2894 frames.
+Actions canonical SHA-256: 87bfcf6f8143bd0fc2436cb2d6b610749c1dc9183eaf688e52c2375174aa2c2e
+Actions file SHA-256: cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da
+Contract file SHA-256: 634f3293abecc8179a6f78c853d41ae0e582ea3a5212b8fb145a6aea102208c2
+Entry fixture SHA-256: 02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2
+BEFORE runner SHA-256: 4b4725f81166763d43f8a95c2484dcb56b85104a0fedea8c6f562520d2a7ec1f
+AFTER runner SHA-256: 45fa470e1145d780245e9b0ff85522ccad315a2acd488627be967d4cd315757b
+BEFORE: differential PASS; route/health PASS; coverage FAIL; complete qualification false.
+BEFORE gaps in both native widths: raw=759, visible unresolved=338, incoherent=421.
+AFTER: differential PASS; route/health PASS; coverage PASS; complete qualification true.
+AFTER gaps in both native widths: raw=0, visible unresolved=0, incoherent=0.
+Both cross-width pairs: 250/250 center images identical; 251/251 equivalent saved-state comparisons.
+The extra final save shares the final capture frame. Captures are sampled, not every rendered frame.
+All four sessions have identical actions, session endpoints, per-frame observations and capture schedules.
+All four native logs: FULLY_STATIC; dispatch_misses=0 interpreted_insns=0 healed_native=0.
+Native coverage JSON also has zero misses/interpreted/healed/inflight/failed counts.
+CPU0, BUS0, IO_0, AUD0, SAV0 and META compared; viewport-specific PPU0 excluded.
+Only eight inactive-RTC wall-clock bytes BUS0[395310:395318] are excluded; active RTC rejected.
+
+SECOND PIPE RESULTS
+Post-warm-up state sequence: 13 -> 9 -> 10 -> 11 -> 13 -> 9 -> 10 -> 11 -> 13.
+First natural transition rechecked against its unchanged original contract: PASS.
+Effective Down begins at elapsed 6212 inside the reviewed entry bounds.
+Departure state 9 begins at elapsed 6247; descent from entry = 31.75 pixels.
+Exit index changes 1016 -> 576; entry type 1 during states 9/10 and 0 before/after.
+State 9: elapsed 6247..6295 (49 observations); PASS.
+State 10: elapsed 6296..6312 (17 observations); PASS.
+State 11: elapsed 6313..6378 (66 observations); PASS.
+Load position (464,1824) at elapsed 6297; sublevel changes 3 -> 153.
+Normal return at elapsed 6379; final elapsed 6801.
+Final player X=464, Y=1842.99609375; both velocities zero; transformation=0.
+418 consecutive final stable idle frames; lives 3 -> 3; deaths=0; no baby-loss episodes.
+Health is evaluated on the full trace, including the 3907 -> 3908 prefix boundary.
+complete_castle_post_pipe_progress_pass=true; second_natural_room_transition_qualified=true.
+
+BEFORE/AFTER EFFECT
+250/250 full 240-pixel images unchanged; 250/250 panorama centers [58,298) unchanged.
+251/251 equivalent state comparisons per width; settings identical except runner hash.
+21 panorama captures changed in margins only; 229 unchanged.
+14111 changed RGB pixels summed over captures: left=13611, right=500 (pixels, not color channels).
+Distinct BEFORE/AFTER runner hashes and real margin changes are required for effect PASS.
+Effect comparator SHA-256: 62ebf72fdb75a24431ea43c4721ad7c482db146dcdf8789b0d12c212bad81390
+Effect comparison_pass=true; fix_effect_pass=true; route qualification is checked separately.
+Visual inspection: frame 6177 restores pink hazard pieces in the left margin without center changes.
+Destination frames 6420/6801 still show black bands in both margins at some rows.
+OBJ-window provenance is repaired; the native stencil remains 240 pixels wide.
+
+CAR REGRESSION
+Fresh AFTER runner, both widths: 3506 frames, 3507 observations, 61 equal center images, 62 equivalent states.
+Native transformation cycle 0 -> 2 -> 0, recovery at 2216, stable idle 1200 frames.
+Post-recovery displacement 58.83984375 pixels; raw/visible/incoherent gaps=0/0/0.
+complete_cycle_pass=true; both logs FULLY_STATIC, zero dispatch/interpreted/healed counters.
+
+BUILD AND LIMITS
+New Linux baseline and corrected sma3_runner builds; same recovered verified game archive in both.
+Target sma3_runner only, Release, SMA3_WIDESCREEN_DIAGNOSTICS=ON; see castle-post-pipe-native-build.json.
+Existing five engine patches and their pinned engine source hashes retained; no new engine change.
+Archive integrity does not substitute for gameplay validation; native sessions above provide the new evidence.
+No Android build/APK delivery, frame-rate measurement, full castle, key, boss or expanded spawning qualification.
+This milestone does not extend OBJ-window stencil or qualify arbitrary live savestate restores.
+
+FROZEN SOURCE/CONTRACT/TAPE SHA-256
+src/widescreen.cpp: e7c890d74d5524f1b2edd5e7e1f19d6baa990aaaae5e1c9ee4f8b232044e9a88
+src/widescreen_hazards.h: 78bb4b040097b2206954a9b320c24eeefb95527a3093d39dca71892a9514e304
+src/widescreen_objects.h: e9748a9bf72a427f84dd99918a43123db81ce43bfd8afe081e58b200a936d95a
+src/widescreen_rotating.h: 5e93818ec5fcf2a0e5f0d6da5239681819813cc4fb46287b9aa4aab273cc39c3
+src/widescreen_strips.h: 2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b
+src/widescreen_ui.h: 6a1561342ef2250b0e7a0373fbdc983b62c420bca2eafc1ae770ce086dce5164
+src/widescreen_window.h: 1b9b32ec27a421d3111b67cc25e26fe465f99195282412395049e541f522d35f
+validation/car-cycle-expectations.json: 5792fc7f7f5c2d461b07d77f2d9bb734d66f0cab5322f213b6165a8251cb4ce7
+validation/castle-post-pipe-expectations.json: 634f3293abecc8179a6f78c853d41ae0e582ea3a5212b8fb145a6aea102208c2
+validation/castle-route-progress-expectations.json: 7fed0fd1a9a2012b595ed3b99315bd5ea7059f784b6ce380ddc2fc3c29baca0a
+validation/castle-transition-expectations.json: 404328ddf535d2e0b0d16617c1789193b98fb95671a4fe0b0b82bde95ff0fdbe
+validation/castle-transition-first-replay-expectations.json: dc23a09fb45fa65264626be0e1ff10bdd63391d1b5bc9d9033cd9b804341cf05
+validation/castle_post_pipe_checks.py: 1876bec5e127c67399ed4abebf8a75a3fac2b52ec9c4c700b24f924d258528b7
+validation/castle_route_checks.py: 0e6b4b0c5472c328991daca1278d630214ffa23c98555426a5bbb7f8714b360c
+validation/castle_route_progress.py: 5d6e7c146dc257dfb7f85d30f81639ec75d638c46ac83f540157e6e1291e7c58
+validation/castle_transition_checks.py: 4bd855f2e1ec88b8225e9740838dc75d3c7bf1ca2f1f5b2e92d2b247542ed23c
+validation/compare_castle_post_pipe_progress.py: 3ab612785b70d916e77b3dfe870a906b6d909f76d9384a9df77957313b0c8ec6
+validation/compare_castle_progress.py: 2f751ce7b6a5521edfc0fe1ba35235747c41827e60352e486ca0bcebb7a9e4bc
+validation/compare_castle_transition.py: 73012dcd858421cf1f2f2c1efb34fa1c084345e97972090b0febd96c84504880
+validation/compare_panorama_sessions.py: d781cf2921d22f737e0967cb96edc9ab91f8947443c1b2f82cdfcdee1372a013
+validation/compare_widescreen_runs.py: 6e9df703ea7c1c2cb2ad6a574dcef9c32acdb5dfa163ae2c027cc5de868bbdb5
+validation/make_helicopter_fixture.py: c071a30ebe261217c4137698c3db2ca20af8a7232feb1f52ff654ef28f3e98a7
+validation/make_level_fixture.py: 41e02d869d9dbb3ddd004c1f61923981dbc303704d48ca97a6d386684a77c29c
+validation/make_morph_fixture.py: baee220136423b885491495b2816906ef06d9443877cdcc0a5396c80773cb75e
+validation/panorama-car-actions.json: 85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a
+validation/panorama-castle-post-pipe-actions.json: cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da
+validation/panorama-castle-progress-actions.json: 880c2e97d1a71ae681ab6fc6fcface3f8b9834605f13f152871f465473b48e94
+validation/panorama-castle-transition-actions.json: 3d23f686159db5cadb7679272a4f5558ccaf64519bec09f252ddeb6d6ac0e9b8
+validation/panorama-castle-transition-first-replay-actions.json: 2655f0c7cd5307c6bca94eebde985fdf6e94d4b4d35c9a41291d808169d7ddbc
+validation/panorama-helicopter-actions.json: 7a71c31dc226dfa64da87a0a2caad35353cb68ed9f7d0520cf538cf10467f58d
+validation/panorama-level-entry-actions.json: 3479ce50531144807b814da7487d4af67aef33f4b27499ee6147fbbef3ad89af
+validation/panorama-route-actions.json: 9f0d6a8a17aa13508870aa069c0616b6883d42a5277c81ec9b2ebc7c080c2e2b
+validation/panorama_session_checks.py: 34ace4865354bcfb4a99fbe3d36ea2ca25043471dde02e4998176614391a8ce7
+validation/report_object_coverage.py: 4d8e9269f717903ba617cc0fc9e6e2541b4ce9b1cf00920423e116615fc42648
+validation/run_panorama_session.py: 4f91e3309485adba92201b4cdbe4212735c48f6a6995f14b7298ad457b07bde1
+validation/run_widescreen_probe.py: ea1ddb4fae907865f8c047a453c765e8d3709f359c97b4983ed813295dbb349a
+validation/test_car_cycle.py: bad766f3c9b7e82db16e901e878409fcfdcd42783e960e398d6dece8abfe35df
+validation/test_castle_post_pipe_checks.py: 329cac796fd99a408b596848e044f91daafa18f4564da7b331e66514096f064a
+validation/test_castle_post_pipe_comparison.py: ba1103f1fd35efb040194f3a7979302ac9d2b5e1770c6561c6a3189e54dda270
+validation/test_castle_progress_comparison.py: d2faa874085728251efda95fe99db0b279dea00341006dacd59076140581b973
+validation/test_castle_route_progress.py: e79d5f7c070a93fa1a3dcd0d99b4354ca7e2e5c669718e1917079553bc349b50
+validation/test_castle_status.py: 554f2ea015f8fd27e134d959048f25bbf9b6f8e0a5eaf1ea4211b1310d811511
+validation/test_castle_transition_checks.py: 4517abd45ee7c81f9c15b56cdc9742f994815d27e98739ef9300cac5c2adf6d3
+validation/test_castle_transition_comparison.py: 7be9cd0cd01723741eb5be261dc731ae3548482f6814a3f2c3f4292633cbc6e2
+validation/test_panorama_session_limits.py: 85ac70e1a395015fe2ceb05f836452ef3104f4edfc8085ee6d21ae948adfd739
+validation/test_panorama_transitions.py: 73541d2950dbd2792bfcbebc12fc01cd1f3cf22362061de20e675583c154677e
+validation/widescreen_cloud_test.cpp: 9cd6c9d543ac3f4cf8d4b69977f8a561b391c28928815dee032c5691b01934f0
+validation/widescreen_hazards_test.cpp: 27ef1f7ddb31459066b80e176651aaf1f77c7f0b3aeadfbbc02e9f961ece09d1
+validation/widescreen_rotating_test.cpp: 7341d5d760c97456e77f2cae8c221c33e31e4c3b0bf9143965e27f1ec6109ecc
+validation/widescreen_scaling_triplet_test.cpp: e556995a9c1b03d6d851224871fd81d49b790fbe408cc57c020554850bd15e4e
+validation/widescreen_window_test.cpp: 95b5aeef264aa6d2358bd19acce926c1a2402a3d5a8ea61b9fda3938e5a8f905
+
+PUBLIC AGGREGATES
+widescreen-castle-post-pipe-before.json — retained failed coverage baseline.
+widescreen-castle-post-pipe.json — accepted corrected route.
+widescreen-castle-post-pipe-fix-effect.json — center/state invariance and real marginal changes.
+widescreen-car-post-pipe-fix.json — fresh car-cycle regression.
+Historical route/progress/first-pipe reports and tapes remain intact.
