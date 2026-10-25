@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "version": "0.10.5-beta",
+  "date_utc": "2026-10-25",
+  "component": "symbolic_touch_controls_and_opacity",
+  "status": "native_render_tests_and_java_component_compilation_passed",
+  "configuration": {
+    "style_values": {
+      "0": "classic",
+      "1": "symbols"
+    },
+    "style_default": 1,
+    "opacity_percent": {
+      "minimum": 20,
+      "maximum": 100,
+      "default": 75
+    },
+    "shared_preferences": "sma3-options",
+    "preference_keys": [
+      "touch-style",
+      "touch-opacity"
+    ],
+    "jni": "GbaNative.setTouchAppearance(int style, int opacityPercent)",
+    "saved_layout_format": "unchanged_28_floats"
+  },
+  "native_engine": {
+    "pin": "e7728148c6829ba526f682876430a0c9022dc6c0",
+    "patch_order": 12,
+    "patch": "patches/gbarecomp-touch-appearance.patch",
+    "host_window_sha256_after_11": "827cf216700669cceb9ae51bbded264ee475c0578ec280a0edef24189b149143",
+    "host_window_sha256_after_12": "a94be0ce9e8a041f4a41d8940c120b4c31ca0cb42e336428e159bea10d90993e",
+    "actual_engine_source_compiled": true,
+    "test_source_override": false,
+    "sdl_runtime": "2.30.0"
+  },
+  "optimized": {
+    "status": "pass",
+    "exit_code": 0,
+    "assertions": 66685,
+    "appearance_matrix_presentations": 21,
+    "concurrent_frames": 100,
+    "output": [
+      "appearance presentations=21",
+      "PASS touch appearance assertions=66685 concurrent_frames=100"
+    ]
+  },
+  "asan_ubsan": {
+    "status": "pass",
+    "exit_code": 0,
+    "assertions": 66685,
+    "appearance_matrix_presentations": 21,
+    "concurrent_frames": 100,
+    "diagnostics": [],
+    "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1",
+    "sdl_library_instrumented": false,
+    "leak_sanitizer": false,
+    "thread_sanitizer": false,
+    "output": [
+      "appearance presentations=21",
+      "PASS touch appearance assertions=66685 concurrent_frames=100"
+    ]
+  },
+  "cases": {
+    "surface_sizes": [
+      [
+        960,
+        540
+      ],
+      [
+        540,
+        960
+      ],
+      [
+        641,
+        401
+      ]
+    ],
+    "style_ids": [
+      0,
+      1
+    ],
+    "opacity_values": [
+      20,
+      75,
+      100
+    ],
+    "appearance_combinations": 18,
+    "hidden_pad_cases": 3,
+    "custom_design_pressed_neutral_draws": 12,
+    "caller_state_cases": [
+      "SDL_BLENDMODE_ADD",
+      "SDL_BLENDMODE_MOD",
+      "draw_color",
+      "nonzero_logical_size",
+      "custom_viewport"
+    ],
+    "geometry_and_input_regions_unchanged": true,
+    "fontless_glyphs_visible": true,
+    "opacity_100_backing_opaque": true,
+    "concurrent_complete_snapshots": true
+  },
+  "java_component_compilation": {
+    "status": "pass",
+    "exit_code": 0,
+    "jdk": 17,
+    "android_api": 35,
+    "source_target": 17,
+    "files": [
+      "TouchAppearance.java",
+      "TouchDesignEditor.java"
+    ],
+    "compiler_diagnostics": [],
+    "whole_apk_build_included": false
+  },
+  "visual_review": {
+    "status": "passed_manual_inspection",
+    "renderer": "actual_SdlOverlay_software",
+    "size": [
+      960,
+      540
+    ],
+    "previews": {
+      "classic": {
+        "sha256": "a687b5f87664e6cb10cdca6371ac1fd578cc77f745601200502a84cd69241a23",
+        "private_filename": "preview/classic.png"
+      },
+      "symbols": {
+        "sha256": "b1a126bf74edc3b40b894265f786de073a8a08d7c4c01e039e233c932284b334",
+        "private_filename": "preview/symbols.png"
+      }
+    },
+    "android_device_capture": false,
+    "editor_canvas_render_capture": false
+  },
+  "primary_control_mapping_source": {
+    "publisher": "Nintendo",
+    "url": "https://www.nintendo.com/eu/media/downloads/games_8/emanuals/game_boy_advance_8/Manual_GameBoyAdvance_YoshisIslandSuperMarioAdvance3_EN_DE_FR_ES_IT.pdf",
+    "pdf_page_1_based": 4,
+    "printed_english_pages": [
+      6,
+      7
+    ],
+    "verified_visually": true,
+    "private_source_sha256": "fe51e58a250d6d8b7ac9057e0ebd07a21ce19582f04c36b69e3605fd9d070415"
+  },
+  "file_sha256": {
+    "src/touch_appearance.h": "c431d26538be5d144bcbc97743b54560159d2f918f609557f4bc4762ba95dbbe",
+    "src/touch_appearance_renderer.h": "9b01bdab18aac8011054c01049f772b7ff850bfeddf3ab515b922d613530ad62",
+    "android/java/org/gbarecomp/TouchAppearance.java": "8afc14d0d89bec26c6ce14d1ed98c0a4572ab03cbc4a23eea2bc625dab16aa95",
+    "android/java/org/gbarecomp/TouchDesignEditor.java": "8b4f49cb0b57fd1a14b83fc433cda701b9717df00b2e6d9a52d2f490ad4414d4",
+    "patches/gbarecomp-touch-appearance.patch": "d4c20c3905ac8d4dfbd822423d7f462383225d0aef895d1ec8f6e0871cd03c6f",
+    "validation/touch_appearance_test.cpp": "267e175a17a2cd514b9e8d6a0adaf1b72c466fd7fcb5bdce971c12bee30b2f28"
+  },
+  "limitations": [
+    "No physical Android device test in this component validation.",
+    "Java Canvas editor was compiled and reviewed in source; not rendered on an Android device.",
+    "SDL software screenshots are not Android screenshots.",
+    "No new validation of game behavior on transforms or Mario Bros.; legends identify primary Yoshi Island actions.",
+    "SDL library was not sanitizer-instrumented; LeakSanitizer and ThreadSanitizer were not run.",
+    "This component does not guarantee a physical device frame rate."
+  ]
+}

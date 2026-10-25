@@ -2,7 +2,37 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.4 beta — mods de color y filtro cinematográfico
+## Versión actual: 0.10.5 beta — presentación, controles y actualizaciones
+
+**Atrás → Rendimiento y FPS** permite elegir **60 FPS** o **120 FPS ·
+mezcla 2×**. La presentación prepara la imagen antes de esperar su momento
+de salida, corrige los puntos intermedios tardíos y restablece el ritmo al
+reanudar o cambiar de modo. Solicita el refresco correspondiente a Android;
+si este no concede 120 Hz, utiliza la presentación normal y conserva tu
+preferencia. El contador distingue objetivo, presentación y Hz de pantalla.
+La simulación conserva sus aproximadamente 59,73 Hz: no se puede garantizar
+60/120 estables contra los límites del dispositivo o del sistema.
+
+**Atrás → Controles → Símbolos y opacidad** añade iconos de acciones y una
+alternativa de letras clásicas, más una barra de **20 a 100 %** de opacidad
+(75 % inicialmente). Se corrige la ausencia de etiquetas del renderizador
+Android: los símbolos y letras se dibujan sin depender de fuentes. El editor
+de diseños usa la misma apariencia y conserva posiciones, tamaños y tres
+diseños guardados.
+
+**Atrás → Actualizar**, también accesible desde la pantalla inicial,
+detecta nuevas versiones en la release **Descarga** de este repositorio.
+La consulta automática se realiza al abrir o regresar a la app, con un
+intervalo de seis horas. La descarga se inicia desde el apartado y Android
+pide confirmar la instalación. La primera instalación de 0.10.5 es manual;
+el mantenedor sigue adjuntando cada APK a Descarga.
+
+[Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
+[Controles](docs/AJUSTES_Y_DISENOS.md) ·
+[Uso y publicación de actualizaciones](docs/ACTUALIZACIONES.md) ·
+[Notas de 0.10.5](docs/releases/v0.10.5-beta.md).
+
+### Mods y cinematográfico incorporados en 0.10.4
 
 **0.10.4 añade Atrás → Mods**, con importación de paquetes `.gbamod`, lista
 de instalados, activación, desactivación y eliminación. Incluye **Instalar
@@ -109,7 +139,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.4**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.5**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -127,19 +157,21 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.4 beta — nueva entrega con mods y cinematográfico
+### APK 0.10.5 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.4-beta-arm64.apk`**, versión `0.10.4-beta`,
-código **15**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
-su publicación manual en GitHub Releases. Su nombre identifica la versión
-que incluye el gestor de mods y los siete filtros. Los APK anteriores no
-incorporan este gestor ni el filtro Cinematográfico.
+Archivo: **`sma3-recomp-0.10.5-beta-arm64.apk`**, versión `0.10.5-beta`,
+código **16**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
+su publicación manual en la release **Descarga**. Incluye los nuevos
+controles, la revisión de presentación y el actualizador. Se mantienen los
+mods de color, los siete filtros, las correcciones de Fuzzy y la panorámica
+con su advertencia de fase temprana.
 
 Instálalo encima de la versión anterior, sin desinstalarla. Conserva el
-paquete y el certificado y aumenta el código de versión. La selección de
-filtro se guarda por separado de imagen, resolución, controles e idiomas.
-[Archivo, instalación y SHA-256](docs/releases/v0.10.4-beta.md) ·
-[Verificación del APK](validation/android-0.10.4-build.json).
+paquete y el certificado y aumenta el código de versión. No borres los
+datos. Las versiones anteriores a 0.10.5 necesitan esta primera actualización
+manual para obtener el nuevo apartado.
+[Archivo, instalación y SHA-256](docs/releases/v0.10.5-beta.md) ·
+[Verificación del APK](validation/android-0.10.5-build.json).
 
 ### APK 0.10.2 beta disponible en GitHub
 
@@ -150,9 +182,10 @@ coincide con el archivo entregado: `06fe2ae0e041557ebaf1b12bcc4d6684a5ccea7bcd7d
 Incluye las correcciones de Fuzzy y panorámica y el nuevo menú de 0.10.2.
 [Notas de 0.10.2](docs/releases/v0.10.2-beta.md).
 
-Cuando el mantenedor adjunte 0.10.4, estará disponible en
-[GitHub Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
+Cuando el mantenedor adjunte 0.10.5, estará disponible en
+[Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga).
 Los datos de entregas anteriores permanecen en las notas de
+[0.10.4](docs/releases/v0.10.4-beta.md),
 [0.10.3](docs/releases/v0.10.3-beta.md),
 [0.10.1](docs/releases/v0.10.1-experimental.md),
 [0.10](docs/releases/v0.10-experimental.md),
@@ -161,6 +194,21 @@ Los datos de entregas anteriores permanecen en las notas de
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.5:** pruebas de temporización y política de pantalla, renderizado
+real de controles con SDL software, opacidad, geometría de entrada y cambios
+concurrentes; comprobaciones del actualizador con respuestas reales y
+metadatos futuros simulados. La pila de doce parches se aplica desde sus
+trece estados reconocidos, de forma idempotente, y protege ocho archivos
+del motor frente a cambios ajenos. La compilación final verifica Java,
+ARM64, enlaces JNI, manifiesto, firma y paquete.
+
+No se ha medido la estabilidad de FPS ni ejecutado el instalador de
+actualizaciones en un teléfono durante esta entrega. La evidencia de Fuzzy,
+panorámica, filtros y mods de versiones previas mantiene su alcance histórico.
+[Rendimiento](validation/PERFORMANCE_0.10.5_VALIDATION.md) ·
+[Controles](validation/CONTROLS_0.10.5_VALIDATION.md) ·
+[Actualizador](validation/UPDATES_0.10.5_VALIDATION.md).
 
 **0.10.4:** se comprueban el catálogo de mods, los archivos incompatibles y
 dañados, la persistencia, la recuperación tras errores y la aplicación y
@@ -386,8 +434,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.4 en Pixel 7 Pro: actualización, importar/activar/desactivar mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.4.
+- Probar 0.10.5 en Pixel 7 Pro: 60/120, símbolos, opacidad, detección/descarga/instalación de actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.5.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

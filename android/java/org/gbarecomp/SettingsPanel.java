@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -42,7 +43,7 @@ final class SettingsPanel {
     static final int ACCENT = 0xffa5e775;
     private static final int SELECTED = 0xff28432d;
     private static final int WARNING = 0xffffd48a;
-    static final int IMAGE = 0, PERFORMANCE = 1, CONTROLS = 2, LANGUAGE = 3, LAYOUT = 4, MODS = 5;
+    static final int IMAGE = 0, PERFORMANCE = 1, CONTROLS = 2, LANGUAGE = 3, LAYOUT = 4, MODS = 5, UPDATES = 6;
 
     private final Activity activity;
     private final LinearLayout root;
@@ -197,6 +198,41 @@ final class SettingsPanel {
         body.addView(control, space(0, 0, 0, 10));
     }
 
+    void slider(String title, String description, int minimum, int maximum, int value,
+                IntConsumer change) {
+        if (minimum > maximum) throw new IllegalArgumentException("Invalid slider range");
+        int selected = Math.max(minimum, Math.min(maximum, value));
+        LinearLayout card = new LinearLayout(activity);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(dp(16), dp(14), dp(16), dp(8));
+        card.setBackground(shape(SURFACE, BORDER, 16));
+        TextView label = text(title + " · " + selected + " %", 17, TEXT);
+        label.setTypeface(Typeface.DEFAULT_BOLD);
+        card.addView(label);
+        if (description != null && !description.isEmpty())
+            card.addView(text(description, 13, SECONDARY), space(0, 4, 0, 4));
+        SeekBar slider = new SeekBar(activity);
+        slider.setMin(minimum);
+        slider.setMax(maximum);
+        slider.setProgress(selected);
+        slider.setMinimumHeight(dp(48));
+        slider.setThumbTintList(ColorStateList.valueOf(ACCENT));
+        slider.setProgressTintList(ColorStateList.valueOf(ACCENT));
+        slider.setProgressBackgroundTintList(ColorStateList.valueOf(BORDER));
+        slider.setContentDescription(title + ", " + selected + " %");
+        slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                label.setText(title + " · " + progress + " %");
+                bar.setContentDescription(title + ", " + progress + " %");
+                if (fromUser) change.accept(progress);
+            }
+            public void onStartTrackingTouch(SeekBar bar) {}
+            public void onStopTrackingTouch(SeekBar bar) {}
+        });
+        card.addView(slider, new LinearLayout.LayoutParams(-1, dp(48)));
+        body.addView(card, space(0, 0, 0, 10));
+    }
+
     void choices(String[] titles, String[] descriptions, int selected, IntConsumer choose) {
         RadioGroup group = new RadioGroup(activity);
         group.setOrientation(LinearLayout.VERTICAL);
@@ -325,6 +361,13 @@ final class SettingsPanel {
                 canvas.drawCircle(12, 22, 3, paint);
                 canvas.drawCircle(25, 21, 2, paint);
                 canvas.drawLine(20, 13, 26, 13, paint);
+            } else if (icon == UPDATES) {
+                canvas.drawArc(new RectF(7, 7, 29, 29), 35, 280, false, paint);
+                canvas.drawLine(29, 9, 28, 16, paint);
+                canvas.drawLine(28, 16, 21, 14, paint);
+                canvas.drawLine(18, 12, 18, 25, paint);
+                canvas.drawLine(13, 20, 18, 25, paint);
+                canvas.drawLine(18, 25, 23, 20, paint);
             } else if (icon == MODS) {
                 canvas.drawRoundRect(new RectF(7, 10, 29, 29), 3, 3, paint);
                 canvas.drawLine(7, 16, 29, 16, paint);

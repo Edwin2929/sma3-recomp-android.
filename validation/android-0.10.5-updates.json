@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "release": "0.10.5-beta",
+  "result": "PASS",
+  "scope": "Host policy/HTTP fixtures, release JSON playback, and actual UpdatesUi lifecycle tests with controlled Android substitutes; independent source review and API35 compilation. APK build and physical install separately qualified.",
+  "tests": {
+    "policy": {
+      "result": "PASS",
+      "exit_code": 0,
+      "output": "PASS updater policy, identity and HTTPS transfer checks=105"
+    },
+    "release": {
+      "result": "PASS",
+      "exit_code": 0,
+      "output": "PASS real Descarga JSON and future fixed-tag asset checks=19"
+    },
+    "ui_lifecycle": {
+      "result": "PASS",
+      "exit_code": 0,
+      "output": "PASS production UpdatesUi lifecycle scenarios=8 checks=32",
+      "android_runtime": false,
+      "production_ui_compiled_unchanged": true
+    }
+  },
+  "policy_transport_checks": 105,
+  "release_parser_checks": 19,
+  "android_compile": {
+    "result": "PASS",
+    "java": 17,
+    "api": 35,
+    "sources": 6
+  },
+  "release_fixture": {
+    "tag": "Descarga",
+    "recorded_date": "2026-10-25",
+    "asset_name": "sma3-recomp-0.10.2-beta-arm64.apk",
+    "expected_current": "0.10.5-beta",
+    "newer_update_offered": false,
+    "fixture_sha256": "66ba1a1a8ded341a9fe6634aeb133e0ba782ee336bc65b5eb383b147cfe94525",
+    "synthetic_future_assets_published": false
+  },
+  "host_json_reference": {
+    "artifact": "org.json:json:20240303",
+    "sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed",
+    "included_in_apk": false
+  },
+  "limits": {
+    "apk_bytes": 134217728,
+    "metadata_bytes": 2097152,
+    "automatic_check_interval_hours": 6,
+    "physical_android_install_tested": false,
+    "live_device_download_tested": false,
+    "package_manager_executed_in_host_tests": false,
+    "system_installer_is_final_signature_verifier": true
+  },
+  "source_sha256": {
+    "android/java/org/gbarecomp/UpdatePolicy.java": "58d7043a449044f30312b3a2a9df47033e6ff57d86c0828d971113f8e51c98be",
+    "android/java/org/gbarecomp/UpdateHttp.java": "fee05491d83fe298aeec8467d6723b5ff44c1203658cb196dec64227dd6b3a97",
+    "android/java/org/gbarecomp/UpdateRelease.java": "ec360bed0bd1e16656641a29cdd9a09327bdf6c2d777bf1581a38cf86dc973c3",
+    "android/java/org/gbarecomp/UpdateManager.java": "1fa2829f5ed3428265c85eacc4840e8d8820a833cc8a1b4b5f09264ef9232420",
+    "android/java/org/gbarecomp/UpdatesUi.java": "251d6d5af0c7a0738628006ea02d166d0b7f947d99174540be5746c8de4cb691",
+    "android/java/org/gbarecomp/UpdateApkProvider.java": "5ada606695ef271d527c3ec3016082f74099e89d6564fc43d9ec6f30d9fc0271",
+    "android/AndroidManifest.xml": "b5ee9cf156ad273400708c08caba744ef20dd2bb65b2e74e746d0ec02b5753e6",
+    "validation/UpdatePolicyTest.java": "c4ca623a03778d9598d0fce9232fb3a616d05d912f3cc0490c0bc9d17eaa4913",
+    "validation/UpdateReleaseTest.java": "944ac0f51c05776cf2cca065c8af7e769ca0edcb6f3e0ccb6940d09066300d15",
+    "validation/UPDATES_0.10.5_VALIDATION.md": "5dc53ffa28bc32015b8c637f7149d26a416d10463fa239c8f3310b4e561dbae5",
+    "validation/test_updates_ui_lifecycle.py": "fb4528c375598d5c5c65993267927727ec746ae12071c5d646bc65b3c7cd286b"
+  },
+  "ui_lifecycle_scenarios": 8,
+  "ui_lifecycle_checks": 32,
+  "independent_review": {
+    "result": "PASS_AFTER_CORRECTIONS",
+    "fixed_findings": [
+      "Defer permission-result windows until foreground and require originating page token for automatic continuation; recreated Activity requires another Install tap.",
+      "Finish cleanup before atomically releasing operation and publishing terminal state."
+    ],
+    "limitations": "Host lifecycle substitutes and source review do not execute Android PackageManager, real provider grants or system installer."
+  }
+}

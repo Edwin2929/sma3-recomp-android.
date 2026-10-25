@@ -1,0 +1,323 @@
+--- a/src/runtime/host_platform.h
++++ b/src/runtime/host_platform.h
+@@ -7,6 +7,9 @@
+ #include <cstddef>
+ #include <string>
+ #include <vector>
++#if defined(SMA3_FRAME_INTERPOLATION)
++#include "presentation_pacing.h"
++#endif
+ 
+ namespace gbarecomp {
+ 
+@@ -56,6 +59,10 @@
+ 
+ private:
+     using clock = std::chrono::steady_clock;
++    void wait_until(clock::time_point deadline);
++#if defined(SMA3_FRAME_INTERPOLATION)
++    sma3::AdaptiveDeadlineWait adaptive_wait_;
++#endif
+     std::chrono::nanoseconds period_{};
+     clock::time_point next_{};
+     bool uncapped_ = false;
+--- a/src/runtime/host_platform.cpp
++++ b/src/runtime/host_platform.cpp
+@@ -53,11 +53,15 @@
+ bool FramePacer::wait_for_midpoint() {
+     if (uncapped_) return false;
+     const auto deadline = next_ - period_ / 2;
++#if defined(SMA3_FRAME_INTERPOLATION)
++    if (!sma3::midpoint_is_timely(clock::now(), next_, period_)) return false;
++    wait_until(deadline);
++    return sma3::midpoint_is_timely(clock::now(), next_, period_);
++#else
+     if (clock::now() >= next_ - period_ / 4) return false;
+-    const auto sleep_end = deadline - std::chrono::microseconds(300);
+-    if (clock::now() < sleep_end) std::this_thread::sleep_until(sleep_end);
+-    while (clock::now() < deadline) std::this_thread::yield();
++    wait_until(deadline);
+     return clock::now() < next_ - period_ / 4;
++#endif
+ }
+ 
+ void FramePacer::wait_for_next_frame() {
+@@ -73,38 +77,7 @@
+         next_ = now + period_;
+         return;
+     }
+-    // A high-resolution waitable timer is already precise enough on modern
+-    // Windows. Waiting directly on it avoids a 1.2 ms yield/spin tail whose
+-    // wake time becomes erratic when the game process runs at Idle priority.
+-#if defined(_WIN32)
+-    if (next_ > now) {
+-        if (wait_timer_) {
+-            const auto due_ns = std::chrono::duration_cast<
+-                std::chrono::nanoseconds>(next_ - now).count();
+-            LARGE_INTEGER due;
+-            due.QuadPart = -static_cast<LONGLONG>(
+-                due_ns >= 100 ? due_ns / 100 : 1);
+-            HANDLE t = static_cast<HANDLE>(wait_timer_);
+-            if (SetWaitableTimer(t, &due, 0, nullptr, nullptr, FALSE)) {
+-                WaitForSingleObject(t, INFINITE);
+-            } else {
+-                std::this_thread::sleep_until(next_);
+-            }
+-        } else {
+-            std::this_thread::sleep_until(next_);
+-        }
+-    }
+-#else
+-    // Hybrid wait: sleep most of the gap (cheap, but coarse), then yield
+-    // through the final ~1 ms for deadline accuracy.
+-    constexpr auto kSpinTail = std::chrono::microseconds(1200);
+-    if (next_ - now > kSpinTail) {
+-        std::this_thread::sleep_until(next_ - kSpinTail);
+-    }
+-#endif
+-    while (clock::now() < next_) {
+-        std::this_thread::yield();
+-    }
++    wait_until(next_);
+ 
+     // Never pay back a late wake with a shortened following frame. That
+     // short/long pair is especially visible during steady pixel scrolling.
+@@ -115,6 +88,49 @@
+     constexpr auto kLateTolerance = std::chrono::microseconds(1500);
+     next_ = woke > next_ + kLateTolerance ? woke + period_
+                                           : next_ + period_;
++}
++
++void FramePacer::wait_until(clock::time_point deadline) {
++#if defined(SMA3_FRAME_INTERPOLATION) && !defined(_WIN32)
++    adaptive_wait_.wait(deadline, [] { return clock::now(); },
++        [](clock::time_point when) { std::this_thread::sleep_until(when); },
++        [] { std::this_thread::yield(); });
++#else
++    const auto now = clock::now();
++    // A high-resolution waitable timer is already precise enough on modern
++    // Windows. Waiting directly on it avoids a 1.2 ms yield/spin tail whose
++    // wake time becomes erratic when the game process runs at Idle priority.
++#if defined(_WIN32)
++    if (deadline > now) {
++        if (wait_timer_) {
++            const auto due_ns = std::chrono::duration_cast<
++                std::chrono::nanoseconds>(deadline - now).count();
++            LARGE_INTEGER due;
++            due.QuadPart = -static_cast<LONGLONG>(
++                due_ns >= 100 ? due_ns / 100 : 1);
++            HANDLE t = static_cast<HANDLE>(wait_timer_);
++            if (SetWaitableTimer(t, &due, 0, nullptr, nullptr, FALSE)) {
++                WaitForSingleObject(t, INFINITE);
++            } else {
++                std::this_thread::sleep_until(deadline);
++            }
++        } else {
++            std::this_thread::sleep_until(deadline);
++        }
++    }
++#else
++    // Hybrid wait: sleep most of the gap (cheap, but coarse), then yield
++    // through the final ~1 ms for deadline accuracy.
++    constexpr auto kSpinTail = std::chrono::microseconds(1200);
++    if (deadline - now > kSpinTail) {
++        std::this_thread::sleep_until(deadline - kSpinTail);
++    }
++#endif
++    while (clock::now() < deadline) {
++        std::this_thread::yield();
++    }
++
++#endif
+ }
+ 
+ std::vector<unsigned char> read_file(const std::string& path, std::string* error) {
+--- a/src/runtime/host_window.h
++++ b/src/runtime/host_window.h
+@@ -20,6 +20,7 @@
+ namespace gbarecomp {
+ 
+ class HostOverlay;
++class FramePacer;
+ 
+ class HostWindow {
+ public:
+@@ -139,6 +140,9 @@
+     // Upload one base_w x base_h RGB888 frame (the dimensions passed to open())
+     // and present.
+     void present(const uint8_t* rgb888);
++    // Prepare all rendering work before the pacing slot, then swap once. A
++    // stale optional midpoint is discarded; false means no image was swapped.
++    bool present_paced(const uint8_t* rgb888, FramePacer* pacer, bool midpoint);
+ 
+     // Push `count` int16_t mono samples (32.768 kHz) into the audio
+     // output queue. Backend converts to the host device's format.
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -2,10 +2,12 @@
+ #include "controller_options.h"
+ #include "touch_layout.h"
+ #include "video_scaler.h"
++#include "presentation_pacing.h"
+ #endif
+ // host_window.cpp — SDL2-backed window. Stubs out when SDL2 isn't found.
+ 
+ #include "host_window.h"
++#include "host_platform.h"
+ #if defined(SMA3_MOD_PROFILES)
+ #include "mod_color_profile.h"
+ #endif
+@@ -481,6 +483,7 @@
+     PresentCadence cadence;
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     sma3::VideoScaler video_scaler;
++    sma3::PresentationRateCounter presentation_rate;
+ #endif
+ };
+ 
+@@ -2215,7 +2218,12 @@
+ }
+ 
+ void HostWindow::present(const uint8_t* rgb888) {
+-    if (!open_ || !impl_ || !rgb888) return;
++    (void)present_paced(rgb888, nullptr, false);
++}
++
++bool HostWindow::present_paced(const uint8_t* rgb888, FramePacer* pacer,
++                               bool midpoint) {
++    if (!open_ || !impl_ || !rgb888) return false;
+     auto* b = static_cast<Backend*>(impl_);
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     // SDL_RENDER_DEVICE_RESET invalidates streaming as well as target textures.
+@@ -2223,7 +2231,7 @@
+     if (!b->texture) {
+         b->texture = SDL_CreateTexture(b->renderer, SDL_PIXELFORMAT_RGB24,
+             SDL_TEXTUREACCESS_STREAMING, b->base_w, b->base_h);
+-        if (!b->texture) return;
++        if (!b->texture) return false;
+     }
+ #endif
+     // Present-time color grading (opt-in). Raw is passthrough: the raw
+@@ -2356,6 +2364,19 @@
+     }
+ #endif
+     render_host_layers(b);
++    // Upload/filter/overlay work is complete. Pace the actual buffer swap,
++    // not the start of rendering, so varying preparation cost stays inside
++    // the frame budget. Midpoints are optional; full frames pace exactly once.
++    if (pacer) {
++        // SDL batches draw commands until RenderPresent by default. Submit them
++        // before sleeping so their CPU/GPU preparation can overlap the wait.
++        if (SDL_RenderFlush(b->renderer) != 0) return false;
++        if (midpoint) {
++            if (!pacer->wait_for_midpoint()) return false;
++        } else {
++            pacer->wait_for_next_frame();
++        }
++    }
+     // MC-WS-002: time the present itself (vsync blocks here — or doesn't)
+     // and stamp the DWM refresh counter into the cadence ring.
+     if (b->cadence.active()) {
+@@ -2369,6 +2390,17 @@
+     // FPS readout (DisplayPerf hotkey): presents/sec, refreshed twice a
+     // second in the title bar; the base title is restored when toggled off.
+     if (b->fps_readout) {
++#if defined(SMA3_FRAME_INTERPOLATION)
++        const double rate = b->presentation_rate.record(
++            SDL_GetPerformanceCounter(), SDL_GetPerformanceFrequency(),
++            sma3::presentation_epoch.load(std::memory_order_relaxed),
++            sma3::interpolation_enabled.load(std::memory_order_relaxed));
++        if (rate >= 0.0) {
++            char buf[192];
++            std::snprintf(buf, sizeof(buf), "%s — %.1f fps", b->title.c_str(), rate);
++            SDL_SetWindowTitle(b->window, buf);
++        }
++#else
+         ++b->fps_presents;
+         const Uint32 now = SDL_GetTicks();
+         if (b->fps_window_start == 0) b->fps_window_start = now;
+@@ -2381,7 +2413,9 @@
+             b->fps_window_start = now;
+             b->fps_presents = 0;
+         }
+-    }
++#endif
++    }
++    return true;
+ }
+ 
+ void HostWindow::load_input_config(const char* dir,
+@@ -2738,6 +2772,9 @@
+     auto* b = static_cast<Backend*>(impl_);
+     if (b->fps_readout == on) return;
+     b->fps_readout = on;
++#if defined(SMA3_FRAME_INTERPOLATION)
++    b->presentation_rate.reset();
++#endif
+     b->fps_window_start = 0;
+     b->fps_presents = 0;
+     if (!on) SDL_SetWindowTitle(b->window, b->title.c_str());
+@@ -3177,6 +3214,7 @@
+ }
+ 
+ void HostWindow::present(const uint8_t* /*rgb888*/) {}
++bool HostWindow::present_paced(const uint8_t*, FramePacer*, bool) { return false; }
+ 
+ void HostWindow::load_input_config(const char* /*dir*/,
+                                    bool /*assist_tools_default*/,
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -22,6 +22,7 @@
+ #include "runtime.h"
+ #ifdef SMA3_FRAME_INTERPOLATION
+ #include "frame_interpolation.h"
++#include "presentation_pacing.h"
+ #endif
+ #include "multiplayer_launch.h"
+ #include "view_config.h"
+@@ -3642,9 +3643,7 @@
+     // Presentation-only extension: no extra CPU/PPU/audio steps.
+     bool sma3_frame_paced = false;
+ #ifdef SMA3_FRAME_INTERPOLATION
+-    sma3::FrameBlend sma3_blend;
+-    auto sma3_last_pair = std::chrono::steady_clock::now();
+-    bool sma3_was_enabled = false;
++    sma3::PresentationPacing sma3_presentation;
+ #endif
+     auto present_game_frame = [&]() {
+ #ifdef SMA3_FRAME_INTERPOLATION
+@@ -3657,23 +3656,18 @@
+ #endif
+         sma3_frame_paced = false;
+ #ifdef SMA3_FRAME_INTERPOLATION
+-        const bool enabled = sma3::interpolation_enabled.load(std::memory_order_relaxed)
+-            && pacer && !fast_forward_active && !host_paused;
+-        const auto now = std::chrono::steady_clock::now();
+-        if (!enabled || !sma3_was_enabled || now - sma3_last_pair > std::chrono::milliseconds(100))
+-            sma3_blend.reset();
+-        sma3_last_pair = now;
+-        sma3_was_enabled = enabled;
+-        if (enabled) {
+-            const bool has_middle = sma3_blend.prepare(live_fb.data(), live_fb.size(), ppu.frame_count());
+-            if (pacer->wait_for_midpoint()) win.present(has_middle ? sma3_blend.middle() : live_fb.data());
+-            // ONE full-period wait per guest frame. The ordinary wait below
+-            // is skipped, keeping guest simulation at its original rate.
+-            pacer->wait_for_next_frame();
+-            sma3_frame_paced = true;
+-        }
++        const bool double_rate = sma3::interpolation_enabled.load(std::memory_order_relaxed);
++        sma3_frame_paced = sma3_presentation.present(
++            pacer ? &*pacer : nullptr, live_fb.data(), live_fb.size(), ppu.frame_count(),
++            double_rate, !fast_forward_active && !host_paused,
++            std::chrono::steady_clock::now(),
++            sma3::presentation_epoch.load(std::memory_order_relaxed),
++            [&](const uint8_t* pixels, FramePacer* clock, bool midpoint) {
++                return win.present_paced(pixels, clock, midpoint);
++            });
++#else
++        win.present(live_fb.data());
+ #endif
+-        win.present(live_fb.data());
+     };
+ 
+     // Present-in-place (structural fix for frame-boundary resume dispatch-misses).

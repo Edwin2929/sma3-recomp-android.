@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "release": "0.10.5-beta",
+  "result": "PASS",
+  "scope": "Host scheduling/rate-counter correctness, pure display-policy tests and Android compile checks; no physical-phone performance measurement.",
+  "native": {
+    "checks": 4897,
+    "simulated_guest_frames": 360,
+    "normal": {
+      "result": "PASS",
+      "exit_code": 0,
+      "output": "Host real-clock smoke:20 guest periods 0.334854s; midpoint slots=20 (not Android FPS)\nPASS presentation pacing checks=4897 simulated_guest_frames=360\n"
+    },
+    "sanitized": {
+      "result": "PASS",
+      "exit_code": 0,
+      "output": "Host real-clock smoke:20 guest periods 0.334856s; midpoint slots=20 (not Android FPS)\nPASS presentation pacing checks=4897 simulated_guest_frames=360\n"
+    },
+    "sanitizers": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "leak_sanitizer": false,
+    "adaptive_intervals_with_oversleep": 1200,
+    "quiet_intervals": 1000,
+    "yield_tail_microseconds": [
+      100,
+      1500
+    ],
+    "midpoint_lateness_limit_guest_period_fraction": "1/16",
+    "native_guest_rate_hz": 59.72750056960583,
+    "doubled_present_rate_hz": 119.45500113921166,
+    "real_clock_smoke_guest_periods": 20
+  },
+  "java": {
+    "policy_checks": 31,
+    "result": "PASS",
+    "output": "PASS refresh-rate policy checks=31\n",
+    "sdk": 35,
+    "java": 17,
+    "helper_compile": "PASS"
+  },
+  "android_translation_unit_syntax": {
+    "host_platform.cpp": "PASS",
+    "host_window.cpp": "PASS",
+    "runtime.cpp": "PASS"
+  },
+  "fixes": [
+    "Prepare and submit SDL commands before waiting at the buffer swap.",
+    "One full guest wait in both 60 and 120 presentation modes.",
+    "Skip stale optional midpoint; preserve full frame deadline.",
+    "Bound adaptive sleep/yield margin.",
+    "Reset pacing and measured FPS epochs on explicit lifecycle changes.",
+    "Count completed intervals without fictitious initial frame; preserve real slowdowns.",
+    "Select 60 and 120 at the current resolution; preserve requested 120 when physical/app limits require a 60 fallback."
+  ],
+  "limits": [
+    "No physical Android or Pixel 7 Pro run.",
+    "No sustained FPS, thermal, battery or Android GPU claim.",
+    "Deterministic scheduling tests do not emulate every OS/GPU stall.",
+    "120 uses RGB temporal blending; guest remains at its native 59.7275 Hz.",
+    "LeakSanitizer disabled by environment."
+  ],
+  "engine_after_patch_11_sha256": {
+    "src/runtime/host_platform.cpp": "21b9794d9608a1b702caf43b2b42ddd4b6ec851b26052493f52b1addcd42dedc",
+    "src/runtime/host_platform.h": "e123cdb89f4abbba059664e7a7ba1c6162f9ac31754292163277c248d9db7c1d",
+    "src/runtime/host_window.h": "6d1c026ada37b642e4db69827fc04b583b98c61bc745f42acc4192c907dc57af",
+    "src/runtime/runtime.cpp": "e66749c283bb5318bfe561fa162c7e56e996b2861790bfbefa466b0cee77bcfb",
+    "src/runtime/host_window.cpp": "827cf216700669cceb9ae51bbded264ee475c0578ec280a0edef24189b149143"
+  },
+  "engine_hash_scope": "Hashes describe pacing patch 11; the following controls patch 12 independently changes host_window.cpp.",
+  "source_sha256": {
+    "src/presentation_pacing.h": "e9e889738b79985d90c778413a57c46ca67db1b8c0150116750e23d5aba4cce2",
+    "android/java/org/gbarecomp/DisplayRefreshController.java": "dd5a10b35e2352e35f6c1aa22f7e0efc2f65a889b6e7074d62a21258d430f938",
+    "android/java/org/gbarecomp/RefreshRatePolicy.java": "15d065f945eb19bbf6fc0018e878294697cd6af51101aa7897d8d5d05c04b4c8",
+    "patches/gbarecomp-frame-pacing.patch": "684ae908ddb3297d5cd69c1c8eda9b5c6d9e0541b7bd1b7b707489f2d3911334",
+    "validation/presentation_pacing_test.cpp": "0cd63fe79caeaae7df32748851743bf3852a80b5016504ba58d27077c0880900",
+    "validation/RefreshRatePolicyTest.java": "496e20eab41ecb17d719805c86913081f2b3b4ace97f1e24371cf711b844d70d",
+    "validation/PERFORMANCE_0.10.5_VALIDATION.md": "b2a963cca65875c31845c9abd14f246a0841b9adfd643d4a21ae238e1b6cae9c"
+  },
+  "primary_references": [
+    "https://developer.android.com/media/optimize/performance/frame-rate",
+    "https://developer.android.com/about/versions/12/reference/compat-framework-changes"
+  ]
+}

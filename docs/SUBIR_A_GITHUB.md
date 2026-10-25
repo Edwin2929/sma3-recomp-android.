@@ -1,5 +1,20 @@
 # Subir a tu GitHub
 
+## Repositorio actual y APK nuevos
+
+El proyecto ya está publicado en
+[Edwin2929/sma3-recomp-android.](https://github.com/Edwin2929/sma3-recomp-android.).
+El código y los documentos se actualizan en `main`; el mantenedor adjunta
+los APK manualmente a la release **Descarga**. Desde 0.10.5, el actualizador
+de la aplicación examina los archivos de esa misma release.
+
+Para publicar otra versión compatible, consulta
+[Actualizaciones: publicar una futura actualización](ACTUALIZACIONES.md#publicar-una-futura-actualización).
+Conserva el nombre versionado, aumenta el código de versión y usa la misma
+clave de firma. Subir código al repositorio no publica automáticamente el APK.
+
+## Guía histórica para crear una copia propia
+
 Nombre sugerido: **sma3-recomp-android**.
 
 Descripción sugerida:
@@ -25,4 +40,5 @@ También puedes subir los archivos descomprimidos desde GitHub. **No subas solam
 
 Antes de confirmar el primer commit, comprueba con `git status` que no aparezcan ROM, BIOS, claves, APK ni carpetas generadas. `.gitignore` ya contempla esos archivos.
 
-Este paquete se preparó localmente: no se creó ni publicó un repositorio en tu cuenta.
+Estas instrucciones describen la importación inicial de una copia local.
+No son necesarias para actualizar el repositorio existente indicado arriba.

@@ -1,4 +1,4 @@
-# Ajustes y diseños — Android 0.10.4 beta
+# Ajustes y diseños — Android 0.10.5 beta
 
 El botón **Atrás** abre un panel oscuro con acentos verdes, tarjetas por
 categoría y una descripción de cada opción. El contenido se puede desplazar
@@ -6,13 +6,14 @@ y el botón de navegación permanece separado, debajo del contenido. El ancho
 se adapta a la pantalla, con un máximo de 600 dp; la altura se limita al área
 disponible para facilitar el uso horizontal y vertical.
 
-Hay cinco apartados:
+Hay seis apartados:
 
 - **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; submenús independientes de filtros y de resolución Automática, 720p y 1080p.
 - **Mods:** importar perfiles de color `.gbamod`, instalar el ejemplo incluido, consultar sus datos, activarlos, desactivarlos y eliminarlos.
-- **Rendimiento y FPS:** contador y presentación de 120 FPS por mezcla temporal, con explicación de sus límites.
-- **Controles:** visibilidad de botones táctiles, mapeo de mando y diseños personalizados.
+- **Rendimiento y FPS:** contador, objetivos de presentación de 60 y 120 FPS, estado de la pantalla y explicación de sus límites.
+- **Controles:** visibilidad de botones táctiles, símbolos o letras clásicas, opacidad, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
+- **Actualizar:** detección de nuevas versiones en GitHub, descarga del APK y acceso al instalador de Android.
 
 **Volver** o **Atrás** regresa al apartado anterior. **Volver al juego** cierra
 Ajustes. Las selecciones se guardan al cambiarlas; no hace falta reiniciar.
@@ -56,8 +57,13 @@ La [guía de filtros](CALIDAD_IMAGEN.md#filtros-de-imagen-en-0104)
 explica las diferencias y el coste de cada opción.
 
 La mezcla temporal de **Rendimiento y FPS** puede producir estelas. Mantiene
-el ritmo original del juego; 120 FPS se refiere a las imágenes presentadas
-y depende del dispositivo y de su configuración de energía.
+el ritmo original del juego; 60 FPS corresponde a unas 59,73 imágenes por segundo
+y 120 FPS a unas 119,45 imágenes presentadas por segundo mediante mezcla 2×.
+El modo de 120 solicita una pantalla de 120 Hz a Android. Si Android no concede
+esa frecuencia, el juego conserva la presentación de 60 y la preferencia de 120
+queda guardada. El panel muestra el modo informado de pantalla y la tasa
+concedida a la aplicación. La frecuencia real depende del dispositivo y de su
+configuración de energía.
 
 En **0.9 y 0.9.1** se conserva 3:2 desactivando la antigua casilla **Estirar a
 pantalla completa**. Al actualizar, esa elección pasa a Original o Estirar;
@@ -84,6 +90,36 @@ la ROM ni las partidas. Hay un ejemplo editable y una herramienta de
 empaquetado en el repositorio; la [guía de mods](MODS.md) describe los límites
 y cómo crear más perfiles.
 
+## Símbolos y opacidad de los controles
+
+Entra en **Atrás → Controles → Símbolos y opacidad**. Puedes elegir
+**Símbolos de acciones**, el estilo inicial, o **Letras clásicas**, que muestra
+A, B, L, R, SELECT y START. La barra de opacidad va del **20 % al 100 %** y
+comienza en **75 %**. El cambio se aplica y se guarda al moverla; también se
+refleja en el editor de diseños. Para ocultar completamente los botones, usa la
+opción independiente **Controles táctiles**.
+
+| Control | Símbolo | Acción principal |
+| --- | --- | --- |
+| Cruceta | Cuatro flechas | Mover y mirar; abajo permite agacharse, tragar o hacer un salto bomba según el contexto. |
+| A | Flecha ascendente | Saltar; mantener para aletear. |
+| B | Lengua | Comer o escupir según lo que tenga Yoshi en la boca. |
+| L | Mira | Fijar o liberar el cursor al apuntar un huevo. |
+| R | Huevo con manchas | Apuntar y lanzar huevos. |
+| SELECT | Lista | Abrir la pantalla de estado. |
+| START | Dos barras | Pausar. |
+
+La leyenda corresponde a los controles principales de Yoshi's Island descritos
+en el [manual oficial de Nintendo](https://www.nintendo.com/eu/media/downloads/games_8/emanuals/game_boy_advance_8/Manual_GameBoyAdvance_YoshisIslandSuperMarioAdvance3_EN_DE_FR_ES_IT.pdf),
+páginas impresas 6–7 de la sección inglesa (página 4 del PDF). Las acciones
+pueden variar durante las transformaciones y en Mario Bros. El lanzamiento
+respeta el estilo de control elegido dentro del juego. Cambiar los símbolos no
+reasigna los botones.
+
+Ambos estilos se dibujan con trazos vectoriales, por lo que las letras y los
+símbolos son visibles aunque el backend SDL no disponga de una biblioteca de
+fuentes. Los botones pulsados se distinguen por su color.
+
 ## Diseños personalizados
 
 Controles → Diseños personalizados → Diseño 1, 2 o 3.
@@ -92,6 +128,10 @@ desplegable si está detrás de otro, y cambia su tamaño con el deslizador.
 La vista previa mantiene las proporciones del área segura de la pantalla.
 Los límites impiden guardar controles completamente fuera de esa área.
 El dibujo y las zonas táctiles del juego usan la misma geometría.
+La vista previa utiliza el estilo, los símbolos, los colores y la opacidad del
+juego; el contorno del control seleccionado conserva su intensidad para facilitar
+el arrastre. Canvas y SDL pueden suavizar de distinta forma los bordes y las
+esquinas.
 
 - Guardar y usar conserva ese diseño y lo activa.
 - Cancelar o Atrás descarta la edición sin cambiar el diseño activo.
@@ -102,6 +142,25 @@ El dibujo y las zonas táctiles del juego usan la misma geometría.
 El juego se pausa durante el editor y se reanuda al cerrarlo. En los otros
 menús se bloquean las entradas del juego, como en la versión anterior.
 Los diseños personalizan posición y tamaño; no importan imágenes de botones.
+Se conserva el formato anterior de **28 valores**: centro x/y y ancho/alto para
+los siete controles. Las preferencias de apariencia se guardan por separado y
+los tres diseños existentes siguen siendo compatibles.
+
+## Actualizaciones
+
+Abre **Atrás → Actualizar** para entrar en **Actualizaciones**.
+**Buscar automáticamente** viene activado y
+consulta la release **Descarga** del repositorio de GitHub al abrir o volver al
+juego, como máximo cada seis horas. **Buscar ahora** permite consultar en ese
+momento. Cuando encuentra un APK compatible más reciente, el apartado muestra
+su versión y permite elegir **Descargar actualización**.
+
+La descarga muestra el progreso y se puede cancelar. Cuando termina y se verifica
+el archivo, **Instalar actualización** abre el instalador del sistema. Android
+puede pedir permitir instalaciones desde SMA3 y solicita confirmar la instalación.
+La detección es automática; la descarga y la instalación se inician desde este
+apartado. Actualizar con el mismo paquete y certificado conserva los datos de la
+aplicación.
 
 ## Inicio
 
@@ -117,6 +176,17 @@ Se registra como reporte del usuario, sin una medición independiente ni una
 duración de prueba documentada. 0.9 conserva ese modo de presentación.
 
 ## Validación actual
+
+Los controles de 0.10.5 se validaron con el renderizador SDL real en superficies
+horizontales, verticales y de dimensiones impares: ambos estilos, opacidad del
+20/75/100 %, controles ocultos, un diseño personalizado y estados pulsados. Se
+comprobó que la apariencia no cambia las zonas de entrada, que los símbolos
+funcionan sin fuentes y que el dibujo conserva el estado SDL. Las pruebas
+optimizadas y con AddressSanitizer/UndefinedBehaviorSanitizer aprobaron
+**66.685 comprobaciones cada una**, incluidos 100 cuadros durante cambios
+concurrentes de estilo y opacidad. El helper y el editor Java compilaron con el
+SDK de Android API 35. Alcance, fuente de la leyenda y límites en el
+[informe de controles de 0.10.5](../validation/CONTROLS_0.10.5_VALIDATION.md).
 
 El gestor de mods y el selector de siete filtros de 0.10.4 se documentan
 en la [revisión del menú](../validation/ANDROID_0.10.4_MODS_SETTINGS.md),
@@ -134,7 +204,11 @@ La compilación y revisión de preferencias, navegación y diseño están en el
 
 La orientación Android conserva `fullUser`. Las pruebas SDL de tamaños y
 las comprobaciones anteriores del editor no equivalen a una prueba física
-de rotación, controles o segundo plano de 0.10.4. La evidencia inicial de
+de rotación, controles o segundo plano de 0.10.5. La vista previa Java se revisó
+en código y se compiló; las capturas inspeccionadas corresponden al renderizador
+SDL de software, no a una pantalla Android. Queda por comprobar el manejo
+multitáctil, la persistencia tras reiniciar y la legibilidad sobre el juego en
+un teléfono. La evidencia inicial de
 integración de 0.10 permanece como historial en
 [ANDROID_0.10_VALIDATION.md](../validation/ANDROID_0.10_VALIDATION.md).
 

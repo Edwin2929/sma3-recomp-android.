@@ -24,9 +24,12 @@ public final class GbaNative {
     public static native String setModEnabled(String id, boolean enabled);
     public static native String removeMod(String id);
     public static native void setTouchControlsVisible(boolean visible);
+    // Styles: 0 classic letters, 1 action symbols. Opacity is clamped to 20..100%.
+    public static native void setTouchAppearance(int style, int opacityPercent);
     public static native void setControllerButton(int bit, int button);
     public static native void setOptionsOpen(boolean open);
     public static native void setInterpolationEnabled(boolean enabled);
+    public static native void resetPresentationTiming();
 
     /**
      * Safe-area insets in physical pixels: display cutouts and mandatory

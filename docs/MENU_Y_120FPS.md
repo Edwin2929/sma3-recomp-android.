@@ -1,5 +1,9 @@
 # Menú e intento de corrección de 120 FPS — 0.8 experimental
 
+Documento histórico de 0.8. La solicitud de 60/120 Hz, la temporización y
+el contador se actualizan en **0.10.5**; consulta la
+[guía vigente de rendimiento](RENDIMIENTO_Y_FPS.md).
+
 ## Idioma de las opciones
 
 Atrás → **Idioma del menú…** permite elegir Español, English o Português.

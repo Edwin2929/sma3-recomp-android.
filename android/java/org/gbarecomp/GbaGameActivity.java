@@ -93,50 +93,27 @@ public class GbaGameActivity extends SDLActivity {
     private boolean activityResumed;
     private String lastFps;
     private SurfaceHolder.Callback refreshCallback;
+    private boolean surfaceAvailable;
+    private DisplayRefreshController refreshController;
+    private DisplayRefreshController.State presentationState;
     private DisplayManager displayManager;
     private final DisplayManager.DisplayListener displayListener = new DisplayManager.DisplayListener() {
         public void onDisplayAdded(int id) {}
         public void onDisplayRemoved(int id) {}
         public void onDisplayChanged(int id) {
-            if (id == getWindowManager().getDefaultDisplay().getDisplayId()) updateFpsText();
+            if (id == getWindowManager().getDefaultDisplay().getDisplayId()) applyPresentationMode();
         }
     };
     private boolean wantsInterpolation() {
         return getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("interpolation-120", false);
     }
     private void applyPresentationMode() {
-        boolean enabled = activityResumed && wantsInterpolation();
-        // Keep the exact content cadence on Surface; select the physical 120 Hz mode below.
-        float rate = enabled ? 119.455f : 59.7275f;
-        Display display = getWindowManager().getDefaultDisplay();
-        Display.Mode currentMode = display.getMode();
-        int preferredMode = 0;
-        float bestDifference = Float.MAX_VALUE;
-        if (enabled) for (Display.Mode mode : display.getSupportedModes()) {
-            // Never change the user's display resolution.
-            if (mode.getPhysicalWidth() != currentMode.getPhysicalWidth()
-                    || mode.getPhysicalHeight() != currentMode.getPhysicalHeight()) continue;
-            float difference = Math.abs(mode.getRefreshRate() - 120f);
-            if (mode.getRefreshRate() >= 119f && difference < bestDifference) {
-                preferredMode = mode.getModeId(); bestDifference = difference;
-            }
-        }
-        WindowManager.LayoutParams attributes = getWindow().getAttributes();
-        attributes.preferredRefreshRate = activityResumed ? (enabled ? 120f : 60f) : 0f;
-        attributes.preferredDisplayModeId = preferredMode;
-        getWindow().setAttributes(attributes);
-        if (Build.VERSION.SDK_INT >= 30 && mSurface != null) {
-            Surface surface = mSurface.getHolder().getSurface();
-            if (surface != null && surface.isValid()) {
-                try {
-                    if (Build.VERSION.SDK_INT >= 31) surface.setFrameRate(activityResumed ? rate : 0f,
-                        Surface.FRAME_RATE_COMPATIBILITY_DEFAULT, Surface.CHANGE_FRAME_RATE_ALWAYS);
-                    else surface.setFrameRate(activityResumed ? rate : 0f, Surface.FRAME_RATE_COMPATIBILITY_DEFAULT);
-                }
-                catch (IllegalArgumentException ignored) { /* device retains its mode */ }
-            }
-        }
-        try { GbaNative.setInterpolationEnabled(enabled); }
+        if (settingsDestroyed) return;
+        if (refreshController == null) refreshController = new DisplayRefreshController(this);
+        Surface surface = surfaceAvailable && mSurface != null
+            ? mSurface.getHolder().getSurface() : null;
+        presentationState = refreshController.apply(activityResumed, wantsInterpolation(), surface);
+        try { GbaNative.setInterpolationEnabled(presentationState.doubleRateActive); }
         catch (UnsatisfiedLinkError notLoadedYet) { /* retried on resume/surface creation */ }
         updateFpsText();
         applyInputOptions();
@@ -144,23 +121,47 @@ public class GbaGameActivity extends SDLActivity {
     private void updateFpsText() {
         if (fpsLabel == null) return;
         String fps = lastFps == null ? "—" : lastFps;
-        float hz = getWindowManager().getDefaultDisplay().getRefreshRate();
-        fpsLabel.setText(wantsInterpolation()
-            ? tr("Salida: ", "Output: ", "Saída: ") + fps + tr(" FPS · mezcla 2×\nPantalla: ", " FPS · 2× blend\nDisplay: ", " FPS · mistura 2×\nTela: ") + String.format(Locale.US, "%.0f", hz) + " Hz"
-            : "FPS: " + fps);
-        if (wantsInterpolation() && hz < 119f) fpsLabel.append("\n" + tr(
-            "Pantalla por debajo de 120 Hz: revisa Pantalla fluida y ahorro de batería.",
-            "Display below 120 Hz: check Smooth Display and Battery Saver.",
-            "Tela abaixo de 120 Hz: verifique Tela fluida e economia de bateria."));
+        int target = wantsInterpolation() ? 120 : 60;
+        Display display = getWindowManager().getDefaultDisplay();
+        float physicalHz = presentationState == null
+            ? display.getMode().getRefreshRate() : presentationState.physicalHz;
+        float appHz = presentationState == null
+            ? display.getRefreshRate() : presentationState.appHz;
+        fpsLabel.setText(tr("Presentación: ", "Presentation: ", "Apresentação: ") + fps
+            + " FPS · " + tr("objetivo ", "target ", "meta ") + target
+            + "\n" + tr("Modo de pantalla: ", "Display mode: ", "Modo de tela: ")
+            + String.format(Locale.US, "%.1f", physicalHz) + " Hz");
+        if (Math.abs(appHz - physicalHz) > 1f)
+            fpsLabel.append(" · " + tr("app ", "app ", "app ")
+                + String.format(Locale.US, "%.1f", appHz) + " Hz");
+        if (wantsInterpolation() && activityResumed && surfaceAvailable
+                && presentationState != null && !presentationState.doubleRateActive) {
+            fpsLabel.append("\n" + tr("Presentación 60: Android no ha concedido 120 Hz.",
+                "60 presentation: Android has not granted 120 Hz.",
+                "Apresentação 60: o Android não concedeu 120 Hz."));
+        }
     }
     @Override protected void onResume() {
-        super.onResume(); activityResumed = true; applyPresentationMode();
+        super.onResume();
+        activityResumed = true;
+        resetPresentationTiming();
+        applyPresentationMode();
+        if (updatesUi != null) updatesUi.onResume();
     }
     @Override protected void onPause() {
-        activityResumed = false; applyPresentationMode(); super.onPause();
+        if (updatesUi != null) updatesUi.onPause();
+        activityResumed = false;
+        applyPresentationMode();
+        super.onPause();
+    }
+    private void resetPresentationTiming() {
+        lastFps = null;
+        try { GbaNative.resetPresentationTiming(); }
+        catch (UnsatisfiedLinkError notLoadedYet) { /* first surface retries */ }
     }
     private AlertDialog optionsDialog;
     private ModsUi modsUi;
+    private UpdatesUi updatesUi;
     private OnBackInvokedCallback optionsBackCallback;
 
     private String[] gbaButtons() { return new String[]{"A", "B", "Select", "Start", tr("Derecha", "Right", "Direita"), tr("Izquierda", "Left", "Esquerda"), tr("Arriba", "Up", "Cima"), tr("Abajo", "Down", "Baixo"), "R", "L"}; }
@@ -202,6 +203,7 @@ public class GbaGameActivity extends SDLActivity {
                 imageMode());
             GbaNative.setVideoFilter(imageFilter());
             GbaNative.setTouchControlsVisible(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true));
+            GbaNative.setTouchAppearance(touchStyle(), touchOpacity());
             for (int bit = 0; bit < 10; ++bit) GbaNative.setControllerButton(bit, padBinding(bit));
         } catch (UnsatisfiedLinkError notLoadedYet) { /* retried with surface */ }
     }
@@ -400,9 +402,17 @@ public class GbaGameActivity extends SDLActivity {
             tr("Pantalla táctil, mando y diseños personalizados", "Touchscreen, controller and custom layouts", "Tela de toque, controle e layouts personalizados"), this::showControlsMenu);
         panel.card(SettingsPanel.MODS, "Mods",
             tr("Importar y administrar perfiles de color", "Import and manage color profiles", "Importar e gerenciar perfis de cor"), this::showMods);
+        panel.card(SettingsPanel.UPDATES, tr("Actualizar", "Updates", "Atualizar"),
+            updatesUi == null ? tr("Buscar nuevas versiones en GitHub", "Check GitHub for new versions", "Buscar novas versões no GitHub") : updatesUi.summary(),
+            this::showUpdates);
         panel.card(SettingsPanel.LANGUAGE, tr("Idiomas", "Languages", "Idiomas"),
             tr("Idioma del menú y traducción del juego", "Menu language and game translation", "Idioma do menu e tradução do jogo"), this::showLanguageMenu);
         openSettings(panel.dialog(null), null);
+    }
+    private void showUpdates() {
+        if (updatesUi == null)
+            updatesUi = new UpdatesUi(this, this::tr, this::openSettings, this::showOptions);
+        updatesUi.show();
     }
     private void showMods() {
         ensureModsUi();
@@ -413,6 +423,12 @@ public class GbaGameActivity extends SDLActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+        if (requestCode == UpdatesUi.INSTALL_PERMISSION) {
+            if (updatesUi == null)
+                updatesUi = new UpdatesUi(this, this::tr, this::openSettings, this::showOptions);
+            updatesUi.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
         // Android can recreate the Activity while the document picker is open.
         // Recreate the helper before delivering that already-authorized result.
         if (requestCode == ModsUi.PICK_MOD) {
@@ -431,12 +447,33 @@ public class GbaGameActivity extends SDLActivity {
                 getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("show-fps", checked).apply();
                 updateFpsVisibility();
             });
-        panel.toggle(tr("Mezcla temporal a 120 FPS", "Temporal blending at 120 FPS", "Mistura temporal a 120 FPS"),
-            tr("Añade imágenes intermedias. Requiere una pantalla compatible con 120 Hz.", "Adds intermediate images. Requires a display that supports 120 Hz.", "Acrescenta imagens intermediárias. Requer uma tela compatível com 120 Hz."),
-            wantsInterpolation(), checked -> {
-                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("interpolation-120", checked).apply();
-                lastFps = null; applyPresentationMode();
+        panel.section(tr("Objetivo de presentación", "Presentation target", "Meta de apresentação"));
+        panel.choices(new String[]{"60 FPS", "120 FPS · " + tr("mezcla 2×", "2× blend", "mistura 2×")},
+            new String[]{
+                tr("Ritmo original, aproximadamente 59,73 imágenes por segundo.",
+                   "Original cadence, approximately 59.73 images per second.",
+                   "Ritmo original, aproximadamente 59,73 imagens por segundo."),
+                tr("Añade imágenes intermedias, hasta unos 119,45 FPS. Solicita 120 Hz a Android.",
+                   "Adds intermediate images, up to about 119.45 FPS. Requests 120 Hz from Android.",
+                   "Acrescenta imagens intermediárias, até cerca de 119,45 FPS. Solicita 120 Hz ao Android.")},
+            wantsInterpolation() ? 1 : 0, which -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit()
+                    .putBoolean("interpolation-120", which == 1).apply();
+                lastFps = null;
+                applyPresentationMode();
+                showPerformanceMenu();
             });
+        if (presentationState != null) {
+            panel.paragraph(tr("Modo de pantalla informado: ", "Reported display mode: ", "Modo de tela informado: ")
+                + String.format(Locale.US, "%.1f", presentationState.physicalHz) + " Hz · "
+                + tr("Tasa concedida a la app: ", "App frame rate: ", "Taxa concedida ao app: ")
+                + String.format(Locale.US, "%.1f", presentationState.appHz) + " Hz");
+            if (wantsInterpolation() && !presentationState.doubleRateActive)
+                panel.notice(tr("120 FPS solicitados", "120 FPS requested", "120 FPS solicitados"),
+                    tr("Se mantiene la presentación de 60 mientras Android no conceda 120 Hz. Revisa Pantalla fluida y ahorro de batería. Tu selección de 120 queda guardada.",
+                       "Presentation stays at 60 until Android grants 120 Hz. Check Smooth Display and Battery Saver. Your 120 selection remains saved.",
+                       "A apresentação fica em 60 enquanto o Android não conceder 120 Hz. Confira Tela fluida e economia de bateria. Sua escolha de 120 fica salva."));
+        }
         panel.section(tr("Cómo funciona", "How it works", "Como funciona"));
         panel.paragraph(tr(
             "La mezcla puede suavizar el movimiento, pero también producir estelas. El juego conserva su ritmo original; 120 FPS se refiere a las imágenes presentadas. El rendimiento depende del dispositivo y del ahorro de batería.",
@@ -453,11 +490,55 @@ public class GbaGameActivity extends SDLActivity {
                 getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("touch-visible", checked).apply();
                 applyInputOptions();
             });
+        panel.card(SettingsPanel.CONTROLS, tr("Símbolos y opacidad", "Symbols and opacity", "Símbolos e opacidade"),
+            (touchStyle() == 1 ? tr("Símbolos de acciones", "Action symbols", "Símbolos de ações")
+                : tr("Letras clásicas", "Classic labels", "Letras clássicas")) + " · " + touchOpacity() + " %",
+            this::showTouchAppearance);
         panel.card(SettingsPanel.LAYOUT, tr("Diseños personalizados", "Custom layouts", "Layouts personalizados"),
             tr("Mueve y cambia el tamaño de los controles. Guarda hasta tres diseños.", "Move and resize the controls. Save up to three layouts.", "Mova e redimensione os controles. Salve até três layouts."), this::showDesignMenu);
         panel.card(SettingsPanel.CONTROLS, tr("Mapear mando", "Map controller", "Mapear controle"),
             tr("Asigna los botones de tu mando físico.", "Assign the buttons on your physical controller.", "Atribua os botões do seu controle físico."), this::showControllerOptions);
         openSettings(panel.dialog(this::showOptions), this::showOptions);
+    }
+    private int touchStyle() {
+        return getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("touch-style", 1) == 0 ? 0 : 1;
+    }
+    private int touchOpacity() {
+        return Math.max(20, Math.min(100,
+            getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("touch-opacity", 75)));
+    }
+    private void showTouchAppearance() {
+        SettingsPanel panel = settingsPanel(tr("Símbolos y opacidad", "Symbols and opacity", "Símbolos e opacidade"),
+            tr("Personaliza los botones del juego y la vista previa del editor.",
+               "Customize the game buttons and the editor preview.",
+               "Personalize os botões do jogo e a prévia do editor."));
+        panel.choices(new String[]{tr("Letras clásicas", "Classic labels", "Letras clássicas"),
+                tr("Símbolos de acciones", "Action symbols", "Símbolos de ações")},
+            new String[]{tr("A, B, L, R, SELECT y START.", "A, B, L, R, SELECT and START.", "A, B, L, R, SELECT e START."),
+                tr("Flecha, lengua, mira, huevo, estado y pausa.",
+                   "Arrow, tongue, target, egg, status and pause.",
+                   "Seta, língua, mira, ovo, status e pausa.")}, touchStyle(), which -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("touch-style", which).apply();
+                GbaNative.setTouchAppearance(touchStyle(), touchOpacity());
+            });
+        panel.slider(tr("Opacidad de los controles", "Control opacity", "Opacidade dos controles"),
+            tr("20 %: más transparentes · 100 %: máxima intensidad. Se aplica y guarda al mover la barra.",
+               "20%: more transparent · 100%: maximum intensity. Applies and saves as you move the slider.",
+               "20%: mais transparentes · 100%: intensidade máxima. Aplica e salva ao mover a barra."),
+            20, 100, touchOpacity(), value -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("touch-opacity", value).apply();
+                GbaNative.setTouchAppearance(touchStyle(), value);
+            });
+        panel.section(tr("Qué hace cada símbolo", "What each symbol does", "O que cada símbolo faz"));
+        panel.paragraph(tr(
+            "Flecha (A): saltar; mantener para aletear.\nLengua (B): comer o escupir; la acción cambia según el contexto.\nMira (L): fijar o liberar el cursor del huevo.\nHuevo (R): apuntar y lanzar huevos.\nLista (SELECT): pantalla de estado.\nPausa (START): pausar.\nCruceta: moverse y mirar; abajo también permite tragar o hacer el salto bomba.",
+            "Arrow (A): jump; hold to flutter.\nTongue (B): eat or spit; the action depends on context.\nTarget (L): lock or release the egg cursor.\nEgg (R): aim and throw eggs.\nList (SELECT): status screen.\nPause (START): pause.\nD-pad: move and look; down also swallows or performs a ground pound.",
+            "Seta (A): saltar; segure para flutuar.\nLíngua (B): comer ou cuspir; a ação depende do contexto.\nMira (L): fixar ou liberar o cursor do ovo.\nOvo (R): mirar e lançar ovos.\nLista (SELECT): tela de status.\nPausa (START): pausar.\nDirecional: mover e olhar; baixo também engole ou faz o salto bomba."));
+        panel.paragraph(tr(
+            "Las acciones pueden cambiar durante transformaciones o Mario Bros. El lanzamiento de huevos respeta el ajuste de control del propio juego.",
+            "Actions may change during transformations or Mario Bros. Egg throwing follows the game's own control setting.",
+            "As ações podem mudar durante transformações ou Mario Bros. O lançamento de ovos segue a configuração do próprio jogo."));
+        openSettings(panel.dialog(this::showControlsMenu), this::showControlsMenu);
     }
     private void showLanguageMenu() {
         SettingsPanel panel = settingsPanel(tr("Idiomas", "Languages", "Idiomas"),
@@ -546,6 +627,7 @@ public class GbaGameActivity extends SDLActivity {
     protected void onDestroy() {
         settingsDestroyed=true;
         if (modsUi != null) modsUi.close();
+        if (updatesUi != null) updatesUi.close();
         if(designEditor!=null)designEditor.dismiss();
         try { GbaNative.setTouchEditing(false); } catch(UnsatisfiedLinkError ignored) {}
         if (Build.VERSION.SDK_INT >= 33 && optionsBackCallback != null) {
@@ -581,12 +663,21 @@ public class GbaGameActivity extends SDLActivity {
         super.onCreate(savedInstanceState);
         setMenuOpen(false);
         installFpsOptions();
+        refreshController = new DisplayRefreshController(this);
+        updatesUi = new UpdatesUi(this, this::tr, this::openSettings, this::showOptions);
         displayManager = (DisplayManager) getSystemService(DISPLAY_SERVICE);
         if (displayManager != null) displayManager.registerDisplayListener(displayListener, null);
         refreshCallback = new SurfaceHolder.Callback() {
-            public void surfaceCreated(SurfaceHolder holder) { applyPresentationMode(); }
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { applyPresentationMode(); }
+            public void surfaceCreated(SurfaceHolder holder) {
+                if (!surfaceAvailable) resetPresentationTiming();
+                refreshController.invalidateSurface();
+                surfaceAvailable = true;
+                applyPresentationMode();
+            }
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { surfaceAvailable = true; applyPresentationMode(); }
             public void surfaceDestroyed(SurfaceHolder holder) {
+                surfaceAvailable = false;
+                if (refreshController != null) presentationState = refreshController.apply(false, wantsInterpolation(), null);
                 try { GbaNative.setInterpolationEnabled(false); } catch (UnsatisfiedLinkError ignored) {}
             }
         };

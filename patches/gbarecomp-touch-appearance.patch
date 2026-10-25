@@ -1,0 +1,55 @@
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -1,6 +1,7 @@
+ #if defined(SMA3_FRAME_INTERPOLATION)
+ #include "controller_options.h"
+ #include "touch_layout.h"
++#include "touch_appearance_renderer.h"
+ #include "video_scaler.h"
+ #include "presentation_pacing.h"
+ #endif
+@@ -1024,6 +1025,10 @@
+     if (!b->pad_visible || !b->touch_controls) return;
+     const PadLayout p = compute_pad_layout(b);
+     const uint16_t held = active_touch_buttons(b);
++#if defined(SMA3_FRAME_INTERPOLATION)
++    // One appearance snapshot per overlay; vector glyphs also work without fonts.
++    sma3::touch::draw_pad(ov, p, held, b->px_per_mm, sma3::get_touch_appearance());
++#else
+     const auto S = OverlaySpace::Drawable;
+     const float mm = b->px_per_mm;
+     // Every control: a dark translucent backing (legible over any scenery),
+@@ -1072,6 +1077,7 @@
+     pill(p.r, 8, "R", 2.0f * mm);
+     pill(p.select, 2, "SELECT", p.select.h * 0.5f);
+     pill(p.start, 3, "START", p.start.h * 0.5f);
++#endif
+ }
+ void draw_pad_toggle(Backend* b, HostOverlay& ov) {
+     if (!pad_toggle_available(b)) return;
+@@ -1391,6 +1397,12 @@
+     int logical_w = 0;
+     int logical_h = 0;
+     SDL_Rect viewport{};
++#if defined(SMA3_FRAME_INTERPOLATION)
++    SDL_BlendMode previous_blend = SDL_BLENDMODE_NONE;
++    Uint8 previous_red = 0, previous_green = 0, previous_blue = 0, previous_alpha = 0;
++    SDL_GetRenderDrawBlendMode(b->renderer, &previous_blend);
++    SDL_GetRenderDrawColor(b->renderer, &previous_red, &previous_green, &previous_blue, &previous_alpha);
++#endif
+     SDL_RenderGetLogicalSize(b->renderer, &logical_w, &logical_h);
+     SDL_RenderGetViewport(b->renderer, &viewport);
+     SDL_RenderSetLogicalSize(b->renderer, 0, 0);
+@@ -1419,7 +1431,12 @@
+ 
+     SDL_RenderSetLogicalSize(b->renderer, logical_w, logical_h);
+     SDL_RenderSetViewport(b->renderer, &viewport);
++#if defined(SMA3_FRAME_INTERPOLATION)
++    SDL_SetRenderDrawBlendMode(b->renderer, previous_blend);
++    SDL_SetRenderDrawColor(b->renderer, previous_red, previous_green, previous_blue, previous_alpha);
++#else
+     SDL_SetRenderDrawBlendMode(b->renderer, SDL_BLENDMODE_NONE);
++#endif
+ }
+ 
+ // The presentation rectangle every present path uses, so touch mapping and

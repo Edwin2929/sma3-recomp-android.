@@ -1,14 +1,24 @@
 #include "frame_interpolation.h"
+#include "presentation_pacing.h"
 #include <jni.h>
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setInterpolationEnabled(JNIEnv*, jclass, jboolean on) {
     sma3::interpolation_enabled.store(on == JNI_TRUE, std::memory_order_relaxed);
 }
+extern "C" JNIEXPORT void JNICALL
+Java_org_gbarecomp_GbaNative_resetPresentationTiming(JNIEnv*, jclass) {
+    sma3::presentation_epoch.fetch_add(1, std::memory_order_relaxed);
+}
 
 #include "controller_options.h"
+#include "touch_appearance.h"
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setTouchControlsVisible(JNIEnv*, jclass, jboolean on) {
     sma3::touch_visible.store(on == JNI_TRUE);
+}
+extern "C" JNIEXPORT void JNICALL
+Java_org_gbarecomp_GbaNative_setTouchAppearance(JNIEnv*, jclass, jint style, jint opacity) {
+    sma3::set_touch_appearance(style, opacity);
 }
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setControllerButton(JNIEnv*, jclass, jint bit, jint button) {

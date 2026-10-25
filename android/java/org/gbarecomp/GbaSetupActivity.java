@@ -62,6 +62,8 @@ public class GbaSetupActivity extends Activity {
     private boolean biosReady;
     private boolean romReady;
     private int displayedLanguage;
+    private UpdatesUi updatesUi;
+    private AlertDialog updateDialog;
 
     private String tr(String es, String en, String pt) {
         int language = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1);
@@ -77,6 +79,7 @@ public class GbaSetupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         config = GbaGameConfig.load(this);
+        updatesUi = new UpdatesUi(this, this::tr, this::openUpdateDialog, this::dismissUpdates);
         setRequestedOrientation(GbaGameActivity.orientationFor(config.orientation));
         if (hasBundledPrivateAssets()) {
             startActivity(new Intent(this, gameActivityClass()));
@@ -101,11 +104,13 @@ public class GbaSetupActivity extends Activity {
             setContentView(buildContent());
             refreshStatus();
         }
+        if (updateDialog != null && updateDialog.isShowing()) SettingsPanel.fitWindow(this, updateDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (updatesUi != null) updatesUi.onResume();
         enterImmersiveMode();
         if (playButton != null) {
             if (displayedLanguage != getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1)) {
@@ -116,7 +121,15 @@ public class GbaSetupActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        if (updatesUi != null) updatesUi.onPause();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
+        if (updatesUi != null) updatesUi.close();
+        dismissUpdates();
         worker.shutdownNow();
         super.onDestroy();
     }
@@ -129,6 +142,12 @@ public class GbaSetupActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UpdatesUi.INSTALL_PERMISSION) {
+            if (updatesUi == null)
+                updatesUi = new UpdatesUi(this, this::tr, this::openUpdateDialog, this::dismissUpdates);
+            updatesUi.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK || data == null || data.getData() == null) return;
         if (requestCode != PICK_BIOS && requestCode != PICK_ROM) return;
@@ -151,6 +170,30 @@ public class GbaSetupActivity extends Activity {
                 });
             }
         });
+    }
+
+    private void openUpdateDialog(AlertDialog next, Runnable parent) {
+        if (isFinishing() || isDestroyed()) return;
+        AlertDialog old = updateDialog;
+        updateDialog = next;
+        if (old != null) old.dismiss();
+        next.setOnCancelListener(dialog -> {
+            if (parent != null && !isFinishing() && !isDestroyed()) parent.run();
+        });
+        next.setOnDismissListener(dialog -> {
+            if (updateDialog == next) {
+                updateDialog = null;
+                if (!isFinishing() && !isDestroyed()) enterImmersiveMode();
+            }
+        });
+        next.show();
+        SettingsPanel.fitWindow(this, next);
+    }
+
+    private void dismissUpdates() {
+        AlertDialog current = updateDialog;
+        updateDialog = null;
+        if (current != null) current.dismiss();
     }
 
     private boolean ready() {
@@ -243,6 +286,10 @@ public class GbaSetupActivity extends Activity {
             getSharedPreferences("sma3-options", MODE_PRIVATE).edit()
                 .putBoolean("show-fps", checked).apply());
         root.addView(fpsCheck, margins(-1, -2, 0, 0, 0, dp(6)));
+
+        Button updateButton = actionButton(tr("Actualizar aplicación", "Update app", "Atualizar aplicativo"));
+        updateButton.setOnClickListener(view -> updatesUi.show());
+        root.addView(updateButton, margins(-1, dp(48), 0, dp(4), 0, dp(10)));
 
         infoStatus = text("", 13, SettingsPanel.SECONDARY);
         infoStatus.setGravity(Gravity.CENTER);

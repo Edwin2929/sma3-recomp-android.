@@ -11,6 +11,8 @@
     <uses-feature android:name="android.hardware.gamepad" android:required="false" />
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="false"
@@ -20,6 +22,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:resizeableActivity="true"
         android:theme="@style/GbaTheme">
+        <provider
+            android:name="org.gbarecomp.UpdateApkProvider"
+            android:authorities="${applicationId}.updates"
+            android:exported="false"
+            android:grantUriPermissions="true" />
         <meta-data android:name="gbarecomp.title" android:value="${gbaTitle}" />
         <meta-data android:name="gbarecomp.rom_label" android:value="${gbaRomLabel}" />
         <meta-data android:name="gbarecomp.rom_sha1" android:value="${gbaRomSha1}" />
