@@ -135,7 +135,7 @@ def main():
             ('panorama-portrait', 1, '1080x2400', 240, 'gameplay', args.frames),
             ('stretch-native-source', 2, '2400x1080', 240, 'gameplay', args.frames),
             ('transition-original', 0, '2400x1080', 240, 'fallback', args.fallback_frames),
-            ('transition-panorama', 1, '2400x1080', 240, 'fallback', args.fallback_frames),
+            ('transition-panorama', 1, '2400x1080', 356, 'fallback', args.fallback_frames),
         ]
         results, images = {}, {}
         for case in cases:
@@ -162,7 +162,12 @@ def main():
                            image.crop((left + 240, 0, image.width, 160)))
                 colors = [len(margin.getcolors(margin.width * margin.height) or [])
                           for margin in margins]
-                require(all(count > 1 for count in colors), f'{name}: empty or solid margins')
+                if results[name]['fixture'] == 'gameplay':
+                    require(all(count > 1 for count in colors), f'{name}: empty or solid margins')
+                else:
+                    require(all(not any(margin.tobytes()) for margin in margins),
+                            f'{name}: unsupported scene exposed margin pixels')
+                    comparison['fallback_margins_black'] = True
                 comparison['margin_distinct_colors'] = colors
             comparisons.append(comparison)
         summary = dict(
@@ -174,7 +179,7 @@ def main():
                 'Stretch case verifies a native source framebuffer; Android destination scaling is separate.',
                 'Final counter equality and native crop equality do not prove complete guest-state equality.',
                 'Known supported scene and unsupported transition do not certify every level or offscreen spawn.',
-                'Cold savestate observation may keep the original view until a coherent submission is available.',
+                'Cold observation and unsupported scenes keep the original center with black margins inside stable panoramic geometry.',
             ],
             input_sha256={name: sha256(getattr(args, name)) for name in
                           ('runner', 'rom', 'bios', 'gameplay_state', 'fallback_state', 'config')},

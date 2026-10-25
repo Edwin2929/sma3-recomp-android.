@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "verification_date_utc": "2026-10-25",
+  "tested_version": "Android 0.10 source, preserved native host runner BEFORE the 0.10.1 fixes",
+  "purpose": "Localize the reported visual instability. These diagnostic sessions use fixed viewport geometry and therefore do not exercise the adaptive production presentation path where the bug was reproduced. They are not corrected-candidate or Android-device acceptance evidence.",
+  "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+  "routes": [
+    {
+      "route": "castle",
+      "frames_per_width": 1800,
+      "every_frame_center_mismatches": [],
+      "every_frame_observation_and_io_equality": true,
+      "normal_gameplay_frames": 1537,
+      "frames_with_nonblack_margin_pixels": 1537,
+      "fully_black_margin_state_changes": [
+        {
+          "elapsed_frame": 264,
+          "frame": 6863,
+          "game_state": 13,
+          "nonblack_margin_pixels": 3227
+        }
+      ],
+      "sessions": [
+        {
+          "width": 240,
+          "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+          "state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+          "native_coverage": "FULLY_STATIC",
+          "native_counters_zero": true,
+          "trace_sha256": "a9542ef432415882d6186cc6872beebf74fcface2fba19d1f2e5bed6321fbacf",
+          "capture_schedule_sha256": "14b9cdbd742d8dfae1a1abbaffe4e60866914d7ea245ddb65c407e6317e0c0f6",
+          "actions_sha256": "55d53c4e29afb10eab1110a86b88ce963fdc2f9bcc22c364adbe6a181fc8b5b4"
+        },
+        {
+          "width": 356,
+          "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+          "state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+          "native_coverage": "FULLY_STATIC",
+          "native_counters_zero": true,
+          "trace_sha256": "a9542ef432415882d6186cc6872beebf74fcface2fba19d1f2e5bed6321fbacf",
+          "capture_schedule_sha256": "14b9cdbd742d8dfae1a1abbaffe4e60866914d7ea245ddb65c407e6317e0c0f6",
+          "actions_sha256": "55d53c4e29afb10eab1110a86b88ce963fdc2f9bcc22c364adbe6a181fc8b5b4"
+        }
+      ]
+    },
+    {
+      "route": "level0",
+      "frames_per_width": 900,
+      "every_frame_center_mismatches": [],
+      "every_frame_observation_and_io_equality": true,
+      "normal_gameplay_frames": 650,
+      "frames_with_nonblack_margin_pixels": 650,
+      "fully_black_margin_state_changes": [
+        {
+          "elapsed_frame": 251,
+          "frame": 13651,
+          "game_state": 13,
+          "nonblack_margin_pixels": 3643
+        }
+      ],
+      "sessions": [
+        {
+          "width": 240,
+          "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+          "state_sha256": "d21524f1dbf9f9b8ff13bdced77608ca6d4f8647e961f528159d89a9f22dc06d",
+          "native_coverage": "FULLY_STATIC",
+          "native_counters_zero": true,
+          "trace_sha256": "b0b703bf74d3cab2c7b3b13dae621329ca07cef2bfa8f38322dc90f6a8adb1e3",
+          "capture_schedule_sha256": "bb73d53484d89c342e581011ef8091f96214a2166f41032ff415511d9c081cff",
+          "actions_sha256": "e036e82bbd94876480b029571c7c914d733b6353fa94af4f7369eff55bee8b9e"
+        },
+        {
+          "width": 356,
+          "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+          "state_sha256": "d21524f1dbf9f9b8ff13bdced77608ca6d4f8647e961f528159d89a9f22dc06d",
+          "native_coverage": "FULLY_STATIC",
+          "native_counters_zero": true,
+          "trace_sha256": "b0b703bf74d3cab2c7b3b13dae621329ca07cef2bfa8f38322dc90f6a8adb1e3",
+          "capture_schedule_sha256": "bb73d53484d89c342e581011ef8091f96214a2166f41032ff415511d9c081cff",
+          "actions_sha256": "e036e82bbd94876480b029571c7c914d733b6353fa94af4f7369eff55bee8b9e"
+        }
+      ]
+    },
+    {
+      "route": "level1",
+      "frames_per_width": 900,
+      "every_frame_center_mismatches": [],
+      "every_frame_observation_and_io_equality": true,
+      "normal_gameplay_frames": 647,
+      "frames_with_nonblack_margin_pixels": 647,
+      "fully_black_margin_state_changes": [
+        {
+          "elapsed_frame": 254,
+          "frame": 13654,
+          "game_state": 13,
+          "nonblack_margin_pixels": 3596
+        }
+      ],
+      "sessions": [
+        {
+          "width": 240,
+          "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+          "state_sha256": "548e826c84f004d5885c7909df9f65de2fa1cc42c222f7f81c7ee6a3c6e2ebb1",
+          "native_coverage": "FULLY_STATIC",
+          "native_counters_zero": true,
+          "trace_sha256": "8b5b1b551672f28436d9baaecf718b005ce103e815e2dcd02b1e5f40e70c598b",
+          "capture_schedule_sha256": "bb73d53484d89c342e581011ef8091f96214a2166f41032ff415511d9c081cff",
+          "actions_sha256": "e036e82bbd94876480b029571c7c914d733b6353fa94af4f7369eff55bee8b9e"
+        },
+        {
+          "width": 356,
+          "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+          "state_sha256": "548e826c84f004d5885c7909df9f65de2fa1cc42c222f7f81c7ee6a3c6e2ebb1",
+          "native_coverage": "FULLY_STATIC",
+          "native_counters_zero": true,
+          "trace_sha256": "8b5b1b551672f28436d9baaecf718b005ce103e815e2dcd02b1e5f40e70c598b",
+          "capture_schedule_sha256": "bb73d53484d89c342e581011ef8091f96214a2166f41032ff415511d9c081cff",
+          "actions_sha256": "e036e82bbd94876480b029571c7c914d733b6353fa94af4f7369eff55bee8b9e"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "paired_frames": 3600,
+    "captured_images": 7200,
+    "native_center_mismatch_frames": 0
+  },
+  "initial_level_tile_oracle": {
+    "states": 22,
+    "levels": [
+      0,
+      1
+    ],
+    "layers": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "sampled_pixels_per_state_per_layer": 2400,
+    "total_sampled_layer_pixels": 211200,
+    "native_vram_vs_authored_tile_entry_mismatches": 0,
+    "native_vram_vs_authored_palette_index_mismatches": 0,
+    "sampling": "Every fourth native x/y coordinate; 11 normal-gameplay state checkpoints per level, taken every 60 frames after loading."
+  },
+  "castle_tile_alias_review": {
+    "affected_checkpoint_frames": [
+      4920,
+      4980,
+      5040,
+      5100,
+      5128
+    ],
+    "tile_entry_mismatch_samples": 77,
+    "native_entry": "0x60ff",
+    "authored_entry": "0x20ff",
+    "bg1cnt": "0x7402",
+    "tile_0xff_nonzero_texture_bytes_in_each_checkpoint": 0,
+    "conclusion": "The only entry difference is palette bank; the 4bpp tile is completely transparent in every affected checkpoint, so these entries produce identical pixels."
+  },
+  "limits": [
+    "All initial entries are synthetic; only the bounded recorded input paths were exercised.",
+    "Observed trajectory and I/O equality do not mean every byte of complete guest state was compared.",
+    "Center equality and nonblack-margin counts do not qualify every lateral texture, object or scene.",
+    "Fixed-width headless snapshots cannot rule out production resize/re-render artifacts; the separate dense SDL production test is required.",
+    "This report preserves discovery evidence from the old 0.10 runner and must not be described as a 0.10.1 candidate replay."
+  ]
+}

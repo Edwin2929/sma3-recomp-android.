@@ -1,4 +1,27 @@
-# Panorámica real — Android 0.10 experimental
+# Panorámica real — Android 0.10.1 experimental
+
+## Corrección de presentación en 0.10.1
+
+El reporte de titileo en 0.10 se reprodujo con movimiento: cinco cambios
+transitorios de anchura y seis fotogramas con el centro corrupto en 600
+presentaciones. La comprobación tardía de OAM usaba datos de la siguiente
+imagen; al cambiar la geometría se descartaba la imagen terminada y se
+redibujaba memoria de otra fase del fotograma.
+
+0.10.1 conserva la geometría panorámica mientras ese modo está seleccionado.
+La política de cada escena se aplica durante el dibujo del fotograma y
+mantiene negros los márgenes no autorizados. Al redimensionar o restaurar,
+conserva el centro de la imagen terminada y limpia los márgenes pendientes.
+También respeta las bandas negras durante el blanqueo forzado del juego.
+
+El mismo recorrido conserva ahora los 600 centros originales, sin oscilación
+de anchura. Pasan también los cambios 356 → 240 → 347 → 356 y la ruta real de
+mezcla temporal, compilada para host. Las verificaciones no amplían los límites
+de aparición ni equivalen a una prueba física de Android o de todo el juego.
+[Notas de 0.10.1](releases/v0.10.1-experimental.md) ·
+[Diagnóstico, pruebas y reproducción](../validation/ANDROID_0.10.1_VISUAL_FIXES.md).
+
+## Integración inicial en 0.10
 
 **0.10 integra la vista panorámica opcional en Android.** El APK
 `sma3-recomp-0.10-panorama-arm64.apk` se compila con esa función y conserva

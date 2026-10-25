@@ -214,12 +214,11 @@ void resize_and_native_roundtrip() {
     const std::array<unsigned, 12> widths{240, 241, 320, 346, 355, 356, 300, 240, 356, 241, 240, 356};
     for (unsigned width : widths) {
         latch(*ppu, f);
-        const unsigned previous = ppu->render_width();
         const unsigned left = (width - 240) / 2;
         ppu->set_view_margins(left, width - 240 - left, 0, 0);
         require(ppu->render_width() == width, "requested width and odd margin remainder");
-        require(ppu->has_latched_framebuffer() == (previous == width),
-                "geometry change must invalidate stale latch");
+        require(ppu->has_latched_framebuffer(),
+                "geometry change must retain the complete remapped latch");
         timing_equal(snapshot(*ppu), timing, "resize changed guest PPU timing");
         for (unsigned y = 0; y < 160; ++y) scanline(*ppu, f, y);
         ppu->mark_framebuffer_latched();
@@ -259,9 +258,13 @@ void snapshot_center_and_geometry() {
     auto loaded_wide = std::make_unique<GbaPpu>();
     loaded_wide->set_view_margins(47, 48, 0, 0);
     restore(*loaded_wide, native_state);
-    require(loaded_wide->render_width() == 335 && !loaded_wide->has_latched_framebuffer(),
-            "native load must retain host geometry and reject unauthored margins");
+    require(loaded_wide->render_width() == 335 && loaded_wide->has_latched_framebuffer(),
+            "native load must retain host geometry and the saved native latch");
     require(gba::g_ws_pillarbox == 1, "state restore must initially fail margins closed");
+    margins_black(loaded_wide->latched_framebuffer(), 335, 47, 0, 160,
+                  "restored latch retained unauthored margins");
+    center_equal(loaded_wide->latched_framebuffer(), 335, 47, native->latched_framebuffer(),
+                 "native-to-wide restored completed latch");
     const auto fallback = render(*loaded_wide, f);
     margins_black(fallback.data(), 335, 47, 0, 160, "immediate restore margins are not black");
     center_equal(fallback.data(), 335, 47, native->latched_framebuffer(),
@@ -285,7 +288,11 @@ void midframe_restore_does_not_reuse_old_margins() {
     target->set_view_margins(58, 58, 0, 0);
     latch(*target, new_scene); // Deliberately nonblack old wide margin storage.
     restore(*target, saved);
-    require(!target->has_latched_framebuffer(), "restore exposes previous wide latch");
+    require(target->has_latched_framebuffer(), "restore discarded saved complete native latch");
+    center_equal(target->latched_framebuffer(), 356, 58, source_image.data(),
+                 "restore shows the live scene instead of the saved completed scene");
+    margins_black(target->latched_framebuffer(), 356, 58, 0, 160,
+                  "restored complete latch retained old margins");
     for (unsigned y = 80; y < 160; ++y) scanline(*target, new_scene, y);
     target->mark_framebuffer_latched();
     const auto* rgb = target->latched_framebuffer();

@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "recorded_at_utc": "2026-10-25T04:48:14+00:00",
+  "scope": "Bounded source and host-SDL audit performed on the Android 0.10 presentation helpers while investigating the 0.10.1 bug report. This is not an Android GPU, gameplay, or physical-device test.",
+  "baseline_commit": "66436d1b2687afcee0ea89af94dd05ef6dadda43",
+  "test_source": "validation/android_presentation_audit_test.cpp",
+  "test_source_sha256": "ec94655484920381f45a0e08e167dd5fdfabb2fee29e6ba0f16467f218096e47",
+  "compiled_source_body_sha256": "b4069803daa2bd13386156f5824ac9a9fc433b8985255a2246d356cad12e87f5",
+  "public_test_source_differs_from_compiled_source_only_by_comment_header": true,
+  "helper_source_sha256": {
+    "src/video_scaler.h": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f",
+    "src/frame_interpolation.h": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897"
+  },
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "sanitizers": {
+    "address": "PASS",
+    "undefined_behavior": "PASS",
+    "leak_detection": false,
+    "leak_detection_note": "Disabled for the sandbox runtime; no leak-coverage claim."
+  },
+  "build_command_template": [
+    "c++",
+    "-std=c++20",
+    "-O1",
+    "-g",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-I",
+    "src",
+    "-I",
+    "<SDL2 include directory>",
+    "validation/android_presentation_audit_test.cpp",
+    "<SDL2 shared library>",
+    "-o",
+    "<audit binary>"
+  ],
+  "run_environment": {
+    "ASAN_OPTIONS": "detect_leaks=0"
+  },
+  "run_command_template": [
+    "<audit binary>"
+  ],
+  "results": {
+    "result": "PASS",
+    "blend_boundary_checks": 8,
+    "scaler_presentations": 36,
+    "assertions": 255,
+    "source_width_sequence": [
+      347,
+      356,
+      240,
+      347
+    ],
+    "source_height": 160,
+    "drawable": [
+      3120,
+      1440
+    ],
+    "qualities": [
+      0,
+      720,
+      1080
+    ],
+    "renderer": "SDL software",
+    "android_device_tested": false
+  },
+  "texture_sequence": "A/B/A for every width and quality; second A must match first A byte-for-byte after readback, while B must differ.",
+  "blend_boundaries": [
+    "first frame",
+    "same-width consecutive frame",
+    "all midpoint bytes",
+    "347 to 356",
+    "new-width history",
+    "356 to 347",
+    "frame-count discontinuity",
+    "explicit reset"
+  ],
+  "interpretation": "No additional scaler or temporal-blend failure was reproduced by these bounded checks. Dynamic scene-dependent panorama geometry and scanline composition are investigated separately.",
+  "limitations": [
+    "SDL software renderer only; not OpenGL ES or a phone GPU.",
+    "No JNI invocation or Android activity lifecycle is executed by this test.",
+    "No game input, game texture, save, ROM, BIOS, or performance measurement is included."
+  ],
+  "private_output_sha256": "58b04dd2ad73e0b7255d5a66cf4ceb1a469c23c5c4e9f1e08e8391d589fc7285"
+}

@@ -1,6 +1,6 @@
-# Calidad de imagen — Android 0.10 experimental
+# Calidad de imagen — Android 0.10.1 experimental
 
-En **0.10**, abre **Atrás del teléfono → Imagen** y elige uno de los tres
+En **0.10 y 0.10.1**, abre **Atrás del teléfono → Imagen** y elige uno de los tres
 modos. La resolución de presentación se configura por separado.
 
 | Modo | Qué muestra | Proporciones |
@@ -13,6 +13,16 @@ Original es el valor predeterminado en una instalación nueva. Al actualizar
 desde 0.9/0.9.1, la antigua casilla desactivada se convierte en Original y la
 casilla activada en Estirar. **La actualización nunca selecciona Panorámica
 por su cuenta.** La opción elegida se aplica durante el juego y se guarda.
+
+## Corrección del titileo en 0.10.1
+
+La versión 0.10.1 corrige cambios transitorios de anchura que descartaban una
+imagen terminada y la reconstruían con texturas de otro momento. Ahora la
+superficie panorámica permanece estable; las escenas no admitidas muestran
+el centro original con bandas negras dentro de esa superficie. Los cambios
+reales de tamaño y las cargas de partidas conservan la imagen ya terminada.
+También se evitan destellos blancos en márgenes que debían permanecer negros.
+[Pruebas fotograma a fotograma](../validation/ANDROID_0.10.1_VISUAL_FIXES.md).
 
 ## Conservar la proporción original
 
@@ -54,8 +64,10 @@ en el dispositivo.
 
 La ampliación necesita un estado de juego admitido, un mapa válido y datos
 coherentes para los objetos y fondos habilitados. Tras cargar una partida,
-permanece brevemente en Original hasta reunir esos datos. En escenas no
-admitidas vuelve a Original; algunos efectos de ventana conservan márgenes
+muestra temporalmente el centro original con márgenes negros dentro de la
+misma superficie panorámica hasta reunir esos datos. En escenas no
+admitidas muestra el centro original con bandas, manteniendo estable la
+superficie panorámica; algunos efectos de ventana conservan márgenes
 negros en las filas que no se pueden ampliar con seguridad.
 
 **Límite experimental:** 0.10 no modifica los límites originales de aparición
@@ -104,7 +116,7 @@ AddressSanitizer y UndefinedBehaviorSanitizer. Los recorridos emparejados
 comprueban 6.801 fotogramas del castillo y 3.506 del coche.
 [Informe de 0.10 y reproducción](../validation/ANDROID_0.10_VALIDATION.md).
 
-Estas comprobaciones no sustituyen una prueba física de 0.10. El reporte de
+Estas comprobaciones no sustituyen una prueba física de 0.10.1. El reporte de
 Edwin del 18 de octubre de 2026 sobre su **Google Pixel 7 Pro** corresponde
 al APK **0.9.1**, con el campo de visión original. No se traslada a la
 panorámica, la rotación o el rendimiento de esta nueva versión.

@@ -1,0 +1,578 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "baseline_failure_reproduced": true,
+  "scope": "Dense capture of every actual SDL game-texture upload during the first 600 moving castle-route guest frames, production callbacks without SMA3_WIDE_PROBE_DIR. Source-frame comparisons, not display screenshots or a complete-game qualification.",
+  "baseline": {
+    "repository_revision": "66436d1",
+    "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16"
+  },
+  "candidate": {
+    "runner_sha256": "397aa0f28b608c410c8614dbd3a0373035cc0a9f3b153cd5a799215cdf7fde39"
+  },
+  "inputs": {
+    "start_frame": 6599,
+    "guest_frames": 600,
+    "input_method": "Normal active-low KEYINPUT replay of the fixed reviewed action tape. Load the common entry state once before stepping; no guest-memory, CPU, camera, scroll or game-state writes.",
+    "sha256": {
+      "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+      "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+      "state": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+      "actions": "cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da",
+      "replay": "36f891c796fa52d423aebd9ecc132dce359e7a6e03b65a436fa920e58227edca"
+    }
+  },
+  "before": {
+    "result": "FAIL",
+    "reference_frames": 600,
+    "uploads": 600,
+    "full_count": 600,
+    "middle_count": 0,
+    "alignment": "one upload per consecutive guest frame from the supplied origin",
+    "geometry_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "width": 240
+      },
+      {
+        "upload": 271,
+        "frame": 6870,
+        "width": 356
+      },
+      {
+        "upload": 272,
+        "frame": 6871,
+        "width": 240
+      },
+      {
+        "upload": 287,
+        "frame": 6886,
+        "width": 356
+      },
+      {
+        "upload": 288,
+        "frame": 6887,
+        "width": 240
+      },
+      {
+        "upload": 291,
+        "frame": 6890,
+        "width": 356
+      }
+    ],
+    "width_change_count": 5,
+    "full_center_differences": [
+      {
+        "frame": 6870,
+        "upload": 271,
+        "different_center_pixels": 10278
+      },
+      {
+        "frame": 6871,
+        "upload": 272,
+        "different_center_pixels": 16693
+      },
+      {
+        "frame": 6886,
+        "upload": 287,
+        "different_center_pixels": 22543
+      },
+      {
+        "frame": 6887,
+        "upload": 288,
+        "different_center_pixels": 22604
+      },
+      {
+        "frame": 6890,
+        "upload": 291,
+        "different_center_pixels": 22478
+      },
+      {
+        "frame": 6891,
+        "upload": 292,
+        "different_center_pixels": 129
+      }
+    ],
+    "middle_center_differences": [],
+    "blend_formula_errors": [],
+    "margin_visibility_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "visible": false
+      },
+      {
+        "upload": 271,
+        "frame": 6870,
+        "visible": true
+      },
+      {
+        "upload": 272,
+        "frame": 6871,
+        "visible": false
+      },
+      {
+        "upload": 287,
+        "frame": 6886,
+        "visible": true
+      },
+      {
+        "upload": 288,
+        "frame": 6887,
+        "visible": false
+      },
+      {
+        "upload": 291,
+        "frame": 6890,
+        "visible": true
+      }
+    ],
+    "capture_sha256": {
+      "reference": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa",
+      "candidate": "497ddbd2c90c49e8ee075cba30397d395858c98f263ab2c1d125ba9223fa30b8"
+    }
+  },
+  "after": {
+    "result": "PASS",
+    "reference_frames": 600,
+    "uploads": 600,
+    "full_count": 600,
+    "middle_count": 0,
+    "alignment": "one upload per consecutive guest frame from the supplied origin",
+    "geometry_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "width": 356
+      }
+    ],
+    "width_change_count": 0,
+    "full_center_differences": [],
+    "middle_center_differences": [],
+    "blend_formula_errors": [],
+    "margin_visibility_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "visible": false
+      },
+      {
+        "upload": 264,
+        "frame": 6863,
+        "visible": true
+      }
+    ],
+    "capture_sha256": {
+      "reference": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa",
+      "candidate": "252c801ba037520a324927785c41f5a103bbc4224b3afebbfdffacbb0cc053f1"
+    }
+  },
+  "original_regression": {
+    "result": "PASS",
+    "reference_frames": 600,
+    "uploads": 600,
+    "full_count": 600,
+    "middle_count": 0,
+    "alignment": "one upload per consecutive guest frame from the supplied origin",
+    "geometry_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "width": 240
+      }
+    ],
+    "width_change_count": 0,
+    "full_center_differences": [],
+    "middle_center_differences": [],
+    "blend_formula_errors": [],
+    "margin_visibility_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "visible": false
+      }
+    ],
+    "capture_sha256": {
+      "reference": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa",
+      "candidate": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa"
+    }
+  },
+  "dynamic_resize": {
+    "result": "PASS",
+    "reference_frames": 600,
+    "uploads": 600,
+    "full_count": 600,
+    "middle_count": 0,
+    "alignment": "one upload per consecutive guest frame from the supplied origin",
+    "geometry_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "width": 356
+      },
+      {
+        "upload": 280,
+        "frame": 6879,
+        "width": 240
+      },
+      {
+        "upload": 320,
+        "frame": 6919,
+        "width": 347
+      },
+      {
+        "upload": 360,
+        "frame": 6959,
+        "width": 356
+      }
+    ],
+    "width_change_count": 3,
+    "full_center_differences": [],
+    "middle_center_differences": [],
+    "blend_formula_errors": [],
+    "margin_visibility_changes": [
+      {
+        "upload": 0,
+        "frame": 6599,
+        "visible": false
+      },
+      {
+        "upload": 264,
+        "frame": 6863,
+        "visible": true
+      },
+      {
+        "upload": 280,
+        "frame": 6879,
+        "visible": false
+      },
+      {
+        "upload": 321,
+        "frame": 6920,
+        "visible": true
+      },
+      {
+        "upload": 360,
+        "frame": 6959,
+        "visible": false
+      },
+      {
+        "upload": 361,
+        "frame": 6960,
+        "visible": true
+      }
+    ],
+    "capture_sha256": {
+      "reference": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa",
+      "candidate": "049ff8be520deb6dda0e319d50f08dfb81c75abb3dd00e1ea4b984928bf548a5"
+    },
+    "window_query_sequence": "0:2400x1080,280:1080x2400,320:3120x1440,360:2400x1080",
+    "scope": "Override SDL_GetWindowSize answers at upload boundaries. This drives real production geometry changes, including odd native-center offsets; it does not rotate an Android display."
+  },
+  "phase_diagnostic": {
+    "runner_sha256": "77d9bdde4e77563377cc290b1d5f31cd08093bcecf4b443e25e55a1457195d92",
+    "method": "A private copy of the historical widescreen.cpp logs existing predicates and active PPU scanline; all other compiled objects remain frozen. No predicate result is changed.",
+    "all_first 350_uploads_equal_to_untouched_baseline": true,
+    "failures": [
+      {
+        "frame": 6871,
+        "frame_start_scanline": 0,
+        "frame_start_ready": true,
+        "frame_start_unresolved": 0,
+        "frame_start_submission_age": 1,
+        "present_scanline": 182,
+        "present_latch_valid": true,
+        "present_ready": true,
+        "present_live_oam_matches_cached_generation": false,
+        "all_other_present_predicates": true
+      },
+      {
+        "frame": 6887,
+        "frame_start_scanline": 0,
+        "frame_start_ready": true,
+        "frame_start_unresolved": 0,
+        "frame_start_submission_age": 1,
+        "present_scanline": 189,
+        "present_latch_valid": true,
+        "present_ready": true,
+        "present_live_oam_matches_cached_generation": false,
+        "all_other_present_predicates": true
+      }
+    ],
+    "cause": "The live present-time OAM check compared a later object generation to the policy that rendered the completed frame. Native/wide geometry flips invalidated that completed latch and called a fresh render of later VRAM/OAM. A resize at scanline 1 also left a stale first work-buffer row for the next latch.",
+    "fix": "Keep panoramic render geometry stable for the selected mode and use the frame-start conservative black-margin policy. Real size changes repack the native center of work and completed buffers, retain valid latches, and present the latch rather than re-render live memory."
+  },
+  "midpoint_path": {
+    "scope": "Recompile the matching historical/candidate production runtime.cpp on the host with SMA3_FRAME_INTERPOLATION=1, enable its atomic preference, and log each call to win.present. Uses the actual FrameBlend and FramePacer midpoint/full code. Android-only surface/scaler/JNI paths and a physical 120 Hz display are not executed.",
+    "baseline_runner_sha256": "8188300e2ffc31abddbda82e1d7cef7b1c342a73aafa6316ebc1c95aae45c740",
+    "baseline_runtime_source_sha256": "552a61fb6af953233df6b97de2975741773bfff7f47be5690a4000d0f81a4550",
+    "candidate_runner_sha256": "c717ee1146c2bba64b2d26042ddc1da8c983c3e860ecf252d52d5ef0114f6a99",
+    "candidate_runtime_source_sha256": "d5cc25ec69511ff93d823daa24231195f12d47ac00ae85fe701088b9d019b6c2",
+    "before": {
+      "result": "FAIL",
+      "reference_frames": 600,
+      "uploads": 1199,
+      "full_count": 600,
+      "middle_count": 599,
+      "alignment": "guest frame IDs and full/middle metadata",
+      "geometry_changes": [
+        {
+          "upload": 0,
+          "frame": 6599,
+          "width": 240
+        },
+        {
+          "upload": 541,
+          "frame": 6870,
+          "width": 356
+        },
+        {
+          "upload": 543,
+          "frame": 6871,
+          "width": 240
+        },
+        {
+          "upload": 573,
+          "frame": 6886,
+          "width": 356
+        },
+        {
+          "upload": 575,
+          "frame": 6887,
+          "width": 240
+        },
+        {
+          "upload": 581,
+          "frame": 6890,
+          "width": 356
+        }
+      ],
+      "width_change_count": 5,
+      "full_center_differences": [
+        {
+          "frame": 6870,
+          "upload": 542,
+          "different_center_pixels": 10278
+        },
+        {
+          "frame": 6871,
+          "upload": 544,
+          "different_center_pixels": 16693
+        },
+        {
+          "frame": 6886,
+          "upload": 574,
+          "different_center_pixels": 22543
+        },
+        {
+          "frame": 6887,
+          "upload": 576,
+          "different_center_pixels": 22604
+        },
+        {
+          "frame": 6890,
+          "upload": 582,
+          "different_center_pixels": 22478
+        },
+        {
+          "frame": 6891,
+          "upload": 584,
+          "different_center_pixels": 129
+        }
+      ],
+      "middle_center_differences": [
+        {
+          "frame": 6870,
+          "upload": 541,
+          "different_center_pixels": 10278
+        },
+        {
+          "frame": 6871,
+          "upload": 543,
+          "different_center_pixels": 16693
+        },
+        {
+          "frame": 6872,
+          "upload": 545,
+          "different_center_pixels": 16693
+        },
+        {
+          "frame": 6886,
+          "upload": 573,
+          "different_center_pixels": 22543
+        },
+        {
+          "frame": 6887,
+          "upload": 575,
+          "different_center_pixels": 22604
+        },
+        {
+          "frame": 6888,
+          "upload": 577,
+          "different_center_pixels": 22604
+        },
+        {
+          "frame": 6890,
+          "upload": 581,
+          "different_center_pixels": 22478
+        },
+        {
+          "frame": 6891,
+          "upload": 583,
+          "different_center_pixels": 22513
+        },
+        {
+          "frame": 6892,
+          "upload": 585,
+          "different_center_pixels": 129
+        }
+      ],
+      "blend_formula_errors": [],
+      "margin_visibility_changes": [
+        {
+          "upload": 1,
+          "frame": 6599,
+          "visible": false
+        },
+        {
+          "upload": 542,
+          "frame": 6870,
+          "visible": true
+        },
+        {
+          "upload": 544,
+          "frame": 6871,
+          "visible": false
+        },
+        {
+          "upload": 574,
+          "frame": 6886,
+          "visible": true
+        },
+        {
+          "upload": 576,
+          "frame": 6887,
+          "visible": false
+        },
+        {
+          "upload": 582,
+          "frame": 6890,
+          "visible": true
+        }
+      ],
+      "capture_sha256": {
+        "reference": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa",
+        "candidate": "db5c503381522f2f3ed576b11532813ca3a1dd2cb663f08ad4c217f905af1cac"
+      }
+    },
+    "after": {
+      "result": "PASS",
+      "reference_frames": 600,
+      "uploads": 1200,
+      "full_count": 600,
+      "middle_count": 600,
+      "alignment": "guest frame IDs and full/middle metadata",
+      "geometry_changes": [
+        {
+          "upload": 0,
+          "frame": 6599,
+          "width": 356
+        }
+      ],
+      "width_change_count": 0,
+      "full_center_differences": [],
+      "middle_center_differences": [],
+      "blend_formula_errors": [],
+      "margin_visibility_changes": [
+        {
+          "upload": 1,
+          "frame": 6599,
+          "visible": false
+        },
+        {
+          "upload": 529,
+          "frame": 6863,
+          "visible": true
+        }
+      ],
+      "capture_sha256": {
+        "reference": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa",
+        "candidate": "1f593918943ec36b8aecfc032c4b1bd20d03826568feac10cfd004f83fbc6aad"
+      }
+    },
+    "baseline_skipped_midpoint_guest_frames": [
+      6692
+    ],
+    "candidate_skipped_midpoint_guest_frames": [],
+    "count_explanation": "Both runs simulate exactly 600 guest frames. FramePacer may omit a midpoint if its wall-clock deadline is missed; therefore baseline 599 versus candidate 600 midpoints is not a simulation-rate change or a device performance claim. Comparisons align by logged guest frame and full/middle role, never by upload ordinal.",
+    "midpoint_oracle": "When blended=1, compare the center against rounded bytewise mean (previous Original frame + current Original frame +1)/2. Otherwise compare against the current Original frame. Separately verify the whole upload against the same formula applied to the actual full source images."
+  },
+  "native_execution": {
+    "all_seven_runs_final_counters_equal": true,
+    "final_counters": {
+      "final_pc": 135460542,
+      "unmapped": 0,
+      "io_unhandled": 0,
+      "steps": 65813,
+      "cycles": 0,
+      "ppu_vcount": 43,
+      "ppu_frames": 7198,
+      "frames_presented": 600
+    },
+    "all_runs_fully_static": true,
+    "distinct_misses": 0,
+    "interpreted_instructions": 0,
+    "unmapped": 0,
+    "io_unhandled": 0
+  },
+  "evidence_sha256": {
+    "baseline-panorama-castle-600": {
+      "runner_log": "8fc4224e398fb635155c31b4b2bf036ead6ee45996a61c3a98339e16e8238274",
+      "uploads": "497ddbd2c90c49e8ee075cba30397d395858c98f263ab2c1d125ba9223fa30b8"
+    },
+    "baseline-original-castle-600": {
+      "runner_log": "7c9a6e667de62f2aaa00f64cd6d8555a3f13a8d0d68d93f636c7c957179e9c57",
+      "uploads": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa"
+    },
+    "baseline-blend-panorama-castle-600": {
+      "runner_log": "8386b3a19444fdae8bbb7158889038df00db601cd299ca7b8a5a1bb45676e301",
+      "uploads": "db5c503381522f2f3ed576b11532813ca3a1dd2cb663f08ad4c217f905af1cac"
+    },
+    "candidate-panorama-castle-600-run2": {
+      "runner_log": "b85d6710daaf4040dab988e0bad7769ccc0a9f2f77f1823d332b27dfde5e6241",
+      "uploads": "252c801ba037520a324927785c41f5a103bbc4224b3afebbfdffacbb0cc053f1"
+    },
+    "candidate-original-castle-600-run2": {
+      "runner_log": "7c9a6e667de62f2aaa00f64cd6d8555a3f13a8d0d68d93f636c7c957179e9c57",
+      "uploads": "86b431dcb62db681d994f741a23183913e35e7426bd740dae4ae1e083f8fdefa"
+    },
+    "candidate-resize-panorama-castle-600-run2": {
+      "runner_log": "a449538b7856f6a606fa8bd5aa2d808d3cf90310721b637a0e963218bdabe88c",
+      "uploads": "049ff8be520deb6dda0e319d50f08dfb81c75abb3dd00e1ea4b984928bf548a5"
+    },
+    "candidate-blend-panorama-castle-600": {
+      "runner_log": "330ff85659297872bb0e8f32e3fe2168f202dd1075c1048b90f483087cc2ef3a",
+      "uploads": "1f593918943ec36b8aecfc032c4b1bd20d03826568feac10cfd004f83fbc6aad"
+    }
+  },
+  "reproduction": {
+    "capture_source": "validation/sdl_presentation_capture.c",
+    "capture_helper": "validation/capture_production_frames.py",
+    "comparison_helper": "validation/compare_production_frames.py",
+    "blend_builder": "validation/build_frame_blend_probe.py",
+    "example_capture": "python3 validation/capture_production_frames.py --runner PRIVATE/runner --rom PRIVATE/game.gba --bios PRIVATE/bios.bin --state PRIVATE/castle-entry.state --actions validation/panorama-castle-post-pipe-actions.json --start-frame 6599 --frames 600 --mode 1 --output PRIVATE/panorama",
+    "example_reference": "Use the same command with --mode 0 and a new output directory PRIVATE/original.",
+    "example_comparison": "python3 validation/compare_production_frames.py PRIVATE/original PRIVATE/panorama --start-frame 6599 --report PRIVATE/comparison.json",
+    "baseline": "Preserve the 0.10 runner before rebuilding; capture the same tape and compare with --expect-failure.",
+    "resize": "Add --drawable-sequence 0:2400x1080,280:1080x2400,320:3120x1440,360:2400x1080 to a new candidate capture.",
+    "blend": "Build with validation/build_frame_blend_probe.py --build HOST_BUILD --engine ENGINE --output PRIVATE/blend, then capture its runner with the same arguments. Build the baseline variant before replacing its build objects; its runtime source must match its seven-patch historical build.",
+    "output_policy": "Only comparison metrics/hashes are public. Do not publish raw RGB captures, saved states, ROM, BIOS, linked native binaries or private logs."
+  },
+  "limits": [
+    "A bounded moving castle-entry route plus requested size changes does not certify all levels, transformations or offscreen object spawning.",
+    "Native-center equality is asserted for every captured guest frame in this 600-frame test, not inferred from sparse screenshots.",
+    "Equal final counters do not prove complete guest-state equality.",
+    "The midpoint scheduling/blending code ran on Linux; no claim of Pixel 7 Pro 120 FPS, physical rotation, Android background lifecycle or all visual bugs eliminated is made."
+  ]
+}

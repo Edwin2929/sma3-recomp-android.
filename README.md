@@ -2,7 +2,21 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10 experimental — panorámica opcional
+## Versión actual: 0.10.1 experimental — corrección del titileo
+
+**0.10.1 corrige el titileo y la corrupción de texturas reproducidos en la
+presentación panorámica de 0.10.** Mantiene estable la anchura durante cada
+escena y conserva la imagen terminada al cambiar de tamaño o cargar una
+partida. La prueba que mostraba seis centros corruptos en 600 fotogramas
+pasa ahora con los 600 centros idénticos a Original, sin cambios de anchura.
+También se verifica la ruta de mezcla temporal y los cambios reales de tamaño.
+[Notas de 0.10.1](docs/releases/v0.10.1-experimental.md) ·
+[Diagnóstico y pruebas](validation/ANDROID_0.10.1_VISUAL_FIXES.md).
+
+La entrega continúa siendo experimental: conserva los límites de aparición
+de objetos de 0.10 y todavía requiere comprobación física en el teléfono.
+
+### Integración inicial de la panorámica en 0.10
 
 - **0.10:** incorpora en Android el modo **Panorámica (experimental)**, que dibuja escenario adicional sin deformar la imagen en las escenas compatibles. El ancho se adapta a la superficie, hasta **356 × 160**, y conserva la vista original cuando faltan datos suficientes. Se activa en **Atrás → Imagen**; no se activa automáticamente al actualizar. [Notas de versión](docs/releases/v0.10-experimental.md) · [Compilación y pruebas](validation/ANDROID_0.10_VALIDATION.md).
 - El APK está compilado y firmado con el mismo certificado que 0.9/0.9.1, preparado para actualizar la aplicación. Su subida a GitHub Releases corresponde al mantenedor. **La prueba física de 0.10 en el Pixel 7 Pro y la cobertura del juego completo siguen pendientes.**
@@ -44,7 +58,18 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10 entregado, pendiente de subida manual
+### APK 0.10.1 corregido, pendiente de subida manual
+
+Archivo: **`sma3-recomp-0.10.1-panorama-fix-arm64.apk`**, versión
+`0.10.1-panorama-fix-experimental`, código **12**, ARM64 y Android 9 o posterior.
+Conserva la firma original y la selección de imagen guardada. Instálalo encima
+de 0.10, sin desinstalar la aplicación. Su tamaño, SHA-256 y procedimiento de
+instalación constan en las [notas de entrega](docs/releases/v0.10.1-experimental.md).
+
+El archivo se entrega al mantenedor para su publicación manual. Hasta que
+lo adjunte a una release, la descarga pública «Descarga» sigue siendo 0.9.
+
+### APK 0.10 anterior, entregado y pendiente de subida manual
 
 Archivo: **`sma3-recomp-0.10-panorama-arm64.apk`**, versión
 `0.10-panorama-experimental`, código de versión **11**, Android 9 o posterior,
@@ -96,6 +121,16 @@ El APK de desarrollo 0.9 conserva la firma de las versiones anteriores: instála
 [Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.9-experimental.md).
 
 ## Estado de validación
+
+**0.10.1:** el recorrido de producción compara cada fotograma: **600 centros
+idénticos**, frente a seis corruptos en 0.10, y ninguna oscilación de anchura.
+Una segunda secuencia cambia 356 → 240 → 347 → 356 sin alterar ninguno de los
+600 centros. La ruta real de mezcla temporal, compilada para host, conserva
+600 presentaciones completas y 600 intermedias correctas. Pasan **87 casos
+de redimensionado/restauración**, **40 de ciclo de vida**, **488 de ventanas**
+y **169 pruebas Python** normales y con `-O`. La compilación Android y la
+firma se verifican por separado; estas pruebas no miden FPS del Pixel.
+[Informe de la corrección](validation/ANDROID_0.10.1_VISUAL_FIXES.md).
 
 **0.10:** compilación ARM64 completa, firma, identidad del paquete, contenido
 y enlaces JNI comprobados. Las ejecuciones nativas emparejadas recorrieron
@@ -222,6 +257,11 @@ APK resultante: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 Para compilar únicamente las bibliotecas nativas: `python3 tools/bootstrap_android_build.py --native-only`.
 
+Para 0.10.1 se recompilan las fuentes nativas modificadas y se reutiliza,
+con hash verificado, el archivo del juego generado por la compilación ARM64
+completa de 0.10. No se atribuye otra compilación de los 64 fragmentos a este
+ensamblado incremental. [Procedencia de 0.10.1](validation/android-0.10.1-build.json).
+
 Para el APK 0.10 se compilaron desde cero las bibliotecas nativas ARM64 y se
 empaquetó la aplicación con las fuentes públicas actualizadas. Se reutilizaron
 las fuentes generadas privadas del proyecto de desarrollo; **no se regeneró el
@@ -255,8 +295,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10 en Pixel 7 Pro: actualización, los tres modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.
+- Probar 0.10.1 en Pixel 7 Pro: actualización, los tres modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.1.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

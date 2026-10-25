@@ -153,16 +153,6 @@ void clear_observations() {
 }
 }
 
-bool presentation_ready() {
-    // A restore may be presented before the next frame-start publication.
-    // Never reuse the prior epoch's scene decision or object coordinates.
-    return observing && ready && epoch==g_runtime_state_epoch && memory &&
-        memory==gbarecomp::active_bus() && registers &&
-        read(0x03006d64,1)==0 && read(0x03006b05,1)==0x0d &&
-        read(0x03007010,4)==0x0200000c && (reg(0)&7)==0 &&
-        matches_display(read,positions);
-}
-
 void frame(const gbarecomp::ExtendedViewFrameInfo* info, bool enabled) {
     if (!info) return;
     if (!enabled) {

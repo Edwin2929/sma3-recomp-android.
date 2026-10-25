@@ -1,4 +1,7 @@
-# Ajustes y diseños — Android 0.10 experimental
+# Ajustes y diseños — Android 0.10.1 experimental
+
+0.10.1 conserva las opciones de 0.10 y corrige el titileo de la panorámica,
+los cambios de tamaño y la restauración de la imagen. [Detalle](../validation/ANDROID_0.10.1_VISUAL_FIXES.md).
 
 El botón Atrás abre cuatro apartados:
 

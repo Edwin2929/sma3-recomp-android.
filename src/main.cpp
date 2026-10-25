@@ -45,8 +45,10 @@ int main(int argc, char** argv) {
     };
     options.presentation_request = [](gbarecomp::RunOptions::PresentationRequest* request) {
         if (!request) return;
-        request->native_view = sma3::image_mode.load() != sma3::ImageMode::Panorama ||
-                               !sma3::wide::presentation_ready();
+        // Scene coverage belongs to the rasterized frame. Keep its geometry
+        // stable and let the compositor black out unauthored margins; live
+        // VBlank OAM may already describe the NEXT frame at presentation.
+        request->native_view = sma3::image_mode.load() != sma3::ImageMode::Panorama;
         request->anchor_top = false;
     };
 #endif

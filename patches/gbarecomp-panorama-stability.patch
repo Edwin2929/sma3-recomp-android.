@@ -1,0 +1,122 @@
+--- a/src/gba/gba_ppu.cpp
++++ b/src/gba/gba_ppu.cpp
+@@ -134,13 +134,13 @@
+         // those rows of the first latched frame would be stale garbage.
+         std::memcpy(work_fb_.data(), latched_fb_.data(), kFramebufferBytes);
+     } else {
+-        // The fixed-size payload has no authored wide margins. Consume it to
+-        // preserve snapshot framing, then invalidate only the presentation
+-        // latch; the next present renders a fresh wide frame from restored GBA
+-        // state. Device timing/frame counters above remain fully restored.
++        // The fixed-size payload contains the completed native image, but no
++        // authored margins. Preserve that raster image at the current stride;
++        // re-rendering live restored VRAM would expose a different frame phase.
+         std::array<uint8_t, kFramebufferBytes> native_latch{};
+         r.bytes(native_latch.data(), native_latch.size());
+-        has_latched_fb_ = false;
++        has_latched_fb_ = serialized_latch;
++        std::memset(latched_fb_.data(), 0, render_bytes());
+         // A mid-frame restore replaces only the authentic center. Clear the
+         // active working surface first: rows already rendered in a different
+         // scene must not carry their old margins into the next latch.
+@@ -156,6 +156,9 @@
+             std::memcpy(work_fb_.data() + (y + extra_top_) * wide_stride + center_x,
+                         native_latch.data() + y * kNativeStride,
+                         kNativeStride);
++            std::memcpy(latched_fb_.data() + (y + extra_top_) * wide_stride + center_x,
++                        native_latch.data() + y * kNativeStride,
++                        kNativeStride);
+         }
+         // A host may re-present immediately after load, before a game-owned
+         // state-epoch hook has invalidated/rebuilt its margin caches. Fail those
+@@ -193,10 +196,31 @@
+     const uint32_t next_bottom = bottom > kMaxExtraY ? kMaxExtraY : bottom;
+     if (next_left != extra_left_ || next_right != extra_right_ ||
+         next_top != extra_top_ || next_bottom != extra_bottom_) {
+-        // A latched frame is laid out at the old stride. Force one fresh
+-        // render after a live resize rather than interpreting it at the new
+-        // dimensions. Timing state and guest memory remain untouched.
+-        has_latched_fb_ = false;
++        // A resize must not discard a completed raster frame and replace it
++        // with a render of live VBlank memory, which may already contain the
++        // next frame's textures/OAM. Repack the authentic center at the new
++        // stride in BOTH buffers. In-progress rows retain their raster time;
++        // new margins remain black until the guest authors another frame.
++        const std::size_t old_stride = render_width() * 3u;
++        const std::size_t old_x = extra_left_ * 3u;
++        const std::size_t old_y = extra_top_;
++        const std::size_t new_stride = (kScreenWidth + next_left + next_right) * 3u;
++        const std::size_t new_bytes = new_stride * (kScreenHeight + next_top + next_bottom);
++        constexpr std::size_t native_stride = kScreenWidth * 3u;
++        std::array<uint8_t, kFramebufferBytes> center{};
++        auto repack_center = [&](std::vector<uint8_t>& pixels) {
++            for (std::size_t y = 0; y < kScreenHeight; ++y)
++                std::memcpy(center.data() + y * native_stride,
++                            pixels.data() + (y + old_y) * old_stride + old_x,
++                            native_stride);
++            std::memset(pixels.data(), 0, new_bytes);
++            for (std::size_t y = 0; y < kScreenHeight; ++y)
++                std::memcpy(pixels.data() + (y + next_top) * new_stride + next_left * 3u,
++                            center.data() + y * native_stride, native_stride);
++        };
++        repack_center(work_fb_);
++        if (has_latched_fb_) repack_center(latched_fb_);
++        else std::memset(latched_fb_.data(), 0, new_bytes);
+     }
+     extra_left_ = next_left;
+     extra_right_ = next_right;
+@@ -1410,7 +1434,16 @@
+     if (!native_row && (!g_ws_authored_margin_layers || !g_ws_tilemap_provider || g_ws_pillarbox)) {
+         std::memset(row, 0, out_w * 3); return;
+     }
+-    if (dispcnt & 0x0080u) { std::memset(row, 0xFF, out_w * 3); return; }
++    if (dispcnt & 0x0080u) {
++        std::memset(row, 0xFF, out_w * 3);
++        // Forced blank is white only in the guest's authored area. A native
++        // fallback must not flash white across its otherwise black margins.
++        if (g_ws_pillarbox || g_ws_pillarbox_left)
++            std::memset(row, 0, ox * 3u);
++        if (g_ws_pillarbox || g_ws_pillarbox_right)
++            std::memset(row + (ox + kVanW) * 3u, 0, (out_w - ox - kVanW) * 3u);
++        return;
++    }
+ 
+     struct PixelCandidate {
+         uint8_t rgb[3] = {0, 0, 0};
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -2723,9 +2723,9 @@
+             opts.extended_view_init(ppu.view_extra_left(), ppu.view_extra_right());
+             extended_view_initialized = true;
+         }
+-        // A live resize can change the policy from native to authored margins
+-        // midway through the host loop. Publish immediately so the fresh frame
+-        // rendered below uses the new game's policy rather than the prior size.
++        // Publish the resized policy for subsequent raster rows. The PPU has
++        // repacked the completed native center into the new stride, so keep
++        // displaying that latch instead of redrawing live VBlank memory.
+         publish_extended_view_frame();
+         live_fb.assign(ppu.render_bytes(), 0);
+         return true;
+@@ -3709,8 +3709,8 @@
+                     (frame % static_cast<uint64_t>(
+                          fast_forward_multiplier) == 0);
+                 if (present_frame) {
+-                    const bool view_changed = sync_resize_driven_view();
+-                    if (ppu.has_latched_framebuffer() && !view_changed) {
++                    sync_resize_driven_view();
++                    if (ppu.has_latched_framebuffer()) {
+                         std::memcpy(live_fb.data(), ppu.latched_framebuffer(),
+                                     ppu.render_bytes());
+                     } else {
+@@ -4108,8 +4108,8 @@
+                     (frame % static_cast<uint64_t>(
+                          fast_forward_multiplier) == 0);
+                 if (present_frame) {
+-                    const bool view_changed = sync_resize_driven_view();
+-                    if (ppu.has_latched_framebuffer() && !view_changed) {
++                    sync_resize_driven_view();
++                    if (ppu.has_latched_framebuffer()) {
+                         std::memcpy(live_fb.data(), ppu.latched_framebuffer(),
+                                     ppu.render_bytes());
+                     } else {

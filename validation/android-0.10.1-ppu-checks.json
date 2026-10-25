@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "verification_date_utc": "2026-10-25",
+  "scope": "Synthetic host tests of the real PPU. No ROM, BIOS, generated game code, Android execution, phone test or full-game qualification. Tests distinguish completed raster content from in-progress and live register content.",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "flags": [
+    "-std=c++20",
+    "-O1",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-fno-sanitize-recover=all"
+  ],
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "leak_sanitizer": false,
+  "baseline": {
+    "started_utc": "2026-10-25T04:53:50.088733+00:00",
+    "source_sha256": "b137f07368cb83c8b08594c3730c361f9e1248b39a8bbe1fa172e7153e98da34",
+    "engine_sha256": "f6dcaca3528fd2fd5a01df9f801d73b30874a592d5e3672fa3a82fbf87fabc8b",
+    "header_sha256": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+    "build_returncode": 0,
+    "runs": [
+      {
+        "group": "--resize",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "FAIL: rows=0 resize=1 target=53/54: resize discarded complete latch or invented one\n",
+        "elapsed_seconds": 0.03306495900005757
+      },
+      {
+        "group": "--forced-blank",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "FAIL: forced blank escaped pillarbox or changed native white center\n",
+        "elapsed_seconds": 0.006120005999946443
+      },
+      {
+        "group": "--restore",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "FAIL: restore discarded the saved complete raster frame\n",
+        "elapsed_seconds": 0.027293640000152664
+      }
+    ],
+    "binary_sha256": "b7a05d581990b5f8db0f368014c0d7723a30e03e03e375a840e1757724d9aa31",
+    "sources_unchanged": true
+  },
+  "corrected_resize_and_restore": {
+    "started_utc": "2026-10-25T04:53:50.081670+00:00",
+    "source_sha256": "b137f07368cb83c8b08594c3730c361f9e1248b39a8bbe1fa172e7153e98da34",
+    "engine_sha256": "b6a1847514b0743ac8b9e00242c31acfa8bad521ca54b31a33179c84c14109c5",
+    "header_sha256": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+    "build_returncode": 0,
+    "runs": [
+      {
+        "group": "all",
+        "returncode": 0,
+        "stdout": "PASS: 87 resize/presentation scenarios, 699005 internal assertions\n",
+        "stderr": "",
+        "elapsed_seconds": 3.2094607640001414
+      }
+    ],
+    "binary_sha256": "947c5cb331c96ee78f367c0419134745b3c8e46cd2028fdea5e574e65abcf38d",
+    "sources_unchanged": true
+  },
+  "corrected_lifecycle": {
+    "started_utc": "2026-10-25T04:53:50.079320+00:00",
+    "source_sha256": "f05199f68c5c5f6f8a1e0ba214960f397d236f78f9c30453881270a00abec173",
+    "engine_sha256": "b6a1847514b0743ac8b9e00242c31acfa8bad521ca54b31a33179c84c14109c5",
+    "header_sha256": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+    "build_returncode": 0,
+    "runs": [
+      {
+        "group": "all",
+        "returncode": 0,
+        "stdout": "PASS: 40 lifecycle scenarios, 2413802 internal assertions\n",
+        "stderr": "",
+        "elapsed_seconds": 0.3400335759997688
+      }
+    ],
+    "binary_sha256": "54aeaf2aea8580d341104456d0b7b17d4ffa385a21e3c208a364f531cbeae281",
+    "sources_unchanged": true
+  },
+  "coverage": {
+    "resize_scenarios": 79,
+    "completed_rows_before_resize": [
+      0,
+      1,
+      40,
+      80,
+      159,
+      160
+    ],
+    "horizontal_paths": [
+      [
+        [
+          0,
+          0
+        ],
+        [
+          53,
+          54
+        ]
+      ],
+      [
+        [
+          0,
+          0
+        ],
+        [
+          58,
+          58
+        ]
+      ],
+      [
+        [
+          53,
+          54
+        ],
+        [
+          58,
+          58
+        ]
+      ],
+      [
+        [
+          58,
+          58
+        ],
+        [
+          53,
+          54
+        ]
+      ],
+      [
+        [
+          53,
+          54
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          58,
+          58
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0
+        ],
+        [
+          53,
+          54
+        ],
+        [
+          58,
+          58
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          58,
+          58
+        ]
+      ],
+      [
+        [
+          58,
+          58
+        ],
+        [
+          53,
+          54
+        ],
+        [
+          58,
+          58
+        ]
+      ],
+      [
+        [
+          53,
+          54
+        ],
+        [
+          54,
+          53
+        ]
+      ],
+      [
+        [
+          58,
+          58
+        ],
+        [
+          0,
+          116
+        ],
+        [
+          116,
+          0
+        ],
+        [
+          58,
+          58
+        ]
+      ],
+      [
+        [
+          58,
+          58
+        ],
+        [
+          58,
+          58
+        ]
+      ],
+      [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    ],
+    "path_units": "[extra_left, extra_right] logical pixels, native center 240x160",
+    "cold_partial_frame_without_completed_latch": true,
+    "same_size_call_preserves_complete_frame": true,
+    "geometry_change_preserves_displayed_native_scene_a": true,
+    "geometry_change_preserves_in_progress_native_scene_b": true,
+    "changed_geometry_clears_all_margin_pixels": true,
+    "per_scanline_scroll_varies_between_scenes": true,
+    "guest_timing_prefix_preserved": true,
+    "forced_blank_scenarios": 4,
+    "forced_blank_policies": [
+      "global pillarbox",
+      "left only",
+      "right only",
+      "unrestricted full white"
+    ],
+    "restore_scenarios": 4,
+    "restore_paths": [
+      "native to 347",
+      "347 to 356",
+      "356 to native",
+      "no serialized completed latch"
+    ],
+    "restored_native_completed_image_differs_from_live_scene": true,
+    "resize_presentation_total_scenarios": 87,
+    "resize_presentation_internal_assertions": 699005,
+    "updated_lifecycle_scenarios": 40,
+    "updated_lifecycle_internal_assertions": 2413802,
+    "window_scenarios": 488,
+    "window_internal_assertions": 8102978
+  },
+  "sources": {
+    "resize": "validation/panorama_resize_test.cpp",
+    "lifecycle": "validation/panorama_lifecycle_test.cpp",
+    "window": "validation/widescreen_obj_window_render_test.cpp"
+  },
+  "commands": {
+    "build_resize": "c++ -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -I ENGINE_ROOT/src/gba -I ENGINE_ROOT/src/debug -I ENGINE_ROOT/src/runtime validation/panorama_resize_test.cpp ENGINE_ROOT/src/gba/gba_ppu.cpp -o TEST_BINARY",
+    "run_resize": "ASAN_OPTIONS=detect_leaks=0:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1 TEST_BINARY all",
+    "baseline_groups": [
+      "--resize",
+      "--forced-blank",
+      "--restore"
+    ],
+    "build_lifecycle": "Use the same compiler flags and include paths, with validation/panorama_lifecycle_test.cpp instead of panorama_resize_test.cpp.",
+    "baseline_source": "Preserved Android 0.10 PPU source identified by the baseline engine_sha256; same final resize test source as the corrected run.",
+    "build_window": "Use the same compiler flags and include paths, with validation/widescreen_obj_window_render_test.cpp instead of panorama_resize_test.cpp."
+  },
+  "private_evidence_sha256": {
+    "resize-before-final/result.json": "271c798a3d3d5f8bae36db2aea55ef30dea80192939d104cb3d6e7ff861dd9a8",
+    "resize-before-final/build.txt": "5ef8de6a65c0fe67c2636fabd4887ced48eb13e6dd0b2eb07fb7c627b300a9af",
+    "resize-after/result.json": "d06dcd60ec8b2e033bfdb6bafea125ea8034708d48bab5cd4aec1bcc8e402358",
+    "resize-after/build.txt": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640",
+    "lifecycle-after/result.json": "0ead3e10d64f8c69ec82c602b3c95bc40a1c2196ad481b26c06bb9f1f1c1144c",
+    "lifecycle-after/build.txt": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640",
+    "window-after/result.json": "56d74815ce5ca117afc383d2d8a2b550ddca4a2747217cfaec680403b4198f77",
+    "window-after/build.txt": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640"
+  },
+  "result": "pass",
+  "limitations": [
+    "The 87 scenarios are synthetic renderer regressions; internal assertions are not independent gameplay frames.",
+    "These tests validate PPU image preservation and forced-blank masking; runtime presentation and Android device behavior require separate evidence.",
+    "The lifecycle harness expectations changed because preserving the complete remapped/restored latch is now the intended contract; historical 0.10 reports remain unchanged.",
+    "The resize policy preserves only the authentic center and clears all previous margins on actual geometry changes."
+  ],
+  "corrected_window_regression": {
+    "started_utc": "2026-10-25T04:55:47.602305+00:00",
+    "source_sha256": "46769e4967da88fe0d302f4c53da1422a553ddc2d8b040c1a174b9362359a771",
+    "engine_sha256": "b6a1847514b0743ac8b9e00242c31acfa8bad521ca54b31a33179c84c14109c5",
+    "header_sha256": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+    "build_returncode": 0,
+    "runs": [
+      {
+        "group": "all",
+        "returncode": 0,
+        "stdout": "PASS: 488 synthetic scenarios, 8102978 internal assertions; real PPU, native center unchanged\n",
+        "stderr": "",
+        "elapsed_seconds": 11.459473019000143
+      }
+    ],
+    "binary_sha256": "9ee03afa489ba1327049ad3f5bafca97cbc8c0ad09ed8b50df0cacf0cd23d300",
+    "sources_unchanged": true
+  }
+}
