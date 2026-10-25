@@ -13,7 +13,8 @@ public final class GbaNative {
     public static native boolean setTouchDesign(float[] values, boolean enabled);
     public static native void setTouchEditing(boolean editing);
     public static native void setLanguage(int language);
-    public static native void setVideoOptions(int quality, boolean stretch);
+    // Image modes: 0 original 3:2, 1 panoramic, 2 stretch.
+    public static native void setVideoOptions(int quality, int imageMode);
     public static native void setTouchControlsVisible(boolean visible);
     public static native void setControllerButton(int bit, int button);
     public static native void setOptionsOpen(boolean open);

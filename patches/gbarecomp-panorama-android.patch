@@ -1,0 +1,29 @@
+--- a/src/gba/gba_ppu.cpp
++++ b/src/gba/gba_ppu.cpp
+@@ -141,6 +141,10 @@
+         std::array<uint8_t, kFramebufferBytes> native_latch{};
+         r.bytes(native_latch.data(), native_latch.size());
+         has_latched_fb_ = false;
++        // A mid-frame restore replaces only the authentic center. Clear the
++        // active working surface first: rows already rendered in a different
++        // scene must not carry their old margins into the next latch.
++        std::memset(work_fb_.data(), 0, render_bytes());
+         // Seed the compositor's authentic center from the restored native
+         // frame (margins stay whatever the pillarbox policy paints), so rows
+         // the resumed mid-frame render never revisits before the next latch
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -1425,7 +1425,12 @@
+     }
+     PresentationLayout layout{};
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-    const auto rect = sma3::video_destination(drawable_w, drawable_h, b->base_w, b->base_h, sma3::stretch_screen.load());
++    // A UI mode change may arrive just after this frame chose its geometry.
++    // Stretch only a native framebuffer; an interim wide frame stays fitted
++    // until the next presentation sync has restored the 240x160 geometry.
++    const bool stretch = sma3::image_mode.load() == sma3::ImageMode::Stretch &&
++                         b->base_w == 240 && b->base_h == 160;
++    const auto rect = sma3::video_destination(drawable_w, drawable_h, b->base_w, b->base_h, stretch);
+     layout = {rect.x, rect.y, rect.w, rect.h, 0};
+ #else
+     if (b->resize_driven_view || b->expanded_view || b->touch_policy) {

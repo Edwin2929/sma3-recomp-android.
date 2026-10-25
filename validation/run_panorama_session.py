@@ -104,6 +104,8 @@ def main():
     for name in ('rom', 'bios', 'state', 'actions', 'output'):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--width', type=int, default=356)
+    p.add_argument('--runner', type=Path, default=ROOT / 'build/sma3_runner',
+                   help='Native runner to qualify; defaults to the historical build path')
     p.add_argument('--trace-every-frame', action='store_true')
     profile = p.add_mutually_exclusive_group()
     profile.add_argument('--expectations', type=Path, help='Cycle contract; also enables per-frame tracing')
@@ -120,7 +122,7 @@ def main():
             validate_expectations(expectations)
             require(action_digest(actions) == expectations['actions_sha256'],
                     'Actions differ from the reviewed cycle contract')
-        binary, config = ROOT / 'build/sma3_runner', ROOT / 'runtime.toml'
+        binary, config = a.runner.resolve(), ROOT / 'runtime.toml'
         for path in (a.rom, a.bios, a.state, binary, config):
             require(path.is_file(), f'Missing required private asset or native build: {path}')
         for path, sha in ((a.rom, '7352d2bd064d9ebaec579e264228aa21c7345b80'),

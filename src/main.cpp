@@ -1,8 +1,11 @@
 #include <cstdlib>
-#ifdef SMA3_WIDESCREEN_DIAGNOSTICS
-#include "../validation/widescreen_probe.h"
+#if defined(SMA3_PANORAMA) || defined(SMA3_WIDESCREEN_DIAGNOSTICS)
 #include "widescreen.h"
 #endif
+#ifdef SMA3_WIDESCREEN_DIAGNOSTICS
+#include "../validation/widescreen_probe.h"
+#endif
+#include "image_options.h"
 #include "runtime.h"
 #include "runtime_arm.h"
 #include "localization.h"
@@ -20,8 +23,33 @@ int main(int argc, char** argv) {
     g_runtime_bus_read_override = sma3::localized_read;
 #ifndef __ANDROID__
     if (const char* lang = std::getenv("SMA3_LANGUAGE")) sma3::language.store(std::atoi(lang));
+    // Desktop qualification can exercise the production callbacks directly;
+    // Android takes its exclusive image mode only from the saved Java setting.
+    if (const char* mode = std::getenv("SMA3_IMAGE_MODE")) {
+        char* end=nullptr;
+        const long value=std::strtol(mode,&end,10);
+        sma3::image_mode.store(end!=mode && end && *end=='\0' && value>=0 && value<=2
+            ? sma3::validated_image_mode(static_cast<int>(value)) : sma3::ImageMode::Original);
+    }
 #endif
     gbarecomp::RunOptions options;
+#ifdef SMA3_PANORAMA
+    options.resize_driven_view = true;
+    options.max_resize_view_width = 356;
+    options.max_resize_view_height = 160;
+    options.resize_view_sizing = gbarecomp::RunOptions::ViewSizing::Aspect;
+    options.orientation = gbarecomp::RunOptions::Orientation::Any;
+    options.freely_resizable_window = true;
+    options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+        sma3::wide::frame(frame, sma3::image_mode.load() == sma3::ImageMode::Panorama);
+    };
+    options.presentation_request = [](gbarecomp::RunOptions::PresentationRequest* request) {
+        if (!request) return;
+        request->native_view = sma3::image_mode.load() != sma3::ImageMode::Panorama ||
+                               !sma3::wide::presentation_ready();
+        request->anchor_top = false;
+    };
+#endif
 #ifdef SMA3_WIDESCREEN_DIAGNOSTICS
     if (std::getenv("SMA3_WIDE_PROBE_DIR")) {
         options.max_view_width = 356;
@@ -53,7 +81,7 @@ int main(int argc, char** argv) {
     std::vector<std::string> arguments = {
         root + "/sma3_runner", "--config", root + "/variants/sma3-usa/game.toml",
         "--rom", root + "/roms/sma3-usa.gba",
-        "--bios", root + "/bios/gba_bios.bin", "--window"
+        "--bios", root + "/bios/gba_bios.bin", "--window", "--resize-view"
     };
     std::vector<char*> pointers;
     for (auto& argument : arguments) pointers.push_back(argument.data());

@@ -166,6 +166,22 @@ public class GbaGameActivity extends SDLActivity {
     private String[] gbaButtons() { return new String[]{"A", "B", "Select", "Start", tr("Derecha", "Right", "Direita"), tr("Izquierda", "Left", "Esquerda"), tr("Arriba", "Up", "Cima"), tr("Abajo", "Down", "Baixo"), "R", "L"}; }
     private String[] padButtons() { return new String[]{tr("A / Cruz", "A / Cross", "A / Cruz"), tr("B / Círculo", "B / Circle", "B / Círculo"), tr("X / Cuadrado", "X / Square", "X / Quadrado"), tr("Y / Triángulo", "Y / Triangle", "Y / Triângulo"), "Back / Share", tr("Guía", "Guide", "Guia"), "Start / Options", tr("Stick izquierdo (L3)", "Left stick (L3)", "Analógico esquerdo (L3)"), tr("Stick derecho (R3)", "Right stick (R3)", "Analógico direito (R3)"), "L1 / LB", "R1 / RB", tr("Cruceta arriba", "D-pad up", "Direcional cima"), tr("Cruceta abajo", "D-pad down", "Direcional baixo"), tr("Cruceta izquierda", "D-pad left", "Direcional esquerda"), tr("Cruceta derecha", "D-pad right", "Direcional direita"), "Misc", tr("Palanca 1", "Paddle 1", "Alavanca 1"), tr("Palanca 2", "Paddle 2", "Alavanca 2"), tr("Palanca 3", "Paddle 3", "Alavanca 3"), tr("Palanca 4", "Paddle 4", "Alavanca 4"), tr("Panel táctil", "Touchpad", "Painel de toque"), tr("Sin asignar", "Unassigned", "Sem atribuição")}; }
     private static final int[] DEFAULT_PAD = {0,1,4,6,14,13,11,12,10,9};
+    private static final int IMAGE_ORIGINAL = 0;
+    private static final int IMAGE_PANORAMA = 1;
+    private static final int IMAGE_STRETCH = 2;
+    private int imageMode() {
+        android.content.SharedPreferences preferences = getSharedPreferences("sma3-options", MODE_PRIVATE);
+        int selected;
+        if (preferences.contains("image-mode")) {
+            selected = preferences.getInt("image-mode", IMAGE_ORIGINAL);
+        } else {
+            // Preserve the user's existing presentation choice on upgrade.
+            // An old stretch preference never silently enables panorama.
+            selected = preferences.getBoolean("stretch-screen", false) ? IMAGE_STRETCH : IMAGE_ORIGINAL;
+            preferences.edit().putInt("image-mode", selected).apply();
+        }
+        return selected >= IMAGE_ORIGINAL && selected <= IMAGE_STRETCH ? selected : IMAGE_ORIGINAL;
+    }
     private int padBinding(int bit) {
         int button = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("pad-" + bit, DEFAULT_PAD[bit]);
         return button >= -1 && button <= 20 ? button : DEFAULT_PAD[bit];
@@ -175,7 +191,7 @@ public class GbaGameActivity extends SDLActivity {
             applyTouchDesign();
             GbaNative.setLanguage(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0));
             GbaNative.setVideoOptions(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0),
-                getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("stretch-screen", false));
+                imageMode());
             GbaNative.setTouchControlsVisible(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true));
             for (int bit = 0; bit < 10; ++bit) GbaNative.setControllerButton(bit, padBinding(bit));
         } catch (UnsatisfiedLinkError notLoadedYet) { /* retried with surface */ }
@@ -228,19 +244,37 @@ public class GbaGameActivity extends SDLActivity {
             applyInputOptions();
         });
         panel.addView(qualities);
-        android.widget.CheckBox stretch = new android.widget.CheckBox(this);
-        stretch.setText(tr("Estirar a pantalla completa", "Stretch to full screen", "Esticar para tela inteira"));
-        stretch.setChecked(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("stretch-screen", false));
-        stretch.setOnCheckedChangeListener((button, checked) -> {
-            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("stretch-screen", checked).apply();
+        TextView modeTitle = new TextView(this);
+        modeTitle.setText(tr("Modo de imagen", "Image mode", "Modo de imagem"));
+        modeTitle.setTextSize(16);
+        modeTitle.setPadding(0, overlayDp(12), 0, overlayDp(4));
+        panel.addView(modeTitle);
+        android.widget.RadioGroup modes = new android.widget.RadioGroup(this);
+        String[] modeNames = {
+            tr("Original (3:2)", "Original (3:2)", "Original (3:2)"),
+            tr("Panorámica (experimental)", "Panoramic (experimental)", "Panorâmica (experimental)"),
+            tr("Estirar a pantalla completa", "Stretch to full screen", "Esticar para tela inteira")
+        };
+        int selectedMode = imageMode();
+        for (int i = IMAGE_ORIGINAL; i <= IMAGE_STRETCH; ++i) {
+            android.widget.RadioButton button = new android.widget.RadioButton(this);
+            button.setId(i + 200);
+            button.setText(modeNames[i]);
+            modes.addView(button);
+            if (selectedMode == i) modes.check(i + 200);
+        }
+        modes.setOnCheckedChangeListener((group, id) -> {
+            int mode = id - 200;
+            if (mode < IMAGE_ORIGINAL || mode > IMAGE_STRETCH) return;
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("image-mode", mode).apply();
             applyInputOptions();
         });
-        panel.addView(stretch);
+        panel.addView(modes);
         TextView note = new TextView(this);
         note.setText(tr(
-            "Desactivado: conserva la proporción original 3:2 y centra la imagen con bandas si hace falta.\nActivado: llena el área de juego y puede deformar la imagen. No muestra más escenario.\n1080p puede consumir más batería.",
-            "Off: keeps the original 3:2 aspect ratio and centers the image with bars if needed.\nOn: fills the game area and may distort the image. It does not show more of the level.\n1080p may use more battery.",
-            "Desativado: mantém a proporção original 3:2 e centraliza a imagem com faixas se necessário.\nAtivado: preenche a área do jogo e pode deformar a imagem. Não mostra mais cenário.\n1080p pode consumir mais bateria."));
+            "Original: conserva la proporción 3:2 sin deformar la imagen.\nPanorámica: muestra más escenario donde es compatible y usa la vista original en otras escenas. Puede dejar bandas según la pantalla.\nEstirar: llena el área de juego, pero puede deformar la imagen y no muestra más escenario.\n1080p puede consumir más batería.",
+            "Original: keeps the 3:2 aspect ratio without distortion.\nPanoramic: shows more scenery where supported and uses the original view in other scenes. Bars may remain depending on the display.\nStretch: fills the game area but may distort the image and does not show more scenery.\n1080p may use more battery.",
+            "Original: mantém a proporção 3:2 sem deformar a imagem.\nPanorâmica: mostra mais cenário onde há suporte e usa a vista original nas outras cenas. Pode deixar faixas dependendo da tela.\nEsticar: preenche a área do jogo, mas pode deformar a imagem e não mostra mais cenário.\n1080p pode consumir mais bateria."));
         note.setTextSize(13); note.setPadding(0, overlayDp(8), 0, overlayDp(8)); panel.addView(note);
         android.widget.ScrollView scroll = new android.widget.ScrollView(this);
         scroll.addView(panel);

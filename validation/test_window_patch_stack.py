@@ -16,7 +16,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 PIN = 'e7728148c6829ba526f682876430a0c9022dc6c0'
 PATCH_NAMES = ('interpolation', 'controls', 'localization', 'touch-design',
-               'widescreen-objects', 'widescreen-window')
+               'widescreen-objects', 'widescreen-window', 'panorama-android')
 PATHS = tuple('src/runtime/' + name for name in
               ('host_platform.cpp', 'host_platform.h', 'host_window.cpp', 'runtime.cpp')) + (
                   'src/gba/gba_ppu.h', 'src/gba/gba_ppu.cpp')
@@ -73,7 +73,7 @@ class WindowPatchStackTests(unittest.TestCase):
                                str(ROOT / 'tools/apply_interpolation_patch.py'), str(self.engine)],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-    def test_all_seven_prefixes_complete_and_are_idempotent(self):
+    def test_all_eight_prefixes_complete_and_are_idempotent(self):
         self.apply_prefix(len(PATCH_NAMES))
         expected = snapshot(self.engine)
         prefixes = set()

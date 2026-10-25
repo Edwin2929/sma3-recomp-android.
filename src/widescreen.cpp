@@ -23,6 +23,8 @@ const gba::GbaBus* memory = nullptr;
 const uint8_t* registers = nullptr;
 unsigned image_rows[2]{};
 bool gameplay = false;
+bool observing = false;
+bool ready = false;
 ObjectPositions positions;
 std::array<ObjectPositions,3> submissions;
 unsigned submission_count=0;
@@ -122,7 +124,7 @@ void object_submission(uint32_t pc) {
     if(submission_count<submissions.size()) ++submission_count;
 }
 bool object_matches(int index, uint16_t a0, uint16_t a1, uint16_t a2) {
-    if (!gameplay || index<0 || index>=128) return false;
+    if (!gameplay || !ready || index<0 || index>=128) return false;
     const auto& p=positions[index];
     return p.valid && p.a0==a0 && p.a1==a1 && p.a2==a2;
 }
@@ -144,13 +146,45 @@ int tile(int layer, int x, int y, uint16_t* output) {
         : background_tile(read,wx,wy,layer,image_rows[layer-2],output);
     return available ? gba::kWsTilemapReplace : gba::kWsTilemapUnavailable;
 }
+void clear_observations() {
+    positions={}; submissions={}; strips={}; emitted={}; screen_objects={};
+    window_copies={}; hazard64={}; submission_count=0;
+    bounds_calls=0; bounds_extra_candidates=0; ready=false;
+}
 }
 
-void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
+bool presentation_ready() {
+    // A restore may be presented before the next frame-start publication.
+    // Never reuse the prior epoch's scene decision or object coordinates.
+    return observing && ready && epoch==g_runtime_state_epoch && memory &&
+        memory==gbarecomp::active_bus() && registers &&
+        read(0x03006d64,1)==0 && read(0x03006b05,1)==0x0d &&
+        read(0x03007010,4)==0x0200000c && (reg(0)&7)==0 &&
+        matches_display(read,positions);
+}
+
+void frame(const gbarecomp::ExtendedViewFrameInfo* info, bool enabled) {
     if (!info) return;
+    if (!enabled) {
+        if (observing) clear_observations();
+        observing=false; gameplay=false; ready=false;
+        if (g_runtime_fn_entry_hook==object_submission) g_runtime_fn_entry_hook=nullptr;
+        gba::g_ws_tilemap_provider=nullptr;
+        gba::g_ws_obj_x_provider=nullptr;
+        gba::g_ws_obj_attr_x_provider=nullptr;
+        gba::g_ws_obj_window_x_provider=nullptr;
+        gba::g_ws_obj_native_clip_provider=nullptr;
+        gba::g_ws_obj_native_clip=0;
+        gba::g_ws_authored_margin_layers=0;
+        gba::g_ws_pillarbox=1;
+        sma3_object_x_bias=16; sma3_object_x_limit=255;
+        epoch=info->state_epoch;
+        return;
+    }
+    if (!observing) clear_observations();
+    observing=true;
     if (epoch!=info->state_epoch) {
-        submissions={}; strips={}; emitted={}; screen_objects={}; window_copies={}; hazard64={};
-        submission_count=0; bounds_calls=0; bounds_extra_candidates=0;
+        clear_observations();
         epoch=info->state_epoch;
     }
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
@@ -160,8 +194,11 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     gameplay=memory && registers && info->view_width<=356 &&
         read(0x03006d64,1)==0 && read(0x03006b05,1)==0x0d &&
         read(0x03007010,4)==0x0200000c && (reg(0)&7)==0;
+    bool expand_bounds=false;
+#if defined(SMA3_WIDESCREEN_DIAGNOSTICS) && !defined(__ANDROID__)
     const char* bounds=std::getenv("SMA3_WIDE_OBJECT_BOUNDS");
-    const bool expand_bounds=gameplay && bounds && bounds[0]=='1';
+    expand_bounds=gameplay && bounds && bounds[0]=='1';
+#endif
     sma3_object_x_bias=16+(expand_bounds ? info->extra_left : 0);
     sma3_object_x_limit=255+(expand_bounds ? info->extra_left+info->extra_right : 0);
     for (unsigned i=0;i<2;++i) {
@@ -176,7 +213,6 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
     }
     gba::g_ws_tilemap_provider=tile;
     gba::g_ws_authored_margin_layers=0;
-    gba::g_ws_pillarbox=gameplay ? 0 : 1;
     positions={};
     unsigned matched=0,screen_matched=0,unresolved=0,visible_unresolved=0;
     int submission_age=-1;
@@ -194,6 +230,17 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
             break;
         }
     }
+    // Unknown coverage keeps the entire scene at its original presentation;
+    // a resolved foreground must not expose scenery without its objects.
+    // This authorizes only the displayed submission, not wider spawning.
+    bool backgrounds_ready=true;
+    if (gameplay) {
+        for (unsigned i=0;i<2;++i)
+            if ((reg(0)&(0x400u<<i)) && image_rows[i]==0) backgrounds_ready=false;
+    }
+    ready=gameplay && submission_age>=0 && unresolved==0 && backgrounds_ready;
+    gba::g_ws_pillarbox=ready ? 0 : 1;
+#if defined(SMA3_WIDESCREEN_DIAGNOSTICS) && !defined(__ANDROID__)
     // Log gaps on every gameplay frame, not only the six memory samples.
     // A missing coherent submission is a gap too, never an empty success.
     if(gameplay && info && (submission_age<0 || unresolved)) {
@@ -203,13 +250,15 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
             if((p.a0&255)!=160 && !p.valid && !p.screen_space) std::fprintf(stderr,"%u,",p.source);
         std::fprintf(stderr,"\n");
     }
+#endif
     gba::g_ws_obj_x_provider=nullptr;
     gba::g_ws_obj_attr_x_provider=object_x;
     // The engine requires every window object on a row to match before it
     // extends that row's lighting stencil; other window types stay closed.
-    gba::g_ws_obj_window_x_provider=gameplay && submission_age>=0 ? object_x : nullptr;
+    gba::g_ws_obj_window_x_provider=ready ? object_x : nullptr;
     gba::g_ws_obj_native_clip=0;
     gba::g_ws_obj_native_clip_provider=object_clip;
+#if defined(SMA3_WIDESCREEN_DIAGNOSTICS) && !defined(__ANDROID__)
     if (info && (info->frame_count==7200 || info->frame_count==8000 ||
                  info->frame_count==9599 || info->frame_count==12000 ||
                  info->frame_count==16000 || info->frame_count==17999)) {
@@ -224,5 +273,6 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info) {
             if((p.a0&255)!=160) std::fprintf(stderr,"[sma3:object] slot=%u source=%u valid=%d x=%d a0=%04x a1=%04x a2=%04x\n",i,p.source,int(p.valid),p.x,p.a0,p.a1,p.a2);
         }
     }
+#endif
 }
 }

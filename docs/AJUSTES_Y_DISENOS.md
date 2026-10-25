@@ -1,9 +1,9 @@
-# Ajustes y diseños — 0.9 experimental
+# Ajustes y diseños — Android 0.10 experimental
 
 El botón Atrás abre cuatro apartados:
 
 - **Rendimiento y FPS:** contador y presentación de 120 FPS por mezcla temporal.
-- **Imagen:** Automática, 720p, 1080p y estirar a pantalla completa.
+- **Imagen:** Automática, 720p y 1080p; modos Original (3:2), Panorámica (experimental) y Estirar a pantalla completa.
 - **Controles:** visibilidad de botones táctiles, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
 
@@ -12,20 +12,24 @@ Los textos del menú y del editor están en español, inglés y portugués.
 
 ## Imagen sin deformaciones
 
-En el **APK 0.9 publicado**, abre **Atrás → Imagen → Estirar a pantalla
-completa** y desactiva la casilla. El juego conserva su proporción original
-**3:2**, porque los gráficos de GBA miden **240 × 160 píxeles**. La imagen se
-centra y aparecen bandas si la superficie disponible tiene otra proporción.
-La elección se aplica sin reiniciar y queda guardada.
+En **0.10**, abre **Atrás → Imagen → Original (3:2)**. Los gráficos originales
+de GBA miden **240 × 160 píxeles**; la imagen se centra con bandas cuando la
+superficie tiene otra proporción. La elección se aplica sin reiniciar y queda
+guardada.
 
-Activar Estirar llena el área de juego con el mismo fotograma: puede deformar
-la imagen y no amplía el campo de visión. Automática, 720p y 1080p cambian el
-escalado de presentación; tampoco añaden escenario.
+**Panorámica (experimental)** dibuja escenario adicional donde hay cobertura,
+hasta 356 × 160, y adapta el ancho al área disponible. Vuelve a la vista
+original cuando no reúne datos suficientes. Sigue teniendo límites de
+aparición de objetos y efectos no cubiertos; no está validada para todo el juego.
 
-La ayuda del menú se ha aclarado en las fuentes para una próxima compilación,
-manteniendo el nombre del ajuste y las preferencias existentes. El APK 0.9
-conserva los textos anteriores. La panorámica que dibuja escenario adicional
-sigue siendo un prototipo de escritorio y **no está integrada en Android 0.9**.
+**Estirar a pantalla completa** llena el área de juego con el mismo fotograma:
+puede deformarlo y no amplía el campo de visión. Automática, 720p y 1080p
+cambian el escalado de presentación; tampoco añaden escenario por sí solos.
+El panel permite desplazarse para acceder a todas las opciones.
+
+En **0.9 y 0.9.1** se conserva 3:2 desactivando la antigua casilla **Estirar a
+pantalla completa**. Al actualizar, esa elección pasa a Original o Estirar;
+la panorámica debe seleccionarse expresamente y no existe en esos APK anteriores.
 Consulta la [guía de imagen](CALIDAD_IMAGEN.md) y el
 [estado de la panorámica](PANORAMICA_EN_DESARROLLO.md).
 
@@ -61,7 +65,15 @@ El 5 de octubre de 2026 Edwin confirmó que 0.8 alcanza 120 FPS en su Pixel 7 Pr
 Se registra como reporte del usuario, sin una medición independiente ni una
 duración de prueba documentada. 0.9 conserva ese modo de presentación.
 
-## Validación de 0.9
+## Validación actual
+
+El APK 0.10, la nueva selección de imagen y sus límites se documentan en
+[ANDROID_0.10_VALIDATION.md](../validation/ANDROID_0.10_VALIDATION.md).
+La orientación Android pasa a `fullUser`; las pruebas SDL de tamaños y las
+pruebas anteriores del editor no equivalen a una prueba física de rotación,
+controles o segundo plano en esta nueva versión.
+
+## Historial de validación de 0.9
 
 APK ARM64 compilado, ZIP y firma v2 verificados; mantiene el certificado
 anterior. Java compilado y enlaces JNI del editor presentes. Pruebas de

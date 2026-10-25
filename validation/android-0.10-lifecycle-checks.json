@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "verification_date_utc": "2026-10-25",
+  "scope": "Host C++ tests of the real PPU lifecycle and rendering plus pure adaptive-view and image-mode policy. No Android execution, phone test, frame-rate measurement or full-game qualification.",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "lifecycle": {
+    "started_utc": "2026-10-25T04:16:40.322565+00:00",
+    "source": "validation/panorama_lifecycle_test.cpp",
+    "source_sha256": {
+      "test": "c2f3abdb4a6c3df82b4e5ec93853d3cd0c5ad1b5027273a33ff0d48520935067",
+      "engine_ppu": "f6dcaca3528fd2fd5a01df9f801d73b30874a592d5e3672fa3a82fbf87fabc8b",
+      "engine_header": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+      "image_options": "4f451e3778bfdb64748a6e2c3322d183af722524553207c40afbfbc907c511d5",
+      "view_config": "bcca38fcfe783f52633783f1a45ad1a6a6740189bfab883ad58e763134703b9a"
+    },
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "flags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-sanitize-recover=all"
+    ],
+    "build_returncode": 0,
+    "sanitizers": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "leak_sanitizer": false,
+    "returncode": 0,
+    "stdout": "PASS: 40 lifecycle scenarios, 2082122 internal assertions\n",
+    "stderr": "",
+    "elapsed_seconds": 0.303,
+    "binary_sha256": "abe7d8cc665179a3cfe6a08b006cd35cb2339241a87b52df53fff92535fcbdab",
+    "compiled_sources_unchanged": true,
+    "scenarios": 40,
+    "internal_assertions": 2082122
+  },
+  "window_regression": {
+    "started_utc": "2026-10-25T04:16:40.319857+00:00",
+    "source": "validation/widescreen_obj_window_render_test.cpp",
+    "source_sha256": {
+      "test": "46769e4967da88fe0d302f4c53da1422a553ddc2d8b040c1a174b9362359a771",
+      "engine_ppu": "f6dcaca3528fd2fd5a01df9f801d73b30874a592d5e3672fa3a82fbf87fabc8b",
+      "engine_header": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+      "image_options": "4f451e3778bfdb64748a6e2c3322d183af722524553207c40afbfbc907c511d5",
+      "view_config": "bcca38fcfe783f52633783f1a45ad1a6a6740189bfab883ad58e763134703b9a"
+    },
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "flags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-sanitize-recover=all"
+    ],
+    "build_returncode": 0,
+    "sanitizers": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "leak_sanitizer": false,
+    "returncode": 0,
+    "stdout": "PASS: 488 synthetic scenarios, 8102978 internal assertions; real PPU, native center unchanged\n",
+    "stderr": "",
+    "elapsed_seconds": 11.463,
+    "binary_sha256": "c1b80acd7bef23cf5c40c626d082ed13a172cd592a9069c9976edd57d5471c57",
+    "compiled_sources_unchanged": true,
+    "scenarios": 488,
+    "internal_assertions": 8102978
+  },
+  "restore_regression": {
+    "baseline_engine_ppu_sha256": "e45fd02a690534fcb14544670521ab007a40d10148c4427cca7a940b21399c56",
+    "baseline_test_source_sha256": "480ab5dd5d3e00fc12cd1738ce39b79def58cfe2023bf4c85ad79c972cec7f28",
+    "baseline_returncode": 1,
+    "baseline_stderr": "FAIL: mid-frame restore reused stale margins\n",
+    "fixed_engine_ppu_sha256": "f6dcaca3528fd2fd5a01df9f801d73b30874a592d5e3672fa3a82fbf87fabc8b",
+    "result": "Previously rendered wide margins survived a native state load at scanline80. The fixed PPU clears active work storage before restoring the native center; the partially resumed frame now retains the saved center and black unauthored margins.",
+    "test_revision_note": "The final harness retains the same mid-frame restore case and adds independent image-mode/adaptive-geometry cases after the initial failure."
+  },
+  "lifecycle_coverage": {
+    "image_modes": {
+      "Original": 0,
+      "Panorama": 1,
+      "Stretch": 2
+    },
+    "default_mode": "Original",
+    "invalid_mode_values_rejected_to_original": [
+      -1,
+      3,
+      -2147483648,
+      2147483647
+    ],
+    "width_sequence": [
+      240,
+      241,
+      320,
+      346,
+      355,
+      356,
+      300,
+      240,
+      356,
+      241,
+      240,
+      356
+    ],
+    "drawable_examples": [
+      {
+        "surface": [
+          2400,
+          1080
+        ],
+        "view": [
+          356,
+          160
+        ]
+      },
+      {
+        "surface": [
+          3120,
+          1440
+        ],
+        "view": [
+          347,
+          160
+        ]
+      },
+      {
+        "surface": [
+          2340,
+          1080
+        ],
+        "view": [
+          347,
+          160
+        ]
+      },
+      {
+        "surface": [
+          1920,
+          1080
+        ],
+        "view": [
+          284,
+          160
+        ]
+      },
+      {
+        "surface": [
+          1080,
+          2400
+        ],
+        "view": [
+          240,
+          160
+        ]
+      },
+      {
+        "surface": [
+          1440,
+          3120
+        ],
+        "view": [
+          240,
+          160
+        ]
+      }
+    ],
+    "native_snapshot_bytes": 115223,
+    "snapshot_guest_timing_prefix_bytes_compared": 22,
+    "wide_snapshot_matches_native_payload": true,
+    "native_to_wide_restore_retains_host_geometry": true,
+    "wide_to_native_restore_retains_native_geometry": true,
+    "unauthorized_window_modes_native_center_preserved": true,
+    "unknown_window_provenance_fallback": true,
+    "synthetic_guest_memory_unchanged": true
+  },
+  "private_log_sha256": {
+    "lifecycle-attempt01/result.json": "bc26e1578aec699a1335323e5080ed72d610a825dae0d28c98cf2a66378ca2d9",
+    "lifecycle-attempt02/build.txt": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640",
+    "lifecycle-attempt02/run.txt": "fa737226f32fb7fe1a8fc033a0a9767398b3045060a9c47a121458916285f2a1",
+    "window-regression-attempt01/build.txt": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640",
+    "window-regression-attempt01/run.txt": "74fe72a92758ca75ca1e92f9871b1d091254b22f65f09e4edc3e367f84025f74"
+  },
+  "limitations": [
+    "Internal assertions are pixel and state comparisons, not independent tests or game frames.",
+    "Synthetic fixtures do not validate Android JNI/preference migration or SDL/phone window lifecycle.",
+    "The renderer oracle is the existing faithful compositor, not an independent hardware emulator.",
+    "The pure image-mode and geometry policies are tested; production scene/provenance routing still requires final integration inspection and native replay."
+  ]
+}

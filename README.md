@@ -2,7 +2,12 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.9.1 experimental
+## Versión actual: 0.10 experimental — panorámica opcional
+
+- **0.10:** incorpora en Android el modo **Panorámica (experimental)**, que dibuja escenario adicional sin deformar la imagen en las escenas compatibles. El ancho se adapta a la superficie, hasta **356 × 160**, y conserva la vista original cuando faltan datos suficientes. Se activa en **Atrás → Imagen**; no se activa automáticamente al actualizar. [Notas de versión](docs/releases/v0.10-experimental.md) · [Compilación y pruebas](validation/ANDROID_0.10_VALIDATION.md).
+- El APK está compilado y firmado con el mismo certificado que 0.9/0.9.1, preparado para actualizar la aplicación. Su subida a GitHub Releases corresponde al mantenedor. **La prueba física de 0.10 en el Pixel 7 Pro y la cobertura del juego completo siguen pendientes.**
+
+### Versiones anteriores
 
 - **0.9.1:** corrige el redondeo del escalador al conservar la proporción original **3:2** y aclara la ayuda de imagen en español, inglés y portugués. El APK está compilado y entregado; **su subida manual a GitHub está pendiente**. [Notas de versión](docs/releases/v0.9.1-experimental.md).
 - **Reporte de Edwin, 18 de octubre de 2026:** probó este APK en un **Google Pixel 7 Pro** y confirmó que funciona. No especificó la versión de Android, la duración de la prueba, los FPS ni las funciones comprobadas. [Verificación del APK y alcance de la prueba](validation/ANDROID_0.9.1_VALIDATION.md).
@@ -21,21 +26,38 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.9 y 0.9.1**, abre **Atrás → Imagen → Estirar a pantalla
-completa** y **desactiva** la casilla. La imagen original de GBA es de
-**240 × 160 píxeles (3:2)**. El juego conserva esa proporción y se centra con
-bandas si la pantalla tiene otra proporción. Estirar llena el área de juego,
-pero puede deformar la imagen y no muestra más escenario.
+En **0.10**, abre **Atrás → Imagen → Modo de imagen**:
 
-La **panorámica real**, que dibuja escenario adicional, sigue siendo un
-**prototipo de escritorio y no está integrada en Android 0.9 ni 0.9.1**.
-El APK 0.9.1 ya incluye la ayuda del menú aclarada y la corrección de redondeo
-integradas en la [PR #2](https://github.com/Edwin2929/sma3-recomp-android./pull/2).
-El APK 0.9 publicado en GitHub conserva los textos y el escalador anteriores.
+| Opción | Resultado |
+| --- | --- |
+| **Original (3:2)** | Conserva los **240 × 160** originales, centrados y con bandas cuando hacen falta. Predeterminada en una instalación nueva. |
+| **Panorámica (experimental)** | Muestra más escenario en las escenas compatibles. Mantiene las proporciones; puede conservar bandas y volver a la vista original. |
+| **Estirar a pantalla completa** | Llena el área disponible deformando el mismo fotograma original; no añade escenario. |
+
+La proporción original es **3:2**, porque 240 ÷ 160 = 1,5. En **0.9 y 0.9.1**,
+conservarla se elige desactivando la casilla **Estirar a pantalla completa**;
+esas dos versiones **no incluyen panorámica real**. Al actualizar a 0.10 se
+respeta la elección anterior entre Original y Estirar.
+
 [Guía de imagen y pruebas del escalador](docs/CALIDAD_IMAGEN.md) ·
-[Estado del prototipo panorámico](docs/PANORAMICA_EN_DESARROLLO.md).
+[Cobertura y límites de la panorámica](docs/PANORAMICA_EN_DESARROLLO.md).
 
 ## Descargar e instalar
+
+### APK 0.10 entregado, pendiente de subida manual
+
+Archivo: **`sma3-recomp-0.10-panorama-arm64.apk`**, versión
+`0.10-panorama-experimental`, código de versión **11**, Android 9 o posterior,
+ARM64. Las [notas de 0.10](docs/releases/v0.10-experimental.md) registran su
+tamaño, SHA-256, instalación y publicación manual.
+
+Se entrega directamente al mantenedor. **Hasta que lo adjunte a una release,
+no hay un enlace de descarga público en GitHub para 0.10.** La release
+«Descarga» conserva 0.9; descargar ese archivo no instala la panorámica.
+Instala el APK 0.10 encima del anterior, sin desinstalarlo. El paquete y el
+certificado coinciden y el código de versión es superior. La actualización
+del contenido empaquetado no borra partidas, preferencias ni archivos
+importados; la instalación física sobre 0.9.1 queda por comprobar.
 
 ### APK 0.9.1 entregado, pendiente de subida manual
 
@@ -75,6 +97,21 @@ El APK de desarrollo 0.9 conserva la firma de las versiones anteriores: instála
 
 ## Estado de validación
 
+**0.10:** compilación ARM64 completa, firma, identidad del paquete, contenido
+y enlaces JNI comprobados. Las ejecuciones nativas emparejadas recorrieron
+**6.801 fotogramas del castillo** y **3.506 del ciclo normal → coche → normal**.
+En los puntos de captura coinciden **311 centros de imagen y 313 estados**,
+con las excepciones de comparación documentadas. Frente a la revisión anterior
+se conservan **622 imágenes completas y 626 estados** en esos recorridos.
+
+La ruta de presentación de producción pasa siete casos SDL: Original,
+panorámica de 347 y 356 píxeles de ancho, vertical, fuente de Estirar y una
+transición no admitida en ambos modos. También pasan **40 casos de ciclo de
+vida**, **488 casos del compositor de ventanas** y **169 pruebas Python**
+tanto normales como con `-O`. Son comprobaciones de desarrollo; **no acreditan
+FPS ni funcionamiento físico de 0.10 en el teléfono**.
+[Informe, reproducción y límites](validation/ANDROID_0.10_VALIDATION.md).
+
 **0.9.1:** la compilación ARM64 terminó correctamente y se verificaron la firma,
 su coincidencia con 0.9, la integridad y alineación del APK, los textos de ayuda
 en ES/EN/PT y la correspondencia de las bibliotecas empaquetadas con esta
@@ -88,7 +125,10 @@ Edwin reportó 60 FPS con una versión anterior en Android y posteriormente iden
 
 Las pruebas de desarrollo cubren la rutina de transformación, el escalador y los punteros de traducción. Se ejecutaron 7.200 fotogramas nativos por idioma sin faltas de despacho ni instrucciones interpretadas. Siguen pendientes las comprobaciones específicas de estas funciones en el teléfono, todas las transformaciones y el juego completo. [Resultados y límites](docs/VALIDACION.md).
 
-### Prototipo panorámico de escritorio
+### Historial de validación panorámica anterior a 0.10
+
+Los hitos de esta sección preceden a la integración Android de 0.10. Conservan
+su alcance original; el estado actual se documenta en el informe de arriba.
 
 Se ha verificado una transición natural por tubería del corredor inferior a la
 zona superior del nivel 3/subnivel 3, comparando **240 × 160 y 356 × 160** desde
@@ -182,13 +222,15 @@ APK resultante: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 Para compilar únicamente las bibliotecas nativas: `python3 tools/bootstrap_android_build.py --native-only`.
 
-Para el APK 0.9.1 se compilaron desde cero las bibliotecas nativas ARM64 y se
+Para el APK 0.10 se compilaron desde cero las bibliotecas nativas ARM64 y se
 empaquetó la aplicación con las fuentes públicas actualizadas. Se reutilizaron
 las fuentes generadas privadas del proyecto de desarrollo; **no se regeneró el
 conjunto de fuentes a partir de la ROM y la BIOS en esta ejecución**. Los scripts
 de regeneración se habían revisado estáticamente y ese flujo completo de
 regeneración sigue sin repetirse como parte de esta compilación.
-[Detalle de la compilación y verificación](validation/ANDROID_0.9.1_VALIDATION.md).
+`SMA3_PANORAMA=ON` incluye la función opcional; `SMA3_WIDESCREEN_DIAGNOSTICS=OFF`
+mantiene fuera del APK las capturas de diagnóstico exclusivas de escritorio.
+[Detalle de la compilación y verificación](validation/ANDROID_0.10_VALIDATION.md).
 
 ## Archivos compatibles
 
@@ -213,8 +255,9 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Completar pruebas específicas de 0.9.1 en Pixel 7 Pro: transformaciones, mando, escalado, idiomas, editor de controles y navegación del menú.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de la prueba de 0.9.1.
+- Probar 0.10 en Pixel 7 Pro: actualización, los tres modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.
+- Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.
 - Documentar sonido, guardado, segundo plano y mandos físicos.

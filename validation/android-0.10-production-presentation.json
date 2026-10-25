@@ -1,0 +1,370 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "route": "production callbacks; SMA3_WIDE_PROBE_DIR is absent",
+  "environment": "SDL dummy video/audio, software renderer, synthetic drawable sizes",
+  "limits": [
+    "Separate host launches do not test an Android device or live OS rotation.",
+    "Stretch case verifies a native source framebuffer; Android destination scaling is separate.",
+    "Final counter equality and native crop equality do not prove complete guest-state equality.",
+    "Known supported scene and unsupported transition do not certify every level or offscreen spawn.",
+    "Cold savestate observation may keep the original view until a coherent submission is available."
+  ],
+  "input_sha256": {
+    "runner": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+    "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+    "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+    "gameplay_state": "b2fba604728563fe42c5f28d4c784f7ce0544d57654561128d49eebeb3ac90bc",
+    "fallback_state": "a1f7803052c357ed5e296824f2f161c87f4a8bb7e5b7bf2ca057c3ccaad81ed6",
+    "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+  },
+  "cases": [
+    {
+      "name": "original-landscape",
+      "mode": 0,
+      "fixture": "gameplay",
+      "forced_drawable": "2400x1080",
+      "frames": 120,
+      "framebuffer": [
+        240,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460542,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 129042,
+        "cycles": 0,
+        "ppu_vcount": 1,
+        "ppu_frames": 13519,
+        "frames_presented": 120
+      },
+      "png_sha256": "8210a63b3004b7348b531865278345c8be83870be5d7065bf7c5efc71f82a780",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": []
+    },
+    {
+      "name": "panorama-347",
+      "mode": 1,
+      "fixture": "gameplay",
+      "forced_drawable": "3120x1440",
+      "frames": 120,
+      "framebuffer": [
+        347,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ],
+        [
+          347,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460542,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 129042,
+        "cycles": 0,
+        "ppu_vcount": 1,
+        "ppu_frames": 13519,
+        "frames_presented": 120
+      },
+      "png_sha256": "45117195770ca0a67b547b0919d89c7ea1bebe1fafbaf383b81e5d09df149242",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": [
+        {
+          "frame": 13401,
+          "unresolved": 0
+        },
+        {
+          "frame": 13402,
+          "unresolved": 12
+        }
+      ]
+    },
+    {
+      "name": "panorama-356",
+      "mode": 1,
+      "fixture": "gameplay",
+      "forced_drawable": "2400x1080",
+      "frames": 120,
+      "framebuffer": [
+        356,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ],
+        [
+          356,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460542,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 129042,
+        "cycles": 0,
+        "ppu_vcount": 1,
+        "ppu_frames": 13519,
+        "frames_presented": 120
+      },
+      "png_sha256": "696a2dc1095d0ad641fbd8850c269c4b09697f91d76481976b479af17a70e25a",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": [
+        {
+          "frame": 13401,
+          "unresolved": 0
+        },
+        {
+          "frame": 13402,
+          "unresolved": 12
+        }
+      ]
+    },
+    {
+      "name": "panorama-portrait",
+      "mode": 1,
+      "fixture": "gameplay",
+      "forced_drawable": "1080x2400",
+      "frames": 120,
+      "framebuffer": [
+        240,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460542,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 129042,
+        "cycles": 0,
+        "ppu_vcount": 1,
+        "ppu_frames": 13519,
+        "frames_presented": 120
+      },
+      "png_sha256": "8210a63b3004b7348b531865278345c8be83870be5d7065bf7c5efc71f82a780",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": [
+        {
+          "frame": 13401,
+          "unresolved": 0
+        },
+        {
+          "frame": 13402,
+          "unresolved": 12
+        }
+      ]
+    },
+    {
+      "name": "stretch-native-source",
+      "mode": 2,
+      "fixture": "gameplay",
+      "forced_drawable": "2400x1080",
+      "frames": 120,
+      "framebuffer": [
+        240,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460542,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 129042,
+        "cycles": 0,
+        "ppu_vcount": 1,
+        "ppu_frames": 13519,
+        "frames_presented": 120
+      },
+      "png_sha256": "8210a63b3004b7348b531865278345c8be83870be5d7065bf7c5efc71f82a780",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": []
+    },
+    {
+      "name": "transition-original",
+      "mode": 0,
+      "fixture": "fallback",
+      "forced_drawable": "2400x1080",
+      "frames": 12,
+      "framebuffer": [
+        240,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460546,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 121152,
+        "cycles": 0,
+        "ppu_vcount": 5,
+        "ppu_frames": 12923,
+        "frames_presented": 12
+      },
+      "png_sha256": "037999e6002bad3c4ecf636e109ed6fc499c562260fc39037b0e9c7629fed7e5",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": []
+    },
+    {
+      "name": "transition-panorama",
+      "mode": 1,
+      "fixture": "fallback",
+      "forced_drawable": "2400x1080",
+      "frames": 12,
+      "framebuffer": [
+        240,
+        160
+      ],
+      "logical_presentations": [
+        [
+          240,
+          160
+        ]
+      ],
+      "final_runtime": {
+        "final_pc": 135460546,
+        "unmapped": 0,
+        "io_unhandled": 0,
+        "steps": 121152,
+        "cycles": 0,
+        "ppu_vcount": 5,
+        "ppu_frames": 12923,
+        "frames_presented": 12
+      },
+      "png_sha256": "037999e6002bad3c4ecf636e109ed6fc499c562260fc39037b0e9c7629fed7e5",
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "diagnostic_object_gap_observations": []
+    }
+  ],
+  "comparisons": [
+    {
+      "case": "panorama-347",
+      "reference": "original-landscape",
+      "native_center_bytes_equal": true,
+      "final_runtime_equal": true,
+      "margins": [
+        53,
+        54
+      ],
+      "margin_distinct_colors": [
+        32,
+        35
+      ]
+    },
+    {
+      "case": "panorama-356",
+      "reference": "original-landscape",
+      "native_center_bytes_equal": true,
+      "final_runtime_equal": true,
+      "margins": [
+        58,
+        58
+      ],
+      "margin_distinct_colors": [
+        33,
+        35
+      ]
+    },
+    {
+      "case": "panorama-portrait",
+      "reference": "original-landscape",
+      "native_center_bytes_equal": true,
+      "final_runtime_equal": true,
+      "margins": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "stretch-native-source",
+      "reference": "original-landscape",
+      "native_center_bytes_equal": true,
+      "final_runtime_equal": true,
+      "margins": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "transition-panorama",
+      "reference": "transition-original",
+      "native_center_bytes_equal": true,
+      "final_runtime_equal": true,
+      "margins": [
+        0,
+        0
+      ]
+    }
+  ]
+}

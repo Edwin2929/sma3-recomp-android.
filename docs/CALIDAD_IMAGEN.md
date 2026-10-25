@@ -1,94 +1,119 @@
-# Calidad de imagen — guía para Android 0.9 y 0.9.1
+# Calidad de imagen — Android 0.10 experimental
 
-El escalado se incorporó en 0.6 y sigue disponible en los APK 0.9 y 0.9.1.
-La versión 0.9.1 incluye la corrección del redondeo y la ayuda del menú
-aclarada en ES/EN/PT. El APK está compilado y entregado al mantenedor;
-su subida a GitHub Releases queda pendiente de publicación manual.
+En **0.10**, abre **Atrás del teléfono → Imagen** y elige uno de los tres
+modos. La resolución de presentación se configura por separado.
 
-## Conservar las proporciones originales
+| Modo | Qué muestra | Proporciones |
+| --- | --- | --- |
+| **Original (3:2)** | El fotograma original completo, centrado y con bandas cuando hacen falta. | Conserva 240:160 = 3:2. |
+| **Panorámica (experimental)** | Escenario adicional a los lados en las escenas compatibles, con retorno a la vista original cuando falta cobertura. | Conserva la forma de los gráficos. Puede dejar bandas. |
+| **Estirar a pantalla completa** | El mismo fotograma original ocupa toda el área disponible. | Puede deformarlo. No muestra más escenario. |
 
-Durante el juego, abre **Atrás del teléfono → Imagen → Estirar a pantalla
-completa** y **desactiva** la casilla. Esta opción ya existe en el APK 0.9
-publicado, se mantiene en 0.9.1 y está desactivada de forma predeterminada
-en una instalación nueva.
-Si la activaste antes, se conserva esa preferencia hasta que la cambies.
+Original es el valor predeterminado en una instalación nueva. Al actualizar
+desde 0.9/0.9.1, la antigua casilla desactivada se convierte en Original y la
+casilla activada en Estirar. **La actualización nunca selecciona Panorámica
+por su cuenta.** La opción elegida se aplica durante el juego y se guarda.
 
-La app continúa a pantalla completa. La casilla controla cómo encaja la imagen
-dentro de esa superficie; las bandas no significan que haya salido de ese modo.
+## Conservar la proporción original
 
 La imagen original de Game Boy Advance mide **240 × 160 píxeles**:
-240 ÷ 160 = 1,5, es decir, una proporción **3:2**, no 4:3. Sin estirar, el juego
-se amplía hasta caber entero en el área disponible y queda centrado, con el
-redondeo necesario a píxeles enteros. La dimensión no limitante se redondea
-hacia abajo menos de un píxel y los márgenes opuestos pueden diferir un píxel.
-En superficies más anchas que 3:2 quedan
-bandas laterales; en superficies más estrechas quedan bandas arriba y abajo.
+240 ÷ 160 = 1,5, es decir, una proporción **3:2**, no 4:3. Original amplía el
+fotograma hasta que cabe entero y lo centra. La dimensión no limitante se
+redondea hacia abajo menos de un píxel; los márgenes opuestos pueden diferir
+un píxel por ese redondeo.
 
-Por ejemplo, en una superficie de **2400 × 1080**, la imagen sin estirar ocupa
-**1620 × 1080** y deja **390 píxeles a cada lado**. Para conservar toda la
-imagen y sus proporciones en esa superficie, esas bandas son necesarias.
+En superficies más anchas que 3:2 aparecen bandas laterales; en superficies
+más estrechas aparecen arriba y abajo. Por ejemplo, en **2400 × 1080**, el
+fotograma Original ocupa **1620 × 1080**, con **390 píxeles a cada lado**.
+La aplicación continúa a pantalla completa: las bandas son parte del ajuste
+de la imagen a una superficie con otra proporción.
 
-## Tres comportamientos distintos
+## Usar la panorámica de 0.10
 
-| Modo | Resultado | Disponible en los APK 0.9 y 0.9.1 |
-| --- | --- | --- |
-| **Conservar 3:2:** Estirar desactivado | Imagen completa, centrada y con bandas cuando la superficie tiene otra proporción. | Sí |
-| **Estirar:** Estirar activado | El mismo fotograma llena el área de juego. Puede deformarse al cambiar su proporción; no muestra más escenario. | Sí |
-| **Panorámica real:** ampliar el campo de visión | Dibuja escenario adicional fuera de los 240 × 160 originales, manteniendo las proporciones de personajes y objetos. | **No.** Es un prototipo de escritorio en desarrollo. |
+Selecciona **Atrás → Imagen → Panorámica (experimental)**. El modo amplía
+el campo de visión en las escenas que el adaptador puede reconstruir; no
+estira los 240 píxeles originales para simular una vista más ancha.
 
-El prototipo panorámico requiere renderizar terreno, fondos y objetos adicionales
-y comprobar sus límites de aparición. Activar Estirar no lo habilita.
-Consulta su [estado y tareas pendientes](PANORAMICA_EN_DESARROLLO.md).
+La altura lógica permanece en **160** y el ancho se adapta a la superficie,
+entre **240 y 356**. Estos son tamaños del fotograma lógico, no la resolución
+del panel ni una promesa de ausencia de bandas:
+
+| Superficie disponible | Vista lógica panorámica compatible |
+| --- | --- |
+| 3120 × 1440 o 2340 × 1080 | 347 × 160 |
+| 2400 × 1080 | 356 × 160 |
+| 1920 × 1080 | 284 × 160 |
+| 1080 × 2400 o 1440 × 3120 | 240 × 160, vista original centrada |
+
+El ancho máximo limita las pantallas más alargadas; el redondeo y el ajuste
+final también pueden dejar bandas pequeñas. Se utiliza el área que Android
+entrega al juego, que puede diferir de la resolución nominal del teléfono.
+0.10 admite la orientación elegida por el usuario mediante `fullUser`; la
+rotación física y los controles en cada orientación quedan por comprobar
+en el dispositivo.
+
+La ampliación necesita un estado de juego admitido, un mapa válido y datos
+coherentes para los objetos y fondos habilitados. Tras cargar una partida,
+permanece brevemente en Original hasta reunir esos datos. En escenas no
+admitidas vuelve a Original; algunos efectos de ventana conservan márgenes
+negros en las filas que no se pueden ampliar con seguridad.
+
+**Límite experimental:** 0.10 no modifica los límites originales de aparición
+y dibujo de objetos. Algunos enemigos, objetos o efectos pueden aparecer
+tarde o faltar en los márgenes. La comprobación de los objetos que ya están
+en OAM no demuestra que el juego haya generado todos los que deberían verse
+fuera del encuadre original. Las rutas verificadas del castillo y del coche
+no cubren todos los niveles, jefes ni transformaciones. Si una escena muestra
+un defecto lateral, selecciona **Original (3:2)** para usar su encuadre nativo.
+[Cobertura e investigación pendiente](PANORAMICA_EN_DESARROLLO.md).
 
 ## Resolución de presentación
 
 En **Atrás → Imagen** también puedes elegir:
 
 - **Automática:** adapta el escalado al tamaño de salida de Android.
-- **720p · HD:** imagen intermedia de 1280 × 720 píxeles.
-- **1080p · Full HD:** imagen intermedia de 1920 × 1080 píxeles.
+- **720p · HD:** utiliza una imagen intermedia de 1280 × 720 píxeles.
+- **1080p · Full HD:** utiliza una imagen intermedia de 1920 × 1080 píxeles.
 
-Los ajustes se aplican sin reiniciar y se guardan. Los controles y el contador
-se dibujan a la resolución de salida de Android, después de escalar el juego.
-Se mantienen el mapeo del mando, el interruptor de controles táctiles, la
-corrección de transformaciones y la mezcla opcional de 120 FPS.
+Los controles y el contador se dibujan a la resolución de salida de Android,
+después de escalar el juego. 720p y 1080p no redibujan los sprites ni amplían
+por sí solos el campo de visión. Se amplía primero por un factor entero sin
+suavizado y después se ajustan los bordes fraccionarios con filtrado lineal.
+El ajuste no cambia la resolución física ni la configuración del panel.
+1080p puede consumir más GPU y batería.
 
-El juego sigue generando los gráficos originales de GBA (240 × 160).
-720p/1080p son resoluciones de presentación, no sprites redibujados ni detalle
-nuevo. Primero se amplía por un factor entero sin suavizado; después se ajustan
-los bordes fraccionarios con filtrado lineal. La imagen se presenta al tamaño
-de pantalla que Android proporciona; el ajuste no modifica la resolución del
-panel ni los ajustes del teléfono. 1080p puede consumir más GPU y batería.
+Se conservan el mapeo del mando, los controles táctiles y la mezcla temporal
+opcional de 120 FPS. Esa mezcla no crea 120 estados independientes del juego;
+0.10 no acredita una mejora de rendimiento ni 120 FPS estables.
 
-## Verificación
+## Verificación y alcance
 
-`validation/video_scaler_test.cpp` usa el renderizador software SDL real.
-Comprueba los buffers 1280×720/1920×1080, proporciones, pantalla completa,
-colores interiores sin degradación, restauración del destino de renderizado,
-cambios repetidos de calidad y liberación del buffer al volver a Automática.
-Resultados en [validation/video-scaler-test.txt](../validation/video-scaler-test.txt).
-La [revisión de la incidencia #1](../validation/VIDEO_ASPECT_RATIO.md) documenta
-45 casos de geometría y 110 comprobaciones de renderizado aprobados, junto
-con una corrección del redondeo en tamaños como 241 × 160 y 1081 × 720.
+La revisión del escalador de 0.9.1 aprobó **45 casos de geometría** y
+**110 comprobaciones de renderizado SDL2 software**, incluidos destinos
+horizontales, verticales, impares y cambios de calidad. Corrigió un error de
+redondeo en tamaños como 241 × 160 y 1081 × 720.
+[Informe](../validation/VIDEO_ASPECT_RATIO.md) ·
+[Resultados](../validation/video-scaler-test.txt).
 
-Las comprobaciones del escalador en superficies horizontales y verticales son
-pruebas de escritorio. No validan la rotación ni la presentación en un teléfono:
-la configuración actual del juego en Android sigue siendo horizontal.
-El 18 de octubre de 2026, Edwin confirmó que el APK 0.9.1 funciona en un
-Google Pixel 7 Pro. Es una confirmación general del usuario: no se aportaron
-capturas, mediciones de FPS ni resultados separados de cada ajuste o rotación.
-Las comprobaciones específicas de presentación y rendimiento en el teléfono
-siguen pendientes de documentación. Véase el
-[registro del APK 0.9.1](../validation/ANDROID_0.9.1_VALIDATION.md).
+Para 0.10 se ejecutaron siete casos con la ruta de presentación de producción
+y superficies SDL simuladas: Original, panorámica 347/356, vertical, fuente
+original para Estirar y una transición no admitida en ambos modos. Los cinco
+centros comparados coinciden exactamente con su referencia. También pasan
+40 casos de ciclo de vida y 488 casos del compositor de ventanas con
+AddressSanitizer y UndefinedBehaviorSanitizer. Los recorridos emparejados
+comprueban 6.801 fotogramas del castillo y 3.506 del coche.
+[Informe de 0.10 y reproducción](../validation/ANDROID_0.10_VALIDATION.md).
 
-## Aclaración del menú incluida en 0.9.1
+Estas comprobaciones no sustituyen una prueba física de 0.10. El reporte de
+Edwin del 18 de octubre de 2026 sobre su **Google Pixel 7 Pro** corresponde
+al APK **0.9.1**, con el campo de visión original. No se traslada a la
+panorámica, la rotación o el rendimiento de esta nueva versión.
 
-La ayuda del ajuste se ha aclarado en español, inglés y portugués: desactivado
-conserva 3:2 con bandas; activado llena el área de juego y puede deformar la
-imagen, sin mostrar más escenario. Se mantienen el nombre de la casilla y la
-preferencia guardada.
+## Instrucciones para 0.9 y 0.9.1
 
-Los textos nuevos y la corrección del escalador se han verificado en el APK
-`sma3-recomp-0.9.1-aspect-arm64.apk`. El APK 0.9 publicado conserva su ayuda
-anterior. Ninguna de estas dos versiones incorpora el prototipo panorámico.
-[Notas de 0.9.1 y publicación manual](releases/v0.9.1-experimental.md).
+En esas versiones, abre **Atrás → Imagen → Estirar a pantalla completa**
+y desactiva la casilla para conservar 3:2. Activarla llena el área de juego
+y puede deformar el mismo fotograma. **Ninguna de las dos incluye panorámica
+real.** La ayuda aclarada en ES/EN/PT y la corrección de redondeo están en
+0.9.1; el APK 0.9 conserva sus textos y escalador anteriores.
+[Notas de 0.9.1](releases/v0.9.1-experimental.md).

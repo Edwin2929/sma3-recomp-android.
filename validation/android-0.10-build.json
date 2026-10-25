@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "recorded_at_utc": "2026-10-25T04:33:18+00:00",
+  "scope": "Android build and package verification; physical-device execution and performance are not covered.",
+  "artifact": {
+    "file_name": "sma3-recomp-0.10-panorama-arm64.apk",
+    "bytes": 31786143,
+    "sha256": "e0ae528ee04cf1fdb17c9100fc49d18b2d4c8b581bdf8787cffb05ae4aa447d2"
+  },
+  "application": {
+    "application_id": "org.sma3.recomp.experimental",
+    "version_code": 11,
+    "version_name": "0.10-panorama-experimental",
+    "min_sdk": 28,
+    "target_sdk": 35,
+    "abi": "arm64-v8a"
+  },
+  "source": {
+    "project_base_commit": "bf83a2685639fd8b6eca05a6de1d467e64220cef",
+    "built_from": "Working-tree production sources frozen before the final incremental assembly; exact public source hashes are recorded below.",
+    "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+    "sdl_commit": "8e28503b164d4353262ed5abf102c25fa838e4f8",
+    "engine_patch_order": [
+      {
+        "file": "patches/gbarecomp-interpolation.patch",
+        "bytes": 5749,
+        "sha256": "06d0ff62eff2c022a742aa2d6be2e563b8ee671193d7447e3c3109a5de401e66"
+      },
+      {
+        "file": "patches/gbarecomp-controls.patch",
+        "bytes": 4760,
+        "sha256": "943dbbdcf3fd6a87bd32b75fc98909a58a4f3b3258b71d000fac22deb6b430ea"
+      },
+      {
+        "file": "patches/gbarecomp-localization.patch",
+        "bytes": 686,
+        "sha256": "e8278231e53514ec71fc23188a7faa16b3a117e23484d56c1413b2bfdfb89a3a"
+      },
+      {
+        "file": "patches/gbarecomp-touch-design.patch",
+        "bytes": 1633,
+        "sha256": "57b402afc07da1f48d7cab147434748702b0ee2e2dfebc4dff8f0838aadd1407"
+      },
+      {
+        "file": "patches/gbarecomp-widescreen-objects.patch",
+        "bytes": 2494,
+        "sha256": "1f4bec37e78adc366df4f62a50e24bb5d5a60dfc8b457fbb1a8e48746908caea"
+      },
+      {
+        "file": "patches/gbarecomp-widescreen-window.patch",
+        "bytes": 8731,
+        "sha256": "1b8c36450cdb9f4dc57e841e08fc01ea96c24200c1e4607efa54b64845b22d47"
+      },
+      {
+        "file": "patches/gbarecomp-panorama-android.patch",
+        "bytes": 1656,
+        "sha256": "491e7e7f4d9ac045d93df5ea0706f3c2585618ab1cada7b53b28dcc93a63e64c"
+      }
+    ],
+    "project_input_hashes": {
+      "CMakeLists.txt": {
+        "bytes": 4461,
+        "sha256": "333506ae7a7a9023871cf49385584d9005577e849c2d89f0744739e43fdc0e97"
+      },
+      "generated-project/CMakeLists.txt": {
+        "bytes": 701,
+        "sha256": "67527ffab37d82fffec1e9b2a3f3487de09fc73680d4b8f0df8ac9d488010765"
+      },
+      "runtime.toml": {
+        "bytes": 226,
+        "sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+      },
+      "android/build.gradle": {
+        "bytes": 73,
+        "sha256": "c3c0cf04da0fc239f391c774554d97d890018ab6e37e87cc62f6070d0c8c9909"
+      },
+      "android/settings.gradle": {
+        "bytes": 271,
+        "sha256": "4ea5bbee317d02895b28fb63495b052d67a83e6f89f3e647b8ddc343464554e5"
+      },
+      "android/app/build.gradle": {
+        "bytes": 1601,
+        "sha256": "27b330aa242cabd12748e518895eb2ec934a917f2e2b63804e0f6d0dcb22db32"
+      },
+      "android/AndroidManifest.xml": {
+        "bytes": 3561,
+        "sha256": "9516d070d634d0abbf094ef133db7fbe7c1008e394c2d99503cf453a7985d8a5"
+      },
+      "tools/apply_interpolation_patch.py": {
+        "bytes": 1761,
+        "sha256": "caa3c2acd35f17b9394ab60ef94a9f27aa84a0c6fa7f0a221f45d6345af9d325"
+      },
+      "src/controller_options.h": {
+        "bytes": 352,
+        "sha256": "bc4d6af3006c3e83d3b90cd7dd0ded33783fe254e2afc8aa69e1bfd1ce03cf43"
+      },
+      "src/frame_interpolation.h": {
+        "bytes": 1214,
+        "sha256": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897"
+      },
+      "src/frame_interpolation_jni.cpp": {
+        "bytes": 2255,
+        "sha256": "5f407df4c7719d848bfb05be596a97bddbd4a1fd283d81d18238392286741248"
+      },
+      "src/image_options.h": {
+        "bytes": 588,
+        "sha256": "4f451e3778bfdb64748a6e2c3322d183af722524553207c40afbfbc907c511d5"
+      },
+      "src/localization.cpp": {
+        "bytes": 1820,
+        "sha256": "a1d4c3664465a6cf8a01be39bfa10857fb69c396bb05ac5add81c4d5f4332b18"
+      },
+      "src/localization.h": {
+        "bytes": 238,
+        "sha256": "b0570acdb82bc5876911f76e3a438e72efed1edb418f3cd018070d6a4022199a"
+      },
+      "src/localization_data.h": {
+        "bytes": 138737,
+        "sha256": "a41582d5a4502b18923d152044c7be7f6c8ac58950a1fee2c2fdb54705de4a3b"
+      },
+      "src/main.cpp": {
+        "bytes": 3786,
+        "sha256": "e26938cf47986f9e0f8d1c9da6876c0bcd4a0bf84ab0c9c7f1ee721f0b570b54"
+      },
+      "src/morph_dispatch.cpp": {
+        "bytes": 1831,
+        "sha256": "dafa5302b5cfa2b45c7290f86d0a1b279a87c64f37337720074ab7c7b2057dd0"
+      },
+      "src/overlay_dispatch.cpp": {
+        "bytes": 3655,
+        "sha256": "0eacc1961d6d008cc2af034e44e2418533cecca710ee62fb6b84ef9dd10d06e3"
+      },
+      "src/ram_dispatch.cpp": {
+        "bytes": 2566,
+        "sha256": "b1f6299a8a4a844cea1c9175fd72a2edb6430279528391e329d694bea3a3e779"
+      },
+      "src/touch_layout.h": {
+        "bytes": 2270,
+        "sha256": "e775782019b940043aab6c4c2b93a9c9825a5ba546cf83649c8dd9a1fcfcec2f"
+      },
+      "src/video_scaler.h": {
+        "bytes": 3318,
+        "sha256": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f"
+      },
+      "src/widescreen.cpp": {
+        "bytes": 13343,
+        "sha256": "fd046b04faebb3e39b2367f2a99cf6773065a04f6239522eca20695e790ece51"
+      },
+      "src/widescreen.h": {
+        "bytes": 319,
+        "sha256": "ad1e68bd36153831c70a29a1706bf9b0fcdf3dcd24f04234bb2c490e6a1759cb"
+      },
+      "src/widescreen_bounds.cpp": {
+        "bytes": 112,
+        "sha256": "8c6076f77105cf9a82b28abaebe4b7402f8de908f74dad3a711b1749f5eca3cc"
+      },
+      "src/widescreen_bounds.h": {
+        "bytes": 190,
+        "sha256": "007671cb18dd031ea63ce46e52eeddd13b2a48c5dc500aa656da581f9d27da3c"
+      },
+      "src/widescreen_car.h": {
+        "bytes": 2739,
+        "sha256": "7fee9d50c5290abc234e4f2ae72f2db30545868c389fdee94591094d8d2b3d22"
+      },
+      "src/widescreen_components.h": {
+        "bytes": 4245,
+        "sha256": "bf98712a80bce208aa074bba8d042daf2459eb400a729b634bc18310f93624df"
+      },
+      "src/widescreen_hazards.h": {
+        "bytes": 7665,
+        "sha256": "78bb4b040097b2206954a9b320c24eeefb95527a3093d39dca71892a9514e304"
+      },
+      "src/widescreen_objects.h": {
+        "bytes": 2744,
+        "sha256": "e9748a9bf72a427f84dd99918a43123db81ce43bfd8afe081e58b200a936d95a"
+      },
+      "src/widescreen_rotating.h": {
+        "bytes": 11928,
+        "sha256": "5e93818ec5fcf2a0e5f0d6da5239681819813cc4fb46287b9aa4aab273cc39c3"
+      },
+      "src/widescreen_strips.h": {
+        "bytes": 6202,
+        "sha256": "2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b"
+      },
+      "src/widescreen_tiles.h": {
+        "bytes": 2083,
+        "sha256": "affce67e442b6194aaa2e9b0ff1d5a663c7559efe65a89a779ee0cd746abcd5d"
+      },
+      "src/widescreen_ui.h": {
+        "bytes": 3400,
+        "sha256": "6a1561342ef2250b0e7a0373fbdc983b62c420bca2eafc1ae770ce086dce5164"
+      },
+      "src/widescreen_window.h": {
+        "bytes": 3454,
+        "sha256": "1b9b32ec27a421d3111b67cc25e26fe465f99195282412395049e541f522d35f"
+      },
+      "android/java/org/gbarecomp/GbaGameActivity.java": {
+        "bytes": 36001,
+        "sha256": "74ab0225009252ab061876f5b916e870616c87c1cd218db3587281b16cf04fa0"
+      },
+      "android/java/org/gbarecomp/GbaGameConfig.java": {
+        "bytes": 2709,
+        "sha256": "facd0bbf3fc2c87a180be48888c19da2858df43ef48b85704c1d9ff286d665fc"
+      },
+      "android/java/org/gbarecomp/GbaNative.java": {
+        "bytes": 1728,
+        "sha256": "1c44215b26d7d27fdbeed7255acf734db8281069684ffd83093ff44a91da8865"
+      },
+      "android/java/org/gbarecomp/GbaSetupActivity.java": {
+        "bytes": 22162,
+        "sha256": "49c12be22dfb8b62bdb2b09c0d1f601349e7aae29f738c801d2d65311a59934e"
+      },
+      "android/java/org/gbarecomp/TouchDesignEditor.java": {
+        "bytes": 7151,
+        "sha256": "4fe4144ced49efaffbd1b0c55d83b8a151f97431a203cd963e1d775a2f1c6474"
+      }
+    },
+    "patched_engine_input_hashes": {
+      "src/runtime/host_platform.cpp": {
+        "bytes": 5241,
+        "sha256": "1cca1e11576efb7c68229791803b725842da0703a172cb08142ce49187c089b8"
+      },
+      "src/runtime/host_platform.h": {
+        "bytes": 3117,
+        "sha256": "47380b1a0155b7572a2297ee48294c9d8d0b5b52751893cd599784d09dd75db2"
+      },
+      "src/runtime/host_window.cpp": {
+        "bytes": 139531,
+        "sha256": "073fcd8e7ac14ea1d0be2c928768ad832c9755241d71ddf3fed32c25a3ec8402"
+      },
+      "src/runtime/runtime.cpp": {
+        "bytes": 198811,
+        "sha256": "552a61fb6af953233df6b97de2975741773bfff7f47be5690a4000d0f81a4550"
+      },
+      "src/runtime/runtime.h": {
+        "bytes": 17995,
+        "sha256": "ce133f0a4f922f7c42beda5cd2160df25cd275df2f8751e2ab73f9846e49ea90"
+      },
+      "src/gba/gba_ppu.cpp": {
+        "bytes": 121423,
+        "sha256": "f6dcaca3528fd2fd5a01df9f801d73b30874a592d5e3672fa3a82fbf87fabc8b"
+      },
+      "src/gba/gba_ppu.h": {
+        "bytes": 16043,
+        "sha256": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce"
+      },
+      "platform/android/gbarecomp-app.gradle": {
+        "bytes": 12845,
+        "sha256": "9a6dc44c69efb1814d6cfc80bc15d456536807e25ef80227254c47b715e31e52"
+      },
+      "platform/android/cpp/CMakeLists.txt": {
+        "bytes": 1151,
+        "sha256": "2052e1c3b623dd2284cce7db49b62ff046e1ae0c90ac30eee1e0162b4dd1a748"
+      }
+    },
+    "private_generated_declarations": {
+      "bytes": 2696443,
+      "sha256": "5c31c0317e95fbc42bb8ab9aa0ae4705fab896415f7d7f62b0d984b4f333321b"
+    },
+    "generated_sources_regenerated_from_rom_bios_this_run": false,
+    "generated_sources_reused_and_freshly_compiled_for_arm64": true
+  },
+  "build": {
+    "working_directory": "android",
+    "command": [
+      "gradle",
+      "--no-daemon",
+      "--max-workers=2",
+      "-PgbaAbis=arm64-v8a",
+      "-PgbaNativeJobs=2",
+      ":app:assembleDebug"
+    ],
+    "gradle_variant": "debug",
+    "android_debuggable": true,
+    "native_build_type": "Release",
+    "native_compiler_jobs": 2,
+    "gradle_max_workers": 2,
+    "actual_cmake_cache_flags": {
+      "ANDROID_ABI": "arm64-v8a",
+      "CMAKE_BUILD_TYPE": "Release",
+      "SMA3_PANORAMA": "ON",
+      "SMA3_WIDESCREEN_DIAGNOSTICS": "OFF",
+      "SMA3_PREBUILT_GAME": ""
+    },
+    "prebuilt_game_archive_used": false,
+    "generated_game_translation_units": 66,
+    "generated_game_shards": 64,
+    "stages": [
+      {
+        "phase": "fresh_arm64_source_build",
+        "result": "PASS",
+        "reported_duration_seconds": 374,
+        "actionable_tasks": 37,
+        "executed_tasks": 37,
+        "up_to_date_tasks": 0,
+        "private_log_basename": "android-build-010-attempt01.log",
+        "log_sha256": "4b34d849d0549dd91eeb801ea8471236323cfafeabf051b144f13338141ae18a"
+      },
+      {
+        "phase": "final_source_incremental_assembly",
+        "result": "PASS",
+        "reported_duration_seconds": 12,
+        "actionable_tasks": 37,
+        "executed_tasks": 6,
+        "up_to_date_tasks": 31,
+        "private_log_basename": "android-build-010-final.log",
+        "log_sha256": "a9a1480c4775b0b55f5fb4396a6c39a125f32ec182ad9f407d0ef88d20142206"
+      },
+      {
+        "phase": "clean_packager_state_final_assembly",
+        "result": "PASS",
+        "reported_duration_seconds": 8,
+        "actionable_tasks": 37,
+        "executed_tasks": 5,
+        "up_to_date_tasks": 32,
+        "private_log_basename": "android-build-010-clean-package-02.log",
+        "log_sha256": "63b3525338cc8ea336306d27c486fe222e1ddb118a76a01b6b99acddd0b16f4e"
+      }
+    ],
+    "nonfatal_warnings": "Unused generated-code variables and an upstream SDL deprecated sensor API were reported during fresh compilation."
+  },
+  "toolchain": {
+    "gradle": "8.9",
+    "android_gradle_plugin": "8.7.3",
+    "jdk": "17.0.21+9",
+    "sdk_platform": "android-35",
+    "compile_sdk": 35,
+    "build_tools": "35.0.0",
+    "ndk": "27.1.12297006",
+    "cmake": "cmake version 3.22.1-g37088a8",
+    "ninja": "1.10.2",
+    "clang": "Android (12285214, +pgo, +bolt, +lto, +mlgo, based on r522817b) clang version 18.0.2 (https://android.googlesource.com/toolchain/llvm-project d8003a456d14a3deb8054cdaa529ffbf02d9b262)",
+    "apksigner": "0.9",
+    "download_sha256": {
+      "jdk": "8b9b611d917e3dfd8419d3566b5949226f69b052fed7e109c1368add1dfe8711",
+      "gradle": "d725d707bfabd4dfdc958c624003b3c80accc03f7037b5122c4b1d0ef15cecab",
+      "android_command_line_tools": "2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258"
+    }
+  },
+  "archive_verification": {
+    "archive_bytes": 892414212,
+    "archive_sha256": "25f817abbfe806d11dc698cf4aa90151384e3f5fdca8ecaac8e8f635afff3bc8",
+    "elf_members": 66,
+    "aarch64_members": 66,
+    "declared_functions": 49507,
+    "defined_functions": 49507,
+    "missing_functions": 0,
+    "bounds_hook_symbols_present": true,
+    "platform": "Android arm64-v8a",
+    "fresh_source_compilation": true,
+    "recovered_archive_reused": false,
+    "scope": "Architecture, members, generated function definitions and bounds references only; not gameplay or performance."
+  },
+  "signing": {
+    "certificate_sha256": "2390f57b35d436ff37b2a303189d18d463c8f5114a5ff809b2f2e6df60f58da3",
+    "v2_signature_verified": true,
+    "original_signing_key_reused": true,
+    "same_certificate_as_prior_0_9_1": true,
+    "prior_apk": {
+      "name": "sma3-recomp-0.9.1-aspect-arm64.apk",
+      "sha256": "3885b7447455fd16c4af8882de88175d5d1efc361b7e9b618708839772d97d18",
+      "bytes": 31759347
+    },
+    "prior_version_code": 10,
+    "new_version_code": 11,
+    "in_place_upgrade_identity_checks_pass": true,
+    "in_place_upgrade_on_physical_device_tested": false
+  },
+  "package_verification": {
+    "crc_verified": true,
+    "zipalign_4_verified": true,
+    "native_libraries": {
+      "libSDL2.so": {
+        "sha256": "b1ff858220e3e3dff517ab87a1ee46064125cf122d8de5f183556dac4639b141",
+        "bytes": 1264080,
+        "elf_machine": "AArch64",
+        "matches_build_output": true
+      },
+      "libc++_shared.so": {
+        "sha256": "3e852764502d06e0cf1080d532ae7c608b7649d946a3a9d7e84e3d4b7d683214",
+        "bytes": 1292904,
+        "elf_machine": "AArch64",
+        "matches_build_output": true
+      },
+      "libmain.so": {
+        "sha256": "53691bf3f09bbda7e57263bb8f7e888634c5f617e9bf6d203ac4b2d816c9e0d2",
+        "bytes": 100202240,
+        "elf_machine": "AArch64",
+        "matches_build_output": true
+      }
+    },
+    "native_needed_libraries": [
+      "libSDL2.so",
+      "libm.so",
+      "libc++_shared.so",
+      "libdl.so",
+      "libc.so"
+    ],
+    "dex_filenames_contiguous": true,
+    "dex_files": [
+      "classes.dex",
+      "classes2.dex",
+      "classes3.dex"
+    ],
+    "jni_dex_descriptor": "(II)V",
+    "jni_native_export_present": true,
+    "image_mode_labels_es_en_pt": true,
+    "activity_orientation": "fullUser",
+    "activities_with_full_user_orientation": 2,
+    "extract_native_libs": true,
+    "assets": [
+      "assets/payload/variants/sma3-usa/game.toml"
+    ],
+    "raw_rom_bios_files_packaged": false,
+    "signing_key_or_player_save_files_packaged": false,
+    "runtime_config_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+    "zip_entries": {
+      "META-INF/com/android/build/gradle/app-metadata.properties": {
+        "bytes": 56,
+        "compressed_bytes": 52,
+        "sha256": "7dcf130d4874270e450dec50649304c0f56f8c866e2bd002530aa66413d88c2d"
+      },
+      "classes.dex": {
+        "bytes": 1632,
+        "compressed_bytes": 1632,
+        "sha256": "b1462668d9a57f28e05efbe95e9563ce64e2841255b6e21e697dbd86062a5d2a"
+      },
+      "classes2.dex": {
+        "bytes": 97396,
+        "compressed_bytes": 97396,
+        "sha256": "10088cb89b6e8dd8a46fc059e2a0f4cc8bf48b7ced44103ae2f894c29bdb89b3"
+      },
+      "classes3.dex": {
+        "bytes": 80680,
+        "compressed_bytes": 80680,
+        "sha256": "95051685f721db0ccfe7528b8678dd000abdea8160b1a34cb1849dcefab799c3"
+      },
+      "lib/arm64-v8a/libSDL2.so": {
+        "bytes": 1264080,
+        "compressed_bytes": 535757,
+        "sha256": "b1ff858220e3e3dff517ab87a1ee46064125cf122d8de5f183556dac4639b141"
+      },
+      "lib/arm64-v8a/libc++_shared.so": {
+        "bytes": 1292904,
+        "compressed_bytes": 450936,
+        "sha256": "3e852764502d06e0cf1080d532ae7c608b7649d946a3a9d7e84e3d4b7d683214"
+      },
+      "lib/arm64-v8a/libmain.so": {
+        "bytes": 100202240,
+        "compressed_bytes": 30610795,
+        "sha256": "53691bf3f09bbda7e57263bb8f7e888634c5f617e9bf6d203ac4b2d816c9e0d2"
+      },
+      "assets/payload/variants/sma3-usa/game.toml": {
+        "bytes": 226,
+        "compressed_bytes": 183,
+        "sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+      },
+      "AndroidManifest.xml": {
+        "bytes": 6348,
+        "compressed_bytes": 1905,
+        "sha256": "f682f6c02392932ed6c5f3096a9839cc45c28be1dbddffd7fe8312c125eaba28"
+      },
+      "res/mipmap/ic_launcher.xml": {
+        "bytes": 708,
+        "compressed_bytes": 353,
+        "sha256": "34a076e8bc3c04ac77f02aa5422272540aa86944172d099f944d3ad60427e509"
+      },
+      "resources.arsc": {
+        "bytes": 952,
+        "compressed_bytes": 952,
+        "sha256": "bd04c5192a2f76983ba7e36ff61343499f5095a9a0a96b65e6bfa721e9d90c12"
+      }
+    },
+    "private_verification_output_sha256": {
+      "badging.txt": "840627381786eb1d27b97be4a6a045dc95bc1b7b2b3f4e1c8a4da1cce0cbace1",
+      "dynamic-symbols.txt": "a50b7cc6d6d07c8598883590d4333fd9528a4c4ef0485c734fdd177e22d19333",
+      "elf-dynamic.txt": "19eec44a7fde2a5035345c3c6495fe555c8e2052dada336047bea3f1f708be15",
+      "manifest.txt": "d778de1c42647346ad22f7f97130a880ee8f632c98bd45f65edb3d3ecf2da3d0",
+      "signature.txt": "d7ef42d7af6257e8e787b19831181f2afcb6b94c1a7879c084d0e3bde115dc36",
+      "zipalign.txt": "82d4875a3367bbcf8d94c652a78d083cb554d7eba3b5421c0131d39b281bad7a",
+      "verification.json": "78476eb2f734f0dc09928ea1f6e04d71146c5ab7b092ddb8009068293d0119ea"
+    }
+  },
+  "packaging_correction": {
+    "reason": "Incremental APK packaging retained unused ZIP space. A missing output alone also retained stale DEX renamer state, so both output and incremental package state were reset before the final Gradle assembly.",
+    "final_compact_package_uses_original_entries_and_names": true,
+    "all_uncompressed_entries_match_final_incremental_candidate": true,
+    "compared_entry_count": 11,
+    "final_signature_crc_zipalign_dex_and_native_checks_repeated": true,
+    "intermediate_candidates_preserved_privately": true,
+    "delivered_bytes": 31786143
+  },
+  "limitations": {
+    "physical_device_tested": false,
+    "frame_rate_measured": false,
+    "pixel_7_pro_android_0_10_installation_or_upgrade_tested": false,
+    "user_reported_earlier_apk_success_is_not_android_0_10_validation": true,
+    "gameplay_scope": "Production host rendering and bounded gameplay regression results are documented separately in ANDROID_0.10_VALIDATION.md; this report establishes ARM64 build and package integrity only."
+  }
+}

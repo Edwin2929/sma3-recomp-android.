@@ -1,0 +1,189 @@
+{
+  "profile": "android-0.10-native-final-v1",
+  "result": "pass",
+  "scope": "Bounded native host regression sessions for the Android 0.10 source. Fixed-width diagnostics exercise the shared renderer at 240 and 356 pixels. Actual Android installation, lifecycle and performance are not qualified by this report. Production callback checks have separate evidence.",
+  "runner": {
+    "path": "build-android010-host/sma3_runner",
+    "sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+    "bytes": 138548592
+  },
+  "sessions": [
+    {
+      "session": "castle-240",
+      "width": 240,
+      "execution_complete": true,
+      "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+      "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+      "configuration_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "observations": 6802,
+      "captures": 250,
+      "native_coverage": "FULLY_STATIC",
+      "dispatch_misses": 0,
+      "interpreted_instructions": 0,
+      "healed_native": 0,
+      "raw_object_gap_messages": 0,
+      "evidence_sha256": {
+        "run-settings.json": "3988d2dbc3244d6f421803becbb6e85af142e9e4a544e529b4c064b8e5580826",
+        "run-status.json": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "actions.json": "cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da",
+        "session.json": "633d32eb1154337639ce89c33692b90be77cf6d4c0faa89a6c4a57a2c49d6d46",
+        "trace.json": "d7bbdaa5b3e25c7e7101c6b8fef5736730f6c90c0e61a55325e3c00c82ed00be",
+        "captures.json": "2c1174f983e71ac4be66b2d109ee2bc69c55349a5026fda092636c76035d67f3",
+        "run.log": "f62f63709f3d0efa083269283d981b097376e91fa0828c9ce9246d263cf5c634"
+      }
+    },
+    {
+      "session": "castle-356",
+      "width": 356,
+      "execution_complete": true,
+      "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+      "entry_state_sha256": "02f131a013d8bc2c352b05502ce0f420136e6736c8b4864cbfb51c4307de11f2",
+      "configuration_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "observations": 6802,
+      "captures": 250,
+      "native_coverage": "FULLY_STATIC",
+      "dispatch_misses": 0,
+      "interpreted_instructions": 0,
+      "healed_native": 0,
+      "raw_object_gap_messages": 0,
+      "evidence_sha256": {
+        "run-settings.json": "621d9cab0d70cd3b16235317fa939ff25f3b18f00dc36902fd71c3e7cc53c579",
+        "run-status.json": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "actions.json": "cf4832fc91a88ed7b4add4d9c3d6a6ed6c08e00e0e4d850fbe066c3f96d347da",
+        "session.json": "633d32eb1154337639ce89c33692b90be77cf6d4c0faa89a6c4a57a2c49d6d46",
+        "trace.json": "d7bbdaa5b3e25c7e7101c6b8fef5736730f6c90c0e61a55325e3c00c82ed00be",
+        "captures.json": "2c1174f983e71ac4be66b2d109ee2bc69c55349a5026fda092636c76035d67f3",
+        "run.log": "3c5a75813f4f7e6578a49d15e01b00e54cd9f6318d5060e73cce6505ebfe0efd"
+      }
+    },
+    {
+      "session": "car-240",
+      "width": 240,
+      "execution_complete": true,
+      "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+      "entry_state_sha256": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8",
+      "configuration_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "observations": 3507,
+      "captures": 61,
+      "native_coverage": "FULLY_STATIC",
+      "dispatch_misses": 0,
+      "interpreted_instructions": 0,
+      "healed_native": 0,
+      "raw_object_gap_messages": 0,
+      "evidence_sha256": {
+        "run-settings.json": "e48ec0fa08a1a4ebc05a503e2d00434d4ec699b8f2c13c4f6996e8ac49d28e65",
+        "run-status.json": "f48362be378b71fbaee8283b4132529233dfd3d34bdfd78cc74f61921c94ec75",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "actions.json": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+        "session.json": "b41fc73a5586cf59a72e2a0947c861f93d828e425341ccbdfc90927cc860d30f",
+        "trace.json": "e1f9b6558219153e1b6911a9443377343a139b3ba96d608329335ac72cee85b9",
+        "captures.json": "2242b6eed998a0a0677ab5f5083546b79e3307d7854d1e73cd478bcbdd148936",
+        "run.log": "95e9e64cf16d08cdd833571f3fe7dff02b5fc9b0661fa2d92c4b0577da629061"
+      }
+    },
+    {
+      "session": "car-356",
+      "width": 356,
+      "execution_complete": true,
+      "runner_sha256": "f01eddcfa2875a9905c9f5403ddebbfdeac68effe3bb1daed339ff498abd8e16",
+      "entry_state_sha256": "7c95f7bc4faac86315a10913271bb4d4196feb0c371bbeb2c316835010a44db8",
+      "configuration_sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "observations": 3507,
+      "captures": 61,
+      "native_coverage": "FULLY_STATIC",
+      "dispatch_misses": 0,
+      "interpreted_instructions": 0,
+      "healed_native": 0,
+      "raw_object_gap_messages": 0,
+      "evidence_sha256": {
+        "run-settings.json": "e7ec783d5cc9592f2a2025815d53b41b4773d2b4cdb5eca338d8e6cb5bc0e5c6",
+        "run-status.json": "f48362be378b71fbaee8283b4132529233dfd3d34bdfd78cc74f61921c94ec75",
+        "native-coverage.json": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "actions.json": "85eff0b7b9a86712579d0202221cd14c2d3aae8ecb060af5a6b0fbb28719253a",
+        "session.json": "b41fc73a5586cf59a72e2a0947c861f93d828e425341ccbdfc90927cc860d30f",
+        "trace.json": "e1f9b6558219153e1b6911a9443377343a139b3ba96d608329335ac72cee85b9",
+        "captures.json": "2242b6eed998a0a0677ab5f5083546b79e3307d7854d1e73cd478bcbdd148936",
+        "run.log": "ae58073f3faae9c8c76d9c5fe2db5a21b429337a2ba3b73d6a2e26034d7c16c5"
+      }
+    }
+  ],
+  "paired_results": {
+    "castle": {
+      "frames": 6801,
+      "observations_per_width": 6802,
+      "equal_central_images": 250,
+      "equal_state_snapshots": 251,
+      "natural_pipe_transitions": 2,
+      "complete_castle_post_pipe_progress_pass": true,
+      "raw_gap_frames": 0
+    },
+    "car": {
+      "frames": 3506,
+      "observations_per_width": 3507,
+      "equal_central_images": 61,
+      "equal_state_snapshots": 62,
+      "transformation_sequence": [
+        0,
+        2,
+        0
+      ],
+      "complete_cycle_pass": true,
+      "raw_gap_frames": 0
+    }
+  },
+  "same_width_baseline_regression": {
+    "baseline": "window-mask-20261023",
+    "equal_full_images": 622,
+    "equal_state_snapshots_including_ppu": 626,
+    "state_exception": "Only 8 inactive RTC wall-clock bytes; inactive flag and exact BUS0 layout checked.",
+    "trace_equal": true,
+    "settings_equal_except_runner": true,
+    "report": "validation/android-0.10-native-source-regression.json"
+  },
+  "margin_presence": {
+    "method": "Count RGB pixels other than (0,0,0) outside centered columns 58..297 in the 356x160 capture. Presence check only, not a proof of correctness of every margin object.",
+    "castle": {
+      "images_with_nonblack_margins": 228,
+      "images_total": 250,
+      "last_capture_nonblack_margin_pixels": 18491,
+      "margin_pixels_per_capture": 18560
+    },
+    "car": {
+      "images_with_nonblack_margins": 61,
+      "images_total": 61,
+      "last_capture_nonblack_margin_pixels": 17911,
+      "margin_pixels_per_capture": 18560
+    }
+  },
+  "report_sha256": {
+    "widescreen-castle-android-0.10.json": "a1e507a5a975a52cbafcb6a14c900c459579e64b7a6269f41fb8d38bb5f468e4",
+    "widescreen-car-android-0.10.json": "e516f0e18444df912b6a748d82c6ed7703da83ce7f8d71b23af8156c8dd4b292",
+    "android-0.10-native-source-regression.json": "542b84dfe5b769a993bc224063fec0d6fed309034ab540414c5bcfbe14172ee3"
+  },
+  "commands": {
+    "castle_session": "python3 validation/run_panorama_session.py --runner build-android010-host/sma3_runner --rom PRIVATE_ASSETS/game.gba --bios PRIVATE_ASSETS/bios.bin --state PRIVATE_ASSETS/castle-entry.state --actions validation/panorama-castle-post-pipe-actions.json --castle-status --width WIDTH --output PRIVATE_RUNS/castle-WIDTH",
+    "car_session": "python3 validation/run_panorama_session.py --runner build-android010-host/sma3_runner --rom PRIVATE_ASSETS/game.gba --bios PRIVATE_ASSETS/bios.bin --state PRIVATE_ASSETS/car-entry.state --actions validation/panorama-car-actions.json --expectations validation/car-cycle-expectations.json --width WIDTH --output PRIVATE_RUNS/car-WIDTH",
+    "castle_comparison": "python3 validation/compare_castle_post_pipe_progress.py PRIVATE_RUNS/castle-240 PRIVATE_RUNS/castle-356 NEW_REPORT.json --contract validation/castle-post-pipe-expectations.json",
+    "car_comparison": "python3 validation/compare_panorama_sessions.py PRIVATE_RUNS/car-240 PRIVATE_RUNS/car-356 NEW_REPORT.json --expectations validation/car-cycle-expectations.json",
+    "widths": [
+      240,
+      356
+    ]
+  },
+  "validator_sha256": {
+    "validation/run_panorama_session.py": "91123c46d016276233f7ad672a3107d82a4b0ac81f88584358df874bfdffdebd",
+    "validation/compare_panorama_sessions.py": "d781cf2921d22f737e0967cb96edc9ab91f8947443c1b2f82cdfcdee1372a013",
+    "validation/compare_castle_post_pipe_progress.py": "3ab612785b70d916e77b3dfe870a906b6d909f76d9384a9df77957313b0c8ec6",
+    "validation/castle_route_checks.py": "0e6b4b0c5472c328991daca1278d630214ffa23c98555426a5bbb7f8714b360c",
+    "validation/panorama_session_checks.py": "34ace4865354bcfb4a99fbe3d36ea2ca25043471dde02e4998176614391a8ce7",
+    "validation/make_level_fixture.py": "41e02d869d9dbb3ddd004c1f61923981dbc303704d48ca97a6d386684a77c29c"
+  },
+  "limitations": [
+    "Initial fixture entries are synthetic; only the later played route and transformation cycle are qualified.",
+    "The castle route is bounded; entire levels, bosses, other transformations and expanded spawning remain outside the contract.",
+    "No ROM, BIOS, save state or game image is included in this public aggregate.",
+    "Pixel equality and state equality apply to recorded checkpoints; per-frame trajectory equality applies to recorded observations."
+  ]
+}

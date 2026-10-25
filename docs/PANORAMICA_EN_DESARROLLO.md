@@ -1,14 +1,76 @@
-# Panorámica real: prototipo, aún sin APK
+# Panorámica real — Android 0.10 experimental
 
-Objetivo: sustituir el estiramiento por una vista que muestre más escenario,
-mantenga las proporciones y se adapte a la pantalla del teléfono.
+**0.10 integra la vista panorámica opcional en Android.** El APK
+`sma3-recomp-0.10-panorama-arm64.apk` se compila con esa función y conserva
+la firma de 0.9/0.9.1. Su entrega al mantenedor y su publicación manual en
+GitHub Releases son pasos distintos: la release pública «Descarga» sigue
+conteniendo 0.9 al preparar esta versión.
+[Notas e instalación de 0.10](releases/v0.10-experimental.md) ·
+[Informe completo de compilación y validación](../validation/ANDROID_0.10_VALIDATION.md).
 
-La versión Android entregada al mantenedor es 0.9.1, con la corrección del
-escalado 3:2 y la ayuda del menú actualizada. El APK publicado en la release
-«Descarga» sigue siendo 0.9 mientras se prepara la subida manual de 0.9.1.
-La panorámica real **no está activada en ninguna de estas versiones** y
-no demuestra todavía pantalla completa correcta en todas las escenas ni
-rendimiento a 120 FPS.
+## Activación y comportamiento de 0.10
+
+Abre **Atrás → Imagen → Panorámica (experimental)**. La opción aparece junto
+a **Original (3:2)** y **Estirar a pantalla completa**. El menú explica en
+ES/EN/PT que Original conserva los 240 × 160, Estirar deforma el mismo
+fotograma y Panorámica dibuja escenario adicional donde tiene cobertura.
+La actualización conserva la elección anterior; una instalación nueva usa
+Original y ninguna migración activa Panorámica automáticamente.
+
+El ancho lógico sigue la superficie de presentación, entre **240 y 356
+píxeles**, con altura **160**. Una superficie 3120 × 1440 calcula 347 × 160;
+2400 × 1080 calcula 356 × 160. En vertical se conserva 240 × 160 centrado.
+Puede haber bandas por el límite de ancho, el redondeo o una escena no
+admitida. `fullUser` permite la orientación del usuario en Android; la
+rotación física todavía requiere prueba en el teléfono.
+
+La vista amplia se autoriza únicamente en juego normal compatible, con un
+mapa válido, fondos habilitados reconstruibles y una observación completa
+coincidente con los objetos mostrados. Si falta esa información, vuelve a
+la vista nativa. Al cargar una partida, invalida el historial y conserva
+Original hasta reconstruir datos coherentes. WIN0/WIN1 y otras ventanas no
+cubiertas pueden mantener márgenes negros por fila. Original y Estirar
+retiran el observador de panorámica y sus proveedores.
+
+## Qué se ha comprobado para 0.10
+
+- Dos recorridos emparejados 240/356: **6.801 fotogramas del castillo**, con
+  dos transiciones naturales por tubería, y **3.506 del ciclo normal → coche
+  → normal**. Los 311 centros de imagen y 313 estados comparados coinciden;
+  no hay huecos de procedencia de objetos en esos recorridos.
+- Frente a la revisión anterior de iluminación: **622 imágenes completas y
+  626 estados conservados**, incluyendo los márgenes y el estado de PPU.
+- Siete casos de presentación de producción SDL, sin activar la ruta de
+  captura del prototipo: panorámica 347/356, vertical, Original, fuente de
+  Estirar y transición no admitida. Los cinco centros comparados coinciden
+  con su referencia y no se observa oscilación de anchura.
+- **40 casos de ciclo de vida** y **488 del compositor real de ventanas**,
+  con ASan/UBSan. Se corrigió un defecto reproducible al restaurar una
+  partida a mitad de fotograma: quedaban restos laterales de la escena
+  anterior. Ahora se limpia la superficie ampliada antes de restaurar el
+  centro nativo.
+- **169 pruebas Python** normales y con `-O`, incluida la aplicación y
+  repetición de los siete parches sobre las ocho etapas reconocidas.
+
+Los informes y las instrucciones de reproducción están reunidos en
+[ANDROID_0.10_VALIDATION.md](../validation/ANDROID_0.10_VALIDATION.md).
+La prueba del Pixel 7 Pro comunicada anteriormente por Edwin corresponde a
+**0.9.1**; no acredita la panorámica ni el rendimiento de 0.10.
+
+## Límites de esta entrega experimental
+
+**Los límites originales de aparición y dibujo de objetos no se amplían.**
+La coherencia de OAM comprueba los objetos que el juego ya decidió mostrar;
+no detecta necesariamente uno que el juego omitió fuera del encuadre
+original. Por eso pueden aparecer tarde o faltar objetos en los márgenes,
+aunque una escena tenga fondo lateral. Reducir arbitrariamente el máximo
+no demuestra que esos filtros dejen de intervenir.
+
+Queda ampliar y validar esos límites, cubrir más niveles, jefes, mensajes,
+transformaciones y ventanas, y probar instalación, rotación, segundo plano,
+controles y rendimiento en el Pixel 7 Pro. **0.10 es una compilación
+experimental utilizable para esas pruebas, no una validación del juego
+completo ni de 120 FPS.** Original (3:2) permite volver al encuadre nativo.
 
 ## Qué pueden hacer los APK 0.9 y 0.9.1
 
@@ -26,17 +88,25 @@ de 0.9.1 en un Google Pixel 7 Pro corresponde al APK con el campo de visión
 original, no a una compilación panorámica.
 Más detalles en la [guía de calidad de imagen](CALIDAD_IMAGEN.md).
 
-## Implementado
+## Base de renderizado implementada
 
 - Reconstrucción del terreno desde el mapa completo del nivel, fuera del anillo
   parcial de VRAM. Incluye las cuatro piezas de cada bloque y las máscaras de
   la capa frontal.
 - Lectura de los fondos completos, con sus desplazamientos y volteos.
 - Lecturas acotadas sin escribir RAM ni modificar CPU, temporización o estado
-  del bus. El prototipo admite hasta 356 × 160, frente a 240 × 160 originales.
+  del bus. La vista admite hasta 356 × 160, frente a 240 × 160 originales.
 - Captura de diagnóstico por fotograma y pruebas independientes del decodificador.
-- Opción CMake `SMA3_WIDESCREEN_DIAGNOSTICS`, desactivada por defecto y exclusiva
-  de escritorio. Permanece desactivada en las compilaciones Android.
+- `SMA3_PANORAMA=ON` incluye la presentación opcional en producción.
+  `SMA3_WIDESCREEN_DIAGNOSTICS` es independiente, exclusivo de escritorio y
+  permanece desactivado en Android.
+
+## Historial de investigación anterior a 0.10
+
+Los apartados siguientes conservan los avances y límites de cada fase del
+prototipo de escritorio. Las afirmaciones sobre APK no generados se refieren
+a esas fases; el estado actual de 0.10 se describe al principio. Las pruebas
+y contratos históricos no se han sustituido por los nuevos resultados.
 
 ## Reconstrucción del 23 de octubre de 2026 (UTC)
 
@@ -140,17 +210,13 @@ la ambigüedad +272/−240, datos discordantes, reinicio y capacidad de 128 obje
 Se ejecutan con AddressSanitizer y UndefinedBehaviorSanitizer. LeakSanitizer se
 desactiva por las limitaciones de inspección de procesos del entorno.
 
-## Pendiente antes de entregar el APK
+## Plan histórico previo a la integración Android
 
-1. Completar la cobertura de posiciones de objetos en todas las escenas.
-   La resolución por metadatos es conservadora: cualquier objeto no verificado
-   permanece limitado a la vista original.
-2. Ampliar y comprobar los límites de dibujo y aparición. No basta con ampliar
-   el fondo: enemigos y coleccionables deben aparecer correctamente.
-3. Probar cambios de nivel, cuadros de texto, transformaciones, jefes y modos
-   gráficos especiales. El prototipo conserva bordes en escenas no admitidas.
-4. Adaptar el ancho a la superficie de Android, integrar el ajuste de imagen y
-   medir la presentación con 120 Hz en el Pixel 7 Pro.
+El prototipo planteó completar posiciones, ampliar límites de dibujo y
+aparición, probar escenas especiales e integrar el ajuste y el ancho en
+Android. 0.10 completa la integración y añade retorno conservador a Original;
+la cobertura completa, la ampliación de aparición y las mediciones físicas
+continúan abiertas. El alcance actual se detalla al principio de esta guía.
 
 ## Puntos de investigación para continuar
 
@@ -200,8 +266,11 @@ especialmente `LevelCode.asm`, `CodeStart.asm` y `SpriteShared08049E80.asm`.
 
 El parche `gbarecomp-widescreen-objects.patch` añade el recorte por objeto al motor;
 `gbarecomp-widescreen-window.patch` añade la máscara lateral autorizada.
-Sin el diagnóstico activado, sus callbacks permanecen nulos y no habilitan
-panorámica en Android. El aplicador verifica la revisión del motor y rechaza
+En las fases anteriores a 0.10 esos callbacks solo se activaban desde el
+diagnóstico. Desde 0.10 los habilita también la opción de producción
+`SMA3_PANORAMA`; el parche `gbarecomp-panorama-android.patch` completa la
+integración y la corrección de restauración. El aplicador verifica la revisión
+del motor y rechaza
 cambios locales que no correspondan a una etapa reconocida de los parches.
 
 ## Resultado del observador sincronizado
@@ -213,7 +282,7 @@ de despacho, instrucciones interpretadas y reparación dinámica permanecen en c
 Objetos resueltos en los fotogramas 7200, 8000, 9599, 12000, 16000 y 17999:
 6, 6, 1, 3, 3 y 3 respectivamente. **La cobertura sigue siendo parcial.**
 Esto valida la ausencia de cambios observados en ese recorrido, no todos los
-objetos ni todas las transiciones. No se ha generado un APK panorámico.
+objetos ni todas las transiciones. En aquella fase todavía no se había generado un APK panorámico.
 
 ## Selección coherente de OAM
 
@@ -245,7 +314,7 @@ misma cobertura en las seis muestras. Se descartó ese añadido por no resolver
 los objetos restantes. Los activos incluyen componentes de personajes y HUD;
 no todos deben extenderse a los márgenes. Queda identificar sus rutinas de
 dibujo y ampliar los límites de los objetos pequeños y de aparición, después
-validar transiciones y Android. La panorámica todavía no está lista para un APK.
+validar transiciones y Android. En aquella fase la panorámica todavía no estaba lista para un APK.
 
 ## Límite experimental de dibujo de objetos pequeños
 
@@ -357,7 +426,7 @@ en `validation/widescreen-provenance-coverage.json`.
 **El paso 1 sigue pendiente de cobertura completa.** Resolver todos los objetos
 de estas tres capturas no demuestra todas las escenas, enemigos o efectos.
 Tampoco demuestra que el juego genere objetos fuera de sus límites originales;
-esa ampliación sigue siendo el paso 2. No se ha generado un APK panorámico.
+esa ampliación sigue siendo el paso 2. En aquella fase todavía no se había generado un APK panorámico.
 
 ## Cobertura continua: interfaz, lengua y Toadies
 
@@ -467,8 +536,8 @@ Este resultado valida un ciclo acotado desde una entrada sintética. La espera
 final demuestra que no hubo reactivación durante esos 1.200 fotogramas; no
 establece seguridad permanente bajo otras entradas. **No completa la cobertura
 de niveles, jefes ni todas las transformaciones.** La ampliación lateral de
-aparición de objetos sigue desactivada. No se ha generado un nuevo APK con esta
-validación y la panorámica real sigue ausente de Android 0.9 y 0.9.1.
+aparición de objetos sigue desactivada. Aquella validación por sí sola no generó un APK; la panorámica real sigue
+ausente de Android 0.9 y 0.9.1.
 
 ## Avance del castillo 1-4 — 18 de octubre de 2026
 
