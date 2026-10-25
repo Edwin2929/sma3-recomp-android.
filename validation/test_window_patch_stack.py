@@ -18,7 +18,7 @@ PIN = 'e7728148c6829ba526f682876430a0c9022dc6c0'
 PATCH_NAMES = ('interpolation', 'controls', 'localization', 'touch-design',
                'widescreen-objects', 'widescreen-window', 'panorama-android',
                'panorama-stability', 'image-filters', 'mod-profiles',
-               'frame-pacing', 'touch-appearance')
+               'frame-pacing', 'touch-appearance', 'render-performance')
 PATHS = tuple('src/runtime/' + name for name in
               ('host_platform.cpp', 'host_platform.h', 'host_window.cpp', 'host_window.h', 'runtime.cpp',
                'mod_runtime.cpp')) + (

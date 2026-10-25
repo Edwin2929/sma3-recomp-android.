@@ -10,6 +10,14 @@ inline std::atomic<bool> interpolation_enabled{false};
 class FrameBlend {
 public:
     void reset() { previous_.clear(); }
+    // Keep consecutive guest history without calculating an image that will
+    // not be presented. A skipped midpoint must not make the next blend use
+    // an older guest frame or a stale interpolation buffer.
+    void capture(const uint8_t* current, std::size_t size, uint64_t frame) {
+        if (size == 0) previous_.clear();
+        else previous_.assign(current, current + size);
+        frame_ = frame;
+    }
     bool prepare(const uint8_t* current, std::size_t size, uint64_t frame) {
         bool blend = previous_.size() == size && frame == frame_ + 1 && size != 0;
         if (blend) {
@@ -23,8 +31,7 @@ public:
             for (std::size_t i = 0; i < size; ++i)
                 middle_[i] = uint8_t((unsigned(previous_[i]) + current[i] + 1) / 2);
         }
-        previous_.assign(current, current + size);
-        frame_ = frame;
+        capture(current, size, frame);
         return blend;
     }
     const uint8_t* middle() const { return middle_.data(); }

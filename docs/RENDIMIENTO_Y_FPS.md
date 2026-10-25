@@ -1,4 +1,4 @@
-# Rendimiento y objetivos de 60/120 FPS — 0.10.5 beta
+# Rendimiento y objetivos de 60/120 FPS — 0.10.6 beta
 
 Abre **Atrás → Rendimiento y FPS → Objetivo de presentación** y elige
 **60 FPS** o **120 FPS · mezcla 2×**. La elección se guarda al tocarla.
@@ -14,7 +14,31 @@ La opción 120 añade imágenes de presentación; no genera 120 estados
 independientes del juego. La mezcla puede producir estelas. El código conserva
 la detección de cambios de escena para evitar mezclar imágenes incompatibles.
 
-## Qué cambia en 0.10.5
+## Optimización de 0.10.6
+
+Se corrige una regresión de 0.10.5: una imagen intermedia podía pasar por
+perfiles de color, subida de textura, filtros y controles para ser descartada
+después por llegar tarde. Ahora se comprueba el plazo **antes de preparar
+esa imagen opcional**, usando el coste observado de preparación y presentación
+y reservando tiempo para la imagen completa. Si no hay presupuesto, solo se
+conserva el historial necesario para la próxima mezcla.
+
+La imagen completa mantiene su única espera y el juego conserva su velocidad.
+Al recuperarse de un pico de carga, el presupuesto vuelve a permitir imágenes
+intermedias. No se cambian automáticamente el filtro, la resolución, el modo
+de imagen ni la preferencia de 60/120 elegidos por el usuario.
+
+También se especializan las operaciones de Scale2x/Scale3x, se evita una
+textura intermedia cuando el escalado es un múltiplo entero exacto y se
+aceleran los perfiles de color que actúan sobre cada canal por separado.
+Las rutas fraccionarias y de resolución 720p/1080p conservan su tratamiento.
+
+Las mejoras y sus mediciones se documentan en
+[PERFORMANCE_0.10.6_VALIDATION.md](../validation/PERFORMANCE_0.10.6_VALIDATION.md).
+Son comparaciones de componentes en el equipo de desarrollo; no son una
+medición de FPS del Pixel 7 Pro.
+
+## Base de temporización incorporada en 0.10.5
 
 La versión anterior preparaba y presentaba la imagen de 60 FPS antes de
 esperar el final del periodo. Si variaba el tiempo de preparación, también
@@ -70,7 +94,7 @@ presentación; no acreditan estabilidad sostenida en un Pixel 7 Pro.
 
 ## Comprobación en el teléfono
 
-1. Instala 0.10.5 sobre la versión anterior y anota la versión de Android.
+1. Instala 0.10.6 sobre la versión anterior y anota la versión de Android.
 2. Activa el ajuste de pantalla fluida/alta frecuencia del teléfono y
    comprueba su modo de ahorro de batería.
 3. Empieza con Original (3:2), filtro Equilibrado y resolución Automática.
@@ -93,7 +117,7 @@ Las pruebas de reloj simulado, puntos intermedios tardíos, cambios de modo,
 reinicios, contador y política de selección de pantalla se documentan en
 [PERFORMANCE_0.10.5_VALIDATION.md](../validation/PERFORMANCE_0.10.5_VALIDATION.md).
 La compilación ARM64 y las comprobaciones del APK están en
-[android-0.10.5-build.json](../validation/android-0.10.5-build.json).
+[android-0.10.6-build.json](../validation/android-0.10.6-build.json).
 No se dispone de una prueba física de este APK ni de una medición de su GPU Android.
 
 Referencias oficiales:

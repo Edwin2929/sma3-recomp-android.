@@ -54,6 +54,46 @@ inline bool midpoint_is_timely(std::chrono::steady_clock::time_point now,
     return period.count() > 0 && now <= next - period / 2 + period / 16;
 }
 
+// Admission control for an optional image, using observed rendering and swap
+// cost. A late image is rejected BEFORE color conversion, upload, filters and
+// control drawing. Reserve enough time after the midpoint for the complete
+// guest image too; swap/backpressure is real work even with VSync disabled.
+// A new slow sample takes effect immediately. Its conservative high-water
+// estimate decays over subsequent samples so a transient stall can recover.
+class OptionalPresentationBudget {
+public:
+    using Clock = std::chrono::steady_clock;
+    using Duration = std::chrono::nanoseconds;
+    static constexpr Duration kPreparationMargin{100000};
+    static constexpr Duration kMaximumSample{100000000};
+
+    void observe_preparation(Duration sample) noexcept { observe(preparation_, sample); }
+    void observe_swap(Duration sample) noexcept { observe(swap_, sample); }
+
+    bool permits(Clock::time_point now, Clock::time_point next,
+                 Duration period) const noexcept {
+        if (period.count() <= 0) return false;
+        const Duration preparation = preparation_ + kPreparationMargin;
+        const auto prepared = now + preparation;
+        if (!midpoint_is_timely(prepared, next, period)) return false;
+        const auto midpoint = std::max(prepared, next - period / 2);
+        // The full image is prepared before its own deadline. Its swap comes
+        // after that deadline, as in the normal one-image path.
+        return midpoint + swap_ + preparation <= next;
+    }
+
+    Duration preparation() const noexcept { return preparation_; }
+    Duration swap() const noexcept { return swap_; }
+
+private:
+    static void observe(Duration& estimate, Duration sample) noexcept {
+        if (sample.count() < 0) return;
+        sample = std::min(sample, kMaximumSample);
+        estimate = std::max(sample, estimate - estimate / 8);
+    }
+    Duration preparation_{}, swap_{};
+};
+
 // Coordinates exactly one full pacing wait per guest frame. The presenter
 // prepares its texture/filter/controls first and performs the supplied slot's
 // wait immediately before SDL swaps the completed image. No guest step occurs
@@ -86,8 +126,12 @@ public:
         last_frame_ = frame;
         epoch_ = epoch;
         if (double_rate) {
-            const bool middle = blend_.prepare(pixels, bytes, frame);
-            presenter(middle ? blend_.middle() : pixels, pacer, true);
+            if (pacer->midpoint_has_budget()) {
+                const bool middle = blend_.prepare(pixels, bytes, frame);
+                presenter(middle ? blend_.middle() : pixels, pacer, true);
+            } else {
+                blend_.capture(pixels, bytes, frame);
+            }
         } else {
             blend_.reset();
         }

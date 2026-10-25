@@ -2,12 +2,27 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.5 beta — presentación, controles y actualizaciones
+## Versión actual: 0.10.6 beta — menos trabajo de presentación
+
+**0.10.6 comprueba si una imagen intermedia de 120 FPS puede llegar a tiempo
+antes de prepararla.** Si no queda margen, evita la mezcla y el trabajo de
+renderizado que se descartarían y da prioridad al siguiente fotograma
+completo. También reduce el coste de Scale2x/Scale3x, de los perfiles de color
+diagonales y de las pasadas de escalado entero exacto, conservando los
+píxeles, el filtro y la calidad seleccionados.
+
+Las pruebas comparan el resultado visual y el coste de componentes en host;
+no garantizan FPS estables en el Pixel 7 Pro ni sustituyen una prueba física.
+[Validación de rendimiento](validation/PERFORMANCE_0.10.6_VALIDATION.md) ·
+[Equivalencia y coste del renderizado](validation/RENDER_0.10.6_PERFORMANCE.md) ·
+[Notas de 0.10.6](docs/releases/v0.10.6-beta.md).
+
+### Presentación, controles y actualizaciones incorporados en 0.10.5
 
 **Atrás → Rendimiento y FPS** permite elegir **60 FPS** o **120 FPS ·
 mezcla 2×**. La presentación prepara la imagen antes de esperar su momento
-de salida, corrige los puntos intermedios tardíos y restablece el ritmo al
-reanudar o cambiar de modo. Solicita el refresco correspondiente a Android;
+de salida, descarta los puntos intermedios que llegan tarde y restablece el
+ritmo al reanudar o cambiar de modo. Solicita el refresco correspondiente a Android;
 si este no concede 120 Hz, utiliza la presentación normal y conserva tu
 preferencia. El contador distingue objetivo, presentación y Hz de pantalla.
 La simulación conserva sus aproximadamente 59,73 Hz: no se puede garantizar
@@ -24,8 +39,9 @@ diseños guardados.
 detecta nuevas versiones en la release **Descarga** de este repositorio.
 La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
-pide confirmar la instalación. La primera instalación de 0.10.5 es manual;
-el mantenedor sigue adjuntando cada APK a Descarga.
+pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
+una primera actualización manual para obtener este apartado. Desde 0.10.5,
+0.10.6 se detecta cuando el mantenedor adjunta su APK a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -139,7 +155,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.5**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.6**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -157,34 +173,39 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.5 beta — nueva entrega
+### APK 0.10.6 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.5-beta-arm64.apk`**, versión `0.10.5-beta`,
-código **16**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
-su publicación manual en la release **Descarga**. Incluye los nuevos
-controles, la revisión de presentación y el actualizador. Se mantienen los
-mods de color, los siete filtros, las correcciones de Fuzzy y la panorámica
-con su advertencia de fase temprana.
+Archivo: **`sma3-recomp-0.10.6-beta-arm64.apk`**, versión `0.10.6-beta`,
+código **17**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
+su publicación manual en la release **Descarga**. Evita preparar imágenes
+intermedias que ya no caben en su intervalo y optimiza filtros y escalado
+sin cambiar las selecciones del usuario. Se mantienen los símbolos y la
+opacidad de controles, el actualizador, los mods de color, los siete filtros,
+las correcciones de Fuzzy y la panorámica con su advertencia de fase temprana.
 
 Instálalo encima de la versión anterior, sin desinstalarla. Conserva el
 paquete y el certificado y aumenta el código de versión. No borres los
-datos. Las versiones anteriores a 0.10.5 necesitan esta primera actualización
-manual para obtener el nuevo apartado.
-[Archivo, instalación y SHA-256](docs/releases/v0.10.5-beta.md) ·
-[Verificación del APK](validation/android-0.10.5-build.json).
+datos. Las versiones anteriores a 0.10.5 necesitan una actualización manual
+para obtener el apartado; desde 0.10.5 puedes usar **Actualizar → Buscar
+ahora** cuando el mantenedor haya publicado el archivo.
+[Archivo, instalación y SHA-256](docs/releases/v0.10.6-beta.md) ·
+[Verificación del APK](validation/android-0.10.6-build.json) ·
+[Validación de rendimiento](validation/PERFORMANCE_0.10.6_VALIDATION.md).
 
-### APK 0.10.2 beta disponible en GitHub
+### Publicación anterior verificada: APK 0.10.2 beta
 
-La release pública **Descarga** contiene
+En la comprobación del **25 de octubre de 2026**, la release pública
+**Descarga** contenía
 [**sma3-recomp-0.10.2-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.2-beta-arm64.apk).
-La publicación fue comprobada el **25 de octubre de 2026** y su SHA-256
-coincide con el archivo entregado: `06fe2ae0e041557ebaf1b12bcc4d6684a5ccea7bcd7d462fea0ee0404f5c829f`.
+Su SHA-256 coincidía con el archivo entregado:
+`06fe2ae0e041557ebaf1b12bcc4d6684a5ccea7bcd7d462fea0ee0404f5c829f`.
 Incluye las correcciones de Fuzzy y panorámica y el nuevo menú de 0.10.2.
 [Notas de 0.10.2](docs/releases/v0.10.2-beta.md).
 
-Cuando el mantenedor adjunte 0.10.5, estará disponible en
+Cuando el mantenedor adjunte 0.10.6, estará disponible en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga).
 Los datos de entregas anteriores permanecen en las notas de
+[0.10.5](docs/releases/v0.10.5-beta.md),
 [0.10.4](docs/releases/v0.10.4-beta.md),
 [0.10.3](docs/releases/v0.10.3-beta.md),
 [0.10.1](docs/releases/v0.10.1-experimental.md),
@@ -195,6 +216,17 @@ corresponden al momento de cada entrega.
 
 ## Estado de validación
 
+**0.10.6:** se revisa la admisión de imágenes intermedias antes del trabajo
+de mezcla y renderizado. Los kernels Scale2x/Scale3x y los perfiles de color
+pasan oráculos de equivalencia y ASan/UBSan; el escalador conserva todos los
+bytes de salida en **714 presentaciones pareadas** contra 0.10.5. Las medidas
+de coste separan kernels y SDL software y no se convierten en afirmaciones
+de FPS Android. La construcción y la prueba física del APK tienen su propio
+alcance en las notas de la entrega.
+[Rendimiento](validation/PERFORMANCE_0.10.6_VALIDATION.md) ·
+[Renderizado](validation/RENDER_0.10.6_PERFORMANCE.md) ·
+[Notas de la entrega](docs/releases/v0.10.6-beta.md).
+
 **0.10.5:** pruebas de temporización y política de pantalla, renderizado
 real de controles con SDL software, opacidad, geometría de entrada y cambios
 concurrentes; comprobaciones del actualizador con respuestas reales y
@@ -203,8 +235,8 @@ trece estados reconocidos, de forma idempotente, y protege ocho archivos
 del motor frente a cambios ajenos. La compilación final verifica Java,
 ARM64, enlaces JNI, manifiesto, firma y paquete.
 
-No se ha medido la estabilidad de FPS ni ejecutado el instalador de
-actualizaciones en un teléfono durante esta entrega. La evidencia de Fuzzy,
+Durante la entrega 0.10.5 no se midió la estabilidad de FPS ni se ejecutó el
+instalador de actualizaciones en un teléfono. La evidencia de Fuzzy,
 panorámica, filtros y mods de versiones previas mantiene su alcance histórico.
 [Rendimiento](validation/PERFORMANCE_0.10.5_VALIDATION.md) ·
 [Controles](validation/CONTROLS_0.10.5_VALIDATION.md) ·
@@ -434,8 +466,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.5 en Pixel 7 Pro: 60/120, símbolos, opacidad, detección/descarga/instalación de actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.5.
+- Probar 0.10.6 en Pixel 7 Pro: 60/120, símbolos, opacidad, detección/descarga/instalación de actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.6.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

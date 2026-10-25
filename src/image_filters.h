@@ -40,6 +40,69 @@ inline bool filtered_image_size(int width, int height, int factor,
     return true;
 }
 
+namespace detail {
+inline std::uint32_t load_rgb24(const std::uint8_t* p) {
+    return (std::uint32_t(p[0]) << 16) | (std::uint32_t(p[1]) << 8) | p[2];
+}
+inline void store_rgb24(std::uint8_t* p, std::uint32_t color) {
+    p[0] = static_cast<std::uint8_t>(color >> 16);
+    p[1] = static_cast<std::uint8_t>(color >> 8);
+    p[2] = static_cast<std::uint8_t>(color);
+}
+// Specialize the two fixed output layouts once per image. Row pointers avoid
+// per-output-pixel coordinate products and the temporary generic 3x3 block;
+// the original equality rules and nearest-edge replication remain unchanged.
+template<int Factor>
+inline void scale_rgb24_rows(const std::uint8_t* source, int width, int height,
+                             std::uint8_t* destination) {
+    const std::size_t pitch = std::size_t(width) * 3u;
+    const std::size_t output_pitch = pitch * Factor;
+    for (int y = 0; y < height; ++y) {
+        const auto* row = source + std::size_t(y) * pitch;
+        const auto* above = y == 0 ? row : row - pitch;
+        const auto* below = y + 1 == height ? row : row + pitch;
+        auto* out0 = destination + std::size_t(y) * Factor * output_pitch;
+        auto* out1 = out0 + output_pitch;
+        auto* out2 = Factor == 3 ? out1 + output_pitch : nullptr;
+        for (int x = 0; x < width; ++x) {
+            const int left = x == 0 ? 0 : -3;
+            const int right = x + 1 == width ? 0 : 3;
+            const auto center = load_rgb24(row);
+            const auto north = load_rgb24(above), south = load_rgb24(below);
+            const auto west = load_rgb24(row + left), east = load_rgb24(row + right);
+            std::uint32_t nw = center, ne = center, sw = center, se = center;
+            const bool edge = north != south && west != east;
+            if (edge) {
+                nw = west == north ? west : center;
+                ne = north == east ? east : center;
+                sw = west == south ? west : center;
+                se = south == east ? east : center;
+            }
+            if constexpr (Factor == 2) {
+                store_rgb24(out0, nw); store_rgb24(out0 + 3, ne);
+                store_rgb24(out1, sw); store_rgb24(out1 + 3, se);
+            } else {
+                std::uint32_t n = center, w = center, e = center, s = center;
+                if (edge) {
+                    const auto a = load_rgb24(above + left), c = load_rgb24(above + right);
+                    const auto g = load_rgb24(below + left), i = load_rgb24(below + right);
+                    n = ((west == north && center != c) || (north == east && center != a)) ? north : center;
+                    w = ((west == north && center != g) || (west == south && center != a)) ? west : center;
+                    e = ((north == east && center != i) || (south == east && center != c)) ? east : center;
+                    s = ((west == south && center != i) || (south == east && center != g)) ? south : center;
+                }
+                store_rgb24(out0, nw); store_rgb24(out0 + 3, n); store_rgb24(out0 + 6, ne);
+                store_rgb24(out1, w); store_rgb24(out1 + 3, center); store_rgb24(out1 + 6, e);
+                store_rgb24(out2, sw); store_rgb24(out2 + 3, s); store_rgb24(out2 + 6, se);
+                out2 += 9;
+            }
+            row += 3; above += 3; below += 3;
+            out0 += Factor * 3; out1 += Factor * 3;
+        }
+    }
+}
+} // namespace detail
+
 // Independent RGB24 implementation of Andrea Mazzoleni's published Scale2x /
 // Scale3x rules, including nearest-edge replication. Algorithm specification:
 // https://www.scale2x.it/algorithm . No external filter library is bundled.
@@ -61,48 +124,8 @@ inline bool scale_pixels_rgb24(const std::uint8_t* source, std::size_t source_by
         output_start > std::numeric_limits<std::uintptr_t>::max() - required ||
         (input_start < output_start + required && output_start < input_start + input_bytes))
         return false;
-    const auto load = [source, width](int x, int y) {
-        const auto* p = source + (std::size_t(y) * width + x) * 3u;
-        return (std::uint32_t(p[0]) << 16) | (std::uint32_t(p[1]) << 8) | p[2];
-    };
-    const auto store = [destination, out_width](int x, int y, std::uint32_t color) {
-        auto* p = destination + (std::size_t(y) * out_width + x) * 3u;
-        p[0] = static_cast<std::uint8_t>(color >> 16);
-        p[1] = static_cast<std::uint8_t>(color >> 8);
-        p[2] = static_cast<std::uint8_t>(color);
-    };
-    for (int y = 0; y < height; ++y) {
-        const int above = std::max(0, y - 1), below = std::min(height - 1, y + 1);
-        for (int x = 0; x < width; ++x) {
-            const int left = std::max(0, x - 1), right = std::min(width - 1, x + 1);
-            const auto center = load(x, y);
-            const auto north = load(x, above), south = load(x, below);
-            const auto west = load(left, y), east = load(right, y);
-            std::uint32_t out[9];
-            std::fill_n(out, factor * factor, center);
-            if (north != south && west != east) {
-                out[0] = west == north ? west : center;
-                out[factor - 1] = north == east ? east : center;
-                out[(factor - 1) * factor] = west == south ? west : center;
-                out[factor * factor - 1] = south == east ? east : center;
-                if (factor == 3) {
-                    const auto nw = load(left, above), ne = load(right, above);
-                    const auto sw = load(left, below), se = load(right, below);
-                    out[1] = ((west == north && center != ne) ||
-                              (north == east && center != nw)) ? north : center;
-                    out[3] = ((west == north && center != sw) ||
-                              (west == south && center != nw)) ? west : center;
-                    out[5] = ((north == east && center != se) ||
-                              (south == east && center != ne)) ? east : center;
-                    out[7] = ((west == south && center != se) ||
-                              (south == east && center != sw)) ? south : center;
-                }
-            }
-            for (int dy = 0; dy < factor; ++dy)
-                for (int dx = 0; dx < factor; ++dx)
-                    store(x * factor + dx, y * factor + dy, out[dy * factor + dx]);
-        }
-    }
+    if (factor == 2) detail::scale_rgb24_rows<2>(source, width, height, destination);
+    else detail::scale_rgb24_rows<3>(source, width, height, destination);
     return true;
 }
 

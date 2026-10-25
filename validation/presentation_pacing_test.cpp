@@ -20,9 +20,11 @@ struct FakePacer {
     Clock::time_point next{};
     unsigned resets = 0, full = 0, middle = 0;
     bool unlimited = false;
+    sma3::OptionalPresentationBudget budget;
     explicit FakePacer(Clock::time_point& time) : now(time) {}
     void reset() { ++resets; next = now + period; }
     bool uncapped() const { return unlimited; }
+    bool midpoint_has_budget() const { return !unlimited && budget.permits(now, next, period); }
     bool wait_for_midpoint() {
         if (unlimited || !sma3::midpoint_is_timely(now, next, period)) return false;
         now = std::max(now, next - period / 2); ++middle; return true;
@@ -33,6 +35,71 @@ struct FakePacer {
         next = now > next + Ns{1500000} ? now + period : next + period;
     }
 };
+
+void optional_budget_cases() {
+    sma3::OptionalPresentationBudget budget;
+    Clock::time_point now{};
+    const auto next = now + period;
+    require(budget.permits(now, next, period), "unloaded midpoint has budget");
+    require(!budget.permits(next, next, period), "already late midpoint rejected before preparation");
+    budget.observe_preparation(Ns{2000000});
+    budget.observe_swap(Ns{1000000});
+    require(budget.permits(now, next, period), "measured preparation and swap fit midpoint plus full image");
+    require(!budget.permits(now + Ns{8000000}, next, period), "preflight reserves measured preparation cost");
+    budget.observe_preparation(Ns{5000000});
+    budget.observe_swap(Ns{4000000});
+    require(!budget.permits(now, next, period), "swap blocking plus full preparation can reject otherwise timely midpoint");
+    const auto observed = budget.preparation();
+    budget.observe_preparation(Ns{-1});
+    require(budget.preparation() == observed, "negative sample does not poison budget");
+    budget.observe_preparation(std::chrono::seconds(30));
+    require(budget.preparation() == budget.kMaximumSample, "stall estimate is bounded");
+    for (unsigned i = 0; i < 80; ++i) {
+        budget.observe_preparation(Ns{1000000});
+        budget.observe_swap(Ns{100000});
+    }
+    require(budget.preparation() == Ns{1000000} && budget.swap() == Ns{100000}, "budget recovers after transient stall");
+    require(budget.permits(now, next, period), "midpoint recovers with available budget");
+    require(!budget.permits(now, next, Ns{0}), "invalid period denied");
+
+    sma3::FrameBlend expected, skipping;
+    std::vector<std::uint8_t> pixels(240u * 160u * 3u);
+    for (unsigned frame = 1; frame <= 90; ++frame) {
+        if (frame == 40) pixels.resize(356u * 160u * 3u);
+        for (std::size_t i = 0; i < pixels.size(); ++i)
+            pixels[i] = static_cast<std::uint8_t>((frame < 20 ? frame : frame + 130) + i % 13);
+        const auto guest_frame = frame < 60 ? frame : frame + 100;
+        const bool wanted = expected.prepare(pixels.data(), pixels.size(), guest_frame);
+        if (frame % 4 == 1 || frame % 4 == 2) {
+            skipping.capture(pixels.data(), pixels.size(), guest_frame);
+        } else {
+            const bool got = skipping.prepare(pixels.data(), pixels.size(), guest_frame);
+            require(got == wanted, "capture preserves scene-cut, geometry and consecutive-frame decisions");
+            if (got) require(std::equal(expected.middle(), expected.middle() + pixels.size(), skipping.middle()),
+                             "accepted midpoint after skipped slot is pixel-identical");
+        }
+    }
+    sma3::PresentationPacing schedule;
+    FakePacer pacer(now);
+    std::array<std::uint8_t, 3> pixel{10, 10, 10};
+    unsigned middle_calls = 0;
+    auto present = [&](const std::uint8_t* data, FakePacer* clock, bool middle) {
+        if (!clock) return true;
+        if (middle) {
+            ++middle_calls;
+            if (middle_calls == 2) require(data[0] == 35, "recovery blends latest captured guest frame");
+            return clock->wait_for_midpoint();
+        }
+        clock->wait_for_next_frame(); return true;
+    };
+    schedule.present(&pacer, pixel.data(), 3, 1, true, true, now, 0, present);
+    now += Ns{12000000}; pixel.fill(30);
+    schedule.present(&pacer, pixel.data(), 3, 2, true, true, now, 0, present);
+    require(middle_calls == 1 && pacer.full == 2, "late slot performs no optional render, full frame still waits exactly once");
+    pixel.fill(40);
+    schedule.present(&pacer, pixel.data(), 3, 3, true, true, now, 0, present);
+    require(middle_calls == 2 && pacer.full == 3, "eligible midpoint recovers on next guest frame");
+}
 
 void adaptive_wait_cases() {
     sma3::AdaptiveDeadlineWait waiter;
@@ -175,6 +242,6 @@ void real_pacer_smoke() {
 }
 
 int main() {
-    adaptive_wait_cases(); presentation_cases(); counter_cases(); real_pacer_smoke();
+    adaptive_wait_cases(); presentation_cases(); counter_cases(); optional_budget_cases(); real_pacer_smoke();
     std::printf("PASS presentation pacing checks=%u simulated_guest_frames=360\n", checks);
 }

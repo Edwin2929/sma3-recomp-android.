@@ -96,6 +96,13 @@ struct VideoScaler {
             std::max((std::int64_t(w)+sw-1)/sw,(std::int64_t(h)+sh-1)/sh));
         if(factor*sw>std::numeric_limits<int>::max() ||
            factor*sh>std::numeric_limits<int>::max()) return false;
+        // At an exact integer size the old final linear copy was 1:1. A
+        // direct nearest copy produces those same pixels without allocating,
+        // filling and copying a full-size intermediate target. Fractional
+        // sizes and explicit 720p/1080p pipelines retain their original path.
+        if(!quality && destination.w==factor*sw && destination.h==factor*sh)
+            return SDL_SetTextureScaleMode(source,SDL_ScaleModeNearest)==0 &&
+                SDL_RenderCopy(renderer,source,nullptr,&destination)==0;
         // Integer nearest prescale keeps pixel interiors sharp; linear downscale
         // smooths only fractional pixel boundaries instead of blurring sprites.
         if(!ensure(renderer,integer_texture,iw,ih,int(sw*factor),int(sh*factor))) return false;

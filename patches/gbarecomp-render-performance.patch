@@ -1,0 +1,92 @@
+--- a/src/runtime/host_platform.h
++++ b/src/runtime/host_platform.h
+@@ -47,6 +47,12 @@
+     void wait_for_next_frame();
+     // Presentation slot only: never advances the guest deadline.
+     bool wait_for_midpoint();
++#if defined(SMA3_FRAME_INTERPOLATION)
++    // Nonblocking admission before optional rendering; never advances time.
++    bool midpoint_has_budget() const;
++    void note_presentation_preparation(std::chrono::nanoseconds duration);
++    void note_presentation_swap(std::chrono::nanoseconds duration);
++#endif
+ 
+     // Realign the deadline to "now". Call after any non-real-time jump
+     // (startup, save-state load) so the pacer doesn't try to catch up.
+@@ -62,6 +68,7 @@
+     void wait_until(clock::time_point deadline);
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     sma3::AdaptiveDeadlineWait adaptive_wait_;
++    sma3::OptionalPresentationBudget presentation_budget_;
+ #endif
+     std::chrono::nanoseconds period_{};
+     clock::time_point next_{};
+--- a/src/runtime/host_platform.cpp
++++ b/src/runtime/host_platform.cpp
+@@ -49,6 +49,18 @@
+ void FramePacer::reset() {
+     next_ = clock::now() + period_;
+ }
++
++#if defined(SMA3_FRAME_INTERPOLATION)
++bool FramePacer::midpoint_has_budget() const {
++    return !uncapped_ && presentation_budget_.permits(clock::now(), next_, period_);
++}
++void FramePacer::note_presentation_preparation(std::chrono::nanoseconds duration) {
++    presentation_budget_.observe_preparation(duration);
++}
++void FramePacer::note_presentation_swap(std::chrono::nanoseconds duration) {
++    presentation_budget_.observe_swap(duration);
++}
++#endif
+ 
+ bool FramePacer::wait_for_midpoint() {
+     if (uncapped_) return false;
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -2241,6 +2241,12 @@
+ bool HostWindow::present_paced(const uint8_t* rgb888, FramePacer* pacer,
+                                bool midpoint) {
+     if (!open_ || !impl_ || !rgb888) return false;
++#if defined(SMA3_FRAME_INTERPOLATION)
++    // Recheck after blending, before any upload/filter/control preparation.
++    if (midpoint && pacer && !pacer->midpoint_has_budget()) return false;
++    const auto preparation_started = pacer ? std::chrono::steady_clock::now()
++                                           : std::chrono::steady_clock::time_point{};
++#endif
+     auto* b = static_cast<Backend*>(impl_);
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     // SDL_RENDER_DEVICE_RESET invalidates streaming as well as target textures.
+@@ -2388,12 +2394,20 @@
+         // SDL batches draw commands until RenderPresent by default. Submit them
+         // before sleeping so their CPU/GPU preparation can overlap the wait.
+         if (SDL_RenderFlush(b->renderer) != 0) return false;
++#if defined(SMA3_FRAME_INTERPOLATION)
++        pacer->note_presentation_preparation(std::chrono::duration_cast<std::chrono::nanoseconds>(
++            std::chrono::steady_clock::now() - preparation_started));
++#endif
+         if (midpoint) {
+             if (!pacer->wait_for_midpoint()) return false;
+         } else {
+             pacer->wait_for_next_frame();
+         }
+     }
++#if defined(SMA3_FRAME_INTERPOLATION)
++    const auto swap_started = pacer ? std::chrono::steady_clock::now()
++                                   : std::chrono::steady_clock::time_point{};
++#endif
+     // MC-WS-002: time the present itself (vsync blocks here — or doesn't)
+     // and stamp the DWM refresh counter into the cadence ring.
+     if (b->cadence.active()) {
+@@ -2403,6 +2417,11 @@
+     } else {
+         SDL_RenderPresent(b->renderer);
+     }
++
++#if defined(SMA3_FRAME_INTERPOLATION)
++    if (pacer) pacer->note_presentation_swap(std::chrono::duration_cast<std::chrono::nanoseconds>(
++        std::chrono::steady_clock::now() - swap_started));
++#endif
+ 
+     // FPS readout (DisplayPerf hotkey): presents/sec, refreshed twice a
+     // second in the title bar; the base title is restored when toggled off.

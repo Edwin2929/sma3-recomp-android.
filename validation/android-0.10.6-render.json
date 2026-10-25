@@ -1,0 +1,446 @@
+{
+  "schema_version": 1,
+  "release": "0.10.6-beta",
+  "baseline_commit": "40849aeef03a5cdd569a19f35034c8233c9520d2",
+  "result": "PASS",
+  "scope": "Synthetic RGB24 kernels and SDL software host comparison; no ROM or physical Android execution.",
+  "host": {
+    "architecture": "x86_64",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+  },
+  "tests": {
+    "filter-oracle-final": {
+      "result": "PASS",
+      "neighborhood_cases": 42294,
+      "whole_images": 18,
+      "assertions": 2322138,
+      "android_device_tested": false
+    },
+    "color-oracle-final": {
+      "result": "PASS",
+      "matrix_cases": 636,
+      "assertions": 12722,
+      "android_device_tested": false
+    },
+    "filter-sanitized-final": {
+      "result": "PASS",
+      "neighborhood_cases": 42294,
+      "whole_images": 18,
+      "assertions": 2322138,
+      "android_device_tested": false
+    },
+    "color-sanitized-final": {
+      "result": "PASS",
+      "matrix_cases": 636,
+      "assertions": 12722,
+      "android_device_tested": false
+    },
+    "scaler_equivalence": {
+      "result": "PASS",
+      "paired_presentations": 714,
+      "eligible_presentations": 120,
+      "compared_output_bytes": 3669932868
+    }
+  },
+  "measurement": {
+    "clock": "CLOCK_THREAD_CPUTIME_ID",
+    "order": "alternating baseline/candidate",
+    "cpu_rounds": 9,
+    "cpu_scale_repetitions": 60,
+    "cpu_color_repetitions": 120,
+    "sdl_rounds": 7,
+    "sdl_repetitions": 12,
+    "statistic": "median",
+    "no_input_specific_color_specialization": true
+  },
+  "cpu_measurements": [
+    {
+      "kind": "scale",
+      "width": 240,
+      "mode": 2,
+      "pattern": "flat",
+      "before_ms": 0.303227,
+      "after_ms": 0.16861,
+      "ratio": 0.5561
+    },
+    {
+      "kind": "scale",
+      "width": 240,
+      "mode": 3,
+      "pattern": "flat",
+      "before_ms": 0.409658,
+      "after_ms": 0.351319,
+      "ratio": 0.8576
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 0,
+      "pattern": "flat",
+      "before_ms": 0.191447,
+      "after_ms": 0.030461,
+      "ratio": 0.1591
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 1,
+      "pattern": "flat",
+      "before_ms": 0.188036,
+      "after_ms": 0.03044,
+      "ratio": 0.1619
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 2,
+      "pattern": "flat",
+      "before_ms": 0.187043,
+      "after_ms": 0.181789,
+      "ratio": 0.9719
+    },
+    {
+      "kind": "scale",
+      "width": 240,
+      "mode": 2,
+      "pattern": "pixel_art",
+      "before_ms": 0.30882,
+      "after_ms": 0.166839,
+      "ratio": 0.5402
+    },
+    {
+      "kind": "scale",
+      "width": 240,
+      "mode": 3,
+      "pattern": "pixel_art",
+      "before_ms": 0.416806,
+      "after_ms": 0.350256,
+      "ratio": 0.8403
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 0,
+      "pattern": "pixel_art",
+      "before_ms": 0.187529,
+      "after_ms": 0.030493,
+      "ratio": 0.1626
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 1,
+      "pattern": "pixel_art",
+      "before_ms": 0.187771,
+      "after_ms": 0.030501,
+      "ratio": 0.1624
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 2,
+      "pattern": "pixel_art",
+      "before_ms": 0.186702,
+      "after_ms": 0.181408,
+      "ratio": 0.9716
+    },
+    {
+      "kind": "scale",
+      "width": 240,
+      "mode": 2,
+      "pattern": "palette_noise",
+      "before_ms": 0.583585,
+      "after_ms": 0.391176,
+      "ratio": 0.6703
+    },
+    {
+      "kind": "scale",
+      "width": 240,
+      "mode": 3,
+      "pattern": "palette_noise",
+      "before_ms": 0.824138,
+      "after_ms": 0.730176,
+      "ratio": 0.886
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 0,
+      "pattern": "palette_noise",
+      "before_ms": 0.212832,
+      "after_ms": 0.033602,
+      "ratio": 0.1579
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 1,
+      "pattern": "palette_noise",
+      "before_ms": 0.199127,
+      "after_ms": 0.030821,
+      "ratio": 0.1548
+    },
+    {
+      "kind": "color",
+      "width": 240,
+      "mode": 2,
+      "pattern": "palette_noise",
+      "before_ms": 0.186792,
+      "after_ms": 0.180691,
+      "ratio": 0.9673
+    },
+    {
+      "kind": "scale",
+      "width": 356,
+      "mode": 2,
+      "pattern": "flat",
+      "before_ms": 0.446675,
+      "after_ms": 0.247174,
+      "ratio": 0.5534
+    },
+    {
+      "kind": "scale",
+      "width": 356,
+      "mode": 3,
+      "pattern": "flat",
+      "before_ms": 0.598552,
+      "after_ms": 0.510117,
+      "ratio": 0.8523
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 0,
+      "pattern": "flat",
+      "before_ms": 0.277854,
+      "after_ms": 0.045703,
+      "ratio": 0.1645
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 1,
+      "pattern": "flat",
+      "before_ms": 0.277921,
+      "after_ms": 0.045934,
+      "ratio": 0.1653
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 2,
+      "pattern": "flat",
+      "before_ms": 0.278275,
+      "after_ms": 0.270335,
+      "ratio": 0.9715
+    },
+    {
+      "kind": "scale",
+      "width": 356,
+      "mode": 2,
+      "pattern": "pixel_art",
+      "before_ms": 0.455306,
+      "after_ms": 0.24761,
+      "ratio": 0.5438
+    },
+    {
+      "kind": "scale",
+      "width": 356,
+      "mode": 3,
+      "pattern": "pixel_art",
+      "before_ms": 0.617696,
+      "after_ms": 0.522076,
+      "ratio": 0.8452
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 0,
+      "pattern": "pixel_art",
+      "before_ms": 0.278547,
+      "after_ms": 0.045043,
+      "ratio": 0.1617
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 1,
+      "pattern": "pixel_art",
+      "before_ms": 0.27886,
+      "after_ms": 0.045253,
+      "ratio": 0.1623
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 2,
+      "pattern": "pixel_art",
+      "before_ms": 0.278819,
+      "after_ms": 0.270037,
+      "ratio": 0.9685
+    },
+    {
+      "kind": "scale",
+      "width": 356,
+      "mode": 2,
+      "pattern": "palette_noise",
+      "before_ms": 0.875851,
+      "after_ms": 0.620767,
+      "ratio": 0.7088
+    },
+    {
+      "kind": "scale",
+      "width": 356,
+      "mode": 3,
+      "pattern": "palette_noise",
+      "before_ms": 1.232273,
+      "after_ms": 1.091895,
+      "ratio": 0.8861
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 0,
+      "pattern": "palette_noise",
+      "before_ms": 0.281677,
+      "after_ms": 0.045758,
+      "ratio": 0.1624
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 1,
+      "pattern": "palette_noise",
+      "before_ms": 0.28082,
+      "after_ms": 0.046939,
+      "ratio": 0.1672
+    },
+    {
+      "kind": "color",
+      "width": 356,
+      "mode": 2,
+      "pattern": "palette_noise",
+      "before_ms": 0.283496,
+      "after_ms": 0.272135,
+      "ratio": 0.9599
+    }
+  ],
+  "sdl_measurements": [
+    {
+      "kind": "SDL_software",
+      "width": 2160,
+      "height": 1440,
+      "filter": 0,
+      "before_ms": 24.106017,
+      "after_ms": 21.696039,
+      "ratio": 0.9
+    },
+    {
+      "kind": "SDL_software",
+      "width": 2160,
+      "height": 1440,
+      "filter": 3,
+      "before_ms": 34.310812,
+      "after_ms": 35.229213,
+      "ratio": 1.0268
+    },
+    {
+      "kind": "SDL_software",
+      "width": 2160,
+      "height": 1440,
+      "filter": 4,
+      "before_ms": 24.719669,
+      "after_ms": 21.700016,
+      "ratio": 0.8778
+    },
+    {
+      "kind": "SDL_software",
+      "width": 1440,
+      "height": 960,
+      "filter": 0,
+      "before_ms": 10.599621,
+      "after_ms": 9.432595,
+      "ratio": 0.8899
+    },
+    {
+      "kind": "SDL_software",
+      "width": 1440,
+      "height": 960,
+      "filter": 3,
+      "before_ms": 10.896203,
+      "after_ms": 9.726221,
+      "ratio": 0.8926
+    },
+    {
+      "kind": "SDL_software",
+      "width": 1440,
+      "height": 960,
+      "filter": 4,
+      "before_ms": 11.479034,
+      "after_ms": 10.123253,
+      "ratio": 0.8819
+    },
+    {
+      "kind": "SDL_software",
+      "width": 1620,
+      "height": 1080,
+      "filter": 0,
+      "before_ms": 17.266413,
+      "after_ms": 17.280895,
+      "ratio": 1.0008
+    },
+    {
+      "kind": "SDL_software",
+      "width": 1620,
+      "height": 1080,
+      "filter": 3,
+      "before_ms": 21.570749,
+      "after_ms": 21.65633,
+      "ratio": 1.004
+    },
+    {
+      "kind": "SDL_software",
+      "width": 1620,
+      "height": 1080,
+      "filter": 4,
+      "before_ms": 26.634082,
+      "after_ms": 26.339059,
+      "ratio": 0.9889
+    }
+  ],
+  "source_sha256": {
+    "src/image_filters.h": "570ff35ef6818bac6c789875dcd116800c86566c37a3477cf0b2176bb25ed3f2",
+    "src/video_scaler.h": "7db775a2b4167a5cc6a2e23499474f47645ec8db555cd07644e4be50224af6ef",
+    "src/mod_color_profile.h": "449acc054c0f4a1487cbb4782dd65231f8bb7fe3b4e6a02b061968bf06244443",
+    "validation/image_filter_pixels_test.cpp": "1aab877744bc0bcbe60f32a9941572a516100de18545bde4c03fb3a6021677d5",
+    "validation/color_profile_equivalence_test.cpp": "66100e68e93cf9aba8b150c70acbb0d6f3d6b007ed8bb0d4253a1b12758b3336",
+    "validation/render_cpu_comparison.cpp": "bc0aa17590630e2c1758b113381a9b0ddd0c7a594d31c5f01a01683cf181cd41",
+    "validation/render_scaler_comparison.cpp": "cd9055105f171bce04c2fd7e555c6ebb17080038da8cb81524d7bdbbe68c89da",
+    "validation/RENDER_0.10.6_PERFORMANCE.md": "4639a60bca62d588bb059d4c14a10b4b59e764d33ead0800a9cd470f9e9749a5"
+  },
+  "limits": {
+    "android_device_tested": false,
+    "android_gpu_benchmarked": false,
+    "guest_fps_claimed": false,
+    "synthetic_patterns_only": true,
+    "leak_sanitizer_enabled": false,
+    "SDL_library_instrumented": false
+  },
+  "structural_changes": {
+    "exact_native_scale": {
+      "baseline_render_copies": 2,
+      "candidate_render_copies": 1,
+      "baseline_target_switches": 2,
+      "candidate_target_switches": 0,
+      "quality_720_1080_pipeline_unchanged": true,
+      "fractional_pipeline_unchanged": true
+    },
+    "diagonal_color_lut": {
+      "stack_bytes": 768,
+      "minimum_pixels": 256,
+      "global_mutable_cache": false,
+      "general_matrix_arithmetic_unchanged": true
+    },
+    "selected_filter_and_quality_preserved": true
+  }
+}
