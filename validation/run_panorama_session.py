@@ -11,6 +11,9 @@ import time
 from pathlib import Path
 from PIL import Image
 from castle_route_checks import CASTLE_STATUS_PROFILE, IWRAM_SIZE, parse_castle_status
+from fuzzy_status import (PROFILE as FUZZY_STATUS_PROFILE, parse_fuzzy_status,
+                          check_recovery as check_fuzzy_recovery,
+                          transition_changed as fuzzy_transition_changed)
 from panorama_session_checks import (action_digest, check_car_cycle, require, transition_changed,
                                      validate_actions, validate_expectations)
 
@@ -18,12 +21,12 @@ ROOT = Path(__file__).resolve().parents[1]
 RAM_START, RAM_END = 0x4cb8, 0x6db4
 
 
-def observe(command, castle_status=False):
-    start, end = (0, IWRAM_SIZE) if castle_status else (RAM_START, RAM_END)
+def observe(command, castle_status=False, fuzzy_status=False):
+    start, end = (0, IWRAM_SIZE) if castle_status or fuzzy_status else (RAM_START, RAM_END)
     snapshot = bytes.fromhex(command(cmd='read_iwram', addr=0x03000000 + start,
                                      len=end - start)['data'])
     require(len(snapshot) == end - start, 'Truncated IWRAM observation')
-    raw = snapshot[RAM_START:RAM_END] if castle_status else snapshot
+    raw = snapshot[RAM_START:RAM_END] if castle_status or fuzzy_status else snapshot
     require(len(raw) == RAM_END - RAM_START, 'Truncated IWRAM observation')
     row = dict(player_xy_velocity=[v / 256 for v in struct.unpack_from('<iiii', raw, 0x6d80 - RAM_START)],
                level_id=struct.unpack_from('<H', raw, 0x6288 - RAM_START)[0],
@@ -32,16 +35,18 @@ def observe(command, castle_status=False):
                transformation=struct.unpack_from('<H', raw, 0x6db2 - RAM_START)[0])
     if castle_status:
         row['castle_status'] = parse_castle_status(snapshot)
+    if fuzzy_status:
+        row['fuzzy_status'] = parse_fuzzy_status(snapshot)
     return row
 
 
 def execute_session(command, actions, capture, evidence, trace_enabled=False, capture_start=0,
-                    castle_status=False):
+                    castle_status=False, fuzzy_status=False):
     """Conditional waits stop on the FIRST target frame, never on a 60-frame sample."""
     validate_actions(actions)
-    trace_enabled = trace_enabled or castle_status or any('until_transformation' in a for a in actions)
+    trace_enabled = trace_enabled or castle_status or fuzzy_status or any('until_transformation' in a for a in actions)
     session, trace, shots = evidence['session'], evidence['trace'], evidence['captures']
-    current = observe(command, castle_status)
+    current = observe(command, castle_status, fuzzy_status)
     elapsed = 0
     if trace_enabled:
         trace.append(dict(current, frame=None, elapsed_frame=0, action_index=-1, keys=None))
@@ -57,7 +62,7 @@ def execute_session(command, actions, capture, evidence, trace_enabled=False, ca
             reply = command(cmd='run_frames', n=n, keyinput=action['keys'])
             executed += n
             elapsed += n
-            current = dict(observe(command, castle_status), frame=reply['frame'])
+            current = dict(observe(command, castle_status, fuzzy_status), frame=reply['frame'])
             if trace_enabled:
                 if trace[0]['frame'] is None:
                     trace[0]['frame'] = reply['frame'] - 1
@@ -67,7 +72,8 @@ def execute_session(command, actions, capture, evidence, trace_enabled=False, ca
             endpoint = reached or executed == action['n']
             if trace_enabled:
                 if elapsed >= capture_start and (elapsed % 60 == 0 or endpoint or
-                                                transition_changed(previous, current)):
+                                                transition_changed(previous, current) or
+                                                (fuzzy_status and fuzzy_transition_changed(previous, current))):
                     shots.append(capture(f'frame-{elapsed:05}', current, elapsed, True))
             elif endpoint:
                 capture(f'step-{index:03}', current, elapsed, False)
@@ -111,7 +117,13 @@ def main():
     profile.add_argument('--expectations', type=Path, help='Cycle contract; also enables per-frame tracing')
     profile.add_argument('--castle-status', action='store_true',
                          help='Observe castle health from full IWRAM; also enables per-frame tracing')
+    profile.add_argument('--fuzzy-status', action='store_true',
+                         help='Observe original Fuzzy countdown/effect from full IWRAM on every frame')
+    p.add_argument('--expect-fuzzy-recovery', action='store_true',
+                   help='Require real Fuzzy contact, natural recovery and 100 final normal frames in 1-7')
     a = p.parse_args()
+    if a.expect_fuzzy_recovery and not a.fuzzy_status:
+        p.error('--expect-fuzzy-recovery requires --fuzzy-status')
     if not 240 <= a.width <= 356:
         p.error('width must be 240..356')
     try:
@@ -134,7 +146,7 @@ def main():
     a.output.mkdir(parents=True, exist_ok=True)
     if any(a.output.iterdir()):
         p.error('Use a new empty output directory')
-    tracing = bool(a.trace_every_frame or expectations or a.castle_status or
+    tracing = bool(a.trace_every_frame or expectations or a.castle_status or a.fuzzy_status or
                    any('until_transformation' in x for x in actions))
     start = expectations['gameplay_start_frame'] if expectations else 0
     settings = dict(width=a.width, trace_every_frame=tracing, capture_start=start,
@@ -144,6 +156,8 @@ def main():
                                                      ('config', config))})
     if a.castle_status:
         settings['observation_profile'] = CASTLE_STATUS_PROFILE
+    if a.fuzzy_status:
+        settings['observation_profile'] = FUZZY_STATUS_PROFILE
     with socket.socket() as sock:
         sock.bind(('127.0.0.1', 0))
         port = sock.getsockname()[1]
@@ -192,7 +206,7 @@ def main():
                 raise ValueError('Local debug server unavailable')
             command(cmd='savestate_load', path=str(a.state.resolve()))
             execute_session(command, actions, capture, evidence, tracing, start,
-                            castle_status=a.castle_status)
+                            castle_status=a.castle_status, fuzzy_status=a.fuzzy_status)
             command(cmd='savestate_save', path=str(a.output / 'final.state'))
             command(cmd='quit')
             proc.wait(timeout=10)
@@ -201,6 +215,8 @@ def main():
             if expectations:
                 status['cycle_checks'] = check_car_cycle(actions, evidence['session'], evidence['trace'], expectations)
                 require(status['cycle_checks']['cycle_pass'], '; '.join(status['cycle_checks']['cycle_errors']))
+            if a.expect_fuzzy_recovery:
+                status['fuzzy_recovery'] = check_fuzzy_recovery(evidence['trace'])
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as exc:
         error = str(exc)
         status['error'] = error

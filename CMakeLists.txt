@@ -80,7 +80,17 @@ endif()
 file(GLOB SMA3_MORPH_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/generated-morph/morph_recompiled_*.cpp")
 target_sources(${SMA3_TARGET} PRIVATE src/morph_dispatch.cpp ${SMA3_MORPH_SOURCES} generated-morph/morph_dispatch_table.cpp)
 
+file(GLOB SMA3_EFFECT_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/generated-effects/*/*recompiled_*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/generated-effects/*/*dispatch_table.cpp")
+if(NOT SMA3_EFFECT_SOURCES)
+    message(FATAL_ERROR "Missing Fuzzy effect sources. Run tools/generate_effects.py with your verified ROM.")
+endif()
+target_sources(${SMA3_TARGET} PRIVATE src/effects_dispatch.cpp ${SMA3_EFFECT_SOURCES})
+
 if(NOT ANDROID)
     add_executable(sma3_morph_test validation/morph_test.cpp src/localization.cpp src/morph_dispatch.cpp ${SMA3_MORPH_SOURCES} generated-morph/morph_dispatch_table.cpp)
     target_link_gbarecomp_runtime_stack(sma3_morph_test sma3_game)
+    add_executable(sma3_effects_test validation/effects_test.cpp src/localization.cpp src/widescreen_bounds.cpp src/effects_dispatch.cpp ${SMA3_EFFECT_SOURCES})
+    target_link_gbarecomp_runtime_stack(sma3_effects_test sma3_game)
 endif()

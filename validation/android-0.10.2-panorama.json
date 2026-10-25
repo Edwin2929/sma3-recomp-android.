@@ -1,0 +1,1025 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "scope": "Host production SDL uploads with final source, native PPU margin oracles, and baseline diagnosis; not Android GPU, physical-device, sustained-FPS or full-game qualification",
+  "base_commit": "3f56cd6e820876c4b7c4e99ec852295690db8e93",
+  "baseline_runner_sha256": "397aa0f28b608c410c8614dbd3a0373035cc0a9f3b153cd5a799215cdf7fde39",
+  "final_candidate": {
+    "runner_sha256": "7b1223ed4cd0f8607ca0882d15edbfc0c00c815b2bb017614a3c652a570fccad",
+    "production_source_sha256": {
+      "src/widescreen.cpp": "c20d173b9feecb74b5cc927db8edddf4bcdcf86dc7871a22401c924b62e4ea3c",
+      "src/widescreen_tiles.h": "b90a935046b2dbbac41b9c07ca99ce20b266ff612622af06cbb67e9fb74f67db",
+      "src/widescreen_objects.h": "4554ada1c0e1d1fdf24f3fb2ee89ed8b2fe136181338669c3ba0b30ab29dc916",
+      "src/ram_dispatch.cpp": "046d9e93f3497b80e2698f2db958f88991149f80305fcf75de392038fa44b291",
+      "src/effects_dispatch.cpp": "4f43cd634409e11ad16fd8daf9bdecf636814cced84f6add43d482163a6fcc43"
+    },
+    "reused_effect_objects_sha256": {
+      "ram_dispatch.o": "6efcc82c69e0111b32010c30fbf8d0f02e73db90a7580f8a42d97f003472255b",
+      "effects_dispatch.o": "1fad5247b2874040048b5e90099d2ca85e53819ec079e562cdbbf018175f6d9a",
+      "effect_offsets_recompiled_000.o": "d88608068ee1a607c72238393a8d8d57b7c0435085cc9803d015a639543cd5f4",
+      "effect_offsets_recompiled_001.o": "d2fa89d61d2c959552d9080b77be7868cf20cc4b0f61006239c9e949ec499646",
+      "effect_tiles_recompiled_000.o": "03ac13bc47c627245330e6de4acb3ce61f98eb2fffb34b18d9e9d8993c8d3466",
+      "effect_tiles_recompiled_001.o": "8f436310b6f61fc1f93b8f89d074b60367cf3fc7685d7a49cf0c141e93b168a6",
+      "effect_offsets_dispatch_table.o": "14e78f7363c0d74fc6472e1459baf3fa6ed6d3b8d848aea5682145e0c1f866c5",
+      "effect_tiles_dispatch_table.o": "86828ef041924c436859d639f4a246e8649880cc784dd3d9ee2a553ec6b018ed"
+    },
+    "scope": "Final panoramic policy linked with qualified Fuzzy effect guards; unchanged baseline host runtime and game archive"
+  },
+  "production": {
+    "native_centers_compared": 4200,
+    "different_native_centers": 0,
+    "spontaneous_width_changes": 0,
+    "ordinary_routes": [
+      {
+        "level_id": 0,
+        "frames": 900,
+        "input_sha256": {
+          "runner": "7b1223ed4cd0f8607ca0882d15edbfc0c00c815b2bb017614a3c652a570fccad",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "1c86710e16839382683c7e0320dc2d7975ac888dc9df812d17707d81f867ab98",
+          "actions": "cbaaee6f6f2594231e8cff81e6579e04b3a0fa8b7ba8b62f899ba11046caf5bf",
+          "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+        },
+        "before_0_10_1": {
+          "result": "PASS",
+          "reference_frames": 900,
+          "uploads": 900,
+          "full_count": 900,
+          "middle_count": 0,
+          "alignment": "one upload per consecutive guest frame from the supplied origin",
+          "geometry_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "width": 356
+            }
+          ],
+          "width_change_count": 0,
+          "full_center_differences": [],
+          "middle_center_differences": [],
+          "blend_formula_errors": [],
+          "margin_visibility_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "visible": false
+            },
+            {
+              "upload": 252,
+              "frame": 6851,
+              "visible": true
+            },
+            {
+              "upload": 588,
+              "frame": 7187,
+              "visible": false
+            }
+          ],
+          "capture_sha256": {
+            "reference": "6e0c5c5ae5e1caa6ccc000c48ed080efba39f80aef084228e4f7be405de3bcb6",
+            "candidate": "8a90bdc0c94c3c67d78e2c3b2cb94cb061b6a70b2eb4e8b392bd0bd322232ee5"
+          }
+        },
+        "after_final_0_10_2": {
+          "result": "PASS",
+          "reference_frames": 900,
+          "uploads": 900,
+          "full_count": 900,
+          "middle_count": 0,
+          "alignment": "one upload per consecutive guest frame from the supplied origin",
+          "geometry_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "width": 356
+            }
+          ],
+          "width_change_count": 0,
+          "full_center_differences": [],
+          "middle_center_differences": [],
+          "blend_formula_errors": [],
+          "margin_visibility_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "visible": false
+            },
+            {
+              "upload": 252,
+              "frame": 6851,
+              "visible": true
+            }
+          ],
+          "capture_sha256": {
+            "reference": "6e0c5c5ae5e1caa6ccc000c48ed080efba39f80aef084228e4f7be405de3bcb6",
+            "candidate": "03e92514d529bf904749bdd6c2beb54c0bf5e61e5ab78739df7f6673e206229e"
+          }
+        },
+        "restored_margin_presentations": 312,
+        "restored_upload_ranges": [
+          [
+            588,
+            899
+          ]
+        ],
+        "native_coverage": {
+          "ok": true,
+          "program": "SUPER MARIOC",
+          "code": "A3AE",
+          "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+          "coverage": "FULLY_STATIC",
+          "enabled": false,
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "native_calls": 0,
+          "inflight": 0,
+          "failed": 0,
+          "jump_table_candidate_regions": 0,
+          "misses": []
+        },
+        "runner_log_sha256": "61356b61afec00309d770bda5c602abc6b8ddfdf08b541cfcc87003a4e036981"
+      },
+      {
+        "level_id": 1,
+        "frames": 900,
+        "input_sha256": {
+          "runner": "7b1223ed4cd0f8607ca0882d15edbfc0c00c815b2bb017614a3c652a570fccad",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "94028dcc68340d3c72654e6231be0e2c14190303f9a047f17cd7438d86dc9b32",
+          "actions": "cbaaee6f6f2594231e8cff81e6579e04b3a0fa8b7ba8b62f899ba11046caf5bf",
+          "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+        },
+        "before_0_10_1": {
+          "result": "PASS",
+          "reference_frames": 900,
+          "uploads": 900,
+          "full_count": 900,
+          "middle_count": 0,
+          "alignment": "one upload per consecutive guest frame from the supplied origin",
+          "geometry_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "width": 356
+            }
+          ],
+          "width_change_count": 0,
+          "full_center_differences": [],
+          "middle_center_differences": [],
+          "blend_formula_errors": [],
+          "margin_visibility_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "visible": false
+            },
+            {
+              "upload": 255,
+              "frame": 6854,
+              "visible": true
+            },
+            {
+              "upload": 518,
+              "frame": 7117,
+              "visible": false
+            },
+            {
+              "upload": 519,
+              "frame": 7118,
+              "visible": true
+            },
+            {
+              "upload": 566,
+              "frame": 7165,
+              "visible": false
+            },
+            {
+              "upload": 591,
+              "frame": 7190,
+              "visible": true
+            },
+            {
+              "upload": 709,
+              "frame": 7308,
+              "visible": false
+            }
+          ],
+          "capture_sha256": {
+            "reference": "d4df72be79d9c77177b6c106b084782f4b8bdc577c5b699ab4d618af263aa9ec",
+            "candidate": "3cb67d87036eaf05f5f2ec2305c834cfb0c525e9a3a01ccb48dcb0732fb44e72"
+          }
+        },
+        "after_final_0_10_2": {
+          "result": "PASS",
+          "reference_frames": 900,
+          "uploads": 900,
+          "full_count": 900,
+          "middle_count": 0,
+          "alignment": "one upload per consecutive guest frame from the supplied origin",
+          "geometry_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "width": 356
+            }
+          ],
+          "width_change_count": 0,
+          "full_center_differences": [],
+          "middle_center_differences": [],
+          "blend_formula_errors": [],
+          "margin_visibility_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "visible": false
+            },
+            {
+              "upload": 255,
+              "frame": 6854,
+              "visible": true
+            },
+            {
+              "upload": 709,
+              "frame": 7308,
+              "visible": false
+            }
+          ],
+          "capture_sha256": {
+            "reference": "d4df72be79d9c77177b6c106b084782f4b8bdc577c5b699ab4d618af263aa9ec",
+            "candidate": "5c2605d118c97251eecd3f89465ed904a6bc37392a1fcc8921307e0e82b6d4a6"
+          }
+        },
+        "restored_margin_presentations": 26,
+        "restored_upload_ranges": [
+          [
+            518,
+            518
+          ],
+          [
+            566,
+            590
+          ]
+        ],
+        "native_coverage": {
+          "ok": true,
+          "program": "SUPER MARIOC",
+          "code": "A3AE",
+          "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+          "coverage": "FULLY_STATIC",
+          "enabled": false,
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "native_calls": 0,
+          "inflight": 0,
+          "failed": 0,
+          "jump_table_candidate_regions": 0,
+          "misses": []
+        },
+        "runner_log_sha256": "ade290b42a26aa3241fec685c46c431a461e5eaf0ef71f56f8fe5a2b98266bfd"
+      },
+      {
+        "level_id": 7,
+        "frames": 900,
+        "input_sha256": {
+          "runner": "7b1223ed4cd0f8607ca0882d15edbfc0c00c815b2bb017614a3c652a570fccad",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "99ec24820e303a5e501ac51066895823519884145f9a2d19bcbb1e1f50294d89",
+          "actions": "cbaaee6f6f2594231e8cff81e6579e04b3a0fa8b7ba8b62f899ba11046caf5bf",
+          "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+        },
+        "before_0_10_1": {
+          "result": "PASS",
+          "reference_frames": 900,
+          "uploads": 900,
+          "full_count": 900,
+          "middle_count": 0,
+          "alignment": "one upload per consecutive guest frame from the supplied origin",
+          "geometry_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "width": 356
+            }
+          ],
+          "width_change_count": 0,
+          "full_center_differences": [],
+          "middle_center_differences": [],
+          "blend_formula_errors": [],
+          "margin_visibility_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "visible": false
+            },
+            {
+              "upload": 257,
+              "frame": 6856,
+              "visible": true
+            },
+            {
+              "upload": 453,
+              "frame": 7052,
+              "visible": false
+            }
+          ],
+          "capture_sha256": {
+            "reference": "3d33f0dda4167722ffe8ba829f2e97b3d9dc4669abf6098f610fdf89ca722dd2",
+            "candidate": "a400a09f50e846b571099ba2883967be92f7b0c9328bd5bbf11d4fe90a2477fe"
+          }
+        },
+        "after_final_0_10_2": {
+          "result": "PASS",
+          "reference_frames": 900,
+          "uploads": 900,
+          "full_count": 900,
+          "middle_count": 0,
+          "alignment": "one upload per consecutive guest frame from the supplied origin",
+          "geometry_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "width": 356
+            }
+          ],
+          "width_change_count": 0,
+          "full_center_differences": [],
+          "middle_center_differences": [],
+          "blend_formula_errors": [],
+          "margin_visibility_changes": [
+            {
+              "upload": 0,
+              "frame": 6599,
+              "visible": false
+            },
+            {
+              "upload": 257,
+              "frame": 6856,
+              "visible": true
+            }
+          ],
+          "capture_sha256": {
+            "reference": "3d33f0dda4167722ffe8ba829f2e97b3d9dc4669abf6098f610fdf89ca722dd2",
+            "candidate": "06d7626233196cc4ef3d0d9bc286eaceb2e878abb04070997b4e8f2891507d89"
+          }
+        },
+        "restored_margin_presentations": 447,
+        "restored_upload_ranges": [
+          [
+            453,
+            899
+          ]
+        ],
+        "native_coverage": {
+          "ok": true,
+          "program": "SUPER MARIOC",
+          "code": "A3AE",
+          "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+          "coverage": "FULLY_STATIC",
+          "enabled": false,
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "native_calls": 0,
+          "inflight": 0,
+          "failed": 0,
+          "jump_table_candidate_regions": 0,
+          "misses": []
+        },
+        "runner_log_sha256": "18215b4bfb60a0d6ac846086695babab0c8c0857c072997de76cfae4ee4c4359"
+      }
+    ],
+    "fuzzy_contact_effect_recovery": {
+      "comparison": {
+        "result": "PASS",
+        "reference_frames": 1500,
+        "uploads": 1500,
+        "full_count": 1500,
+        "middle_count": 0,
+        "alignment": "one upload per consecutive guest frame from the supplied origin",
+        "geometry_changes": [
+          {
+            "upload": 0,
+            "frame": 6599,
+            "width": 356
+          }
+        ],
+        "width_change_count": 0,
+        "full_center_differences": [],
+        "middle_center_differences": [],
+        "blend_formula_errors": [],
+        "margin_visibility_changes": [
+          {
+            "upload": 0,
+            "frame": 6599,
+            "visible": false
+          },
+          {
+            "upload": 93,
+            "frame": 6692,
+            "visible": true
+          },
+          {
+            "upload": 601,
+            "frame": 7200,
+            "visible": false
+          },
+          {
+            "upload": 1383,
+            "frame": 7982,
+            "visible": true
+          }
+        ],
+        "capture_sha256": {
+          "reference": "717a9df6642a8d60b4b708324ec519627c7b92cbb3454a576040e32e32f85521",
+          "candidate": "7902137a9b88f08ae101c5d4c6525995906444ca15a1a233a8a027304ef60287"
+        }
+      },
+      "input_sha256": {
+        "runner": "7b1223ed4cd0f8607ca0882d15edbfc0c00c815b2bb017614a3c652a570fccad",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "7eeb6c9e744115aac48d49547a0e9307a53fe6ac44752869ae80e5a8d0c205ec",
+        "actions": "a155cf245d8c828d71d8309c0665d8995f9e5f3841467301e0e914ced553215f",
+        "config": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+      },
+      "black_effect_presentations": 782,
+      "full_presentation_window": "uploads 601 through 1382 inclusive; margins reopen at1383",
+      "native_coverage": {
+        "ok": true,
+        "program": "SUPER MARIOC",
+        "code": "A3AE",
+        "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+        "coverage": "FULLY_STATIC",
+        "enabled": false,
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0,
+        "misses": []
+      },
+      "runner_log_sha256": "8a262bffc27eecc4348a047a731b866dabeff36f81c43875e17bed926f91ee89",
+      "reference_runner_sha256": "6810c6c4ed2ce894ab25597dee9e9fb58792e0b07705fadccbdadecaddd9ca12",
+      "reference_note": "Original mode from the combined Fuzzy-fixed candidate before the window-only guard; latest panorama source is rerun independently and all1500 centers match"
+    }
+  },
+  "ppu_oracle": {
+    "fixture_count": 13,
+    "margin_pixels_per_fixture": 18560,
+    "old_wrong_margin_pixels": 7300,
+    "new_wrong_margin_pixels": 0,
+    "assertions": 2507920,
+    "sanitizers": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "leak_sanitizer": false,
+    "palette": "synthetic unique colors; real captured map/texture bytes; BG3 isolated to observe the full margin",
+    "oracle": "faithful240 compositor with horizontally translated scroll, plus unchanged native center",
+    "cases": [
+      {
+        "case": "individual_object_fallback",
+        "center_exact": true,
+        "unknown_native_pixels_preserved": true,
+        "unknown_margin_clipped": true,
+        "known_margin_preserved": true
+      },
+      {
+        "case": "unknown_offscreen_window_with_uniform_native_row",
+        "unsafe_uniform_extension_reproduced": true,
+        "unknown_window_margins_closed": true,
+        "known_window_preserved": true,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-000.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-002.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-004.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-005.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-006.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-007.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 7300,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-008.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-009.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-010.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-011.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-012.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-013.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      },
+      {
+        "fixture": "bg3-014.bgf",
+        "margin_pixels": 18560,
+        "old_wrong_margin_pixels": 0,
+        "new_wrong_margin_pixels": 0,
+        "center_exact": true
+      }
+    ],
+    "private_fixture_manifest": [
+      {
+        "file": "bg3-000.bgf",
+        "source": "level-00",
+        "frame": 7200,
+        "image_id": 27,
+        "rows": 32,
+        "sha256": "fad8fe4f7ec9559d825305f123c4349a548c89842dccc5e9c7639c0f2b776f0e"
+      },
+      {
+        "file": "bg3-002.bgf",
+        "source": "level-02",
+        "frame": 7200,
+        "image_id": 32,
+        "rows": 32,
+        "sha256": "86f1303151715d6e865c854a5ec27fd2a5e30281bd51f71c08df01ed777dad69"
+      },
+      {
+        "file": "bg3-004.bgf",
+        "source": "level-04",
+        "frame": 7200,
+        "image_id": 41,
+        "rows": 32,
+        "sha256": "483275d0aafac718c4bd6a9a704d0b2e755beb44886a28cab332825e754b940a"
+      },
+      {
+        "file": "bg3-005.bgf",
+        "source": "level-05",
+        "frame": 7200,
+        "image_id": 27,
+        "rows": 32,
+        "sha256": "818ea507df8c84d78487e15f1066051379c695585208e2eceaa94687bd1c5e0a"
+      },
+      {
+        "file": "bg3-006.bgf",
+        "source": "level-06",
+        "frame": 7200,
+        "image_id": 0,
+        "rows": 32,
+        "sha256": "e51ab7b0971f207164729e04270b627ad126709853cb2e88f342c23a3fe2a7b3"
+      },
+      {
+        "file": "bg3-007.bgf",
+        "source": "level-07",
+        "frame": 7200,
+        "image_id": 0,
+        "rows": 32,
+        "sha256": "1ca5cb52079bab457f8d8a99a2ce7fbc9fb5a4da5101f031eb2ceeca46adcbf6"
+      },
+      {
+        "file": "bg3-008.bgf",
+        "source": "level-08",
+        "frame": 7200,
+        "image_id": 41,
+        "rows": 32,
+        "sha256": "f2461b30a7274efdcbe6f5611cb786d8b90e175689c2688c96b3433fc1f1da8c"
+      },
+      {
+        "file": "bg3-009.bgf",
+        "source": "level-09",
+        "frame": 7200,
+        "image_id": 18,
+        "rows": 32,
+        "sha256": "3a04f828da5dfdac6bd5c0e741a368a19b1c9c98cb0cb1843367460f205eeb44"
+      },
+      {
+        "file": "bg3-010.bgf",
+        "source": "level-10",
+        "frame": 7200,
+        "image_id": 27,
+        "rows": 32,
+        "sha256": "6af68cc60725edc6f916a9df67f81dab0260f52271572ea40fc8fa8b5eab3171"
+      },
+      {
+        "file": "bg3-011.bgf",
+        "source": "level-11",
+        "frame": 7200,
+        "image_id": 27,
+        "rows": 32,
+        "sha256": "750a8c6e06ecb2c6fc505df3b231fe059256604eaf9711c56ada87d1334baa0e"
+      },
+      {
+        "file": "bg3-012.bgf",
+        "source": "level-13",
+        "frame": 7200,
+        "image_id": 4,
+        "rows": 32,
+        "sha256": "0574a467f37365fdb9afff049ac06f03c48a14b7d94c69831e80137c3853d797"
+      },
+      {
+        "file": "bg3-013.bgf",
+        "source": "level-14",
+        "frame": 7200,
+        "image_id": 39,
+        "rows": 32,
+        "sha256": "fb8c443d3929a5eba68e7b48fbe3f21f80fcd090f9a8ff2c60d4a74a3f8cfcf0"
+      },
+      {
+        "file": "bg3-014.bgf",
+        "source": "level-15",
+        "frame": 7200,
+        "image_id": 0,
+        "rows": 32,
+        "sha256": "a60c728c1569cb82e753ebcd44545d39cc4bc0253300266b1d1eab8828310418"
+      }
+    ],
+    "test_source_sha256": "fcba920a263a6a1402562a8259c2bb0df5413a58379290a80b048e7882165cba",
+    "engine_ppu_sha256": "b6a1847514b0743ac8b9e00242c31acfa8bad521ca54b31a33179c84c14109c5",
+    "test_log_sha256": "5d56754959a57861d96820a51bda1a1b960cd561e1444d66426d1028ec2e3b23"
+  },
+  "baseline_diagnosis": {
+    "scope": "Read-only instrumented0.10.1; not final-candidate acceptance",
+    "runner_sha256": "89c76102daad9f217165a6673e3d2c5b131215994bdccdc3ae49a5ba5cfd0470",
+    "synthetic_level_entries": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "frames_per_entry": 1200,
+    "all_fully_static": true,
+    "results": [
+      {
+        "level": 0,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 438,
+        "first_mismatches": [],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7186 coherent=1 unresolved=1 visible_unresolved=1 slots=39,",
+          "[sma3:object-gap] frame=7187 coherent=1 unresolved=1 visible_unresolved=1 slots=39,",
+          "[sma3:object-gap] frame=7188 coherent=1 unresolved=1 visible_unresolved=1 slots=39,"
+        ]
+      },
+      {
+        "level": 1,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 1,
+        "ready_mismatch_lines": 1,
+        "object_gap_lines": 26,
+        "first_mismatches": [
+          "[tileprobe] frame=7190 level=1 sublevel=1 ready=1 layer=1 different=1 unavailable=0 x=176 y=152 native=4065 authored=4163 scroll=01f9,0736 bgcnt=7402"
+        ],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7117 coherent=1 unresolved=1 visible_unresolved=1 slots=81,",
+          "[sma3:object-gap] frame=7164 coherent=1 unresolved=2 visible_unresolved=2 slots=66,67,",
+          "[sma3:object-gap] frame=7165 coherent=1 unresolved=2 visible_unresolved=2 slots=66,67,"
+        ]
+      },
+      {
+        "level": 2,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 944,
+        "first_mismatches": [],
+        "first_gaps": [
+          "[sma3:object-gap] frame=6849 coherent=1 unresolved=1 visible_unresolved=1 slots=41,",
+          "[sma3:object-gap] frame=6850 coherent=1 unresolved=1 visible_unresolved=1 slots=41,",
+          "[sma3:object-gap] frame=6851 coherent=1 unresolved=1 visible_unresolved=1 slots=41,"
+        ]
+      },
+      {
+        "level": 3,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 4,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 166,
+        "first_mismatches": [],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7634 coherent=1 unresolved=1 visible_unresolved=1 slots=77,",
+          "[sma3:object-gap] frame=7635 coherent=1 unresolved=1 visible_unresolved=1 slots=77,",
+          "[sma3:object-gap] frame=7636 coherent=1 unresolved=1 visible_unresolved=1 slots=77,"
+        ]
+      },
+      {
+        "level": 5,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 6,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 43,
+        "first_mismatches": [],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7278 coherent=1 unresolved=1 visible_unresolved=1 slots=37,",
+          "[sma3:object-gap] frame=7279 coherent=1 unresolved=1 visible_unresolved=1 slots=37,",
+          "[sma3:object-gap] frame=7280 coherent=1 unresolved=1 visible_unresolved=1 slots=37,"
+        ]
+      },
+      {
+        "level": 7,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 846,
+        "ready_mismatch_lines": 97,
+        "object_gap_lines": 749,
+        "first_mismatches": [
+          "[tileprobe] frame=6954 level=7 sublevel=155 ready=1 layer=3 different=2 unavailable=0 x=232 y=144 native=c26e authored=0182 scroll=ff48,0000 bgcnt=fa06",
+          "[tileprobe] frame=6955 level=7 sublevel=155 ready=1 layer=3 different=2 unavailable=0 x=232 y=144 native=c26e authored=0182 scroll=ff4a,0000 bgcnt=fa06",
+          "[tileprobe] frame=6956 level=7 sublevel=155 ready=1 layer=3 different=2 unavailable=0 x=232 y=144 native=c26e authored=0182 scroll=ff4c,0000 bgcnt=fa06",
+          "[tileprobe] frame=6957 level=7 sublevel=155 ready=1 layer=3 different=2 unavailable=0 x=232 y=144 native=c26e authored=0182 scroll=ff4e,0000 bgcnt=fa06",
+          "[tileprobe] frame=6958 level=7 sublevel=155 ready=1 layer=3 different=6 unavailable=0 x=232 y=128 native=c26f authored=0181 scroll=ff50,0000 bgcnt=fa06"
+        ],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7051 coherent=1 unresolved=16 visible_unresolved=16 slots=57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,",
+          "[sma3:object-gap] frame=7052 coherent=1 unresolved=16 visible_unresolved=16 slots=57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,",
+          "[sma3:object-gap] frame=7053 coherent=1 unresolved=16 visible_unresolved=16 slots=57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,"
+        ]
+      },
+      {
+        "level": 8,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 9,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 10,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 11,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 114,
+        "first_mismatches": [],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7613 coherent=1 unresolved=1 visible_unresolved=0 slots=57,",
+          "[sma3:object-gap] frame=7614 coherent=1 unresolved=1 visible_unresolved=0 slots=57,",
+          "[sma3:object-gap] frame=7615 coherent=1 unresolved=1 visible_unresolved=0 slots=57,"
+        ]
+      },
+      {
+        "level": 12,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 13,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 14,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 0,
+        "first_mismatches": [],
+        "first_gaps": []
+      },
+      {
+        "level": 15,
+        "returncode": 0,
+        "native": [
+          "self_heal_coverage=FULLY_STATIC dispatch_misses=0 interpreted_insns=0 healed_native=0"
+        ],
+        "probe_mismatch_lines": 0,
+        "ready_mismatch_lines": 0,
+        "object_gap_lines": 22,
+        "first_mismatches": [],
+        "first_gaps": [
+          "[sma3:object-gap] frame=7193 coherent=1 unresolved=1 visible_unresolved=1 slots=41,",
+          "[sma3:object-gap] frame=7194 coherent=1 unresolved=1 visible_unresolved=1 slots=41,",
+          "[sma3:object-gap] frame=7195 coherent=1 unresolved=1 visible_unresolved=1 slots=41,"
+        ]
+      }
+    ],
+    "fuzzy_active_map_mismatch": {
+      "observed_frame": 7500,
+      "sampled_different_bg0_tiles": 245,
+      "sampled_different_bg1_tiles": 435,
+      "meaning": "authored full-world lookup does not contain the original per-column tile shift",
+      "log_sha256": "079306a6f0526dbef3c74e8a20e79d0afa7341ddf42e5c86feddd18d2f42a430"
+    },
+    "isolated_foreground_difference": {
+      "level": 1,
+      "frame": 7190,
+      "tilemap_address": "0x0600A66A",
+      "native_entry": "0x4065",
+      "authored_entry": "0x4163",
+      "tile_screen_rectangle": [
+        175,
+        146,
+        8,
+        8
+      ],
+      "changed_map_entries": 1,
+      "visible_pixel_differences": 0,
+      "differences_when_only_OBJ_is_disabled": 64,
+      "classification": "Entire8x8tile covered by opaque Chomp OBJ; no visible scene defect established",
+      "native_rgb_sha256": "06db79ac15c0f59c30eba2f411389c9c600f2d7e3a1f5c513a1dba70a8df3752",
+      "authored_rgb_sha256": "06db79ac15c0f59c30eba2f411389c9c600f2d7e3a1f5c513a1dba70a8df3752",
+      "comparison_log_sha256": "4fb7e3d866a787caebae5d864da93b07f6f4c283394197262ad4245ef428477c",
+      "diagnostic_source_sha256": "8c0b062b3ccaab67d9fa479d87ffe1d64de0e5661ab44d2e7d8746998ecfe07f"
+    }
+  },
+  "behavior": {
+    "ordinary_unknown_sprite": "native viewport only; known scenery and objects stay visible",
+    "unknown_window_sprite": "whole-frame margins close when any potentially visible window lacks proven fullX, preserving native center",
+    "complete_bg3_map_guard": {
+      "layer": 3,
+      "screenblock": 26,
+      "hardware_tiles": [
+        64,
+        64
+      ],
+      "source_metatile_rows": 32,
+      "requires_normal_scene": true,
+      "requires_coherent_oam": true,
+      "requires_valid_image_header": true
+    },
+    "fuzzy_effect": "Original center with stable black margins for active tile-shift effect; panorama returns after guest map restoration"
+  },
+  "reproduction": {
+    "movement_actions": "validation/panorama-margin-stability-actions.json",
+    "level_fixture": "validation/make_level_fixture.py",
+    "capture": "validation/capture_production_frames.py",
+    "comparison": "validation/compare_production_frames.py",
+    "fuzzy_actions": "validation/fuzzy-contact-recovery-actions.json",
+    "bg3_fixture_builder": "validation/prepare_background_map_fixtures.py",
+    "ppu_test": "validation/widescreen_background_map_test.cpp"
+  },
+  "limits": [
+    "No physical Pixel7Pro or AndroidGPU run",
+    "No whole-game or all-settings guarantee",
+    "No extension of all object spawning/drawing limits",
+    "Unknown ordinary object positions remain clipped to original viewport",
+    "Unsupported scenes or unknown window positions use black margins",
+    "Fuzzy margins intentionally remain black throughout its native deformation effect",
+    "No fresh120Hz or sustained-FPS measurement",
+    "Initial16-level scan is baseline diagnosis, not final-candidate qualification"
+  ]
+}

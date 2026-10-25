@@ -1,18 +1,42 @@
-# Calidad de imagen — Android 0.10.1 experimental
+# Calidad de imagen — Android 0.10.2 beta
 
-En **0.10 y 0.10.1**, abre **Atrás del teléfono → Imagen** y elige uno de los tres
+En **0.10.2**, abre **Atrás del teléfono → Imagen** y elige uno de los tres
 modos. La resolución de presentación se configura por separado.
 
 | Modo | Qué muestra | Proporciones |
 | --- | --- | --- |
 | **Original (3:2)** | El fotograma original completo, centrado y con bandas cuando hacen falta. | Conserva 240:160 = 3:2. |
-| **Panorámica (experimental)** | Escenario adicional a los lados en las escenas compatibles, con retorno a la vista original cuando falta cobertura. | Conserva la forma de los gráficos. Puede dejar bandas. |
+| **Panorámica (beta)** | Escenario adicional a los lados en las escenas compatibles, con el centro original y bandas cuando falta cobertura de la escena. | Conserva la forma de los gráficos. Puede dejar bandas. |
 | **Estirar a pantalla completa** | El mismo fotograma original ocupa toda el área disponible. | Puede deformarlo. No muestra más escenario. |
 
 Original es el valor predeterminado en una instalación nueva. Al actualizar
 desde 0.9/0.9.1, la antigua casilla desactivada se convierte en Original y la
 casilla activada en Estirar. **La actualización nunca selecciona Panorámica
 por su cuenta.** La opción elegida se aplica durante el juego y se guarda.
+
+**Advertencia de Panorámica (beta):** es una fase temprana de desarrollo y
+todavía puede presentar errores visuales o de compatibilidad. El aviso está
+visible en Imagen. Original (3:2) sigue disponible para las escenas que no
+tengan una ampliación correcta. Cambiar el nombre de la opción no altera su
+valor guardado ni implica que todo el juego esté validado.
+
+## Correcciones adicionales en 0.10.2
+
+Un objeto ordinario sin posición lateral resuelta ya no apaga los dos
+márgenes completos: se conserva el escenario comprobado y ese objeto se
+limita al centro original. En los fondos BG3 completos compatibles se usa
+el mapa actualizado por el juego, incluyendo sus animaciones, en lugar de
+reconstruir una versión anterior de sus texturas.
+
+El efecto de terreno del **Fuzzy** se conserva en el centro original. Como
+el juego calcula ese efecto únicamente para su encuadre nativo, durante
+ese intervalo se muestran bandas negras estables; la panorámica vuelve al
+restaurarse los mapas. La selección sigue siendo Panorámica (beta) y no
+hay que volver a activarla. El cierre por rutinas ARM faltantes se corrige
+por separado, también en Original.
+
+[Pruebas de panorámica](../validation/PANORAMA_0.10.2_VALIDATION.md) ·
+[Corrección de Fuzzy](../validation/FUZZY_VALIDATION.md).
 
 ## Corrección del titileo en 0.10.1
 
@@ -38,9 +62,9 @@ fotograma Original ocupa **1620 × 1080**, con **390 píxeles a cada lado**.
 La aplicación continúa a pantalla completa: las bandas son parte del ajuste
 de la imagen a una superficie con otra proporción.
 
-## Usar la panorámica de 0.10
+## Usar Panorámica (beta)
 
-Selecciona **Atrás → Imagen → Panorámica (experimental)**. El modo amplía
+Selecciona **Atrás → Imagen → Panorámica (beta)**. El modo amplía
 el campo de visión en las escenas que el adaptador puede reconstruir; no
 estira los 240 píxeles originales para simular una vista más ancha.
 
@@ -70,7 +94,7 @@ admitidas muestra el centro original con bandas, manteniendo estable la
 superficie panorámica; algunos efectos de ventana conservan márgenes
 negros en las filas que no se pueden ampliar con seguridad.
 
-**Límite experimental:** 0.10 no modifica los límites originales de aparición
+**Límite de la beta:** la panorámica no modifica los límites originales de aparición
 y dibujo de objetos. Algunos enemigos, objetos o efectos pueden aparecer
 tarde o faltar en los márgenes. La comprobación de los objetos que ya están
 en OAM no demuestra que el juego haya generado todos los que deberían verse
@@ -81,7 +105,7 @@ un defecto lateral, selecciona **Original (3:2)** para usar su encuadre nativo.
 
 ## Resolución de presentación
 
-En **Atrás → Imagen** también puedes elegir:
+En **Atrás → Imagen → Resolución de salida** puedes elegir:
 
 - **Automática:** adapta el escalado al tamaño de salida de Android.
 - **720p · HD:** utiliza una imagen intermedia de 1280 × 720 píxeles.
@@ -116,7 +140,7 @@ AddressSanitizer y UndefinedBehaviorSanitizer. Los recorridos emparejados
 comprueban 6.801 fotogramas del castillo y 3.506 del coche.
 [Informe de 0.10 y reproducción](../validation/ANDROID_0.10_VALIDATION.md).
 
-Estas comprobaciones no sustituyen una prueba física de 0.10.1. El reporte de
+Estas comprobaciones históricas no sustituyen una prueba física de 0.10.2. El reporte de
 Edwin del 18 de octubre de 2026 sobre su **Google Pixel 7 Pro** corresponde
 al APK **0.9.1**, con el campo de visión original. No se traslada a la
 panorámica, la rotación o el rendimiento de esta nueva versión.

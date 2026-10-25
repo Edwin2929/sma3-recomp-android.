@@ -2,7 +2,35 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.1 experimental — corrección del titileo
+## Versión actual: 0.10.2 beta — Fuzzy, panorámica y nuevos ajustes
+
+**0.10.2 incorpora las rutinas nativas que faltaban al tocar un Fuzzy, corrige
+otros casos de parpadeo lateral y renueva la interfaz de ajustes.** La opción
+se llama ahora **Panorámica (beta)** y muestra una advertencia de fase temprana:
+todavía puede contener errores visuales o de compatibilidad.
+
+- El efecto original del Fuzzy se conserva. Sus dos rutinas ARM se ejecutan
+  como código recompilado después de verificar los bytes y la asignación
+  activa; no se activa el intérprete para ocultar el fallo.
+- Un objeto ordinario sin posición lateral resuelta ya no apaga todo el
+  escenario ampliado. Ese objeto queda limitado al encuadre original.
+- Los fondos BG3 completos compatibles usan el mapa actualizado por el
+  juego para conservar las animaciones y las modificaciones de texturas.
+- Durante el efecto de desplazamiento de terreno del Fuzzy, se muestra
+  temporalmente el centro original con bandas. La panorámica vuelve cuando
+  el juego restaura sus mapas; el efecto y la lógica del juego se conservan.
+- Los ajustes usan tarjetas, descripciones, submenús y navegación clara.
+  El icono de la aplicación es ahora un huevo blanco con manchas verdes.
+
+[Notas de 0.10.2](docs/releases/v0.10.2-beta.md) ·
+[Correcciones y validación](validation/ANDROID_0.10.2_FIXES.md) ·
+[Nueva interfaz](validation/ANDROID_0.10.2_SETTINGS.md).
+
+La panorámica sigue en desarrollo y conserva los límites originales de
+aparición de objetos. Las pruebas documentadas no equivalen a recorrer todo
+el juego ni a ejecutar este APK físicamente en el Pixel 7 Pro.
+
+### Corrección anterior de presentación en 0.10.1
 
 **0.10.1 corrige el titileo y la corrupción de texturas reproducidos en la
 presentación panorámica de 0.10.** Mantiene estable la anchura durante cada
@@ -40,12 +68,12 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.2**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
 | **Original (3:2)** | Conserva los **240 × 160** originales, centrados y con bandas cuando hacen falta. Predeterminada en una instalación nueva. |
-| **Panorámica (experimental)** | Muestra más escenario en las escenas compatibles. Mantiene las proporciones; puede conservar bandas y volver a la vista original. |
+| **Panorámica (beta)** | Muestra más escenario en las escenas compatibles. Conserva las proporciones y usa bandas durante efectos o escenas sin cobertura. Incluye un aviso de fase temprana. |
 | **Estirar a pantalla completa** | Llena el área disponible deformando el mismo fotograma original; no añade escenario. |
 
 La proporción original es **3:2**, porque 240 ÷ 160 = 1,5. En **0.9 y 0.9.1**,
@@ -58,7 +86,19 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.1 corregido, pendiente de subida manual
+### APK 0.10.2 beta, pendiente de subida manual
+
+Archivo: **`sma3-recomp-0.10.2-beta-arm64.apk`**, versión `0.10.2-beta`,
+código **13**, ARM64 y Android 9 o posterior. Conserva el paquete y la firma
+anteriores: está preparado para actualizar 0.10/0.10.1 sin desinstalar.
+Las preferencias, el modo de imagen y los diseños guardados se conservan.
+[Datos del archivo e instalación](docs/releases/v0.10.2-beta.md) ·
+[Verificación del APK](validation/android-0.10.2-build.json).
+
+La subida a GitHub Releases la realiza manualmente el mantenedor. El enlace
+público «Descarga» contiene 0.9 mientras no se adjunte una entrega posterior.
+
+### APK 0.10.1 anterior, entregado para subida manual
 
 Archivo: **`sma3-recomp-0.10.1-panorama-fix-arm64.apk`**, versión
 `0.10.1-panorama-fix-experimental`, código **12**, ARM64 y Android 9 o posterior.
@@ -121,6 +161,16 @@ El APK de desarrollo 0.9 conserva la firma de las versiones anteriores: instála
 [Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.9-experimental.md).
 
 ## Estado de validación
+
+**0.10.2:** el fallo de Fuzzy se reproduce en el binario anterior y el candidato
+completa contacto, mareo, recuperación natural y continuación normal. También
+se comprueba cargar una partida durante el efecto. Las dos rutinas nuevas
+pasan **144 escenarios de equivalencia ARM**. La presentación SDL conserva
+**4.200 centros exactos** en tres recorridos de 900 fotogramas y uno de 1.500;
+el oráculo de mapas corrige **7.300 píxeles laterales incorrectos** del caso
+reproducido de BG3. Se mantienen las restricciones de iluminación y las
+bandas temporales durante Fuzzy. Java, recursos y APK final están verificados.
+[Informe de 0.10.2 y alcance](validation/ANDROID_0.10.2_FIXES.md).
 
 **0.10.1:** el recorrido de producción compara cada fotograma: **600 centros
 idénticos**, frente a seis corruptos en 0.10, y ninguna oscilación de anchura.
@@ -257,6 +307,20 @@ APK resultante: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 Para compilar únicamente las bibliotecas nativas: `python3 tools/bootstrap_android_build.py --native-only`.
 
+0.10.2 añade las fuentes privadas de los dos efectos ARM de Fuzzy en
+`generated-effects/`. `generate_sources.py` las genera como parte del flujo
+completo. Al actualizar un entorno que ya tiene las demás fuentes generadas,
+puedes añadirlas sin regenerar el juego completo:
+
+```sh
+python3 tools/generate_effects.py --rom /ruta/sma3-usa.gba --recompiler ../gbarecomp/build/gba_recompile
+```
+
+La compilación se detiene con una indicación explícita si faltan esas fuentes.
+El APK 0.10.2 recompila las fuentes modificadas y las dos rutinas nuevas;
+reutiliza el archivo ARM64 del juego de 0.10 con su hash comprobado.
+[Procedencia de 0.10.2](validation/android-0.10.2-build.json).
+
 Para 0.10.1 se recompilan las fuentes nativas modificadas y se reutiliza,
 con hash verificado, el archivo del juego generado por la compilación ARM64
 completa de 0.10. No se atribuye otra compilación de los 64 fragmentos a este
@@ -279,7 +343,8 @@ mantiene fuera del APK las capturas de diagnóstico exclusivas de escritorio.
 | ROM USA | 4.194.304 bytes | `7352d2bd064d9ebaec579e264228aa21c7345b80` |
 | BIOS GBA | 16.384 bytes | `300c20df6731a33952ded8c436f7f186d25d3492` |
 
-La app solicita ambos archivos con **CHOOSE ROM** y **CHOOSE BIOS**; después se pulsa **PLAY**.
+En español, la app solicita ambos archivos con **Elegir ROM** y **Elegir BIOS**;
+después se pulsa **Jugar**. El lanzador utiliza el idioma guardado del menú.
 
 Una compilación realizada por otra persona tendrá otra firma. No podrá actualizar directamente los APK del desarrollador sin disponer de su misma clave. Conserva tu clave local para tus propias actualizaciones.
 
@@ -295,8 +360,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.1 en Pixel 7 Pro: actualización, los tres modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.1.
+- Probar 0.10.2 en Pixel 7 Pro: actualización, contacto con Fuzzy, los tres modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.2.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

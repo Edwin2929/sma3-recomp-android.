@@ -10,7 +10,9 @@ extern "C" const DispatchEntry sma3ram_kDispatchTable[];
 extern "C" const unsigned sma3ram_kDispatchTableLen;
 int sma3_morph_dispatch(uint32_t pc, int thumb);
 int sma3_overlay_dispatch(uint32_t pc, int thumb);
+int sma3_effects_dispatch(uint32_t pc, int thumb);
 int sma3_ram_dispatch(uint32_t pc, int thumb) {
+    if (sma3_effects_dispatch(pc, thumb)) return 1;
     if (sma3_morph_dispatch(pc, thumb)) return 1;
     if (sma3_overlay_dispatch(pc, thumb)) return 1;
     struct Copy { uint32_t ram, rom, size; };

@@ -1,0 +1,825 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "base_commit": "3f56cd6e820876c4b7c4e99ec852295690db8e93",
+  "scope": "Fuzzy-specific native dispatch and real contact/recovery in level 1-7; host qualification, not physical Android execution.",
+  "baseline": {
+    "version": "0.10.1",
+    "runner": {
+      "bytes": 138548520,
+      "sha256": "397aa0f28b608c410c8614dbd3a0373035cc0a9f3b153cd5a799215cdf7fde39"
+    },
+    "crash_reproduced": true,
+    "mode": "Original 240x160",
+    "last_completed_elapsed_frame": 599,
+    "failing_elapsed_frame": 600,
+    "guest_frame": 7199,
+    "error": "STRICT_STATIC dispatch miss",
+    "pc": "03004E2C",
+    "instruction_set": "ARM",
+    "matching_rom_source": "08000A08",
+    "matching_bytes": 120,
+    "log": {
+      "bytes": 12476,
+      "sha256": "8e31646c36f6a70f8adef0e7752711f0a96a3c7efbc63f76e25952a8c9864642"
+    }
+  },
+  "candidate": {
+    "runner": {
+      "bytes": 138570232,
+      "sha256": "6810c6c4ed2ce894ab25597dee9e9fb58792e0b07705fadccbdadecaddd9ca12"
+    },
+    "combines_panorama_fix": true,
+    "native_archive_regenerated": false,
+    "source_hashes": {
+      "src/effects_dispatch.cpp": {
+        "bytes": 2801,
+        "sha256": "4f43cd634409e11ad16fd8daf9bdecf636814cced84f6add43d482163a6fcc43"
+      },
+      "src/ram_dispatch.cpp": {
+        "bytes": 2669,
+        "sha256": "046d9e93f3497b80e2698f2db958f88991149f80305fcf75de392038fa44b291"
+      },
+      "tools/generate_effects.py": {
+        "bytes": 2912,
+        "sha256": "8a9f9573b1e7274bda4acac1e0d91dc1897afc98c2cac7e457081b7ae7b609c1"
+      },
+      "tools/generate_sources.py": {
+        "bytes": 1777,
+        "sha256": "d81421f078bf3f54957f5fcfbf2226f6fa64b748366734184bbfce7f1be1d8d5"
+      },
+      "CMakeLists.txt": {
+        "bytes": 5121,
+        "sha256": "38b85bd2e34110441ce35caa5416c8d9501fe9d50d0df2bb73db7cee88726738"
+      },
+      ".gitignore": {
+        "bytes": 668,
+        "sha256": "5110a69e7c4d70fac9af617c11530be07ebef8ede02baf0e4268b6065cf0692e"
+      },
+      "validation/effects_test.cpp": {
+        "bytes": 6821,
+        "sha256": "256397edba74cb9e593c23c5d220df9186602b4b9dab6e3b30d40f932f12eab5"
+      },
+      "validation/fuzzy_status.py": {
+        "bytes": 3814,
+        "sha256": "81b036ea054771f28fe92bb7786acfd78d46571788a59f7d64818d7155dacbef"
+      },
+      "validation/make_fuzzy_fixture.py": {
+        "bytes": 2041,
+        "sha256": "35bd4fa567fbfa9398709ccb54c65dc75d3f5536781dc3a9d2d9e612cac5ce0f"
+      },
+      "validation/run_panorama_session.py": {
+        "bytes": 12992,
+        "sha256": "e7d152a526f3903b4ae7e457c412ec34ee149c30f77aea4e9b76cd205100030a"
+      },
+      "validation/fuzzy-contact-recovery-actions.json": {
+        "bytes": 115,
+        "sha256": "a155cf245d8c828d71d8309c0665d8995f9e5f3841467301e0e914ced553215f"
+      }
+    },
+    "generated_effect_hashes": {
+      "generated-effects/offsets/effect_offsets_recompiled_000.cpp": {
+        "bytes": 18500,
+        "sha256": "e813a424c30cd5e159f833944f785e4270f60befa9a03e1c8aef1afb6c76c8f8"
+      },
+      "generated-effects/offsets/effect_offsets_recompiled_001.cpp": {
+        "bytes": 6860,
+        "sha256": "fae35cc411dacf0b8d7ea3d3e58762b2a66f6a6be9cad00e4339cdce6465a2a0"
+      },
+      "generated-effects/tiles/effect_tiles_recompiled_000.cpp": {
+        "bytes": 31922,
+        "sha256": "dc179f8920e9e9c7ce5237cd9d20c04d3ad2702e1982cfc8eda47601b984ab86"
+      },
+      "generated-effects/tiles/effect_tiles_recompiled_001.cpp": {
+        "bytes": 12120,
+        "sha256": "911db34d7ca9c520b0b7980d42b948eeaf476111f79a380433311e1a8698b482"
+      },
+      "generated-effects/offsets/effect_offsets_dispatch_table.cpp": {
+        "bytes": 2291,
+        "sha256": "6dc62b09fb280e6f3b9da6b907cb96a2360fb1b7de139382c49feb56122681ec"
+      },
+      "generated-effects/tiles/effect_tiles_dispatch_table.cpp": {
+        "bytes": 3724,
+        "sha256": "3188807d47b524a1d4162f5007ef5f759e90a9b34769215cfef26dd319c6fc7f"
+      }
+    },
+    "wide_source_hash": {
+      "bytes": 13686,
+      "sha256": "d3fd24ebc43268656de67e2decb454714c310731f2de4ad81ed1fa18b31ed424"
+    },
+    "source_hashes_scope": "Source snapshot used for the original captured sessions. Later read-only recovery-validator changes are recorded separately in recovery_validator.source_hashes."
+  },
+  "implementation": {
+    "routine_variants": [
+      {
+        "source": "0800091C",
+        "bytes": 216,
+        "allocation_pointer": "03007264",
+        "callback_pointer": "0300736C",
+        "dispatch_entries": 54
+      },
+      {
+        "source": "08000A08",
+        "bytes": 120,
+        "allocation_pointer": "03007260",
+        "callback_pointer": "03007370",
+        "dispatch_entries": 29
+      }
+    ],
+    "guarded_active_flag": "03007294 == 1",
+    "strict_static_preserved": true,
+    "interpreter_fallback_added": false,
+    "effect_disabled": false,
+    "full_bytes_verified_on_each_dispatch": true,
+    "current_allocation_and_callback_required": true
+  },
+  "fixture": {
+    "synthetic_entry": true,
+    "level_id": 6,
+    "sublevel_id": 6,
+    "entry_tile_xy": [
+      130,
+      120
+    ],
+    "source_state_sha256": "3cda561feb11e2268b20f503659cb244836f7dd915600018d4e16f55e567624e",
+    "fixture_sha256": "7eeb6c9e744115aac48d49547a0e9307a53fe6ac44752869ae80e5a8d0c205ec",
+    "changes": "Entrance setup only; original game loads the sprite generator. No ROM/enemy/effect patching.",
+    "recipe": "validation/make_fuzzy_fixture.py",
+    "actions": "validation/fuzzy-contact-recovery-actions.json",
+    "actions_sha256": "a155cf245d8c828d71d8309c0665d8995f9e5f3841467301e0e914ced553215f"
+  },
+  "sessions": {
+    "240": {
+      "status": {
+        "execution_complete": true,
+        "fuzzy_recovery": {
+          "pass": true,
+          "first_effect_elapsed_frame": 600,
+          "first_effect_guest_frame": 7199,
+          "recovery_elapsed_frame": 1382,
+          "recovery_guest_frame": 7981,
+          "active_frames": 782,
+          "maximum_amplitude": 24576,
+          "normal_frames_at_end": 119,
+          "required_normal_tail_frames": 100,
+          "no_restart_or_death": true,
+          "effect_was_not_disabled": true
+        }
+      },
+      "native_coverage": {
+        "ok": true,
+        "program": "SUPER MARIOC",
+        "code": "A3AE",
+        "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+        "coverage": "FULLY_STATIC",
+        "enabled": false,
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0,
+        "misses": []
+      },
+      "evidence": {
+        "trace.json": {
+          "bytes": 792905,
+          "sha256": "64f8a2d9cbd32f662b58a392ba760f884a72afdb6c38c34061e824e59ab18e15"
+        },
+        "run-status.json": {
+          "bytes": 425,
+          "sha256": "08759aa6b86bce23abab6715fc82e2fd9893c5e48ddd7d2c3a689be55599dd73"
+        },
+        "run-settings.json": {
+          "bytes": 876,
+          "sha256": "131b01e69fccf8022cd021999b8084d6ca86dafc1ed2b0bb87675e765164667a"
+        },
+        "native-coverage.json": {
+          "bytes": 289,
+          "sha256": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68"
+        },
+        "captures.json": {
+          "bytes": 3936,
+          "sha256": "768a8b6b885ea5c59ce43e607ca455b6d0011c114e53130fadcc5e2044ffd819"
+        },
+        "run.log": {
+          "bytes": 96144,
+          "sha256": "5f7a597108766ff5f5c65160ce9cf1d0a6b3020b070b35115329020550193d52"
+        }
+      }
+    },
+    "356": {
+      "status": {
+        "execution_complete": true,
+        "fuzzy_recovery": {
+          "pass": true,
+          "first_effect_elapsed_frame": 600,
+          "first_effect_guest_frame": 7199,
+          "recovery_elapsed_frame": 1382,
+          "recovery_guest_frame": 7981,
+          "active_frames": 782,
+          "maximum_amplitude": 24576,
+          "normal_frames_at_end": 119,
+          "required_normal_tail_frames": 100,
+          "no_restart_or_death": true,
+          "effect_was_not_disabled": true
+        }
+      },
+      "native_coverage": {
+        "ok": true,
+        "program": "SUPER MARIOC",
+        "code": "A3AE",
+        "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+        "coverage": "FULLY_STATIC",
+        "enabled": false,
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "native_calls": 0,
+        "inflight": 0,
+        "failed": 0,
+        "jump_table_candidate_regions": 0,
+        "misses": []
+      },
+      "evidence": {
+        "trace.json": {
+          "bytes": 792905,
+          "sha256": "64f8a2d9cbd32f662b58a392ba760f884a72afdb6c38c34061e824e59ab18e15"
+        },
+        "run-status.json": {
+          "bytes": 425,
+          "sha256": "08759aa6b86bce23abab6715fc82e2fd9893c5e48ddd7d2c3a689be55599dd73"
+        },
+        "run-settings.json": {
+          "bytes": 876,
+          "sha256": "8e9c0953d7411f0db18818162075032c57b66e642895d5465c666c380e6e41e1"
+        },
+        "native-coverage.json": {
+          "bytes": 289,
+          "sha256": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68"
+        },
+        "captures.json": {
+          "bytes": 3936,
+          "sha256": "768a8b6b885ea5c59ce43e607ca455b6d0011c114e53130fadcc5e2044ffd819"
+        },
+        "run.log": {
+          "bytes": 96144,
+          "sha256": "bc3d85a229596aa6519b4e29743023314bb679f853bf69e61d101b2b6017e2b4"
+        }
+      }
+    }
+  },
+  "diagnostic_comparison": {
+    "trace_rows": 1501,
+    "traces_identical": true,
+    "center_snapshots": 33,
+    "all_centers_exact": true,
+    "snapshots": [
+      {
+        "image": "frame-00001.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00027.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00060.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00093.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00120.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00180.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00240.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00300.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00360.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00420.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00450.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00480.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00540.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00550.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00584.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00600.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00660.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00720.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00780.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00840.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00900.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-00960.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01020.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01080.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01140.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01150.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01200.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01260.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01320.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01380.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01382.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01440.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      },
+      {
+        "image": "frame-01500.png",
+        "center_exact": true,
+        "widths": [
+          240,
+          356
+        ]
+      }
+    ]
+  },
+  "arm_differential": {
+    "scenarios": 144,
+    "checks": 3422,
+    "result": "PASS",
+    "allocations": [
+      "03002400",
+      "03004D50",
+      "03005400"
+    ],
+    "scroll_cases": [
+      0,
+      31,
+      63
+    ],
+    "return_modes": [
+      "ARM",
+      "Thumb"
+    ],
+    "pause_offsets": [
+      0,
+      4,
+      28,
+      80
+    ],
+    "compared": [
+      "registers",
+      "CPSR",
+      "IWRAM",
+      "EWRAM",
+      "instruction cycle costs"
+    ],
+    "cycle_measurement": "Normal runtime instruction costs through the shadow clock; PPU/devices not advanced for this unit test.",
+    "log": {
+      "bytes": 106,
+      "sha256": "07ad4d621cbcd24f100195aca53a74af71f95873ba42f2a19588b343020dc231"
+    },
+    "binary": {
+      "bytes": 137109120,
+      "sha256": "e7b91059593f362201df10c6a9416df2e6bf321e3993653cf912b9495ad5ecad"
+    },
+    "sanitizers": {
+      "result": "PASS",
+      "address": true,
+      "undefined_behavior": true,
+      "leak": false,
+      "scope": "New dispatcher, generated ARM variants and test harness instrumented. Existing engine libraries reused without sanitizer recompilation.",
+      "log": {
+        "bytes": 106,
+        "sha256": "07ad4d621cbcd24f100195aca53a74af71f95873ba42f2a19588b343020dc231"
+      },
+      "binary": {
+        "bytes": 137973168,
+        "sha256": "2cc934faa7e9884b35cdf7e9c1950e0186eb026b64b4b8dcbdca9c25db6cb79f"
+      }
+    }
+  },
+  "limits": [
+    "Synthetic level entry is not a naturally played route from boot. Contact, countdown, visible effect amplitude and recovery are produced by the original game.",
+    "No physical Pixel 7 Pro/Android GPU execution is claimed.",
+    "No complete all-level qualification is claimed.",
+    "Diagnostic screenshots are distinct from production SDL presentation captures.",
+    "Instruction pause/resume tests are not a claim that every possible hardware IRQ schedule was exercised."
+  ],
+  "saved_active_effect_resume": {
+    "state_sha256": "301add261666644a7a57537f2290da553068d1d24b232edcf863b7e1cf0c488a",
+    "scope": "Host savestate load during an active native Fuzzy effect, including restoring a 240-wide state into width356; not a physical Android lifecycle test.",
+    "sessions": {
+      "240": {
+        "result": "PASS",
+        "frames_executed": 600,
+        "observations": 601,
+        "starting_guest_frame": 7499,
+        "starting_effect_timer": 387,
+        "starting_amplitude": 24576,
+        "recovery_elapsed_frame": 482,
+        "recovery_guest_frame": 7981,
+        "final_normal_frames": 119,
+        "observations_match_uninterrupted_run": true,
+        "coverage": {
+          "ok": true,
+          "program": "SUPER MARIOC",
+          "code": "A3AE",
+          "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+          "coverage": "FULLY_STATIC",
+          "enabled": false,
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "native_calls": 0,
+          "inflight": 0,
+          "failed": 0,
+          "jump_table_candidate_regions": 0,
+          "misses": []
+        },
+        "evidence": {
+          "trace.json": {
+            "bytes": 326385,
+            "sha256": "8b6c3d30f41849a2d7465399e8255e9b75ba6a856a9718749460899d7ba1e598"
+          },
+          "run-status.json": {
+            "bytes": 33,
+            "sha256": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c"
+          },
+          "native-coverage.json": {
+            "bytes": 289,
+            "sha256": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68"
+          },
+          "run.log": {
+            "bytes": 55323,
+            "sha256": "f25838c03fc408d1512916b0fc115582ef3c109721e5f73da774907c9f99e95e"
+          }
+        }
+      },
+      "356": {
+        "result": "PASS",
+        "frames_executed": 600,
+        "observations": 601,
+        "starting_guest_frame": 7499,
+        "starting_effect_timer": 387,
+        "starting_amplitude": 24576,
+        "recovery_elapsed_frame": 482,
+        "recovery_guest_frame": 7981,
+        "final_normal_frames": 119,
+        "observations_match_uninterrupted_run": true,
+        "coverage": {
+          "ok": true,
+          "program": "SUPER MARIOC",
+          "code": "A3AE",
+          "sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+          "coverage": "FULLY_STATIC",
+          "enabled": false,
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "native_calls": 0,
+          "inflight": 0,
+          "failed": 0,
+          "jump_table_candidate_regions": 0,
+          "misses": []
+        },
+        "evidence": {
+          "trace.json": {
+            "bytes": 326385,
+            "sha256": "8b6c3d30f41849a2d7465399e8255e9b75ba6a856a9718749460899d7ba1e598"
+          },
+          "run-status.json": {
+            "bytes": 33,
+            "sha256": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c"
+          },
+          "native-coverage.json": {
+            "bytes": 289,
+            "sha256": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68"
+          },
+          "run.log": {
+            "bytes": 55323,
+            "sha256": "5fcce611fec3e92cd4d85b68623384f88f8042ae3a3be3bd75a0c7a2240f3284"
+          }
+        }
+      }
+    }
+  },
+  "recovery_validator": {
+    "result": "PASS",
+    "tests_per_mode": 18,
+    "synthetic_test_trace": true,
+    "source_hashes": {
+      "validation/fuzzy_status.py": {
+        "bytes": 6280,
+        "sha256": "cf781340aa0b57062c2e1362caa4e3cea5bb9c861c114636eba7dda5d5f89f7b"
+      },
+      "validation/test_fuzzy_status.py": {
+        "bytes": 4974,
+        "sha256": "93660af0cbb1db995b65da4c8a0f6e38f38e474dd840b46be58ee23f56d8ea88"
+      }
+    },
+    "test_runs": {
+      "normal": {
+        "result": "PASS",
+        "tests": 18,
+        "log": {
+          "bytes": 2621,
+          "sha256": "afb5119d2ddd7176da69a1b969427bd1a48f74a6a29d3fa1e8e269e368f481c3"
+        },
+        "command": [
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "validation",
+          "-p",
+          "test_fuzzy_status.py",
+          "-v"
+        ]
+      },
+      "optimized": {
+        "result": "PASS",
+        "tests": 18,
+        "log": {
+          "bytes": 2621,
+          "sha256": "6e1a568ad7056d1ab147a70fc387a3af45f39bfd1df79966fe1db3c64829a1f7"
+        },
+        "command": [
+          "-O",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "validation",
+          "-p",
+          "test_fuzzy_status.py",
+          "-v"
+        ]
+      }
+    },
+    "revalidated_existing_captures": true,
+    "capture_note": "Read-only revalidation of the original saved traces; no additional game execution is claimed.",
+    "sessions": {
+      "240": {
+        "source_trace": {
+          "bytes": 792905,
+          "sha256": "64f8a2d9cbd32f662b58a392ba760f884a72afdb6c38c34061e824e59ab18e15"
+        },
+        "recovery": {
+          "pass": true,
+          "first_effect_elapsed_frame": 600,
+          "first_effect_guest_frame": 7199,
+          "recovery_elapsed_frame": 1382,
+          "recovery_guest_frame": 7981,
+          "active_frames": 782,
+          "maximum_amplitude": 24576,
+          "normal_frames_at_end": 119,
+          "required_normal_tail_frames": 100,
+          "observed_countdown_steps": 686,
+          "observed_amplitude_growth_steps": 191,
+          "observed_amplitude_fade_steps": 96,
+          "no_restart_or_death": true,
+          "effect_was_not_disabled": true
+        }
+      },
+      "356": {
+        "source_trace": {
+          "bytes": 792905,
+          "sha256": "64f8a2d9cbd32f662b58a392ba760f884a72afdb6c38c34061e824e59ab18e15"
+        },
+        "recovery": {
+          "pass": true,
+          "first_effect_elapsed_frame": 600,
+          "first_effect_guest_frame": 7199,
+          "recovery_elapsed_frame": 1382,
+          "recovery_guest_frame": 7981,
+          "active_frames": 782,
+          "maximum_amplitude": 24576,
+          "normal_frames_at_end": 119,
+          "required_normal_tail_frames": 100,
+          "observed_countdown_steps": 686,
+          "observed_amplitude_growth_steps": 191,
+          "observed_amplitude_fade_steps": 96,
+          "no_restart_or_death": true,
+          "effect_was_not_disabled": true
+        }
+      }
+    },
+    "negative_cases": [
+      "missing contact or visible effect",
+      "trace starting after contact",
+      "guest-frame gaps and reset",
+      "elapsed-frame gaps",
+      "countdown jump",
+      "early termination",
+      "insufficient normal tail",
+      "forced clearing before countdown completion",
+      "forced clearing without gradual fade",
+      "death",
+      "restart",
+      "level exit",
+      "missing effect observation",
+      "truncated IWRAM",
+      "invalid gameplay pointer"
+    ]
+  }
+}

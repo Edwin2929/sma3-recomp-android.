@@ -20,6 +20,19 @@ inline bool object_intersects_vertical(uint16_t a0,uint16_t a1) {
     return y<160 && y+int(height)>0;
 }
 
+// A normal unknown sprite can remain clipped to the native viewport. An
+// unknown window sprite controls other layers: even a hardware alias wholly
+// outside the center may actually cover a margin. The engine's uniform-native
+// window fallback cannot prove that missing stencil, so keep this frame closed.
+inline bool window_positions_resolved(const ObjectPositions& positions) {
+    for (const auto& p:positions) {
+        if (((p.a0>>10)&3)!=2 || !object_intersects_vertical(p.a0,p.a1)) continue;
+        if (!p.valid || p.x < -32768 || p.x > 32767 ||
+            (unsigned(p.x)&511)!=(p.a1&511)) return false;
+    }
+    return true;
+}
+
 // Sub080004A0 compacts 256 staging slots into packed OAM by skipping Y=160.
 // Metadata is indexed by the ORIGINAL staging slot, not the packed OAM slot.
 // Require both the actual displayed attributes and metadata coordinates to

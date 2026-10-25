@@ -24,7 +24,7 @@ final class TouchDesignEditor extends Dialog {
  private int dp(int n){return Math.round(n*getContext().getResources().getDisplayMetrics().density);}
  @Override protected void onCreate(Bundle state){
   super.onCreate(state);
-  LinearLayout root=new LinearLayout(getContext());root.setOrientation(LinearLayout.VERTICAL);root.setPadding(dp(12),dp(8),dp(12),dp(8));root.setBackgroundColor(0xff101724);
+  LinearLayout root=new LinearLayout(getContext());root.setOrientation(LinearLayout.VERTICAL);root.setPadding(dp(12),dp(8),dp(12),dp(8));root.setBackgroundColor(SettingsPanel.BACKGROUND);
   TextView help=new TextView(getContext());help.setText(t("Arrastra los controles · Juego en pausa","Drag the controls · Game paused","Arraste os controles · Jogo pausado"));help.setTextColor(Color.WHITE);help.setTextSize(15);root.addView(help);
   preview=new Preview(getContext());root.addView(preview,new LinearLayout.LayoutParams(-1,0,1));
   LinearLayout row=new LinearLayout(getContext());selector=new Spinner(getContext());selector.setAdapter(new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item,names));row.addView(selector,new LinearLayout.LayoutParams(dp(125),dp(48)));
@@ -37,7 +37,7 @@ final class TouchDesignEditor extends Dialog {
   LinearLayout actions=new LinearLayout(getContext());button(actions,t("Cancelar","Cancel","Cancelar"),this::cancel);button(actions,t("Restablecer","Reset","Restaurar"),()->{System.arraycopy(defaults,0,values,0,28);select(selected);preview.invalidate();});button(actions,t("Guardar y usar","Save and use","Salvar e usar"),()->{save.accept(values.clone());dismiss();});root.addView(actions);
   setContentView(root);select(0);getWindow().setLayout(-1,-1);getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
  }
- private void button(LinearLayout row,String text,Runnable run){Button b=new Button(getContext());b.setText(text);b.setTextSize(12);b.setOnClickListener(v->run.run());row.addView(b,new LinearLayout.LayoutParams(0,dp(48),1));}
+ private void button(LinearLayout row,String text,Runnable run){Button b=new Button(getContext());b.setText(text);b.setTextSize(12);b.setAllCaps(false);b.setTextColor(SettingsPanel.TEXT);b.setBackgroundTintList(android.content.res.ColorStateList.valueOf(SettingsPanel.SURFACE));b.setOnClickListener(v->run.run());row.addView(b,new LinearLayout.LayoutParams(0,dp(48),1));}
  private void select(int id){selected=id;baseW=values[id*4+2];baseH=values[id*4+3];size.setProgress(50);preview.invalidate();}
  private void clamp(int id){int i=id*4;values[i]=Math.max(values[i+2]/2,Math.min(1-values[i+2]/2,values[i]));values[i+1]=Math.max(values[i+3]/2,Math.min(1-values[i+3]/2,values[i+1]));}
  private final class Preview extends View {
@@ -46,10 +46,10 @@ final class TouchDesignEditor extends Dialog {
   private RectF rect(int id){int i=id*4;float w=values[i+2]*screen.width(),h=values[i+3]*screen.height();if(id<3)w=h=Math.min(w,h);float cx=screen.left+values[i]*screen.width(),cy=screen.top+values[i+1]*screen.height();return new RectF(cx-w/2,cy-h/2,cx+w/2,cy+h/2);}
   @Override protected void onDraw(Canvas c){
    super.onDraw(c);float w=Math.max(1,getWidth()-dp(8)),h=Math.max(1,getHeight()-dp(8));if(w/h>aspect)w=h*aspect;else h=w/aspect;screen.set((getWidth()-w)/2,(getHeight()-h)/2,(getWidth()+w)/2,(getHeight()+h)/2);
-   paint.setStyle(Paint.Style.FILL);paint.setColor(0xff252f40);c.drawRoundRect(screen,dp(8),dp(8),paint);
-   for(int id=0;id<7;id++){RectF r=rect(id);paint.setColor(id==selected?0xff278cbb:0xff59677c);
+   paint.setStyle(Paint.Style.FILL);paint.setColor(SettingsPanel.SURFACE);c.drawRoundRect(screen,dp(8),dp(8),paint);
+   for(int id=0;id<7;id++){RectF r=rect(id);paint.setColor(id==selected?0xff477a35:0xff4b6052);
     if(id==0){float t=r.width()*.39f;c.drawRect(r.centerX()-t/2,r.top,r.centerX()+t/2,r.bottom,paint);c.drawRect(r.left,r.centerY()-t/2,r.right,r.centerY()+t/2,paint);}else if(id<3)c.drawOval(r,paint);else c.drawRoundRect(r,dp(6),dp(6),paint);
-    if(id==selected){paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(2));paint.setColor(Color.CYAN);c.drawRect(r,paint);paint.setStyle(Paint.Style.FILL);}
+    if(id==selected){paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(2));paint.setColor(SettingsPanel.ACCENT);c.drawRect(r,paint);paint.setStyle(Paint.Style.FILL);}
     paint.setColor(Color.WHITE);paint.setTextAlign(Paint.Align.CENTER);paint.setTextSize(Math.min(dp(14),r.height()*.5f));c.drawText(id==0?"+":names[id],r.centerX(),r.centerY()-(paint.ascent()+paint.descent())/2,paint);
    }
   }

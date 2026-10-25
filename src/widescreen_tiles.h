@@ -2,6 +2,16 @@
 #include <cstdint>
 
 namespace sma3::wide {
+// Sub080148B4 publishes all 64x64 BG3 hardware tiles at screenblock 26.
+// Some scenes subsequently animate or decorate that complete map directly
+// (for example Sub08079DF8). Reconstructing it from the original metatiles
+// discards those edits. A 32-metatile-row image fits the complete 512x512
+// upload; larger images use partial scrolling updates and must retain the
+// authored reader. Do not generalize this rule from screen size alone.
+inline bool complete_background_map(int layer, uint16_t control, unsigned image_rows) {
+    return layer == 3 && image_rows == 32 && (control & 0xdf00u) == 0xda00u;
+}
+
 // SMA3 USA: read the complete level map instead of the partially uploaded
 // hardware scrolling ring. Reader is a bounded, side-effect-free memory view.
 template<class Reader>

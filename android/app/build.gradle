@@ -1,8 +1,8 @@
 plugins { id 'com.android.application' }
 ext.gbaGame = [
     applicationId: 'org.sma3.recomp.experimental',
-    versionCode: 12,
-    versionName: '0.10.1-panorama-fix-experimental',
+    versionCode: 13,
+    versionName: '0.10.2-beta',
     title: 'SMA3 Recomp experimental',
     romSha1: ['7352d2bd064d9ebaec579e264228aa21c7345b80'],
     romSize: 4194304,
@@ -13,11 +13,11 @@ ext.gbaGame = [
     engineRoot: file('../../../gbarecomp'),
     biosRequired: true,
     orientation: 'any',
-    payloadVersion: '0.10.1',
+    payloadVersion: '0.10.2',
     nativeJobs: 2,
     debugAbis: ['arm64-v8a'],
     cmakeArguments: ['-DSMA3_PANORAMA=ON'],
-    setupNote: 'Experimental. Optional panoramic view; unsupported scenes keep the original view.'
+    setupNote: 'Panorámica (beta): fase temprana de desarrollo; puede contener errores visuales y escenas sin cobertura.'
 ]
 def nativeArchive = file('../../native-cache/arm64-v8a/libgbarecomp_game.a')
 if (nativeArchive.isFile()) {

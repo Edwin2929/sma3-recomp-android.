@@ -24,7 +24,7 @@ def sections(data):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('source',type=Path);p.add_argument('output',type=Path)
-    p.add_argument('--level',type=int,choices=(0,1,3),required=True)
+    p.add_argument('--level',type=int,choices=(0,1,3,7),required=True)
     a=p.parse_args();original=a.source.read_bytes()
     try:
         table=sections(original);start,size=table[b'BUS0']

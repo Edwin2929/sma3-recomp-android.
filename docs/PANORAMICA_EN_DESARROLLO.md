@@ -1,4 +1,39 @@
-# Panorámica real — Android 0.10.1 experimental
+# Panorámica real — Android 0.10.2 beta
+
+## Correcciones y límites actuales en 0.10.2
+
+El menú usa **Panorámica (beta)** y avisa de que está en una fase temprana,
+con posibles errores visuales o de compatibilidad. Se activa en
+**Atrás → Imagen**, junto a Original (3:2) y Estirar a pantalla completa.
+Cambiar el nombre no altera las preferencias guardadas.
+
+Se corrige otra causa de titileo que no aparecía en el recorrido anterior
+del castillo: un objeto ordinario sin posición lateral comprobada apagaba
+los dos márgenes completos. Ahora se conservan el terreno y los objetos
+verificados, mientras ese objeto se dibuja únicamente en el centro original.
+Se mantienen la coherencia de la observación de OAM y las restricciones de
+las ventanas de iluminación; no se inventan posiciones laterales.
+
+En los fondos BG3 con una imagen completa de 512 × 512 y la distribución
+de mapa nativa comprobada se usa el mapa que actualiza el propio juego.
+Así se conservan sus entradas de tiles, bancos de paleta y animaciones.
+Los mapas mayores o cargados por partes conservan su reconstrucción
+específica; la regla no se aplica a todos los fondos de forma indiscriminada.
+
+**Fuzzy:** el cierre al tocarlo tenía una causa independiente del ancho de
+imagen: faltaban dos rutinas ARM asignadas dinámicamente en RAM. 0.10.2 las
+recompila y comprueba su asignación y sus bytes antes de ejecutarlas. El
+efecto original del Fuzzy se mantiene. Mientras está activo el desplazamiento
+de terreno, se conservan márgenes negros estables porque el juego solo
+calcula esa deformación para su encuadre original. Al restaurarse los mapas,
+vuelve la panorámica. Esto es una limitación explícita de la beta.
+
+[Pruebas de panorámica](../validation/PANORAMA_0.10.2_VALIDATION.md) ·
+[Pruebas de Fuzzy](../validation/FUZZY_VALIDATION.md) ·
+[Notas de entrega](releases/v0.10.2-beta.md).
+
+Las secciones siguientes conservan la historia de las versiones anteriores;
+sus cifras y limitaciones se refieren a cada entrega indicada.
 
 ## Corrección de presentación en 0.10.1
 

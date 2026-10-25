@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "version": "0.10.2-beta",
+  "result": "pass",
+  "completed_utc": "2026-10-25T05:56:52.048295+00:00",
+  "scope": "Fresh integration regression runs of Python validators and synthetic tile/object/window tests. No ROM, BIOS, Android execution, FPS measurement, or whole-game qualification.",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0"
+  },
+  "source_consistency": {
+    "input_files": 72,
+    "sources_unchanged_before_during_and_after": true,
+    "complete_private_source_manifest_sha256": "8bd90456a4ead621265f1d98b9393842dfdc4ddb0fed566c3da9390f8577f4ea",
+    "qualification_stage": "final frozen sources, including the OBJ-window guard and Fuzzy validator contract tests"
+  },
+  "python": [
+    {
+      "mode": "normal",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "test_count": 187,
+      "unittest_seconds": 14.688,
+      "log_sha256": "d9eda238b312deccc6822f09a768d8d470774f81e680127ebc06bd03581ff2fe",
+      "sources_unchanged": true
+    },
+    {
+      "mode": "optimized",
+      "command": [
+        "python3",
+        "-B",
+        "-O",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "test_count": 187,
+      "unittest_seconds": 15.281,
+      "log_sha256": "2b32f2041353ead2687b7b1b4ade9f83b338ea11805a22302f3473dc59dad391",
+      "sources_unchanged": true
+    }
+  ],
+  "patch_stack_coverage": {
+    "patches": 8,
+    "recognized_prefix_states": 9,
+    "successful_completion_and_idempotence_invocations_per_python_mode": 18,
+    "unknown_guarded_file_rejections_per_python_mode": 6,
+    "wrong_pin_rejections_per_python_mode": 1
+  },
+  "native": {
+    "sanitizers": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "leak_sanitizer": false,
+    "compile_flags": [
+      "-std=c++20",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-fno-sanitize-recover=all"
+    ],
+    "runtime_environment": {
+      "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+      "UBSAN_OPTIONS": "halt_on_error=1"
+    },
+    "runs": [
+      {
+        "name": "widescreen_tiles",
+        "compile_exit_code": 0,
+        "exit_code": 0,
+        "stdout": "PASS: 16 map/flip/boundary cases plus invalid inputs\n",
+        "stderr": "",
+        "binary_sha256": "ffc1976faee3cbdf1dd03809da74509349a9b5475dc86375e4ac96b80748578b",
+        "log_sha256": "f291e28cc3f17b55e5f99bb6ec6bfa5c67c48cfcb2c1718b099f50e4e7880089",
+        "build_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sources_unchanged": true,
+        "source": "validation/widescreen_tiles_test.cpp",
+        "build_command": "c++ -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all  validation/widescreen_tiles_test.cpp -o TEST_BINARY",
+        "reported_cases": 16
+      },
+      {
+        "name": "widescreen_objects",
+        "compile_exit_code": 0,
+        "exit_code": 0,
+        "stdout": "PASS: OAM compaction, signed X ambiguity, mismatches, coherent frame selection, reset and capacity\n",
+        "stderr": "",
+        "binary_sha256": "4a19be686d084589d2f24fc506619578c1929d80311225af776623b8717c7694",
+        "log_sha256": "17785949147a5bb6c4e6f4383417a5a891afdb4fce246981f7088ced0352def2",
+        "build_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sources_unchanged": true,
+        "source": "validation/widescreen_objects_test.cpp",
+        "build_command": "c++ -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all  validation/widescreen_objects_test.cpp -o TEST_BINARY"
+      },
+      {
+        "name": "widescreen_window",
+        "compile_exit_code": 0,
+        "exit_code": 0,
+        "stdout": "PASS window: 9014 checks; exact copies/originals, full X, atomic presentation, stale triples, capacities and read-only guest\n",
+        "stderr": "",
+        "binary_sha256": "6e2b2b91c6f56d87378adc0ce2ef07229352d72a96062d2bce147c435dee2643",
+        "log_sha256": "fa7033e2dc3274c6c313acb65170e27db3ad8e83e60323551256173eff5aeca2",
+        "build_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sources_unchanged": true,
+        "source": "validation/widescreen_window_test.cpp",
+        "build_command": "c++ -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all  validation/widescreen_window_test.cpp -o TEST_BINARY",
+        "internal_assertions": 9014
+      },
+      {
+        "name": "widescreen_obj_window_render",
+        "compile_exit_code": 0,
+        "exit_code": 0,
+        "stdout": "PASS: 488 synthetic scenarios, 8102978 internal assertions; real PPU, native center unchanged\n",
+        "stderr": "",
+        "binary_sha256": "491cb0c46eca10dd9ba9689f81f3fffbad6087a651beaae20c7951d60e64ff3f",
+        "log_sha256": "74fe72a92758ca75ca1e92f9871b1d091254b22f65f09e4edc3e367f84025f74",
+        "build_log_sha256": "ccdfb92f326c0a7a590e4d382fc81d23d20618cae9be9ad1efb8b32456cdc640",
+        "sources_unchanged": true,
+        "source": "validation/widescreen_obj_window_render_test.cpp",
+        "build_command": "c++ -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all  -I ENGINE_ROOT/src/gba -I ENGINE_ROOT/src/debug -I ENGINE_ROOT/src/runtime validation/widescreen_obj_window_render_test.cpp ENGINE_ROOT/src/gba/gba_ppu.cpp -o TEST_BINARY",
+        "synthetic_scenarios": 488,
+        "internal_assertions": 8102978
+      }
+    ]
+  },
+  "source_sha256": {
+    "src/widescreen_tiles.h": "b90a935046b2dbbac41b9c07ca99ce20b266ff612622af06cbb67e9fb74f67db",
+    "validation/widescreen_tiles_test.cpp": "27aaaa82f2e0e7fd767bdf6ee0e4725a488afaf7d5be2b956a9c0a6382d69dd1",
+    "src/widescreen_objects.h": "4554ada1c0e1d1fdf24f3fb2ee89ed8b2fe136181338669c3ba0b30ab29dc916",
+    "validation/widescreen_objects_test.cpp": "b4c1c26243e33e4838766bec5b42939011446744e7349acb0d5291d84e85273d",
+    "src/widescreen_strips.h": "2ef669aecdb7468505411a2896e78ea257813fcc09e5ec76e33b789d4ab1814b",
+    "src/widescreen_window.h": "1b9b32ec27a421d3111b67cc25e26fe465f99195282412395049e541f522d35f",
+    "validation/widescreen_window_test.cpp": "95b5aeef264aa6d2358bd19acce926c1a2402a3d5a8ea61b9fda3938e5a8f905",
+    "ENGINE_ROOT/src/debug/snapshot.h": "16e300c954fe26faeec4aba07ba391c03876d4e197d1ce5757c78b65d38c9073",
+    "ENGINE_ROOT/src/gba/foreign_obj_focus.h": "07a197617cdc4799f62bd57fa829c02511e624105c512bed172d94659098f790",
+    "ENGINE_ROOT/src/gba/foreign_presentation_internal.h": "a3750c396c2d8cae096fbe1a7cae3cbadcbff3c7a1a8201a860778a2bb84de0a",
+    "ENGINE_ROOT/src/gba/foreign_screen_overlay.h": "3cfd720da0debcebbc5feb370931c5c2822a78c170fe5e6f60a2142a9c6cdf2d",
+    "ENGINE_ROOT/src/gba/gba_ppu.cpp": "b6a1847514b0743ac8b9e00242c31acfa8bad521ca54b31a33179c84c14109c5",
+    "ENGINE_ROOT/src/gba/gba_ppu.h": "721db2b0e7f4135bea0b388f367bafc14ab3472930c9584ea96aba93e450c6ce",
+    "validation/widescreen_obj_window_render_test.cpp": "46769e4967da88fe0d302f4c53da1422a553ddc2d8b040c1a174b9362359a771",
+    "validation/fuzzy_status.py": "cf781340aa0b57062c2e1362caa4e3cea5bb9c861c114636eba7dda5d5f89f7b",
+    "validation/test_fuzzy_status.py": "93660af0cbb1db995b65da4c8a0f6e38f38e474dd840b46be58ee23f56d8ea88",
+    "validation/run_panorama_session.py": "e7d152a526f3903b4ae7e457c412ec34ee149c30f77aea4e9b76cd205100030a"
+  },
+  "limits": [
+    "The Python test count is 187 in each mode, not 374 independent test definitions.",
+    "Native assertion counts are internal checks of synthetic scenarios, not gameplay frames.",
+    "The new BG3 real-map oracle and Fuzzy ARM/native versus interpreter plus real contact/recovery validations are reported separately; they are not counted here. The 18 synthetic Fuzzy session-validator contract tests are included in the Python totals.",
+    "No emulator or physical Android device was used in these regression runs."
+  ],
+  "python_case_breakdown": {
+    "legacy_validators": 169,
+    "fuzzy_session_contract": 18,
+    "total_definitions": 187,
+    "execution_modes": [
+      "normal",
+      "optimized (-O)"
+    ]
+  }
+}

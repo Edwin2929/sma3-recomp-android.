@@ -82,14 +82,13 @@ public class GbaGameActivity extends SDLActivity {
     }
     private void showMenuLanguageOptions() {
         int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1);
-        AlertDialog menu = new AlertDialog.Builder(this)
-            .setTitle(tr("Idioma del menú", "Menu language", "Idioma do menu"))
-            .setSingleChoiceItems(new String[]{"English", "Español", "Português"}, selected, (dialog, which) -> {
-                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("menu-language", which).apply();
-                updateFpsText(); showLanguageMenu();
-            }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (dialog, which) -> showLanguageMenu()).create();
-        menu.setOnCancelListener(dialog -> showLanguageMenu());
-        openSettings(menu, this::showLanguageMenu);
+        SettingsPanel panel = settingsPanel(tr("Idioma del menú", "Menu language", "Idioma do menu"),
+            tr("Se aplica al instante a los ajustes.", "Applies immediately to settings.", "Aplica-se imediatamente às configurações."));
+        panel.choices(new String[]{"English", "Español", "Português"}, new String[]{"", "", ""}, selected, which -> {
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("menu-language", which).apply();
+            updateFpsText(); showLanguageMenu();
+        });
+        openSettings(panel.dialog(this::showLanguageMenu), this::showLanguageMenu);
     }
     private boolean activityResumed;
     private String lastFps;
@@ -199,143 +198,192 @@ public class GbaGameActivity extends SDLActivity {
     private void setMenuOpen(boolean open) {
         try { GbaNative.setOptionsOpen(open); } catch (UnsatisfiedLinkError ignored) {}
     }
+    private String[] imageModeNames() {
+        return new String[]{"Original (3:2)",
+            tr("Panorámica (beta)", "Panoramic (beta)", "Panorâmica (beta)"),
+            tr("Estirar a pantalla completa", "Stretch to full screen", "Esticar para tela inteira")};
+    }
+    private String qualityName() {
+        int quality = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
+        return quality == 720 ? "720p · HD" : quality == 1080 ? "1080p · Full HD" : tr("Automática", "Automatic", "Automática");
+    }
+    private SettingsPanel settingsPanel(String title, String subtitle) {
+        return new SettingsPanel(this, title, subtitle, backText());
+    }
     private void showControllerOptions() {
-        String[] rows = new String[10];
-        for (int bit = 0; bit < 10; ++bit) rows[bit] = gbaButtons()[bit] + " → " + padButtons()[padBinding(bit) < 0 ? 21 : padBinding(bit)];
-        AlertDialog menu = new AlertDialog.Builder(this).setTitle(tr("Mapeo del mando", "Controller mapping", "Mapeamento do controle"))
-            .setItems(rows, (dialog, bit) -> {
-                AlertDialog chooser = new AlertDialog.Builder(this)
-                    .setTitle(tr("Botón para ", "Button for ", "Botão para ") + gbaButtons()[bit])
-                    .setSingleChoiceItems(padButtons(), padBinding(bit) < 0 ? 21 : padBinding(bit), (selection, index) -> {
-                        getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("pad-" + bit, index == 21 ? -1 : index).apply();
-                        applyInputOptions(); selection.dismiss(); showControllerOptions();
-                    }).setNegativeButton(tr("Cancelar", "Cancel", "Cancelar"), (selection, which) -> showControllerOptions()).create();
-                chooser.setOnCancelListener(ignored -> showControllerOptions());
-                openSettings(chooser, this::showControllerOptions);
-            })
-            .setNeutralButton(tr("Restablecer", "Reset", "Restaurar"), (dialog, which) -> {
+        SettingsPanel panel = settingsPanel(tr("Mapeo del mando", "Controller mapping", "Mapeamento do controle"),
+            tr("Elige qué botón del mando activa cada acción.", "Choose the controller button for each action.", "Escolha o botão do controle para cada ação."));
+        for (int bit = 0; bit < 10; ++bit) {
+            final int action = bit;
+            panel.card(SettingsPanel.CONTROLS, gbaButtons()[bit], padButtons()[padBinding(bit) < 0 ? 21 : padBinding(bit)],
+                () -> showControllerBinding(action));
+        }
+        panel.section(tr("Configuración inicial", "Default configuration", "Configuração inicial"));
+        panel.card(SettingsPanel.CONTROLS, tr("Restablecer mapeo", "Reset mapping", "Restaurar mapeamento"),
+            tr("Recupera la asignación de botones predeterminada.", "Restore the default button assignments.", "Restaura as atribuições padrão dos botões."), () -> {
                 android.content.SharedPreferences.Editor editor = getSharedPreferences("sma3-options", MODE_PRIVATE).edit();
                 for (int bit = 0; bit < 10; ++bit) editor.remove("pad-" + bit);
                 editor.apply(); applyInputOptions(); showControllerOptions();
-            })
-            .setPositiveButton(backText(), (dialog, which) -> showControlsMenu()).create();
-        menu.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
-        openSettings(menu, this::showControlsMenu);
+            });
+        openSettings(panel.dialog(this::showControlsMenu), this::showControlsMenu);
+    }
+    private void showControllerBinding(int bit) {
+        SettingsPanel panel = settingsPanel(tr("Botón para ", "Button for ", "Botão para ") + gbaButtons()[bit],
+            tr("Los cambios se guardan al seleccionar.", "Your selection is saved immediately.", "A seleção é salva imediatamente."));
+        String[] buttons = padButtons();
+        String[] descriptions = new String[buttons.length];
+        java.util.Arrays.fill(descriptions, "");
+        panel.choices(buttons, descriptions, padBinding(bit) < 0 ? 21 : padBinding(bit), index -> {
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("pad-" + bit, index == 21 ? -1 : index).apply();
+            applyInputOptions(); showControllerOptions();
+        });
+        openSettings(panel.dialog(this::showControllerOptions), this::showControllerOptions);
     }
 
     private void showVideoOptions() {
         if (isFinishing() || isDestroyed()) return;
-        android.widget.LinearLayout panel = new android.widget.LinearLayout(this);
-        panel.setOrientation(android.widget.LinearLayout.VERTICAL);
-        panel.setPadding(overlayDp(20), overlayDp(8), overlayDp(20), 0);
-        android.widget.RadioGroup qualities = new android.widget.RadioGroup(this);
-        int saved = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
+        SettingsPanel panel = settingsPanel(tr("Imagen", "Image", "Imagem"),
+            tr("Elige cómo se muestra el juego.", "Choose how the game is displayed.", "Escolha como o jogo é exibido."));
+        panel.section(tr("Modo de imagen", "Image mode", "Modo de imagem"));
+        String betaWarning = tr(
+            "Es una fase temprana y todavía puede presentar errores visuales o de compatibilidad. Si encuentras un problema, usa Original (3:2).",
+            "This is an early version and may still have visual or compatibility issues. If you encounter a problem, use Original (3:2).",
+            "É uma fase inicial e ainda pode apresentar erros visuais ou de compatibilidade. Se encontrar um problema, use Original (3:2).");
+        TextView warning = panel.notice(tr("Panorámica (beta) · Aviso", "Panoramic (beta) · Notice", "Panorâmica (beta) · Aviso"), betaWarning);
+        panel.choices(imageModeNames(), new String[]{
+            tr("Conserva las proporciones originales, sin deformar la imagen.", "Keeps the original proportions without distortion.", "Mantém as proporções originais, sem deformar a imagem."),
+            tr("Muestra más escenario en las escenas compatibles. Puede dejar bandas.", "Shows more scenery in supported scenes. Bars may remain.", "Mostra mais cenário nas cenas compatíveis. Pode deixar faixas."),
+            tr("Llena el área de juego. Puede deformar la imagen y no amplía el escenario.", "Fills the game area. May distort the image without showing more scenery.", "Preenche a área do jogo. Pode deformar a imagem sem ampliar o cenário.")
+        }, imageMode(), mode -> {
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("image-mode", mode).apply();
+            applyInputOptions();
+            if (mode == IMAGE_PANORAMA) warning.announceForAccessibility(betaWarning);
+        });
+        panel.section(tr("Resolución de salida", "Output resolution", "Resolução de saída"));
+        panel.card(SettingsPanel.IMAGE, qualityName(),
+            tr("Ajusta la resolución y el consumo de batería.", "Adjust resolution and battery usage.", "Ajuste a resolução e o consumo de bateria."), this::showResolutionOptions);
+        openSettings(panel.dialog(this::showOptions), this::showOptions);
+    }
+    private void showResolutionOptions() {
+        SettingsPanel panel = settingsPanel(tr("Resolución", "Resolution", "Resolução"),
+            tr("La resolución de salida no añade detalle al juego original.", "Output resolution does not add detail to the original game.", "A resolução de saída não acrescenta detalhes ao jogo original."));
         int[] values = {0, 720, 1080};
-        String[] names = {tr("Automática (resolución de pantalla)", "Automatic (display resolution)", "Automática (resolução da tela)"), "720p · HD", "1080p · Full HD"};
-        for (int i = 0; i < values.length; ++i) {
-            android.widget.RadioButton button = new android.widget.RadioButton(this);
-            button.setId(i + 100); button.setText(names[i]); qualities.addView(button);
-            if (saved == values[i]) qualities.check(i + 100);
-        }
-        qualities.setOnCheckedChangeListener((group, id) -> {
-            int index = id - 100;
-            if (index < 0 || index >= values.length) return;
+        int saved = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
+        int selected = saved == 720 ? 1 : saved == 1080 ? 2 : 0;
+        panel.choices(new String[]{tr("Automática", "Automatic", "Automática"), "720p · HD", "1080p · Full HD"}, new String[]{
+            tr("Se adapta a la resolución de la pantalla.", "Adapts to the display resolution.", "Adapta-se à resolução da tela."),
+            tr("Una opción de menor resolución para reducir el consumo.", "A lower-resolution option to reduce power usage.", "Uma opção de menor resolução para reduzir o consumo."),
+            tr("Mayor resolución de salida; puede consumir más batería.", "Higher output resolution; may use more battery.", "Maior resolução de saída; pode consumir mais bateria.")
+        }, selected, index -> {
             getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("video-quality", values[index]).apply();
             applyInputOptions();
         });
-        panel.addView(qualities);
-        TextView modeTitle = new TextView(this);
-        modeTitle.setText(tr("Modo de imagen", "Image mode", "Modo de imagem"));
-        modeTitle.setTextSize(16);
-        modeTitle.setPadding(0, overlayDp(12), 0, overlayDp(4));
-        panel.addView(modeTitle);
-        android.widget.RadioGroup modes = new android.widget.RadioGroup(this);
-        String[] modeNames = {
-            tr("Original (3:2)", "Original (3:2)", "Original (3:2)"),
-            tr("Panorámica (experimental)", "Panoramic (experimental)", "Panorâmica (experimental)"),
-            tr("Estirar a pantalla completa", "Stretch to full screen", "Esticar para tela inteira")
-        };
-        int selectedMode = imageMode();
-        for (int i = IMAGE_ORIGINAL; i <= IMAGE_STRETCH; ++i) {
-            android.widget.RadioButton button = new android.widget.RadioButton(this);
-            button.setId(i + 200);
-            button.setText(modeNames[i]);
-            modes.addView(button);
-            if (selectedMode == i) modes.check(i + 200);
-        }
-        modes.setOnCheckedChangeListener((group, id) -> {
-            int mode = id - 200;
-            if (mode < IMAGE_ORIGINAL || mode > IMAGE_STRETCH) return;
-            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("image-mode", mode).apply();
-            applyInputOptions();
-        });
-        panel.addView(modes);
-        TextView note = new TextView(this);
-        note.setText(tr(
-            "Original: conserva la proporción 3:2 sin deformar la imagen.\nPanorámica: muestra más escenario donde es compatible y usa la vista original en otras escenas. Puede dejar bandas según la pantalla.\nEstirar: llena el área de juego, pero puede deformar la imagen y no muestra más escenario.\n1080p puede consumir más batería.",
-            "Original: keeps the 3:2 aspect ratio without distortion.\nPanoramic: shows more scenery where supported and uses the original view in other scenes. Bars may remain depending on the display.\nStretch: fills the game area but may distort the image and does not show more scenery.\n1080p may use more battery.",
-            "Original: mantém a proporção 3:2 sem deformar a imagem.\nPanorâmica: mostra mais cenário onde há suporte e usa a vista original nas outras cenas. Pode deixar faixas dependendo da tela.\nEsticar: preenche a área do jogo, mas pode deformar a imagem e não mostra mais cenário.\n1080p pode consumir mais bateria."));
-        note.setTextSize(13); note.setPadding(0, overlayDp(8), 0, overlayDp(8)); panel.addView(note);
-        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
-        scroll.addView(panel);
-        AlertDialog video = new AlertDialog.Builder(this).setTitle(tr("Calidad de imagen", "Image quality", "Qualidade da imagem"))
-            .setView(scroll).setPositiveButton(backText(), (dialog, which) -> showOptions()).create();
-        video.setOnCancelListener(ignored -> { setMenuOpen(false); enterImmersiveMode(); });
-        openSettings(video, this::showOptions);
+        openSettings(panel.dialog(this::showVideoOptions), this::showVideoOptions);
     }
 
     private void showLanguageOptions() {
-        int selected=getSharedPreferences("sma3-options",MODE_PRIVATE).getInt("game-language",0);
-        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Idioma del juego","Game language","Idioma do jogo"))
-            .setSingleChoiceItems(new String[]{"English (original)","Español latinoamericano","Português do Brasil"},selected,(d,w)->{
-                getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putInt("game-language",w).apply();applyInputOptions();
-            }).setPositiveButton(backText(),(d,w)->showLanguageMenu())
-            .setNeutralButton(tr("Información","Information","Informações"),(d,w)->{
-                AlertDialog info=new AlertDialog.Builder(this).setTitle(tr("Traducción parcial","Partial translation","Tradução parcial"))
-                    .setMessage(tr("Traduce diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés. Se aplica al siguiente mensaje.","Translates dialogue, tutorials, levels, story and file text. Graphic labels, credits and Mario Bros remain in English. Applies to the next message.","Traduz diálogos, tutoriais, fases, história e textos de arquivos. Rótulos gráficos, créditos e Mario Bros continuam em inglês. Aplica-se à próxima mensagem."))
-                    .setPositiveButton(backText(),(dialog,which)->showLanguageOptions()).create();openSettings(info,this::showLanguageOptions);
-            }).create();openSettings(menu,this::showLanguageMenu);
+        int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0);
+        SettingsPanel panel = settingsPanel(tr("Idioma del juego", "Game language", "Idioma do jogo"),
+            tr("El cambio se aplica al siguiente mensaje.", "Changes apply to the next message.", "A alteração se aplica à próxima mensagem."));
+        panel.choices(new String[]{"English (original)", "Español latinoamericano", "Português do Brasil"}, new String[]{"", "", ""}, selected, which -> {
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("game-language", which).apply();
+            applyInputOptions();
+        });
+        panel.section(tr("Acerca de la traducción", "About the translation", "Sobre a tradução"));
+        panel.paragraph(tr(
+            "La traducción es parcial: incluye diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés.",
+            "The translation is partial: it includes dialogue, tutorials, levels, story and file text. Graphic labels, credits and Mario Bros remain in English.",
+            "A tradução é parcial: inclui diálogos, tutoriais, fases, história e textos de arquivos. Rótulos gráficos, créditos e Mario Bros continuam em inglês."));
+        openSettings(panel.dialog(this::showLanguageMenu), this::showLanguageMenu);
     }
 
-    private String backText(){return tr("Volver","Back","Voltar");}
+    private String backText() { return tr("Volver", "Back", "Voltar"); }
     private TouchDesignEditor designEditor;
     private boolean settingsDestroyed;
-    private void openSettings(AlertDialog next,Runnable parent){
-        if(settingsDestroyed||isFinishing()||isDestroyed())return;
-        AlertDialog old=optionsDialog;optionsDialog=next;if(old!=null)old.dismiss();
-        next.setOnCancelListener(d->{if(parent!=null)getWindow().getDecorView().post(parent);});
-        next.setOnDismissListener(d->{if(optionsDialog==next){optionsDialog=null;setMenuOpen(false);if(!settingsDestroyed)enterImmersiveMode();}});
-        next.show();setMenuOpen(true);
+    private void openSettings(AlertDialog next, Runnable parent) {
+        if (settingsDestroyed || isFinishing() || isDestroyed()) return;
+        AlertDialog old = optionsDialog;
+        optionsDialog = next;
+        if (old != null) old.dismiss();
+        next.setOnCancelListener(dialog -> {
+            // Open the parent before the cancelled page's dismiss callback runs;
+            // navigating Back must not briefly release game input between pages.
+            if (parent != null && !settingsDestroyed && !isFinishing() && !isDestroyed()) parent.run();
+        });
+        next.setOnDismissListener(dialog -> {
+            if (optionsDialog == next) {
+                optionsDialog = null;
+                setMenuOpen(false);
+                if (!settingsDestroyed) enterImmersiveMode();
+            }
+        });
+        next.show();
+        SettingsPanel.fitWindow(this, next);
+        setMenuOpen(true);
     }
-    private void showOptions(){
-        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Ajustes","Settings","Configurações"))
-            .setItems(new String[]{tr("Rendimiento y FPS","Performance and FPS","Desempenho e FPS"),tr("Imagen","Image","Imagem"),tr("Controles","Controls","Controles"),tr("Idiomas","Languages","Idiomas")},(d,w)->{
-                if(w==0)showPerformanceMenu();else if(w==1)showVideoOptions();else if(w==2)showControlsMenu();else showLanguageMenu();
-            }).setPositiveButton(tr("Continuar","Continue","Continuar"),null).create();
-        openSettings(menu,null);
+    private void showOptions() {
+        SettingsPanel panel = new SettingsPanel(this, tr("Ajustes", "Settings", "Configurações"),
+            tr("Tu juego, a tu manera.", "Make the game your own.", "Seu jogo, do seu jeito."),
+            tr("Volver al juego", "Return to game", "Voltar ao jogo"));
+        panel.card(SettingsPanel.IMAGE, tr("Imagen", "Image", "Imagem"),
+            imageModeNames()[imageMode()] + " · " + qualityName(), this::showVideoOptions);
+        panel.card(SettingsPanel.PERFORMANCE, tr("Rendimiento y FPS", "Performance and FPS", "Desempenho e FPS"),
+            tr("Fluidez, mezcla temporal y contador FPS", "Smoothness, temporal blending and FPS counter", "Fluidez, mistura temporal e contador FPS"), this::showPerformanceMenu);
+        panel.card(SettingsPanel.CONTROLS, tr("Controles", "Controls", "Controles"),
+            tr("Pantalla táctil, mando y diseños personalizados", "Touchscreen, controller and custom layouts", "Tela de toque, controle e layouts personalizados"), this::showControlsMenu);
+        panel.card(SettingsPanel.LANGUAGE, tr("Idiomas", "Languages", "Idiomas"),
+            tr("Idioma del menú y traducción del juego", "Menu language and game translation", "Idioma do menu e tradução do jogo"), this::showLanguageMenu);
+        openSettings(panel.dialog(null), null);
     }
-    private void showPerformanceMenu(){
-        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Rendimiento","Performance","Desempenho"))
-            .setMultiChoiceItems(new String[]{tr("Mostrar FPS","Show FPS","Mostrar FPS"),tr("120 FPS (mezcla temporal)","120 FPS (temporal blend)","120 FPS (mistura temporal)")},new boolean[]{getSharedPreferences("sma3-options",MODE_PRIVATE).getBoolean("show-fps",false),wantsInterpolation()},(d,w,checked)->{
-                getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putBoolean(w==0?"show-fps":"interpolation-120",checked).apply();updateFpsVisibility();if(w==1){lastFps=null;applyPresentationMode();}
-            }).setPositiveButton(backText(),(d,w)->showOptions()).create();
-        openSettings(menu,this::showOptions);
+    private void showPerformanceMenu() {
+        SettingsPanel panel = settingsPanel(tr("Rendimiento y FPS", "Performance and FPS", "Desempenho e FPS"),
+            tr("Ajusta la presentación sin cambiar la velocidad del juego.", "Adjust presentation without changing game speed.", "Ajuste a apresentação sem alterar a velocidade do jogo."));
+        panel.toggle(tr("Mostrar FPS", "Show FPS", "Mostrar FPS"),
+            tr("Muestra el contador durante la partida.", "Display the counter while playing.", "Mostra o contador durante a partida."),
+            getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), checked -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("show-fps", checked).apply();
+                updateFpsVisibility();
+            });
+        panel.toggle(tr("Mezcla temporal a 120 FPS", "Temporal blending at 120 FPS", "Mistura temporal a 120 FPS"),
+            tr("Añade imágenes intermedias. Requiere una pantalla compatible con 120 Hz.", "Adds intermediate images. Requires a display that supports 120 Hz.", "Acrescenta imagens intermediárias. Requer uma tela compatível com 120 Hz."),
+            wantsInterpolation(), checked -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("interpolation-120", checked).apply();
+                lastFps = null; applyPresentationMode();
+            });
+        panel.section(tr("Cómo funciona", "How it works", "Como funciona"));
+        panel.paragraph(tr(
+            "La mezcla puede suavizar el movimiento, pero también producir estelas. El juego conserva su ritmo original; 120 FPS se refiere a las imágenes presentadas. El rendimiento depende del dispositivo y del ahorro de batería.",
+            "Blending can smooth motion, but may also produce ghosting. The game keeps its original timing; 120 FPS refers to presented images. Performance depends on the device and battery-saving settings.",
+            "A mistura pode suavizar o movimento, mas também produzir rastros. O jogo mantém seu ritmo original; 120 FPS refere-se às imagens apresentadas. O desempenho depende do aparelho e da economia de bateria."));
+        openSettings(panel.dialog(this::showOptions), this::showOptions);
     }
-    private void showControlsMenu(){
-        boolean shown=getSharedPreferences("sma3-options",MODE_PRIVATE).getBoolean("touch-visible",true);
-        String visibility=tr("Controles táctiles: ","Touch controls: ","Controles de toque: ")+(shown?tr("visibles","visible","visíveis"):tr("ocultos","hidden","ocultos"));
-        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Controles","Controls","Controles"))
-            .setItems(new String[]{visibility,tr("Mapear mando","Map controller","Mapear controle"),tr("Diseños personalizados","Custom layouts","Layouts personalizados")},(d,w)->{
-                if(w==0){getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putBoolean("touch-visible",!shown).apply();applyInputOptions();showControlsMenu();}
-                else if(w==1)showControllerOptions();else showDesignMenu();
-            }).setPositiveButton(backText(),(d,w)->showOptions()).create();
-        openSettings(menu,this::showOptions);
+    private void showControlsMenu() {
+        SettingsPanel panel = settingsPanel(tr("Controles", "Controls", "Controles"),
+            tr("Juega con pantalla táctil o con un mando.", "Play with touch controls or a controller.", "Jogue com controles de toque ou um controle."));
+        panel.toggle(tr("Controles táctiles", "Touch controls", "Controles de toque"),
+            tr("Muestra los botones sobre la pantalla del juego.", "Show the buttons over the game screen.", "Mostra os botões sobre a tela do jogo."),
+            getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true), checked -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("touch-visible", checked).apply();
+                applyInputOptions();
+            });
+        panel.card(SettingsPanel.LAYOUT, tr("Diseños personalizados", "Custom layouts", "Layouts personalizados"),
+            tr("Mueve y cambia el tamaño de los controles. Guarda hasta tres diseños.", "Move and resize the controls. Save up to three layouts.", "Mova e redimensione os controles. Salve até três layouts."), this::showDesignMenu);
+        panel.card(SettingsPanel.CONTROLS, tr("Mapear mando", "Map controller", "Mapear controle"),
+            tr("Asigna los botones de tu mando físico.", "Assign the buttons on your physical controller.", "Atribua os botões do seu controle físico."), this::showControllerOptions);
+        openSettings(panel.dialog(this::showOptions), this::showOptions);
     }
-    private void showLanguageMenu(){
-        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Idiomas","Languages","Idiomas"))
-            .setItems(new String[]{tr("Idioma del menú","Menu language","Idioma do menu"),tr("Idioma del juego","Game language","Idioma do jogo")},(d,w)->{if(w==0)showMenuLanguageOptions();else showLanguageOptions();})
-            .setPositiveButton(backText(),(d,w)->showOptions()).create();
-        openSettings(menu,this::showOptions);
+    private void showLanguageMenu() {
+        SettingsPanel panel = settingsPanel(tr("Idiomas", "Languages", "Idiomas"),
+            tr("Configura el menú y el juego por separado.", "Set the menu and game languages separately.", "Configure os idiomas do menu e do jogo separadamente."));
+        int menuLanguage = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1);
+        int gameLanguage = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0);
+        String[] menus = {"English", "Español", "Português"};
+        String[] games = {"English (original)", "Español latinoamericano", "Português do Brasil"};
+        panel.card(SettingsPanel.LANGUAGE, tr("Idioma del menú", "Menu language", "Idioma do menu"),
+            menus[menuLanguage >= 0 && menuLanguage < 3 ? menuLanguage : 1], this::showMenuLanguageOptions);
+        panel.card(SettingsPanel.LANGUAGE, tr("Idioma del juego", "Game language", "Idioma do jogo"),
+            games[gameLanguage >= 0 && gameLanguage < 3 ? gameLanguage : 0], this::showLanguageOptions);
+        openSettings(panel.dialog(this::showOptions), this::showOptions);
     }
     private float[] storedDesign(int slot){
         try{
@@ -349,17 +397,34 @@ public class GbaGameActivity extends SDLActivity {
         int slot=getSharedPreferences("sma3-options",MODE_PRIVATE).getInt("touch-design-active",0);
         float[] data=slot>=1&&slot<=3?storedDesign(slot):null;GbaNative.setTouchDesign(data,data!=null);
     }
-    private void showDesignMenu(){
-        int active=getSharedPreferences("sma3-options",MODE_PRIVATE).getInt("touch-design-active",0);
-        String[] names={tr("Predeterminado","Default","Padrão"),tr("Diseño 1","Layout 1","Layout 1"),tr("Diseño 2","Layout 2","Layout 2"),tr("Diseño 3","Layout 3","Layout 3")};for(int i=0;i<4;i++)if(i==active)names[i]+=" ✓";
-        AlertDialog menu=new AlertDialog.Builder(this).setTitle(tr("Diseños personalizados","Custom layouts","Layouts personalizados"))
-            .setItems(names,(d,slot)->{if(slot==0){getSharedPreferences("sma3-options",MODE_PRIVATE).edit().putInt("touch-design-active",0).apply();applyInputOptions();showDesignMenu();}else showTouchEditor(slot);})
-            .setPositiveButton(backText(),(d,w)->showControlsMenu()).create();
-        openSettings(menu,this::showControlsMenu);
+    private void showDesignMenu() {
+        int active = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("touch-design-active", 0);
+        SettingsPanel panel = settingsPanel(tr("Diseños personalizados", "Custom layouts", "Layouts personalizados"),
+            tr("Edita una copia y elige Guardar y usar para aplicarla.", "Edit a draft, then choose Save and use to apply it.", "Edite uma cópia e escolha Salvar e usar para aplicá-la."));
+        panel.card(SettingsPanel.LAYOUT, tr("Predeterminado", "Default", "Padrão"),
+            active == 0 ? tr("En uso", "In use", "Em uso") : tr("Usar la distribución original.", "Use the original arrangement.", "Usar a disposição original."), () -> {
+                getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("touch-design-active", 0).apply();
+                applyInputOptions(); showDesignMenu();
+            });
+        for (int slot = 1; slot <= 3; ++slot) {
+            final int chosen = slot;
+            boolean saved = storedDesign(slot) != null;
+            panel.card(SettingsPanel.LAYOUT, tr("Diseño ", "Layout ", "Layout ") + slot,
+                active == slot && saved ? tr("En uso · Toca para editar", "In use · Tap to edit", "Em uso · Toque para editar")
+                    : saved ? tr("Guardado · Toca para editar", "Saved · Tap to edit", "Salvo · Toque para editar")
+                    : tr("Nuevo · Personaliza posición y tamaño", "New · Customize position and size", "Novo · Personalize posição e tamanho"),
+                () -> showTouchEditor(chosen));
+        }
+        openSettings(panel.dialog(this::showControlsMenu), this::showControlsMenu);
     }
     private void showTouchEditor(int slot){
         float[] defaults=GbaNative.getTouchDesign(true);
-        if(defaults==null||defaults.length!=28||defaults[2]<=0){openSettings(new AlertDialog.Builder(this).setMessage(tr("Espera a que aparezca el juego y vuelve a abrir el editor.","Wait for the game to appear, then reopen the editor.","Espere o jogo aparecer e reabra o editor.")).setPositiveButton(backText(),(d,w)->showDesignMenu()).create(),this::showDesignMenu);return;}
+        if (defaults == null || defaults.length != 28 || defaults[2] <= 0) {
+            SettingsPanel panel = settingsPanel(tr("Editor de controles", "Control editor", "Editor de controles"), "");
+            panel.paragraph(tr("Espera a que aparezca el juego y vuelve a abrir el editor.", "Wait for the game to appear, then reopen the editor.", "Espere o jogo aparecer e reabra o editor."));
+            openSettings(panel.dialog(this::showDesignMenu), this::showDesignMenu);
+            return;
+        }
         float[] saved=storedDesign(slot);View view=getWindow().getDecorView();
         float width=view.getWidth()-fpsOverlay.getPaddingLeft()-fpsOverlay.getPaddingRight(),height=view.getHeight()-fpsOverlay.getPaddingTop()-fpsOverlay.getPaddingBottom();
         float aspect=width>0&&height>0?width/height:16f/9f;
@@ -456,6 +521,17 @@ public class GbaGameActivity extends SDLActivity {
             return view.onApplyWindowInsets(insets);
         });
         enterImmersiveMode();
+    }
+
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        getWindow().getDecorView().post(() -> {
+            if (optionsDialog != null && optionsDialog.isShowing()) {
+                SettingsPanel.fitWindow(this, optionsDialog);
+                optionsDialog.getWindow().getDecorView().requestLayout();
+            }
+        });
     }
 
     @Override

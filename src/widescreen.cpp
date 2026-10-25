@@ -138,6 +138,8 @@ int object_clip(int index,uint16_t a0,uint16_t a1,uint16_t a2) {
 }
 int tile(int layer, int x, int y, uint16_t* output) {
     if (!gameplay || !registers || layer<0 || layer>3 || !output) return gba::kWsTilemapUnavailable;
+    if (layer == 3 && complete_background_map(layer, reg(8 + layer*2), image_rows[1]))
+        return gba::kWsTilemapKeepWrapped;
     // Use live scroll, including its complete world coordinates. No game RAM,
     // CPU state, timing, open-bus or prefetch state is modified by this reader.
     const int wx=x + int(int16_t(reg(0x10+layer*4)));
@@ -220,15 +222,27 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info, bool enabled) {
             break;
         }
     }
-    // Unknown coverage keeps the entire scene at its original presentation;
-    // a resolved foreground must not expose scenery without its objects.
+    // Ordinary objects are validated individually. One unresolved sprite
+    // stays in the authentic viewport via object_clip; it must not flash both
+    // complete scenery margins off and on. The coherent submission and scene
+    // checks remain mandatory. Unknown OBJ-window positions still close the
+    // frame: an offscreen hardware alias can hide a real margin stencil even
+    // when every native pixel happens to select the same window control.
+    // Proven window rows retain the engine's all-window-objects contract.
     // This authorizes only the displayed submission, not wider spawning.
     bool backgrounds_ready=true;
     if (gameplay) {
         for (unsigned i=0;i<2;++i)
             if ((reg(0)&(0x400u<<i)) && image_rows[i]==0) backgrounds_ready=false;
     }
-    ready=gameplay && submission_age>=0 && unresolved==0 && backgrounds_ready;
+    // The Fuzzy tile-shift callback rewrites only the native 31-column strip.
+    // The full-world map cannot supply its offscreen per-column deformation.
+    // Keep one stable original viewport for the whole effect, including its
+    // fade, then reopen margins only after the game restores the native maps.
+    // Guest logic, timing and the real dizzy effect remain untouched.
+    const bool native_tile_shift = read(0x03007294,4) == 1;
+    ready=gameplay && !native_tile_shift && submission_age>=0 && backgrounds_ready &&
+        window_positions_resolved(positions);
     gba::g_ws_pillarbox=ready ? 0 : 1;
 #if defined(SMA3_WIDESCREEN_DIAGNOSTICS) && !defined(__ANDROID__)
     // Log gaps on every gameplay frame, not only the six memory samples.
