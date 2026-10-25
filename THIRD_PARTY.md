@@ -5,5 +5,6 @@
 - **sma3-disasm** — https://github.com/KarisaAdvynia/sma3-disasm, commit `c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071`. Referencia de direcciones, etiquetas y copias a RAM; `symbols.tsv` deriva de sus anotaciones. El desensamblado no se incluye.
 - **SDL y demás submódulos** — se descargan mediante el checkout fijado del motor y conservan sus propias licencias.
 - **Gradle Wrapper** — archivos del sistema de compilación, con los avisos de licencia de sus scripts.
+- **Scale2x / Scale3x** — reglas de escalado de Andrea Mazzoleni, descritas en https://www.scale2x.it/algorithm. La implementación RGB de este proyecto se escribió para su ruta de presentación; no se incorpora la biblioteca ni el código optimizado del paquete Scale2x.
 
 No se añade una licencia permisiva global que sustituya o elimine las condiciones de estos componentes. No se incluyen archivos de juego ni BIOS, y este proyecto no concede derechos sobre ellos. Las modificaciones de integración se publican aquí sin una concesión adicional de licencia general.

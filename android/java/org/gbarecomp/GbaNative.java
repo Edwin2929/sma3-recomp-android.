@@ -3,9 +3,9 @@ package org.gbarecomp;
 /**
  * JNI entry points exported by the gbarecomp runtime (libmain.so).
  *
- * The native side lives in src/runtime/host_window.cpp. Every method here is
- * safe to call from the UI thread; the runtime reads the values on its own
- * thread at the next present.
+ * The native side lives in the engine's src/runtime/host_window.cpp and this
+ * project's src/frame_interpolation_jni.cpp. Every method here is safe to call
+ * from the UI thread; the runtime reads the values on its own thread.
  */
 public final class GbaNative {
     private GbaNative() {}
@@ -15,6 +15,8 @@ public final class GbaNative {
     public static native void setLanguage(int language);
     // Image modes: 0 original 3:2, 1 panoramic, 2 stretch.
     public static native void setVideoOptions(int quality, int imageMode);
+    // Image filters: 0 balanced, 1 nearest, 2 bilinear, 3 Scale2x, 4 Scale3x, 5 soft CRT.
+    public static native void setVideoFilter(int filter);
     public static native void setTouchControlsVisible(boolean visible);
     public static native void setControllerButton(int bit, int button);
     public static native void setOptionsOpen(boolean open);

@@ -2,7 +2,23 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.2 beta — Fuzzy, panorámica y nuevos ajustes
+## Versión actual: 0.10.3 beta — filtros de imagen
+
+**0.10.3 añade seis filtros seleccionables en Atrás → Imagen → Filtros de
+imagen:** Equilibrado, Píxel nítido, Suave bilineal, Scale2x, Scale3x y CRT
+suave. Cada opción explica su aspecto y se guarda al elegirla. Equilibrado
+es el valor inicial y conserva la presentación de la versión anterior.
+
+Los filtros trabajan sobre la imagen terminada; no cambian la lógica del
+juego, el encuadre elegido ni los controles. Scale2x y Scale3x suavizan las
+escaleras de algunos contornos usando los colores vecinos. CRT suave añade
+líneas estáticas de estilo retro, sin un efecto temporal de parpadeo.
+
+[Guía de filtros](docs/CALIDAD_IMAGEN.md#filtros-de-imagen-en-0103) ·
+[Notas de 0.10.3](docs/releases/v0.10.3-beta.md) ·
+[Pruebas y límites](validation/ANDROID_0.10.3_FILTER_VALIDATION.md).
+
+### Correcciones e interfaz incorporadas en 0.10.2
 
 **0.10.2 incorpora las rutinas nativas que faltaban al tocar un Fuzzy, corrige
 otros casos de parpadeo lateral y renueva la interfaz de ajustes.** La opción
@@ -51,7 +67,7 @@ de objetos de 0.10 y todavía requiere comprobación física en el teléfono.
 
 ### Versiones anteriores
 
-- **0.9.1:** corrige el redondeo del escalador al conservar la proporción original **3:2** y aclara la ayuda de imagen en español, inglés y portugués. El APK está compilado y entregado; **su subida manual a GitHub está pendiente**. [Notas de versión](docs/releases/v0.9.1-experimental.md).
+- **0.9.1:** corrige el redondeo del escalador al conservar la proporción original **3:2** y aclara la ayuda de imagen en español, inglés y portugués. El APK está compilado y entregado; su entrega original se documenta en las notas históricas. [Notas de versión](docs/releases/v0.9.1-experimental.md).
 - **Reporte de Edwin, 18 de octubre de 2026:** probó este APK en un **Google Pixel 7 Pro** y confirmó que funciona. No especificó la versión de Android, la duración de la prueba, los FPS ni las funciones comprobadas. [Verificación del APK y alcance de la prueba](validation/ANDROID_0.9.1_VALIDATION.md).
 
 - **0.9:** ajustes agrupados en Rendimiento, Imagen, Controles e Idiomas; salto de la animación de BIOS; editor de posición/tamaño de botones con tres diseños guardables. [Guía](docs/AJUSTES_Y_DISENOS.md).
@@ -68,7 +84,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.2**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.3**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -86,81 +102,44 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.2 beta, pendiente de subida manual
+### APK 0.10.3 beta — nueva entrega con filtros
 
-Archivo: **`sma3-recomp-0.10.2-beta-arm64.apk`**, versión `0.10.2-beta`,
-código **13**, ARM64 y Android 9 o posterior. Conserva el paquete y la firma
-anteriores: está preparado para actualizar 0.10/0.10.1 sin desinstalar.
-Las preferencias, el modo de imagen y los diseños guardados se conservan.
-[Datos del archivo e instalación](docs/releases/v0.10.2-beta.md) ·
-[Verificación del APK](validation/android-0.10.2-build.json).
+Archivo: **`sma3-recomp-0.10.3-beta-arm64.apk`**, versión `0.10.3-beta`,
+código **14**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
+su publicación manual en GitHub Releases. Su nombre identifica la versión
+que incluye los seis filtros; el APK 0.10.2 no incorpora este selector.
 
-La subida a GitHub Releases la realiza manualmente el mantenedor. El enlace
-público «Descarga» contiene 0.9 mientras no se adjunte una entrega posterior.
+Instálalo encima de la versión anterior, sin desinstalarla. Conserva el
+paquete y el certificado y aumenta el código de versión. La selección de
+filtro se guarda por separado de imagen, resolución, controles e idiomas.
+[Archivo, instalación y SHA-256](docs/releases/v0.10.3-beta.md) ·
+[Verificación del APK](validation/android-0.10.3-build.json).
 
-### APK 0.10.1 anterior, entregado para subida manual
+### APK 0.10.2 beta disponible en GitHub
 
-Archivo: **`sma3-recomp-0.10.1-panorama-fix-arm64.apk`**, versión
-`0.10.1-panorama-fix-experimental`, código **12**, ARM64 y Android 9 o posterior.
-Conserva la firma original y la selección de imagen guardada. Instálalo encima
-de 0.10, sin desinstalar la aplicación. Su tamaño, SHA-256 y procedimiento de
-instalación constan en las [notas de entrega](docs/releases/v0.10.1-experimental.md).
+La release pública **Descarga** contiene
+[**sma3-recomp-0.10.2-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.2-beta-arm64.apk).
+La publicación fue comprobada el **25 de octubre de 2026** y su SHA-256
+coincide con el archivo entregado: `06fe2ae0e041557ebaf1b12bcc4d6684a5ccea7bcd7d462fea0ee0404f5c829f`.
+Incluye las correcciones de Fuzzy y panorámica y el nuevo menú de 0.10.2.
+[Notas de 0.10.2](docs/releases/v0.10.2-beta.md).
 
-El archivo se entrega al mantenedor para su publicación manual. Hasta que
-lo adjunte a una release, la descarga pública «Descarga» sigue siendo 0.9.
-
-### APK 0.10 anterior, entregado y pendiente de subida manual
-
-Archivo: **`sma3-recomp-0.10-panorama-arm64.apk`**, versión
-`0.10-panorama-experimental`, código de versión **11**, Android 9 o posterior,
-ARM64. Las [notas de 0.10](docs/releases/v0.10-experimental.md) registran su
-tamaño, SHA-256, instalación y publicación manual.
-
-Se entrega directamente al mantenedor. **Hasta que lo adjunte a una release,
-no hay un enlace de descarga público en GitHub para 0.10.** La release
-«Descarga» conserva 0.9; descargar ese archivo no instala la panorámica.
-Instala el APK 0.10 encima del anterior, sin desinstalarlo. El paquete y el
-certificado coinciden y el código de versión es superior. La actualización
-del contenido empaquetado no borra partidas, preferencias ni archivos
-importados; la instalación física sobre 0.9.1 queda por comprobar.
-
-### APK 0.9.1 entregado, pendiente de subida manual
-
-Archivo: `sma3-recomp-0.9.1-aspect-arm64.apk` (31.759.347 bytes), versión
-`0.9.1-aspect-experimental`, código de versión `10`, Android 9 o posterior, ARM64.
-Se entregó a Edwin el 18 de octubre de 2026 y todavía **no está disponible en
-GitHub Releases**.
-
-SHA-256:
-
-```text
-3885b7447455fd16c4af8882de88175d5d1efc361b7e9b618708839772d97d18
-```
-
-El APK conserva el identificador de aplicación y la firma de 0.9, con un código
-de versión superior, por lo que está preparado para instalarse encima como
-actualización. El reporte del usuario confirma que funciona en su Pixel 7 Pro;
-no detalla el procedimiento de instalación ni la conservación de partidas.
-
-[Notas e instrucciones para publicar 0.9.1 manualmente](docs/releases/v0.9.1-experimental.md).
-
-### APK 0.9 disponible en GitHub
-
-**El APK 0.9 está publicado en la release «Descarga».** Consulta [Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
-
-Archivo: `sma3-recomp-0.9-layouts-arm64.apk` (31.838.319 bytes), Android 9 o posterior, ARM64.
-
-SHA-256:
-
-```text
-7110024294051368945fd4ceb127cfaf4edb3a09f0e138ae6b81ae350a3dee3d
-```
-
-El APK de desarrollo 0.9 conserva la firma de las versiones anteriores: instálalo encima para conservar partidas y archivos importados. Las compilaciones de otras personas tendrán otra firma.
-
-[Notas e instrucciones para publicar el APK manualmente](docs/releases/v0.9-experimental.md).
+Cuando el mantenedor adjunte 0.10.3, estará disponible en
+[GitHub Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
+Los datos de entregas anteriores permanecen en las notas de
+[0.10.1](docs/releases/v0.10.1-experimental.md),
+[0.10](docs/releases/v0.10-experimental.md),
+[0.9.1](docs/releases/v0.9.1-experimental.md) y
+[0.9](docs/releases/v0.9-experimental.md). Sus indicaciones de disponibilidad
+corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.3:** las pruebas se centran en los filtros y su presentación, el
+comportamiento predeterminado, los cambios de tamaño y selección y el APK
+resultante. La evidencia histórica de Fuzzy y panorámica se conserva abajo;
+no se atribuyen nuevos recorridos completos de juego a esta entrega.
+[Informe de filtros y alcance](validation/ANDROID_0.10.3_FILTER_VALIDATION.md).
 
 **0.10.2:** el fallo de Fuzzy se reproduce en el binario anterior y el candidato
 completa contacto, mareo, recuperación natural y continuación normal. También

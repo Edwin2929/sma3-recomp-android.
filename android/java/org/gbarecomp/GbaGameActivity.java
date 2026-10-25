@@ -168,6 +168,9 @@ public class GbaGameActivity extends SDLActivity {
     private static final int IMAGE_ORIGINAL = 0;
     private static final int IMAGE_PANORAMA = 1;
     private static final int IMAGE_STRETCH = 2;
+    // Stable preference/JNI IDs; keep this order in sync with ImageFilter.
+    private static final int IMAGE_FILTER_BALANCED = 0;
+    private static final int IMAGE_FILTER_COUNT = 6;
     private int imageMode() {
         android.content.SharedPreferences preferences = getSharedPreferences("sma3-options", MODE_PRIVATE);
         int selected;
@@ -181,6 +184,11 @@ public class GbaGameActivity extends SDLActivity {
         }
         return selected >= IMAGE_ORIGINAL && selected <= IMAGE_STRETCH ? selected : IMAGE_ORIGINAL;
     }
+    private int imageFilter() {
+        int selected = getSharedPreferences("sma3-options", MODE_PRIVATE)
+            .getInt("image-filter", IMAGE_FILTER_BALANCED);
+        return selected >= 0 && selected < IMAGE_FILTER_COUNT ? selected : IMAGE_FILTER_BALANCED;
+    }
     private int padBinding(int bit) {
         int button = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("pad-" + bit, DEFAULT_PAD[bit]);
         return button >= -1 && button <= 20 ? button : DEFAULT_PAD[bit];
@@ -191,6 +199,7 @@ public class GbaGameActivity extends SDLActivity {
             GbaNative.setLanguage(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0));
             GbaNative.setVideoOptions(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0),
                 imageMode());
+            GbaNative.setVideoFilter(imageFilter());
             GbaNative.setTouchControlsVisible(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true));
             for (int bit = 0; bit < 10; ++bit) GbaNative.setControllerButton(bit, padBinding(bit));
         } catch (UnsatisfiedLinkError notLoadedYet) { /* retried with surface */ }
@@ -202,6 +211,14 @@ public class GbaGameActivity extends SDLActivity {
         return new String[]{"Original (3:2)",
             tr("Panorámica (beta)", "Panoramic (beta)", "Panorâmica (beta)"),
             tr("Estirar a pantalla completa", "Stretch to full screen", "Esticar para tela inteira")};
+    }
+    private String[] imageFilterNames() {
+        return new String[]{
+            tr("Equilibrado", "Balanced", "Equilibrado"),
+            tr("Píxel nítido", "Crisp pixels", "Pixels nítidos"),
+            tr("Suave bilineal", "Bilinear smoothing", "Suavização bilinear"),
+            "Scale2x", "Scale3x",
+            tr("CRT suave", "Soft CRT", "CRT suave")};
     }
     private String qualityName() {
         int quality = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
@@ -259,10 +276,55 @@ public class GbaGameActivity extends SDLActivity {
             applyInputOptions();
             if (mode == IMAGE_PANORAMA) warning.announceForAccessibility(betaWarning);
         });
+        panel.section(tr("Acabado de la imagen", "Image appearance", "Aparência da imagem"));
+        panel.card(SettingsPanel.IMAGE, tr("Filtros de imagen", "Image filters", "Filtros de imagem"),
+            imageFilterNames()[imageFilter()] + " · " + tr("Elige entre seis estilos.", "Choose from six styles.", "Escolha entre seis estilos."),
+            this::showImageFilterOptions);
         panel.section(tr("Resolución de salida", "Output resolution", "Resolução de saída"));
         panel.card(SettingsPanel.IMAGE, qualityName(),
             tr("Ajusta la resolución y el consumo de batería.", "Adjust resolution and battery usage.", "Ajuste a resolução e o consumo de bateria."), this::showResolutionOptions);
         openSettings(panel.dialog(this::showOptions), this::showOptions);
+    }
+    private void showImageFilterOptions() {
+        SettingsPanel panel = settingsPanel(tr("Filtros de imagen", "Image filters", "Filtros de imagem"),
+            tr("Elige un filtro. Se guarda y aplica al instante, sin reiniciar el juego.",
+               "Choose a filter. It is saved and applied immediately, without restarting the game.",
+               "Escolha um filtro. Ele é salvo e aplicado imediatamente, sem reiniciar o jogo."));
+        String[] names = imageFilterNames();
+        names[IMAGE_FILTER_BALANCED] += tr(" (recomendado)", " (recommended)", " (recomendado)");
+        panel.choices(names, new String[]{
+            tr("Mantiene los píxeles definidos y suaviza sus bordes al ajustar la imagen a la pantalla.",
+               "Keeps pixels defined while softening their edges when fitting the image to the display.",
+               "Mantém os pixels definidos e suaviza suas bordas ao ajustar a imagem à tela."),
+            tr("Conserva los bordes duros y el aspecto pixelado. Los escalones se ven más marcados.",
+               "Preserves hard edges and the pixelated look. Stair-step edges are more visible.",
+               "Preserva as bordas firmes e o aspecto pixelado. Os contornos em degraus ficam mais visíveis."),
+            tr("Suaviza toda la imagen. Puede hacer que los textos y detalles pequeños se vean más borrosos.",
+               "Smooths the whole image. Text and small details may look blurrier.",
+               "Suaviza toda a imagem. Textos e pequenos detalhes podem ficar mais borrados."),
+            tr("Reduce los contornos escalonados con un escalado de 2× pensado para gráficos de píxeles.",
+               "Reduces stair-step edges with 2× scaling designed for pixel graphics.",
+               "Reduz os contornos em degraus com ampliação de 2× feita para gráficos de pixels."),
+            tr("Trabaja los contornos a 3×. Puede cambiar detalles pequeños y requiere más procesamiento que Scale2x.",
+               "Refines edges at 3×. May alter small details and requires more processing than Scale2x.",
+               "Refina os contornos em 3×. Pode alterar pequenos detalhes e exige mais processamento que Scale2x."),
+            tr("Añade líneas horizontales suaves y fijas para un estilo retro. Oscurece ligeramente la imagen.",
+               "Adds subtle, fixed horizontal lines for a retro look. Makes the image slightly darker.",
+               "Adiciona linhas horizontais suaves e fixas para um estilo retrô. Escurece um pouco a imagem.")
+        }, imageFilter(), filter -> {
+            getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("image-filter", filter).apply();
+            applyInputOptions();
+        });
+        panel.section(tr("Cómo elegir", "Choosing a filter", "Como escolher"));
+        panel.paragraph(tr(
+            "Empieza con Equilibrado o prueba Scale2x si prefieres contornos menos escalonados. Si notas menos fluidez, vuelve a Equilibrado o Píxel nítido.",
+            "Start with Balanced, or try Scale2x for less jagged edges. If motion feels less smooth, switch back to Balanced or Crisp pixels.",
+            "Comece com Equilibrado ou experimente Scale2x para contornos menos serrilhados. Se perceber menos fluidez, volte para Equilibrado ou Pixels nítidos."));
+        panel.paragraph(tr(
+            "Los filtros cambian el acabado de la imagen; no añaden detalle original ni amplían el campo de visión. CRT es un efecto estético. Funcionan con Original (3:2), Panorámica (beta) y Estirar.",
+            "Filters change the image's appearance; they do not add original detail or expand the field of view. CRT is an aesthetic effect. They work with Original (3:2), Panoramic (beta) and Stretch.",
+            "Os filtros mudam a aparência da imagem; não acrescentam detalhes originais nem ampliam o campo de visão. CRT é um efeito estético. Funcionam com Original (3:2), Panorâmica (beta) e Esticar."));
+        openSettings(panel.dialog(this::showVideoOptions), this::showVideoOptions);
     }
     private void showResolutionOptions() {
         SettingsPanel panel = settingsPanel(tr("Resolución", "Resolution", "Resolução"),
@@ -326,7 +388,7 @@ public class GbaGameActivity extends SDLActivity {
             tr("Tu juego, a tu manera.", "Make the game your own.", "Seu jogo, do seu jeito."),
             tr("Volver al juego", "Return to game", "Voltar ao jogo"));
         panel.card(SettingsPanel.IMAGE, tr("Imagen", "Image", "Imagem"),
-            imageModeNames()[imageMode()] + " · " + qualityName(), this::showVideoOptions);
+            imageModeNames()[imageMode()] + " · " + imageFilterNames()[imageFilter()] + " · " + qualityName(), this::showVideoOptions);
         panel.card(SettingsPanel.PERFORMANCE, tr("Rendimiento y FPS", "Performance and FPS", "Desempenho e FPS"),
             tr("Fluidez, mezcla temporal y contador FPS", "Smoothness, temporal blending and FPS counter", "Fluidez, mistura temporal e contador FPS"), this::showPerformanceMenu);
         panel.card(SettingsPanel.CONTROLS, tr("Controles", "Controls", "Controles"),

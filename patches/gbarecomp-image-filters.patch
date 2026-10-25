@@ -1,0 +1,46 @@
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -2211,6 +2211,15 @@
+ void HostWindow::present(const uint8_t* rgb888) {
+     if (!open_ || !impl_ || !rgb888) return;
+     auto* b = static_cast<Backend*>(impl_);
++#if defined(SMA3_FRAME_INTERPOLATION)
++    // SDL_RENDER_DEVICE_RESET invalidates streaming as well as target textures.
++    // Recreate lazily and retry on the next present if resources are unavailable.
++    if (!b->texture) {
++        b->texture = SDL_CreateTexture(b->renderer, SDL_PIXELFORMAT_RGB24,
++            SDL_TEXTUREACCESS_STREAMING, b->base_w, b->base_h);
++        if (!b->texture) return;
++    }
++#endif
+     // Present-time color grading (opt-in). Raw is passthrough: the raw
+     // PPU frame is uploaded untouched, so verify/frame-hash are unaffected.
+     if (b->color_lut && !b->color_lut->is_passthrough() &&
+@@ -2289,8 +2298,10 @@
+     const SDL_Rect destination{layout.x, layout.y, layout.width, layout.height};
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     if (!b->video_scaler.draw(b->renderer, b->texture, b->base_w, b->base_h,
+-                              destination, sma3::video_quality.load())) {
++                              destination, sma3::video_quality.load(),
++                              sma3::image_filter.load(std::memory_order_relaxed), rgb888)) {
+         SDL_SetRenderTarget(b->renderer, nullptr);
++        SDL_SetTextureScaleMode(b->texture, SDL_ScaleModeNearest);
+         SDL_RenderCopy(b->renderer, b->texture, nullptr, &destination);
+     }
+ #else
+@@ -2777,6 +2788,15 @@
+ #endif
+         if (e.type == SDL_QUIT) {
+             ev.quit = true;
++#if defined(SMA3_FRAME_INTERPOLATION)
++        } else if (e.type == SDL_RENDER_TARGETS_RESET || e.type == SDL_RENDER_DEVICE_RESET) {
++            b->video_scaler.reset();
++            destroy_sharp_texture(b);
++            if (e.type == SDL_RENDER_DEVICE_RESET) {
++                if (b->texture) SDL_DestroyTexture(b->texture);
++                b->texture = nullptr;
++            }
++#endif
+         } else if (e.type == SDL_APP_WILLENTERBACKGROUND ||
+                    e.type == SDL_APP_DIDENTERBACKGROUND) {
+             if (!b->backgrounded) {

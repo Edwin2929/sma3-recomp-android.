@@ -1,4 +1,14 @@
-# Panorámica real — Android 0.10.2 beta
+# Panorámica real — Android 0.10.3 beta
+
+## Filtros de presentación en 0.10.3
+
+0.10.3 añade **Imagen → Filtros de imagen**. Los seis filtros cambian el
+acabado del fotograma terminado, conservando la cobertura y las restricciones
+panorámicas de 0.10.2 descritas debajo. El modo continúa como **Panorámica
+(beta)**, con el aviso de fase temprana. Las bandas durante el efecto de
+terreno del Fuzzy se mantienen. Un filtro no amplía por sí mismo la escena.
+[Guía de filtros](CALIDAD_IMAGEN.md#filtros-de-imagen-en-0103) ·
+[Notas de 0.10.3](releases/v0.10.3-beta.md).
 
 ## Correcciones y límites actuales en 0.10.2
 

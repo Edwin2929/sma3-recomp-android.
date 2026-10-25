@@ -1,0 +1,229 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "version": "0.10.3-beta",
+  "scope": "Host rendering and algorithm validation; no Android device execution",
+  "android_device_tested": false,
+  "renderer": "SDL2 2.30.0 software",
+  "source_sha256": {
+    "src/video_scaler.h": "2eff049f8cf7273cf63855b5f2431b80ac9e19cc214f045ef1d22ca625127ccf",
+    "src/image_filters.h": "c6910156e7a4671af5669583a79be76f1ef351c519c8e9ab40f5c544a551f31a",
+    "src/frame_interpolation.h": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897",
+    "src/frame_interpolation_jni.cpp": "d9e1ccef0776234b04fde857460cfbc2d39819ba520a7af5dd9dad803391c842",
+    "src/controller_options.h": "aca0e1c63e0e1e0ef44c200dc1c99869fa9a18cc801f86fe80d946aa79e5401c",
+    "patches/gbarecomp-image-filters.patch": "16f540e9873099798a2a0f989763ad8e8d16bda01190f81d47bc57de5132657e",
+    "tools/apply_interpolation_patch.py": "9de94bf848ca10b82a4b38986b5466e8ffe8f8799a25af54598d3c15228b6dc9",
+    "validation/image_filter_default_regression.cpp": "fb2d7283a63461fa3e55ae32a74568698027c0afd3281d5b97d63e3c76d57b15",
+    "validation/image_filter_integration_test.cpp": "1e2362520b6bddbd3f78e7a6df70a245e6a0408d3b51c254d29591a6fa2a3788",
+    "validation/image_filter_pixels_test.cpp": "6ac891254e9412067f264dd92cf754fc6a82e333b4f7636534657fc4171bc148",
+    "validation/video_scaler_test.cpp": "f7d7dca04da4633234c1b8bdd850b712e595750927416e1c581d71f06ad8e667",
+    "validation/android_presentation_audit_test.cpp": "ec94655484920381f45a0e08e167dd5fdfabb2fee29e6ba0f16467f218096e47",
+    "validation/test_window_patch_stack.py": "8772466b65ec20a1928f2b19dce83259e6ad8a69657435495e57a45da2ca80cd",
+    "android/java/org/gbarecomp/GbaGameActivity.java": "6d8db0337847f150aeffcc0b3e3098d1cf651871b0eebdc5d38accb3e2f2ce8e",
+    "android/java/org/gbarecomp/GbaNative.java": "5ca442c91a9130f4381d4e97e0794acda08677327d7e4447a4d178e30c96d07f"
+  },
+  "default_regression": {
+    "baseline_revision": "fe0cf01aba8c4a1375b29cf0289c3055be8d9fb1",
+    "baseline_scaler_sha256": "e40030d64bcd6202960ead77d7021de18a12aa9c61c2d664a0d9bd5c16ee505f",
+    "presentations": 576,
+    "comparison": "All displayed RGBA32 bytes equal in paired old/current scaler run; standalone fingerprints also match",
+    "fingerprint_stdout_sha256": "68735f5036310b9ebdaef80d12a4058acc3f200d7e86ffc2b280f698f2c7164d",
+    "source_widths": [
+      240,
+      347,
+      356,
+      240
+    ],
+    "source_height": 160,
+    "destinations": [
+      [
+        2400,
+        1080
+      ],
+      [
+        1080,
+        2400
+      ],
+      [
+        1921,
+        1081
+      ],
+      [
+        1081,
+        1921
+      ],
+      [
+        321,
+        217
+      ],
+      [
+        3,
+        2
+      ]
+    ],
+    "quality_sequence": [
+      0,
+      720,
+      1080,
+      0
+    ],
+    "stretch_values": [
+      false,
+      true
+    ],
+    "frame_pattern_sequence": [
+      0,
+      1,
+      0
+    ]
+  },
+  "existing_scaler_regression": {
+    "geometry_cases": 45,
+    "render_presentations": 110,
+    "result": "PASS",
+    "stdout_sha256": "888d518c2f4b68af12e1a8670278ca4ce8414aa8b7c8744611e8837b61eda198"
+  },
+  "six_filter_integration": {
+    "modes": [
+      "release",
+      "ASan/UBSan"
+    ],
+    "result_per_mode": {
+      "result": "PASS",
+      "presentations": 2592,
+      "checks": 24250,
+      "renderer": "SDL software",
+      "android_device_tested": false
+    },
+    "source_widths": [
+      240,
+      347,
+      356,
+      240
+    ],
+    "source_height": 160,
+    "destinations": [
+      [
+        961,
+        541
+      ],
+      [
+        541,
+        961
+      ],
+      [
+        120,
+        80
+      ],
+      [
+        3,
+        2
+      ]
+    ],
+    "qualities": [
+      0,
+      720,
+      1080
+    ],
+    "stretch_values": [
+      false,
+      true
+    ],
+    "invariants": [
+      "input and real FrameBlend midpoint source bytes untouched",
+      "original target, draw color and draw blend mode restored",
+      "black panorama margin interiors remain black",
+      "external letterbox untouched",
+      "same frame exact after midpoint",
+      "each filter can return to byte-exact Balanced",
+      "invalid IDs select Balanced",
+      "all caches freed by reset"
+    ],
+    "sanitizer_note": "ASan/UBSan; existing SDL shared library uninstrumented; LeakSanitizer disabled",
+    "stdout_sha256": {
+      "release": "65b7332061bf7a9f2f179ffc8b5813fbec3c9b64040070e6b61bad5280b3fad1",
+      "ASan/UBSan": "65b7332061bf7a9f2f179ffc8b5813fbec3c9b64040070e6b61bad5280b3fad1"
+    }
+  },
+  "pixel_algorithms": {
+    "specification": "https://www.scale2x.it/algorithm",
+    "equality_partitions_per_algorithm": 21147,
+    "release": {
+      "result": "PASS",
+      "neighborhood_cases": 42294,
+      "whole_images": 18,
+      "assertions": 2322137,
+      "android_device_tested": false
+    },
+    "asan_ubsan": {
+      "result": "PASS",
+      "neighborhood_cases": 42294,
+      "whole_images": 18,
+      "assertions": 2322137,
+      "android_device_tested": false
+    },
+    "reproduction_log": "validation/image-filter-pixels-test.txt"
+  },
+  "existing_presentation_audit": {
+    "result": "PASS",
+    "blend_boundary_checks": 8,
+    "scaler_presentations": 36,
+    "assertions": 255,
+    "source_width_sequence": [
+      347,
+      356,
+      240,
+      347
+    ],
+    "source_height": 160,
+    "drawable": [
+      3120,
+      1440
+    ],
+    "qualities": [
+      0,
+      720,
+      1080
+    ],
+    "renderer": "SDL software",
+    "android_device_tested": false
+  },
+  "patch_stack": {
+    "unittest_cases": 3,
+    "patches": 9,
+    "recognized_prefix_states": 10,
+    "result": "PASS",
+    "checks": [
+      "all prefixes complete",
+      "idempotent application",
+      "unknown edits rejected without writes",
+      "wrong engine pin rejected without writes"
+    ]
+  },
+  "visual_review": {
+    "source": "One previously qualified private level1-1 framebuffer from0.10.2",
+    "native_center": [
+      240,
+      160
+    ],
+    "output": [
+      840,
+      560
+    ],
+    "filters": 6,
+    "quality": 0,
+    "result": "Expected distinct visual styles observed; no corruption in this one static sample",
+    "contact_sheet_sha256": "5d5be1de545b89e1e818b604eaaa4ff94345e17a024c52f0555585dac59cb45a",
+    "android_capture": false,
+    "new_gameplay_execution": false,
+    "images_published": false
+  },
+  "limits": [
+    "Software SDL rendering does not certify Android GPU drivers, physical screen rotation or performance.",
+    "No physical Pixel7Pro test, battery benchmark or 120Hz performance measurement was made.",
+    "ASan/UBSan instrument the scaler/test code; system SDL shared library is uninstrumented and LeakSanitizer disabled.",
+    "Integration patterns include protected black margins; these are synthetic presentation tests, not additional Fuzzy or gameplay routes.",
+    "Internal assertion counts are not counts of distinct gameplay scenarios.",
+    "Actual Android graphics-context loss and touch interaction are not executed by these tests."
+  ]
+}

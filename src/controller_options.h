@@ -1,5 +1,6 @@
 #pragma once
 #include "image_options.h"
+#include "image_filters.h"
 #include <atomic>
 namespace sma3 {
 inline std::atomic<int> video_quality{0};

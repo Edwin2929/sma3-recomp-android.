@@ -1,7 +1,7 @@
-# Calidad de imagen — Android 0.10.2 beta
+# Calidad de imagen — Android 0.10.3 beta
 
-En **0.10.2**, abre **Atrás del teléfono → Imagen** y elige uno de los tres
-modos. La resolución de presentación se configura por separado.
+En **0.10.3**, abre **Atrás del teléfono → Imagen**. El modo de imagen,
+el filtro y la resolución de presentación se configuran por separado.
 
 | Modo | Qué muestra | Proporciones |
 | --- | --- | --- |
@@ -19,6 +19,43 @@ todavía puede presentar errores visuales o de compatibilidad. El aviso está
 visible en Imagen. Original (3:2) sigue disponible para las escenas que no
 tengan una ampliación correcta. Cambiar el nombre de la opción no altera su
 valor guardado ni implica que todo el juego esté validado.
+
+## Filtros de imagen en 0.10.3
+
+Abre **Atrás → Imagen → Filtros de imagen**. Elige una opción y vuelve al
+juego para comparar el resultado. La selección se aplica al instante y
+permanece guardada entre sesiones. Al actualizar se utiliza **Equilibrado**,
+que conserva el acabado de la versión anterior.
+
+| Filtro | Aspecto y uso | Qué conviene tener en cuenta |
+| --- | --- | --- |
+| **Equilibrado (recomendado)** | Mantiene definidos los píxeles y suaviza los bordes fraccionarios al ajustar la imagen a la pantalla. | Un punto de partida para conservar el aspecto actual. |
+| **Píxel nítido** | Amplía con el vecino más cercano, sin mezclar colores. | Los píxeles y los escalones de los contornos se ven más marcados. |
+| **Suave bilineal** | Mezcla los colores vecinos al ampliar para dar un acabado más suave. | Puede difuminar letras y detalles pequeños. |
+| **Scale2x** | Reconstruye cada píxel como un bloque de 2 × 2, usando los vecinos para suavizar algunos contornos. | Una alternativa para reducir escalones sin un desenfoque general. |
+| **Scale3x** | Reconstruye cada píxel como un bloque de 3 × 3 con reglas adicionales de contorno. | Puede modificar detalles pequeños y requiere más procesamiento que Scale2x. |
+| **CRT suave** | Añade líneas horizontales suaves y fijas sobre el escalado equilibrado. | Es un acabado retro, oscurece ligeramente la imagen y no añade parpadeo temporal. |
+
+Puedes empezar por Equilibrado y comparar con Scale2x. Si prefieres ver los
+píxeles claramente, selecciona Píxel nítido. La elección depende del aspecto
+que te guste; una imagen más suave no siempre conserva mejor los detalles.
+Para recuperar la presentación anterior basta con volver a Equilibrado.
+
+Los filtros se aplican al fotograma terminado, antes de los controles y el
+contador de FPS. Funcionan con Original (3:2), Panorámica (beta) y Estirar,
+y con la mezcla temporal activada o desactivada. No cambian la velocidad,
+la lógica del juego ni la selección de encuadre. No añaden detalle dibujado
+originalmente a mayor resolución, ni corrigen escenas fuera de la cobertura
+panorámica. Las bandas de seguridad durante Fuzzy siguen siendo necesarias.
+
+Scale2x y Scale3x siguen las reglas públicas de la
+[especificación original de Scale2x](https://www.scale2x.it/algorithm), con
+repetición del píxel más próximo en los bordes. Las líneas de CRT permanecen
+quietas y se omiten cuando no hay altura suficiente
+para representarlas sin aliasing.
+
+[Validación de filtros](../validation/ANDROID_0.10.3_FILTER_VALIDATION.md) ·
+[Selector y persistencia](../validation/ANDROID_0.10.3_FILTER_SETTINGS.md).
 
 ## Correcciones adicionales en 0.10.2
 
@@ -113,8 +150,9 @@ En **Atrás → Imagen → Resolución de salida** puedes elegir:
 
 Los controles y el contador se dibujan a la resolución de salida de Android,
 después de escalar el juego. 720p y 1080p no redibujan los sprites ni amplían
-por sí solos el campo de visión. Se amplía primero por un factor entero sin
-suavizado y después se ajustan los bordes fraccionarios con filtrado lineal.
+por sí solos el campo de visión. El filtro determina cómo se remuestrea la
+imagen. Equilibrado amplía primero por un factor entero sin suavizado y
+después ajusta los bordes fraccionarios con filtrado lineal.
 El ajuste no cambia la resolución física ni la configuración del panel.
 1080p puede consumir más GPU y batería.
 
@@ -140,7 +178,7 @@ AddressSanitizer y UndefinedBehaviorSanitizer. Los recorridos emparejados
 comprueban 6.801 fotogramas del castillo y 3.506 del coche.
 [Informe de 0.10 y reproducción](../validation/ANDROID_0.10_VALIDATION.md).
 
-Estas comprobaciones históricas no sustituyen una prueba física de 0.10.2. El reporte de
+Estas comprobaciones históricas no sustituyen una prueba física de 0.10.3. El reporte de
 Edwin del 18 de octubre de 2026 sobre su **Google Pixel 7 Pro** corresponde
 al APK **0.9.1**, con el campo de visión original. No se traslada a la
 panorámica, la rotación o el rendimiento de esta nueva versión.

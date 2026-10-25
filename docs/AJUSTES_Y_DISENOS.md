@@ -1,4 +1,4 @@
-# Ajustes y diseños — Android 0.10.2 beta
+# Ajustes y diseños — Android 0.10.3 beta
 
 El botón **Atrás** abre un panel oscuro con acentos verdes, tarjetas por
 categoría y una descripción de cada opción. El contenido se puede desplazar
@@ -8,7 +8,7 @@ disponible para facilitar el uso horizontal y vertical.
 
 Hay cuatro apartados:
 
-- **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; resolución Automática, 720p y 1080p en un submenú independiente.
+- **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; submenús independientes de filtros y de resolución Automática, 720p y 1080p.
 - **Rendimiento y FPS:** contador y presentación de 120 FPS por mezcla temporal, con explicación de sus límites.
 - **Controles:** visibilidad de botones táctiles, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
@@ -39,6 +39,18 @@ Imagen, y se anuncia al lector de pantalla al seleccionar Panorámica:
 puede deformarlo y no amplía el campo de visión. Automática, 720p y 1080p
 cambian el escalado de presentación; tampoco añaden escenario por sí solos.
 Se configuran en **Atrás → Imagen → Resolución de salida**.
+
+En **Atrás → Imagen → Filtros de imagen** hay seis acabados:
+**Equilibrado**, **Píxel nítido**, **Suave bilineal**, **Scale2x**, **Scale3x**
+y **CRT suave**. Cada uno incluye una explicación. La selección se guarda
+al tocarla y aparece en el resumen de Imagen. Equilibrado es el valor
+predeterminado y permite volver al acabado de la versión anterior.
+
+Scale2x y Scale3x trabajan los contornos; bilineal suaviza toda la imagen;
+Píxel nítido conserva los bordes duros. CRT añade líneas horizontales fijas
+como efecto retro. Ninguno amplía el campo de visión ni añade detalle
+original. La [guía de filtros](CALIDAD_IMAGEN.md#filtros-de-imagen-en-0103)
+explica las diferencias y el coste de cada opción.
 
 La mezcla temporal de **Rendimiento y FPS** puede producir estelas. Mantiene
 el ritmo original del juego; 120 FPS se refiere a las imágenes presentadas
@@ -84,14 +96,20 @@ duración de prueba documentada. 0.9 conserva ese modo de presentación.
 
 ## Validación actual
 
-El APK 0.10.2, las correcciones de Fuzzy y los límites de la panorámica se
+El selector de 0.10.3 y los filtros se documentan en el
+[informe de filtros](../validation/ANDROID_0.10.3_FILTER_VALIDATION.md) y la
+[revisión del menú](../validation/ANDROID_0.10.3_FILTER_SETTINGS.md).
+La compilación y firma del APK constan en el
+[registro de construcción](../validation/android-0.10.3-build.json).
+
+Las correcciones de Fuzzy de 0.10.2 y los límites de la panorámica se
 documentan en [ANDROID_0.10.2_FIXES.md](../validation/ANDROID_0.10.2_FIXES.md).
 La compilación y revisión de preferencias, navegación y diseño están en el
 [informe de la interfaz](../validation/ANDROID_0.10.2_SETTINGS.md).
 
 La orientación Android conserva `fullUser`. Las pruebas SDL de tamaños y
 las comprobaciones anteriores del editor no equivalen a una prueba física
-de rotación, controles o segundo plano de 0.10.2. La evidencia inicial de
+de rotación, controles o segundo plano de 0.10.3. La evidencia inicial de
 integración de 0.10 permanece como historial en
 [ANDROID_0.10_VALIDATION.md](../validation/ANDROID_0.10_VALIDATION.md).
 

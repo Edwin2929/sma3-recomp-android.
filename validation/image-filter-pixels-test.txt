@@ -1,0 +1,26 @@
+SMA3 0.10.3-beta — image filter pixel specification tests
+
+Implementation: independent RGB24 Scale2x / Scale3x rules from https://www.scale2x.it/algorithm
+Coverage: all 21,147 equality partitions of a 3x3 neighborhood, for both algorithms.
+42,294 neighborhood cases; 18 complete images; 2,322,137 assertions per run.
+Complete-image sizes: 1x1, 1x9, 11x1, 2x2, 3x5, 7x3, 240x160, 347x160, 356x160.
+Checks: edge replication, unaligned output, untouched source, output guard bytes,
+overlap rejection, short buffers, null pointers, invalid/overflow dimensions and IDs.
+
+Release: PASS (-O2 -Wall -Wextra -Werror)
+AddressSanitizer + UndefinedBehaviorSanitizer: PASS (-O1 -g; leak detection disabled).
+This is a host-only pixel test; no Android device or GPU is exercised.
+
+Reproduce from repository root (C++20):
+c++ -std=c++20 -O2 -Wall -Wextra -Werror -I src validation/image_filter_pixels_test.cpp -o /tmp/sma3-filter-pixels
+/tmp/sma3-filter-pixels
+
+c++ -std=c++20 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -I src validation/image_filter_pixels_test.cpp -o /tmp/sma3-filter-pixels-asan
+ASAN_OPTIONS=detect_leaks=0:abort_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /tmp/sma3-filter-pixels-asan
+
+Observed output (both runs):
+{"result":"PASS","neighborhood_cases":42294,"whole_images":18,"assertions":2322137,"android_device_tested":false}
+
+Source SHA-256:
+c6910156e7a4671af5669583a79be76f1ef351c519c8e9ab40f5c544a551f31a  src/image_filters.h
+6ac891254e9412067f264dd92cf754fc6a82e333b4f7636534657fc4171bc148  validation/image_filter_pixels_test.cpp

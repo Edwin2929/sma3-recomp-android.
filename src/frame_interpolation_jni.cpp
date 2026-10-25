@@ -26,6 +26,11 @@ Java_org_gbarecomp_GbaNative_setVideoOptions(JNIEnv*, jclass, jint quality, jint
     sma3::image_mode.store(sma3::validated_image_mode(image_mode));
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_org_gbarecomp_GbaNative_setVideoFilter(JNIEnv*, jclass, jint filter) {
+    sma3::image_filter.store(sma3::validated_image_filter(filter), std::memory_order_relaxed);
+}
+
 #include "localization.h"
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setLanguage(JNIEnv*, jclass, jint language) {
