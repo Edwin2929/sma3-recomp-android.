@@ -17,9 +17,10 @@ ROOT = Path(__file__).resolve().parents[1]
 PIN = 'e7728148c6829ba526f682876430a0c9022dc6c0'
 PATCH_NAMES = ('interpolation', 'controls', 'localization', 'touch-design',
                'widescreen-objects', 'widescreen-window', 'panorama-android',
-               'panorama-stability', 'image-filters')
+               'panorama-stability', 'image-filters', 'mod-profiles')
 PATHS = tuple('src/runtime/' + name for name in
-              ('host_platform.cpp', 'host_platform.h', 'host_window.cpp', 'runtime.cpp')) + (
+              ('host_platform.cpp', 'host_platform.h', 'host_window.cpp', 'runtime.cpp',
+               'mod_runtime.cpp')) + (
                   'src/gba/gba_ppu.h', 'src/gba/gba_ppu.cpp')
 
 

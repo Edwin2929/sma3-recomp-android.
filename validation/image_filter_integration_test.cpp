@@ -1,4 +1,4 @@
-// Independent presentation invariants for all six Android image filters.
+// Independent presentation invariants for all seven Android image filters.
 // No ROM or Android device is needed. Use SDL2's software renderer, optionally
 // with ASan/UBSan. Pixel algorithms have a separate specification-oracle test.
 #include "video_scaler.h"
@@ -107,7 +107,7 @@ int main() {
                 const auto destination=sma3::video_destination(size.x,size.y,width,160,stretch);
                 Draw draw{renderer,source,target,scaler,size,width,quality,destination};
                 const auto original=draw.run(first.data(),sma3::ImageFilter::Balanced);
-                for(int id=0;id<6;++id) {
+                for(int id=0;id<7;++id) {
                     const auto filter=static_cast<sma3::ImageFilter>(id);
                     const auto a=draw.run(first.data(),filter);
                     draw.run(midpoint.data(),filter);

@@ -9,6 +9,7 @@
 #include "runtime.h"
 #include "runtime_arm.h"
 #include "localization.h"
+#include "mod_profiles.h"
 int sma3_ram_dispatch(uint32_t, int);
 
 #ifdef __ANDROID__
@@ -80,6 +81,12 @@ int main(int argc, char** argv) {
     SDL_setenv("GBARECOMP_FORCE_INTERP", "0", 1);
     SDL_setenv("GBARECOMP_BIOS_HLE", "0", 1);
     SDL_setenv("GBARECOMP_BIOS_SKIP_INTRO", "1", 1);
+    // This visual-only catalog publishes immutable present-time matrices.
+    // Leave RunOptions.mod_game_id unset so the generic engine launcher does
+    // not reinitialize the catalog or reset audio/PPU state on UI operations.
+    std::string mod_error;
+    if (!gbarecomp::sma3_mod_initialize(root + "/mods", root + "/roms/sma3-usa.gba", &mod_error))
+        SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Color mods unavailable: %s", mod_error.c_str());
     std::vector<std::string> arguments = {
         root + "/sma3_runner", "--config", root + "/variants/sma3-usa/game.toml",
         "--rom", root + "/roms/sma3-usa.gba",

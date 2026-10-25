@@ -6,5 +6,6 @@
 - **SDL y demás submódulos** — se descargan mediante el checkout fijado del motor y conservan sus propias licencias.
 - **Gradle Wrapper** — archivos del sistema de compilación, con los avisos de licencia de sus scripts.
 - **Scale2x / Scale3x** — reglas de escalado de Andrea Mazzoleni, descritas en https://www.scale2x.it/algorithm. La implementación RGB de este proyecto se escribió para su ruta de presentación; no se incorpora la biblioteca ni el código optimizado del paquete Scale2x.
+- **Tono cálido** — manifiesto y texto originales del ejemplo de perfil de color en `mods/examples/tono-calido`, dedicados a CC0-1.0. Esta dedicación solo cubre esos datos de ejemplo; no cambia las licencias del motor, del juego ni del resto del proyecto.
 
 No se añade una licencia permisiva global que sustituya o elimine las condiciones de estos componentes. No se incluyen archivos de juego ni BIOS, y este proyecto no concede derechos sobre ellos. Las modificaciones de integración se publican aquí sin una concesión adicional de licencia general.

@@ -15,8 +15,14 @@ public final class GbaNative {
     public static native void setLanguage(int language);
     // Image modes: 0 original 3:2, 1 panoramic, 2 stretch.
     public static native void setVideoOptions(int quality, int imageMode);
-    // Image filters: 0 balanced, 1 nearest, 2 bilinear, 3 Scale2x, 4 Scale3x, 5 soft CRT.
+    // Image filters: 0 balanced, 1 nearest, 2 bilinear, 3 Scale2x, 4 Scale3x, 5 soft CRT, 6 cinematic.
     public static native void setVideoFilter(int filter);
+    // Mod operations return the authoritative installed catalog as JSON and are
+    // called serially on the Android mod worker, never on the UI thread.
+    public static native String listMods();
+    public static native String importMod(String cachedPath);
+    public static native String setModEnabled(String id, boolean enabled);
+    public static native String removeMod(String id);
     public static native void setTouchControlsVisible(boolean visible);
     public static native void setControllerButton(int bit, int button);
     public static native void setOptionsOpen(boolean open);

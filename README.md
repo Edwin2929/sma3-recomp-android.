@@ -2,7 +2,32 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.3 beta — filtros de imagen
+## Versión actual: 0.10.4 beta — mods de color y filtro cinematográfico
+
+**0.10.4 añade Atrás → Mods**, con importación de paquetes `.gbamod`, lista
+de instalados, activación, desactivación y eliminación. Incluye **Instalar
+ejemplo → Tono cálido** para probar la función desde el propio APK. Los
+paquetes se instalan desactivados; solo se aplica un perfil de color a la vez
+y la selección se conserva entre sesiones.
+
+Esta primera integración admite **perfiles de color compatibles con SMA3**.
+Los parches de ROM, niveles, personajes y mods de otros juegos no son formatos
+admitidos por este apartado. La [guía de mods](docs/MODS.md) incluye el formato
+exacto y una herramienta para crear paquetes a partir de texto editable.
+
+En **Atrás → Imagen → Filtros de imagen** se añade **Cinematográfico**:
+dos franjas negras fijas, arriba y abajo, sobre el escalado Equilibrado. Cada
+franja cubre el 10 % de la altura del juego, redondeado hacia abajo. **Oculta
+parte de la imagen y puede cubrir indicadores del juego**; conserva la escala
+del centro y deja visibles los controles táctiles. Es independiente del modo
+Original, Panorámica o Estirar y no amplía el campo de visión.
+
+[Guía de filtros](docs/CALIDAD_IMAGEN.md#filtros-de-imagen-en-0104) ·
+[Guía de mods](docs/MODS.md) · [Notas de 0.10.4](docs/releases/v0.10.4-beta.md) ·
+[Pruebas de mods](validation/MODS_0.10.4_VALIDATION.md) ·
+[Pruebas del filtro](validation/CINEMATIC_0.10.4_VALIDATION.md).
+
+### Filtros incorporados en 0.10.3
 
 **0.10.3 añade seis filtros seleccionables en Atrás → Imagen → Filtros de
 imagen:** Equilibrado, Píxel nítido, Suave bilineal, Scale2x, Scale3x y CRT
@@ -84,7 +109,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.3**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.4**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -102,18 +127,19 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.3 beta — nueva entrega con filtros
+### APK 0.10.4 beta — nueva entrega con mods y cinematográfico
 
-Archivo: **`sma3-recomp-0.10.3-beta-arm64.apk`**, versión `0.10.3-beta`,
-código **14**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
+Archivo: **`sma3-recomp-0.10.4-beta-arm64.apk`**, versión `0.10.4-beta`,
+código **15**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
 su publicación manual en GitHub Releases. Su nombre identifica la versión
-que incluye los seis filtros; el APK 0.10.2 no incorpora este selector.
+que incluye el gestor de mods y los siete filtros. Los APK anteriores no
+incorporan este gestor ni el filtro Cinematográfico.
 
 Instálalo encima de la versión anterior, sin desinstalarla. Conserva el
 paquete y el certificado y aumenta el código de versión. La selección de
 filtro se guarda por separado de imagen, resolución, controles e idiomas.
-[Archivo, instalación y SHA-256](docs/releases/v0.10.3-beta.md) ·
-[Verificación del APK](validation/android-0.10.3-build.json).
+[Archivo, instalación y SHA-256](docs/releases/v0.10.4-beta.md) ·
+[Verificación del APK](validation/android-0.10.4-build.json).
 
 ### APK 0.10.2 beta disponible en GitHub
 
@@ -124,9 +150,10 @@ coincide con el archivo entregado: `06fe2ae0e041557ebaf1b12bcc4d6684a5ccea7bcd7d
 Incluye las correcciones de Fuzzy y panorámica y el nuevo menú de 0.10.2.
 [Notas de 0.10.2](docs/releases/v0.10.2-beta.md).
 
-Cuando el mantenedor adjunte 0.10.3, estará disponible en
+Cuando el mantenedor adjunte 0.10.4, estará disponible en
 [GitHub Releases](https://github.com/Edwin2929/sma3-recomp-android./releases).
 Los datos de entregas anteriores permanecen en las notas de
+[0.10.3](docs/releases/v0.10.3-beta.md),
 [0.10.1](docs/releases/v0.10.1-experimental.md),
 [0.10](docs/releases/v0.10-experimental.md),
 [0.9.1](docs/releases/v0.9.1-experimental.md) y
@@ -134,6 +161,18 @@ Los datos de entregas anteriores permanecen en las notas de
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.4:** se comprueban el catálogo de mods, los archivos incompatibles y
+dañados, la persistencia, la recuperación tras errores y la aplicación y
+restauración de colores. El filtro Cinematográfico pasa **108 casos** y los
+seis filtros previos conservan **648 presentaciones exactas** respecto a
+0.10.3. El selector de siete filtros pasa **2.976 presentaciones SDL**. La
+compilación Java y los enlaces JNI se verifican junto con el APK final.
+No se atribuye una prueba física en el Pixel ni nuevos recorridos completos
+del juego a esta entrega.
+[Mods y alcance](validation/MODS_0.10.4_VALIDATION.md) ·
+[Cinematográfico](validation/CINEMATIC_0.10.4_VALIDATION.md) ·
+[Interfaz](validation/ANDROID_0.10.4_MODS_SETTINGS.md).
 
 **0.10.3:** las pruebas se centran en los filtros y su presentación, el
 comportamiento predeterminado, los cambios de tamaño y selección y el APK
@@ -243,6 +282,7 @@ El inicio activa `GBARECOMP_STRICT_STATIC=1`, `GBARECOMP_FORCE_INTERP=0`, `GBARE
 | `runtime.toml` | Configuración de ejecución |
 | `symbols.tsv` | Direcciones y nombres usados como semillas |
 | `tools/` | Generación local, compilación y comprobaciones |
+| `mods/examples/` | Perfiles de color de ejemplo, editables y empaquetables como `.gbamod` |
 | `validation/*.csv` | Secuencias de entradas para las pruebas |
 | `licenses/` | Licencias de las dependencias |
 
@@ -285,6 +325,13 @@ El último script descarga las herramientas oficiales en `../build-tools`, prepa
 APK resultante: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 Para compilar únicamente las bibliotecas nativas: `python3 tools/bootstrap_android_build.py --native-only`.
+
+0.10.4 habilita el catálogo nativo de perfiles de color con
+`GBARECOMP_ENABLE_MODS=ON` y añade un décimo parche al motor fijado. Gradle
+genera el paquete de ejemplo desde `mods/examples/tono-calido` usando
+`tools/package_color_mod.py` y lo incluye como un recurso separado de los
+archivos de instalación del juego. El ejemplo solo se instala cuando el
+usuario lo elige en Mods. [Formato y uso](docs/MODS.md).
 
 0.10.2 añade las fuentes privadas de los dos efectos ARM de Fuzzy en
 `generated-effects/`. `generate_sources.py` las genera como parte del flujo
@@ -339,8 +386,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.2 en Pixel 7 Pro: actualización, contacto con Fuzzy, los tres modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.2.
+- Probar 0.10.4 en Pixel 7 Pro: actualización, importar/activar/desactivar mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.4.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

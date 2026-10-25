@@ -1,0 +1,25 @@
+{
+  "version": "0.10.4-beta",
+  "java_compile": {
+    "result": "PASS",
+    "language_version": 17,
+    "android_api": 35,
+    "scope": "Five changed Java source files against the Android SDK and existing compiled project dependencies; full APK build recorded separately.",
+    "sources_sha256": {
+      "android/java/org/gbarecomp/GbaGameActivity.java": "6cc3b4ad0955b797999ca1806559655d4dd6e20da26463185e09dd089b3e5323",
+      "android/java/org/gbarecomp/GbaNative.java": "b5b187d95a8a12fcf350d100e8163ffec56f31625f2f11cdab852448df4ed4ea",
+      "android/java/org/gbarecomp/SettingsPanel.java": "8b0ff44d8df462c8ac4cd8692b461c2491a7a7acfe8383b34dec9bb53eb1a089",
+      "android/java/org/gbarecomp/ModsUi.java": "60aa6f59812429cef24cf80c41ed272022dd9b7ba09a38c557ec3548d4256765",
+      "android/java/org/gbarecomp/ModArchiveCopy.java": "bab94a70c1eac917ded0a69f4011e598cd3cf1e8be9ac8695ab29f701e1b1f4f"
+    }
+  },
+  "mod_archive_stream_test": {
+    "result": "PASS",
+    "checks": 26,
+    "helper_sha256": "bab94a70c1eac917ded0a69f4011e598cd3cf1e8be9ac8695ab29f701e1b1f4f",
+    "test_sha256": "28bf2ec4e92bb55ed44a47150b5d062f5cc5b90c2fcd17486b4f71ddb95e539f",
+    "stdout": "PASS mod archive stream transfer checks=26"
+  },
+  "physical_device_tested": false,
+  "android_ui_execution_tested": false
+}

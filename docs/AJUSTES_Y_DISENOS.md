@@ -1,4 +1,4 @@
-# Ajustes y diseños — Android 0.10.3 beta
+# Ajustes y diseños — Android 0.10.4 beta
 
 El botón **Atrás** abre un panel oscuro con acentos verdes, tarjetas por
 categoría y una descripción de cada opción. El contenido se puede desplazar
@@ -6,9 +6,10 @@ y el botón de navegación permanece separado, debajo del contenido. El ancho
 se adapta a la pantalla, con un máximo de 600 dp; la altura se limita al área
 disponible para facilitar el uso horizontal y vertical.
 
-Hay cuatro apartados:
+Hay cinco apartados:
 
 - **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; submenús independientes de filtros y de resolución Automática, 720p y 1080p.
+- **Mods:** importar perfiles de color `.gbamod`, instalar el ejemplo incluido, consultar sus datos, activarlos, desactivarlos y eliminarlos.
 - **Rendimiento y FPS:** contador y presentación de 120 FPS por mezcla temporal, con explicación de sus límites.
 - **Controles:** visibilidad de botones táctiles, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
@@ -40,16 +41,18 @@ puede deformarlo y no amplía el campo de visión. Automática, 720p y 1080p
 cambian el escalado de presentación; tampoco añaden escenario por sí solos.
 Se configuran en **Atrás → Imagen → Resolución de salida**.
 
-En **Atrás → Imagen → Filtros de imagen** hay seis acabados:
+En **Atrás → Imagen → Filtros de imagen** hay siete acabados:
 **Equilibrado**, **Píxel nítido**, **Suave bilineal**, **Scale2x**, **Scale3x**
-y **CRT suave**. Cada uno incluye una explicación. La selección se guarda
+y **CRT suave**, además de **Cinematográfico**. Cada uno incluye una explicación. La selección se guarda
 al tocarla y aparece en el resumen de Imagen. Equilibrado es el valor
 predeterminado y permite volver al acabado de la versión anterior.
 
 Scale2x y Scale3x trabajan los contornos; bilineal suaviza toda la imagen;
 Píxel nítido conserva los bordes duros. CRT añade líneas horizontales fijas
 como efecto retro. Ninguno amplía el campo de visión ni añade detalle
-original. La [guía de filtros](CALIDAD_IMAGEN.md#filtros-de-imagen-en-0103)
+original. Cinematográfico añade dos franjas negras del 10 % arriba y abajo:
+cubren parte de la imagen y del HUD, con los controles táctiles por encima.
+La [guía de filtros](CALIDAD_IMAGEN.md#filtros-de-imagen-en-0104)
 explica las diferencias y el coste de cada opción.
 
 La mezcla temporal de **Rendimiento y FPS** puede producir estelas. Mantiene
@@ -61,6 +64,25 @@ pantalla completa**. Al actualizar, esa elección pasa a Original o Estirar;
 la panorámica debe seleccionarse expresamente y no existe en esos APK anteriores.
 Consulta la [guía de imagen](CALIDAD_IMAGEN.md) y el
 [estado de la panorámica](PANORAMICA_EN_DESARROLLO.md).
+
+## Mods de color
+
+Entra en **Atrás → Mods → Instalar ejemplo** para añadir **Tono cálido**.
+Después toca su nombre y usa **Activar mod**. También puedes elegir
+**Importar mod** y seleccionar un paquete `.gbamod` compatible desde el
+selector de archivos de Android. La importación copia el archivo a la
+aplicación y lo instala desactivado; no cambia el documento original.
+
+El catálogo muestra nombre, versión, autor y estado. Los detalles permiten
+activar, desactivar o eliminar el paquete. Activar otro perfil sustituye al
+anterior; la elección se conserva al cerrar el juego. Eliminar solicita
+confirmación con el nombre del mod. La copia y la validación se hacen fuera
+del hilo del menú, con mensajes de progreso y errores.
+
+Esta versión admite perfiles de color para SMA3. Los paquetes no modifican
+la ROM ni las partidas. Hay un ejemplo editable y una herramienta de
+empaquetado en el repositorio; la [guía de mods](MODS.md) describe los límites
+y cómo crear más perfiles.
 
 ## Diseños personalizados
 
@@ -96,11 +118,14 @@ duración de prueba documentada. 0.9 conserva ese modo de presentación.
 
 ## Validación actual
 
-El selector de 0.10.3 y los filtros se documentan en el
-[informe de filtros](../validation/ANDROID_0.10.3_FILTER_VALIDATION.md) y la
-[revisión del menú](../validation/ANDROID_0.10.3_FILTER_SETTINGS.md).
+El gestor de mods y el selector de siete filtros de 0.10.4 se documentan
+en la [revisión del menú](../validation/ANDROID_0.10.4_MODS_SETTINGS.md),
+las [pruebas del catálogo](../validation/MODS_0.10.4_VALIDATION.md) y el
+[informe cinematográfico](../validation/CINEMATIC_0.10.4_VALIDATION.md).
+La evidencia de los seis filtros anteriores se conserva en el
+[informe de 0.10.3](../validation/ANDROID_0.10.3_FILTER_VALIDATION.md).
 La compilación y firma del APK constan en el
-[registro de construcción](../validation/android-0.10.3-build.json).
+[registro de construcción](../validation/android-0.10.4-build.json).
 
 Las correcciones de Fuzzy de 0.10.2 y los límites de la panorámica se
 documentan en [ANDROID_0.10.2_FIXES.md](../validation/ANDROID_0.10.2_FIXES.md).
@@ -109,7 +134,7 @@ La compilación y revisión de preferencias, navegación y diseño están en el
 
 La orientación Android conserva `fullUser`. Las pruebas SDL de tamaños y
 las comprobaciones anteriores del editor no equivalen a una prueba física
-de rotación, controles o segundo plano de 0.10.3. La evidencia inicial de
+de rotación, controles o segundo plano de 0.10.4. La evidencia inicial de
 integración de 0.10 permanece como historial en
 [ANDROID_0.10_VALIDATION.md](../validation/ANDROID_0.10_VALIDATION.md).
 

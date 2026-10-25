@@ -10,10 +10,11 @@ namespace sma3 {
 
 // Stable persisted/JNI IDs. These affect presentation only, never guest pixels.
 enum class ImageFilter : int {
-    Balanced = 0, Nearest = 1, Bilinear = 2, Scale2x = 3, Scale3x = 4, Crt = 5
+    Balanced = 0, Nearest = 1, Bilinear = 2, Scale2x = 3, Scale3x = 4, Crt = 5,
+    Cinematic = 6
 };
 constexpr ImageFilter validated_image_filter(int value) {
-    return value >= 0 && value <= 5 ? static_cast<ImageFilter>(value)
+    return value >= 0 && value <= 6 ? static_cast<ImageFilter>(value)
                                  : ImageFilter::Balanced;
 }
 inline std::atomic<ImageFilter> image_filter{ImageFilter::Balanced};

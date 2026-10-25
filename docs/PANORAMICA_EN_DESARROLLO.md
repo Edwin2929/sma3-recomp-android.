@@ -1,4 +1,17 @@
-# Panorámica real — Android 0.10.3 beta
+# Panorámica real — Android 0.10.4 beta
+
+## Mods y filtro cinematográfico en 0.10.4
+
+0.10.4 añade perfiles de color importables en **Atrás → Mods** y el séptimo
+filtro **Cinematográfico**, con dos franjas negras fijas arriba y abajo. Los
+mods cambian los colores del fotograma terminado. Las franjas cubren parte
+de ese fotograma, incluido el HUD en esas zonas; no amplían la escena ni
+aportan cobertura a otros niveles. Se conservan los límites de aparición de
+objetos y las bandas temporales durante el efecto de terreno del Fuzzy.
+
+Panorámica continúa como **(beta)** y con su advertencia de fase temprana.
+[Guía de mods](MODS.md) · [Guía de filtros](CALIDAD_IMAGEN.md#filtros-de-imagen-en-0104) ·
+[Notas de 0.10.4](releases/v0.10.4-beta.md).
 
 ## Filtros de presentación en 0.10.3
 

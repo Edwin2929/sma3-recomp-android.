@@ -1,0 +1,54 @@
+format_version = 1
+id = "sma3.example.warm"
+version = "1.0.0"
+name = "Tono cálido"
+author = "SMA3 Recomp"
+description = "Ejemplo de mod de color: aumenta suavemente el rojo y reduce el azul. Desactivarlo restaura los colores originales."
+license = "CC0-1.0"
+resolver = "declarative"
+save_compatibility = "shared"
+
+[[target]]
+game_id = "sma3-usa"
+rom_sha1 = "7352d2bd064d9ebaec579e264228aa21c7345b80"
+
+[[feature]]
+id = "colors"
+name = "Tono cálido"
+description = "Transformación de color de la imagen terminada."
+group = "Color"
+default_enabled = false
+
+[[plugin]]
+feature = "colors"
+id = "sma3.color-profile"
+
+[[option]]
+feature = "colors"
+id = "rr"
+label = "Rojo desde rojo"
+type = "integer"
+default = 108
+min = -200
+max = 200
+step = 1
+
+[[option]]
+feature = "colors"
+id = "gg"
+label = "Verde desde verde"
+type = "integer"
+default = 100
+min = -200
+max = 200
+step = 1
+
+[[option]]
+feature = "colors"
+id = "bb"
+label = "Azul desde azul"
+type = "integer"
+default = 88
+min = -200
+max = 200
+step = 1

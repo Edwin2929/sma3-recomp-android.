@@ -1,6 +1,6 @@
-# Calidad de imagen — Android 0.10.3 beta
+# Calidad de imagen — Android 0.10.4 beta
 
-En **0.10.3**, abre **Atrás del teléfono → Imagen**. El modo de imagen,
+En **0.10.4**, abre **Atrás del teléfono → Imagen**. El modo de imagen,
 el filtro y la resolución de presentación se configuran por separado.
 
 | Modo | Qué muestra | Proporciones |
@@ -20,12 +20,14 @@ visible en Imagen. Original (3:2) sigue disponible para las escenas que no
 tengan una ampliación correcta. Cambiar el nombre de la opción no altera su
 valor guardado ni implica que todo el juego esté validado.
 
-## Filtros de imagen en 0.10.3
+<a id="filtros-de-imagen-en-0103"></a>
+
+## Filtros de imagen en 0.10.4
 
 Abre **Atrás → Imagen → Filtros de imagen**. Elige una opción y vuelve al
 juego para comparar el resultado. La selección se aplica al instante y
-permanece guardada entre sesiones. Al actualizar se utiliza **Equilibrado**,
-que conserva el acabado de la versión anterior.
+permanece guardada entre sesiones. En una instalación nueva se utiliza
+**Equilibrado**; al actualizar desde 0.10.3 se conserva el filtro elegido.
 
 | Filtro | Aspecto y uso | Qué conviene tener en cuenta |
 | --- | --- | --- |
@@ -35,11 +37,20 @@ que conserva el acabado de la versión anterior.
 | **Scale2x** | Reconstruye cada píxel como un bloque de 2 × 2, usando los vecinos para suavizar algunos contornos. | Una alternativa para reducir escalones sin un desenfoque general. |
 | **Scale3x** | Reconstruye cada píxel como un bloque de 3 × 3 con reglas adicionales de contorno. | Puede modificar detalles pequeños y requiere más procesamiento que Scale2x. |
 | **CRT suave** | Añade líneas horizontales suaves y fijas sobre el escalado equilibrado. | Es un acabado retro, oscurece ligeramente la imagen y no añade parpadeo temporal. |
+| **Cinematográfico** | Escalado Equilibrado con dos franjas negras fijas, arriba y abajo. | Cada franja cubre el 10 % de la altura del juego. Ocultan imagen e indicadores situados en esas zonas; no añaden escenario. |
 
 Puedes empezar por Equilibrado y comparar con Scale2x. Si prefieres ver los
 píxeles claramente, selecciona Píxel nítido. La elección depende del aspecto
 que te guste; una imagen más suave no siempre conserva mejor los detalles.
 Para recuperar la presentación anterior basta con volver a Equilibrado.
+
+**Cinematográfico** conserva el tamaño y la posición del centro de la imagen.
+Las franjas tienen la misma altura, calculada con redondeo hacia abajo, y
+se dibujan dentro del área del juego. En un destino de 1620 × 1080 miden
+108 píxeles cada una. Los controles táctiles y el contador de FPS se dibujan
+después y permanecen visibles. Para recuperar toda la imagen, selecciona
+cualquier otro filtro. Solo se elige un filtro a la vez: Cinematográfico
+usa Equilibrado como base, sin combinarlo con Scale2x o CRT.
 
 Los filtros se aplican al fotograma terminado, antes de los controles y el
 contador de FPS. Funcionan con Original (3:2), Panorámica (beta) y Estirar,
@@ -55,7 +66,18 @@ quietas y se omiten cuando no hay altura suficiente
 para representarlas sin aliasing.
 
 [Validación de filtros](../validation/ANDROID_0.10.3_FILTER_VALIDATION.md) ·
-[Selector y persistencia](../validation/ANDROID_0.10.3_FILTER_SETTINGS.md).
+[Cinematográfico y siete filtros](../validation/CINEMATIC_0.10.4_VALIDATION.md) ·
+[Selector y persistencia](../validation/ANDROID_0.10.4_MODS_SETTINGS.md).
+
+## Mods de color
+
+**Atrás → Mods** permite importar perfiles compatibles `.gbamod`. El perfil
+activo transforma los colores del fotograma terminado y puede usarse con
+cualquiera de los siete filtros. Solo se aplica uno a la vez. El ejemplo
+**Tono cálido** aumenta el rojo y reduce el azul; desactivarlo recupera los
+colores originales sin cambiar el filtro, el modo de imagen o la partida.
+Las franjas negras de Cinematográfico y de las escenas panorámicas sin
+cobertura siguen negras. [Instalación y creación de paquetes](MODS.md).
 
 ## Correcciones adicionales en 0.10.2
 
@@ -178,7 +200,7 @@ AddressSanitizer y UndefinedBehaviorSanitizer. Los recorridos emparejados
 comprueban 6.801 fotogramas del castillo y 3.506 del coche.
 [Informe de 0.10 y reproducción](../validation/ANDROID_0.10_VALIDATION.md).
 
-Estas comprobaciones históricas no sustituyen una prueba física de 0.10.3. El reporte de
+Estas comprobaciones históricas no sustituyen una prueba física de 0.10.4. El reporte de
 Edwin del 18 de octubre de 2026 sobre su **Google Pixel 7 Pro** corresponde
 al APK **0.9.1**, con el campo de visión original. No se traslada a la
 panorámica, la rotación o el rendimiento de esta nueva versión.

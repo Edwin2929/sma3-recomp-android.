@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "version": "0.10.4-beta",
+  "scope": "Cinematic presentation and existing-filter regression on SDL software. No APK execution, physical device, gameplay journey, or performance measurement.",
+  "filter": {
+    "id": 6,
+    "name_es": "Cinematográfico",
+    "base": "Balanced",
+    "bar_fraction_each": 0.1,
+    "integer_rule": "floor(destination.h / 10)",
+    "opaque": true,
+    "static": true,
+    "center_pixels_unchanged": true,
+    "source_buffers_unchanged": true,
+    "covers_game_image_including_HUD": true,
+    "min_height_for_bars": 10
+  },
+  "source_sha256": {
+    "src/image_filters.h": "df3fa18e28cc3817916c6b46358d6a7f490166decff298a03b2f7bc187b8a53a",
+    "src/video_scaler.h": "3c8881f319f03d2212ddc26d12202fca7759482324ebe37878efb01008b823db",
+    "validation/cinematic_filter_test.cpp": "f86ca149ed3b0b7fc268e3f58c9919d2a4454619bf89b12f34da1a14ba583915",
+    "validation/image_filter_pixels_test.cpp": "1aab877744bc0bcbe60f32a9941572a516100de18545bde4c03fb3a6021677d5",
+    "validation/image_filter_integration_test.cpp": "753a7f0bd98a40b3baf173eac274624d37645525294880a46f6e3d1d642ae18b"
+  },
+  "baseline": {
+    "revision": "4d68bccbdffbc2ee55d7d1fb833cfc266f9005d3",
+    "headers_sha256": {
+      "image_filters.h": "c6910156e7a4671af5669583a79be76f1ef351c519c8e9ab40f5c544a551f31a",
+      "video_scaler.h": "2eff049f8cf7273cf63855b5f2431b80ac9e19cc214f045ef1d22ca625127ccf"
+    },
+    "existing_filter_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "comparison": "Every displayed RGBA32 byte"
+  },
+  "runs": [
+    {
+      "name": "cinematic",
+      "mode": "release",
+      "result": {
+        "result": "PASS",
+        "cinematic_cases": 108,
+        "old_filter_presentations_exact": 648,
+        "total_presentations": 1836,
+        "pixel_checks": 19977912,
+        "checks": 20003464,
+        "bar_fraction_each": 0.1,
+        "renderer": "SDL software",
+        "android_device_tested": false
+      },
+      "seconds": 22.055,
+      "stdout_sha256": "f1da9436596115298e073b626b0252bc9b1a21b948f9273815e09a8d46ba9396",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiler_warning_exception": null
+    },
+    {
+      "name": "integration",
+      "mode": "release",
+      "result": {
+        "result": "PASS",
+        "presentations": 2976,
+        "checks": 27826,
+        "renderer": "SDL software",
+        "android_device_tested": false
+      },
+      "seconds": 37.222,
+      "stdout_sha256": "0522a3579f2241c77b075ea75bd75cb2bfdcc08eacba65bf7d65c856f7a6543b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiler_warning_exception": "-Wno-error=misleading-indentation (existing touch_layout.h)"
+    },
+    {
+      "name": "pixels",
+      "mode": "release",
+      "result": {
+        "result": "PASS",
+        "neighborhood_cases": 42294,
+        "whole_images": 18,
+        "assertions": 2322138,
+        "android_device_tested": false
+      },
+      "seconds": 0.029,
+      "stdout_sha256": "3a0cb679c5d18a863daa30fd3c440c24f8ab58e28c096200a9c7d5fcf36799f6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiler_warning_exception": null
+    },
+    {
+      "name": "cinematic",
+      "mode": "asan-ubsan",
+      "result": {
+        "result": "PASS",
+        "cinematic_cases": 108,
+        "old_filter_presentations_exact": 648,
+        "total_presentations": 1836,
+        "pixel_checks": 19977912,
+        "checks": 20003464,
+        "bar_fraction_each": 0.1,
+        "renderer": "SDL software",
+        "android_device_tested": false
+      },
+      "seconds": 26.917,
+      "stdout_sha256": "f1da9436596115298e073b626b0252bc9b1a21b948f9273815e09a8d46ba9396",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiler_warning_exception": null
+    },
+    {
+      "name": "integration",
+      "mode": "asan-ubsan",
+      "result": {
+        "result": "PASS",
+        "presentations": 2976,
+        "checks": 27826,
+        "renderer": "SDL software",
+        "android_device_tested": false
+      },
+      "seconds": 41.068,
+      "stdout_sha256": "0522a3579f2241c77b075ea75bd75cb2bfdcc08eacba65bf7d65c856f7a6543b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiler_warning_exception": "-Wno-error=misleading-indentation (existing touch_layout.h)"
+    },
+    {
+      "name": "pixels",
+      "mode": "asan-ubsan",
+      "result": {
+        "result": "PASS",
+        "neighborhood_cases": 42294,
+        "whole_images": 18,
+        "assertions": 2322138,
+        "android_device_tested": false
+      },
+      "seconds": 0.156,
+      "stdout_sha256": "3a0cb679c5d18a863daa30fd3c440c24f8ab58e28c096200a9c7d5fcf36799f6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiler_warning_exception": null
+    }
+  ],
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "renderer": "SDL2 software",
+  "sanitizers": {
+    "address": true,
+    "undefined_behavior": true,
+    "system_sdl_instrumented": false,
+    "leak_detection": false
+  },
+  "visual_review": {
+    "source": "Previously qualified private level 1-1 frame from 0.10.2",
+    "source_width": 356,
+    "source_height": 160,
+    "center_width": 240,
+    "presentation": [
+      840,
+      560
+    ],
+    "bars_each_pixels": 56,
+    "same_center_checked": true,
+    "capture_sha256": "c949a268facd2dbe7942e39feff34332330444efe80879cb573cccb304e57cf2",
+    "images_private": true,
+    "android_capture": false
+  },
+  "limits": {
+    "android_device_tested": false,
+    "android_gpu_tested": false,
+    "physical_rotation_tested": false,
+    "frame_rate_measured": false,
+    "all_levels_completed": false,
+    "new_gameplay_run": false
+  }
+}

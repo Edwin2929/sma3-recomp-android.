@@ -159,6 +159,32 @@ struct VideoScaler {
         return ok && restored_color && restored_blend;
     }
 
+    // Two stationary opaque bars mask the top/bottom of the already scaled
+    // game image. They cover 10% each, rounded down equally, without moving,
+    // stretching, or resampling the visible center. Host controls draw later.
+    // Below ten output pixels tall there is no resolvable bar to draw.
+    static bool draw_cinematic_bars(SDL_Renderer* renderer,const SDL_Rect& destination) {
+        if(!renderer || destination.w<=0 || destination.h<=0 ||
+           std::int64_t(destination.x)+destination.w>std::numeric_limits<int>::max() ||
+           std::int64_t(destination.y)+destination.h>std::numeric_limits<int>::max()) return false;
+        const int bar_height=destination.h/10;
+        if(bar_height==0) return true;
+        Uint8 r=0,g=0,b=0,a=0;
+        SDL_BlendMode blend=SDL_BLENDMODE_NONE;
+        if(SDL_GetRenderDrawColor(renderer,&r,&g,&b,&a)!=0 ||
+           SDL_GetRenderDrawBlendMode(renderer,&blend)!=0) return false;
+        const std::array<SDL_Rect,2> bars={{{destination.x,destination.y,
+                                            destination.w,bar_height},
+                                           {destination.x,destination.y+destination.h-bar_height,
+                                            destination.w,bar_height}}};
+        const bool ok=SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_NONE)==0 &&
+            SDL_SetRenderDrawColor(renderer,0,0,0,255)==0 &&
+            SDL_RenderFillRects(renderer,bars.data(),int(bars.size()))==0;
+        const bool restored_color=SDL_SetRenderDrawColor(renderer,r,g,b,a)==0;
+        const bool restored_blend=SDL_SetRenderDrawBlendMode(renderer,blend)==0;
+        return ok && restored_color && restored_blend;
+    }
+
     bool draw(SDL_Renderer* renderer, SDL_Texture* source, int sw,int sh,
               const SDL_Rect& destination,int quality,
               ImageFilter filter=ImageFilter::Balanced,const std::uint8_t* rgb888=nullptr) {
@@ -181,7 +207,8 @@ struct VideoScaler {
             source=filtered_texture; sw=fw; sh=fh;
         }
         return draw_balanced(renderer,source,sw,sh,destination,quality) &&
-            (filter!=ImageFilter::Crt || draw_scanlines(renderer,destination,native_height));
+            (filter!=ImageFilter::Crt || draw_scanlines(renderer,destination,native_height)) &&
+            (filter!=ImageFilter::Cinematic || draw_cinematic_bars(renderer,destination));
     }
 };
 }

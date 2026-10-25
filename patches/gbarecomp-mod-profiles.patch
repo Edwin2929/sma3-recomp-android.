@@ -1,0 +1,314 @@
+--- a/src/runtime/mod_runtime.cpp
++++ b/src/runtime/mod_runtime.cpp
+@@ -1,6 +1,11 @@
+ #include "mod_runtime.h"
+ #include "mod_function_hooks.h"
+ #include "asset_picker.h"
++#if defined(SMA3_MOD_PROFILES)
++#include "mod_profiles.h"
++#include "mod_color_profile.h"
++#include <mutex>
++#endif
+ 
+ #include "../gba/crc32.h"
+ #include "../gba/foreign_presentation_internal.h"
+@@ -110,6 +115,7 @@
+     std::string author;
+     std::string description;
+     std::string license;
++    std::string save_compatibility = "shared";
+     fs::path root;
+     std::vector<Target> targets;
+     std::vector<Feature> features;
+@@ -189,6 +195,11 @@
+     static Runtime value;
+     return value;
+ }
++
++#if defined(SMA3_MOD_PROFILES)
++bool scan_color_profiles(Runtime& runtime, std::string* error);
++bool load_color_profile_state(Runtime& runtime, std::string* error);
++#endif
+ 
+ void set_error(std::string* out, const std::string& value) {
+     if (out) *out = value;
+@@ -328,6 +339,16 @@
+         });
+ }
+ 
++// Version is a single directory component, never an archive-controlled path.
++bool valid_version(const std::string& value) {
++    if (value.empty() || value.size() > 64 ||
++        !std::isalnum(static_cast<unsigned char>(value.front()))) return false;
++    return std::all_of(value.begin(), value.end(), [](unsigned char c) {
++        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
++            (c >= '0' && c <= '9') || c == '.' || c == '-' || c == '_' || c == '+';
++    });
++}
++
+ bool valid_extension(const std::string& value) {
+     return !value.empty() && value.size() <= 16 &&
+         std::all_of(value.begin(), value.end(), [](unsigned char c) {
+@@ -373,7 +394,8 @@
+     if (!parse_int(value, parsed) ||
+         parsed < option.min_value || parsed > option.max_value ||
+         option.step <= 0 ||
+-        (parsed - option.min_value) % option.step != 0) {
++        (static_cast<uint64_t>(parsed) - static_cast<uint64_t>(option.min_value)) %
++            static_cast<uint64_t>(option.step) != 0) {
+         set_error(error, option.label + " is outside its allowed range");
+         return false;
+     }
+@@ -381,6 +403,14 @@
+ }
+ 
+ bool read_manifest(const fs::path& path, Package& out, std::string* error) {
++#if defined(SMA3_MOD_PROFILES)
++    std::error_code size_error;
++    const auto manifest_size = fs::file_size(path, size_error);
++    if (size_error || manifest_size > 64 * 1024) {
++        set_error(error, "manifest.toml is unavailable or exceeds 64 KiB");
++        return false;
++    }
++#endif
+     std::ifstream file(path);
+     if (!file) {
+         set_error(error, "cannot open manifest: " + path.string());
+@@ -425,9 +455,14 @@
+     };
+ 
+     std::string raw;
++    std::set<std::string> section_keys;
+     size_t line_number = 0;
+     while (std::getline(file, raw)) {
+         ++line_number;
++        if (raw.find('\0') != std::string::npos) {
++            set_error(error, "manifest contains a NUL byte");
++            return false;
++        }
+         std::string line = trim(strip_comment(raw));
+         if (line.empty()) continue;
+         if (line.rfind("[[", 0) == 0 &&
+@@ -435,6 +470,7 @@
+             line.substr(line.size() - 2) == "]]") {
+             if (section == Section::Plugin && !finish_plugin()) return false;
+             const std::string name = trim(line.substr(2, line.size() - 4));
++            section_keys.clear();
+             target = nullptr;
+             feature = nullptr;
+             option = nullptr;
+@@ -481,6 +517,10 @@
+             return false;
+         }
+         const std::string key = trim(line.substr(0, equals));
++        if (!section_keys.insert(key).second) {
++            set_error(error, "duplicate manifest field '" + key + "'");
++            return false;
++        }
+         const std::string value = trim(line.substr(equals + 1));
+         std::string string_value;
+         int64_t int_value = 0;
+@@ -510,7 +550,7 @@
+                     parsed = parse_string(value, string_value) &&
+                              string_value == "declarative";
+                 } else if (key == "save_compatibility") {
+-                    parsed = parse_string(value, string_value);
++                    parsed = string_field(out.save_compatibility);
+                 } else known = false;
+                 break;
+             case Section::Target:
+@@ -606,7 +646,7 @@
+     if (section == Section::Plugin && !finish_plugin()) return false;
+ 
+     if (out.format_version != 1 || !valid_id(out.id) ||
+-        out.version.empty() || out.name.empty() || out.targets.empty() ||
++        !valid_version(out.version) || out.name.empty() || out.targets.empty() ||
+         out.features.empty()) {
+         set_error(error, "manifest is missing required package fields");
+         return false;
+@@ -850,6 +890,9 @@
+ }
+ 
+ bool scan(Runtime& runtime, std::string* error) {
++#if defined(SMA3_MOD_PROFILES)
++    return scan_color_profiles(runtime, error);
++#else
+     runtime.packages.clear();
+     const fs::path packages_root = runtime.root / "packages";
+     std::error_code ec;
+@@ -886,12 +929,23 @@
+         return false;
+     }
+     return true;
++#endif
+ }
+ 
+ bool load_state(Runtime& runtime, std::string* error) {
++#if defined(SMA3_MOD_PROFILES)
++    return load_color_profile_state(runtime, error);
++#else
+     runtime.selections.clear();
+     const fs::path path = runtime.root / "state.toml";
+     if (!fs::exists(path)) return true;
++#if defined(SMA3_MOD_PROFILES)
++    std::error_code size_error;
++    if (fs::file_size(path, size_error) > 128 * 1024 || size_error) {
++        set_error(error, "mod state is unavailable or exceeds 128 KiB");
++        return false;
++    }
++#endif
+     std::ifstream file(path);
+     if (!file) {
+         set_error(error, "cannot read mod state");
+@@ -977,6 +1031,7 @@
+         }
+     }
+     return true;
++#endif
+ }
+ 
+ std::string quote_toml(const std::string& value) {
+@@ -1035,11 +1090,6 @@
+     }
+     fs::rename(temp, output, ec);
+     if (ec) {
+-        fs::remove(output, ec);
+-        ec.clear();
+-        fs::rename(temp, output, ec);
+-    }
+-    if (ec) {
+         set_error(error, "cannot publish mod state: " + ec.message());
+         return false;
+     }
+@@ -1047,7 +1097,7 @@
+ }
+ 
+ bool read_file(const fs::path& path, std::vector<uint8_t>& out,
+-               std::string* error) {
++               std::string* error, uint64_t limit = kMaxArchiveBytes) {
+     std::ifstream in(path, std::ios::binary);
+     if (!in) {
+         set_error(error, "cannot open " + path.string());
+@@ -1055,7 +1105,7 @@
+     }
+     in.seekg(0, std::ios::end);
+     const std::streamoff size = in.tellg();
+-    if (size < 0 || (uint64_t)size > kMaxArchiveBytes) {
++    if (size < 0 || (uint64_t)size > limit) {
+         set_error(error, "archive is too large");
+         return false;
+     }
+@@ -1089,12 +1139,12 @@
+ 
+ bool safe_archive_name(const std::string& name) {
+     if (name.empty() || name.size() > 512 ||
+-        name[0] == '/' || name[0] == '\\')
++        name[0] == '/' || name[0] == '\\' || name.find('\0') != std::string::npos)
+         return false;
+     if (name.size() >= 2 &&
+         std::isalpha((unsigned char)name[0]) && name[1] == ':')
+         return false;
+-    const fs::path path = fs::path(name).lexically_normal();
++    const fs::path path = fs::path(name);
+     for (const auto& part : path) {
+         const std::string text = part.string();
+         if (text == ".." || text == "." || text.empty()) return false;
+@@ -1124,13 +1174,16 @@
+     const uint16_t count = le16(bytes.data() + eocd + 10);
+     const uint32_t central_size = le32(bytes.data() + eocd + 12);
+     const uint32_t central_offset = le32(bytes.data() + eocd + 16);
+-    if (count > kMaxArchiveFiles ||
+-        (uint64_t)central_offset + central_size > bytes.size()) {
++    if (count > kMaxArchiveFiles || le16(bytes.data() + eocd + 4) != 0 ||
++        le16(bytes.data() + eocd + 6) != 0 || le16(bytes.data() + eocd + 8) != count ||
++        eocd + 22ull + le16(bytes.data() + eocd + 20) != bytes.size() ||
++        (uint64_t)central_offset + central_size > eocd) {
+         set_error(error, "ZIP central directory is invalid");
+         return false;
+     }
+     size_t at = central_offset;
+     uint64_t expanded = 0;
++    std::set<std::string> names;
+     for (uint32_t i = 0; i < count; ++i) {
+         if (at + 46 > bytes.size() ||
+             le32(bytes.data() + at) != 0x02014b50u) {
+@@ -1162,7 +1215,7 @@
+         entry.directory = !entry.name.empty() && entry.name.back() == '/';
+         const std::string checked = entry.directory
+             ? entry.name.substr(0, entry.name.size() - 1) : entry.name;
+-        if (!safe_archive_name(checked)) {
++        if (!safe_archive_name(checked) || !names.insert(entry.name).second) {
+             set_error(error, "unsafe ZIP path: " + entry.name);
+             return false;
+         }
+@@ -1173,6 +1226,10 @@
+         }
+         entries.push_back(std::move(entry));
+         at += 46ull + name_len + extra_len + comment_len;
++    }
++    if (at != static_cast<uint64_t>(central_offset) + central_size) {
++        set_error(error, "ZIP central directory size is inconsistent");
++        return false;
+     }
+     return true;
+ }
+@@ -1422,6 +1479,14 @@
+             set_error(error, "ZIP entry payload is invalid");
+             return false;
+         }
++        std::string local_name(reinterpret_cast<const char*>(bytes.data() + entry.local_offset + 30), name_len);
++        std::replace(local_name.begin(), local_name.end(), '\\', '/');
++        if (local_name != entry.name ||
++            le16(bytes.data() + entry.local_offset + 8) != entry.method ||
++            (le16(bytes.data() + entry.local_offset + 6) & 1u)) {
++            set_error(error, "ZIP local and central entries disagree");
++            return false;
++        }
+         const uint8_t* compressed = bytes.data() + data_at;
+         std::vector<uint8_t> expanded;
+         const uint8_t* data = compressed;
+@@ -1918,6 +1983,10 @@
+ #endif
+ 
+ }  // namespace
++
++#if defined(SMA3_MOD_PROFILES)
++#include "mod_catalog.inc"
++#endif
+ 
+ bool mod_runtime_initialize(const fs::path& root,
+                             const std::string& game_id,
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -6,6 +6,9 @@
+ // host_window.cpp — SDL2-backed window. Stubs out when SDL2 isn't found.
+ 
+ #include "host_window.h"
++#if defined(SMA3_MOD_PROFILES)
++#include "mod_color_profile.h"
++#endif
+ 
+ #include <algorithm>
+ #include <array>
+@@ -428,6 +431,9 @@
+     // grading), so default behavior is byte-identical to upstream.
+     std::unique_ptr<runtime::ColorLut> color_lut;
+     std::vector<uint8_t> graded_fb;  // scratch RGB888 (base_w*base_h*3)
++#if defined(SMA3_MOD_PROFILES)
++    std::vector<uint8_t> mod_profile_fb;
++#endif
+ #if defined(GBARECOMP_RUNTIME_UI)
+     RecompRuntimeUi* runtime_ui = nullptr;
+     ImGuiContext* runtime_imgui_context = nullptr;
+@@ -2227,6 +2233,11 @@
+         b->color_lut->map_rgb888(rgb888, b->graded_fb.data(), b->base_w, b->base_h);
+         rgb888 = b->graded_fb.data();
+     }
++#if defined(SMA3_MOD_PROFILES)
++    // One immutable profile per presented frame, before every scaling/filter
++    // path. It sees full RGB888, including 120 FPS blend midpoint values.
++    rgb888 = sma3::mods::apply(rgb888, b->base_w, b->base_h, b->mod_profile_fb);
++#endif
+     SDL_UpdateTexture(b->texture, nullptr, rgb888, b->base_w * 3);
+     SDL_SetRenderDrawColor(b->renderer, 7, 11, 20, 255);
+     SDL_RenderClear(b->renderer);

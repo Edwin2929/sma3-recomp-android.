@@ -127,9 +127,9 @@ void invalid_inputs() {
     int w=1,h=1;std::size_t bytes=1;
     require(!sma3::filtered_image_size(INT_MAX,INT_MAX,3,w,h,bytes)&&w==0&&h==0&&bytes==0,"rejected dimensions cleared");
     require(sma3::filtered_image_size(356,160,3,w,h,bytes)&&w==1068&&h==480&&bytes==1537920,"maximum current panorama 3x bytes");
-    for(int id:{INT_MIN,-1,6,INT_MAX})
+    for(int id:{INT_MIN,-1,7,INT_MAX})
         require(sma3::validated_image_filter(id)==sma3::ImageFilter::Balanced,"invalid ID default");
-    for(int id=0;id<6;++id)
+    for(int id=0;id<7;++id)
         require(static_cast<int>(sma3::validated_image_filter(id))==id,"stable IDs");
 }
 }

@@ -160,6 +160,7 @@ public class GbaGameActivity extends SDLActivity {
         activityResumed = false; applyPresentationMode(); super.onPause();
     }
     private AlertDialog optionsDialog;
+    private ModsUi modsUi;
     private OnBackInvokedCallback optionsBackCallback;
 
     private String[] gbaButtons() { return new String[]{"A", "B", "Select", "Start", tr("Derecha", "Right", "Direita"), tr("Izquierda", "Left", "Esquerda"), tr("Arriba", "Up", "Cima"), tr("Abajo", "Down", "Baixo"), "R", "L"}; }
@@ -170,7 +171,7 @@ public class GbaGameActivity extends SDLActivity {
     private static final int IMAGE_STRETCH = 2;
     // Stable preference/JNI IDs; keep this order in sync with ImageFilter.
     private static final int IMAGE_FILTER_BALANCED = 0;
-    private static final int IMAGE_FILTER_COUNT = 6;
+    private static final int IMAGE_FILTER_COUNT = 7;
     private int imageMode() {
         android.content.SharedPreferences preferences = getSharedPreferences("sma3-options", MODE_PRIVATE);
         int selected;
@@ -218,7 +219,8 @@ public class GbaGameActivity extends SDLActivity {
             tr("Píxel nítido", "Crisp pixels", "Pixels nítidos"),
             tr("Suave bilineal", "Bilinear smoothing", "Suavização bilinear"),
             "Scale2x", "Scale3x",
-            tr("CRT suave", "Soft CRT", "CRT suave")};
+            tr("CRT suave", "Soft CRT", "CRT suave"),
+            tr("Cinematográfico", "Cinematic", "Cinematográfico")};
     }
     private String qualityName() {
         int quality = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0);
@@ -278,7 +280,7 @@ public class GbaGameActivity extends SDLActivity {
         });
         panel.section(tr("Acabado de la imagen", "Image appearance", "Aparência da imagem"));
         panel.card(SettingsPanel.IMAGE, tr("Filtros de imagen", "Image filters", "Filtros de imagem"),
-            imageFilterNames()[imageFilter()] + " · " + tr("Elige entre seis estilos.", "Choose from six styles.", "Escolha entre seis estilos."),
+            imageFilterNames()[imageFilter()] + " · " + tr("Elige entre siete estilos.", "Choose from seven styles.", "Escolha entre sete estilos."),
             this::showImageFilterOptions);
         panel.section(tr("Resolución de salida", "Output resolution", "Resolução de saída"));
         panel.card(SettingsPanel.IMAGE, qualityName(),
@@ -310,7 +312,10 @@ public class GbaGameActivity extends SDLActivity {
                "Refina os contornos em 3×. Pode alterar pequenos detalhes e exige mais processamento que Scale2x."),
             tr("Añade líneas horizontales suaves y fijas para un estilo retro. Oscurece ligeramente la imagen.",
                "Adds subtle, fixed horizontal lines for a retro look. Makes the image slightly darker.",
-               "Adiciona linhas horizontais suaves e fixas para um estilo retrô. Escurece um pouco a imagem.")
+               "Adiciona linhas horizontais suaves e fixas para um estilo retrô. Escurece um pouco a imagem."),
+            tr("Añade dos franjas negras fijas, arriba y abajo. Cubren parte de la imagen y sus indicadores; los controles siguen visibles.",
+               "Adds two fixed black bars, at the top and bottom. They cover part of the image and its HUD; controls remain visible.",
+               "Adiciona duas faixas pretas fixas, acima e abaixo. Cobrem parte da imagem e seus indicadores; os controles continuam visíveis.")
         }, imageFilter(), filter -> {
             getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("image-filter", filter).apply();
             applyInputOptions();
@@ -393,9 +398,29 @@ public class GbaGameActivity extends SDLActivity {
             tr("Fluidez, mezcla temporal y contador FPS", "Smoothness, temporal blending and FPS counter", "Fluidez, mistura temporal e contador FPS"), this::showPerformanceMenu);
         panel.card(SettingsPanel.CONTROLS, tr("Controles", "Controls", "Controles"),
             tr("Pantalla táctil, mando y diseños personalizados", "Touchscreen, controller and custom layouts", "Tela de toque, controle e layouts personalizados"), this::showControlsMenu);
+        panel.card(SettingsPanel.MODS, "Mods",
+            tr("Importar y administrar perfiles de color", "Import and manage color profiles", "Importar e gerenciar perfis de cor"), this::showMods);
         panel.card(SettingsPanel.LANGUAGE, tr("Idiomas", "Languages", "Idiomas"),
             tr("Idioma del menú y traducción del juego", "Menu language and game translation", "Idioma do menu e tradução do jogo"), this::showLanguageMenu);
         openSettings(panel.dialog(null), null);
+    }
+    private void showMods() {
+        ensureModsUi();
+        modsUi.show();
+    }
+    private void ensureModsUi() {
+        if (modsUi == null) modsUi = new ModsUi(this, this::tr, this::openSettings, this::showOptions);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+        // Android can recreate the Activity while the document picker is open.
+        // Recreate the helper before delivering that already-authorized result.
+        if (requestCode == ModsUi.PICK_MOD) {
+            ensureModsUi();
+            modsUi.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
     private void showPerformanceMenu() {
         SettingsPanel panel = settingsPanel(tr("Rendimiento y FPS", "Performance and FPS", "Desempenho e FPS"),
@@ -520,6 +545,7 @@ public class GbaGameActivity extends SDLActivity {
     @Override
     protected void onDestroy() {
         settingsDestroyed=true;
+        if (modsUi != null) modsUi.close();
         if(designEditor!=null)designEditor.dismiss();
         try { GbaNative.setTouchEditing(false); } catch(UnsatisfiedLinkError ignored) {}
         if (Build.VERSION.SDK_INT >= 33 && optionsBackCallback != null) {

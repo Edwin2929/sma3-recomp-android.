@@ -42,7 +42,7 @@ final class SettingsPanel {
     static final int ACCENT = 0xffa5e775;
     private static final int SELECTED = 0xff28432d;
     private static final int WARNING = 0xffffd48a;
-    static final int IMAGE = 0, PERFORMANCE = 1, CONTROLS = 2, LANGUAGE = 3, LAYOUT = 4;
+    static final int IMAGE = 0, PERFORMANCE = 1, CONTROLS = 2, LANGUAGE = 3, LAYOUT = 4, MODS = 5;
 
     private final Activity activity;
     private final LinearLayout root;
@@ -325,6 +325,12 @@ final class SettingsPanel {
                 canvas.drawCircle(12, 22, 3, paint);
                 canvas.drawCircle(25, 21, 2, paint);
                 canvas.drawLine(20, 13, 26, 13, paint);
+            } else if (icon == MODS) {
+                canvas.drawRoundRect(new RectF(7, 10, 29, 29), 3, 3, paint);
+                canvas.drawLine(7, 16, 29, 16, paint);
+                canvas.drawLine(18, 10, 18, 29, paint);
+                canvas.drawArc(new RectF(10, 5, 18, 13), 0, -220, false, paint);
+                canvas.drawArc(new RectF(18, 5, 26, 13), 180, 220, false, paint);
             } else {
                 canvas.drawCircle(18, 18, 11, paint);
                 canvas.drawOval(new RectF(13, 7, 23, 29), paint);

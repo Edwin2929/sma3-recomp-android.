@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "release": "0.10.4-beta",
+  "date_utc": "2026-10-25",
+  "result": "PASS",
+  "scope": "Independent host validation of real native mod catalog and presentation composition; APK/device qualification recorded separately.",
+  "engine_pin": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "native_catalog": {
+    "tests": 9,
+    "skipped": 0,
+    "manifest_rejection_variants": 20,
+    "zip_rejection_variants": 12,
+    "duplicate_id_rejections": 1,
+    "total_rejected_archives_with_unchanged_catalog_files_pixels": 33,
+    "invalid_operation_id_cases": 15,
+    "transaction_write_failure_cases": 4,
+    "malformed_selection_variants": 4,
+    "concurrent_catalog_commits": 100,
+    "concurrent_complete_frames_minimum": 100,
+    "concurrent_frame_pixels": 38400,
+    "production_initializer_with_authorized_rom": true,
+    "expected_verified_rom_sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+    "normal": {
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.32,
+      "output": "test_concurrent_catalog_changes_use_one_matrix_per_frame (__main__.CatalogTests.test_concurrent_catalog_changes_use_one_matrix_per_frame) ... ok\ntest_corrupt_selection_file_cannot_partially_activate (__main__.CatalogTests.test_corrupt_selection_file_cannot_partially_activate) ... ok\ntest_duplicate_id_and_invalid_operation_ids_keep_state (__main__.CatalogTests.test_duplicate_id_and_invalid_operation_ids_keep_state) ... ok\ntest_persistence_failure_rolls_back_enable_import_and_remove (__main__.CatalogTests.test_persistence_failure_rolls_back_enable_import_and_remove) ... ok\ntest_production_restart_and_corrupt_catalog_fail_open (__main__.CatalogTests.test_production_restart_and_corrupt_catalog_fail_open) ... ok\ntest_real_profile_pixels_exclusive_activation_and_restoration (__main__.CatalogTests.test_real_profile_pixels_exclusive_activation_and_restoration) ... ok\ntest_reject_manifest_schema_and_coefficients (__main__.CatalogTests.test_reject_manifest_schema_and_coefficients) ... ok\ntest_reject_zip_paths_duplicates_crc_truncation_and_bombs (__main__.CatalogTests.test_reject_zip_paths_duplicates_crc_truncation_and_bombs) ... ok\ntest_wrong_rom_reinitialization_cannot_reactivate_previous_profile (__main__.CatalogTests.test_wrong_rom_reinitialization_cannot_reactivate_previous_profile) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.271s\n\nOK\n"
+    },
+    "sanitized": {
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.867,
+      "output": "test_concurrent_catalog_changes_use_one_matrix_per_frame (__main__.CatalogTests.test_concurrent_catalog_changes_use_one_matrix_per_frame) ... ok\ntest_corrupt_selection_file_cannot_partially_activate (__main__.CatalogTests.test_corrupt_selection_file_cannot_partially_activate) ... ok\ntest_duplicate_id_and_invalid_operation_ids_keep_state (__main__.CatalogTests.test_duplicate_id_and_invalid_operation_ids_keep_state) ... ok\ntest_persistence_failure_rolls_back_enable_import_and_remove (__main__.CatalogTests.test_persistence_failure_rolls_back_enable_import_and_remove) ... ok\ntest_production_restart_and_corrupt_catalog_fail_open (__main__.CatalogTests.test_production_restart_and_corrupt_catalog_fail_open) ... ok\ntest_real_profile_pixels_exclusive_activation_and_restoration (__main__.CatalogTests.test_real_profile_pixels_exclusive_activation_and_restoration) ... ok\ntest_reject_manifest_schema_and_coefficients (__main__.CatalogTests.test_reject_manifest_schema_and_coefficients) ... ok\ntest_reject_zip_paths_duplicates_crc_truncation_and_bombs (__main__.CatalogTests.test_reject_zip_paths_duplicates_crc_truncation_and_bombs) ... ok\ntest_wrong_rom_reinitialization_cannot_reactivate_previous_profile (__main__.CatalogTests.test_wrong_rom_reinitialization_cannot_reactivate_previous_profile) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.817s\n\nOK\n",
+      "asan_options": "detect_leaks=0:abort_on_error=1",
+      "ubsan_options": "halt_on_error=1"
+    },
+    "pixel_proof": {
+      "source": [
+        120,
+        150,
+        200,
+        255,
+        1,
+        2,
+        0,
+        255,
+        99
+      ],
+      "imported_warm_matrix": [
+        108,
+        0,
+        0,
+        0,
+        100,
+        0,
+        0,
+        0,
+        88
+      ],
+      "enabled_output": [
+        130,
+        150,
+        176,
+        255,
+        1,
+        2,
+        0,
+        255,
+        87
+      ],
+      "disabled_output": [
+        120,
+        150,
+        200,
+        255,
+        1,
+        2,
+        0,
+        255,
+        99
+      ],
+      "removed_active_output": [
+        120,
+        150,
+        200,
+        255,
+        1,
+        2,
+        0,
+        255,
+        99
+      ]
+    }
+  },
+  "composition": {
+    "normal": {
+      "result": "PASS",
+      "exit_code": 0,
+      "output": "PASS mod composition presentations=896 bar_pixel_checks=7612832 assertions=7907723"
+    },
+    "sanitized": {
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 9.108,
+      "output": "PASS mod composition presentations=896 bar_pixel_checks=7612832 assertions=7907723\n",
+      "asan_options": "detect_leaks=0:abort_on_error=1",
+      "ubsan_options": "halt_on_error=1"
+    },
+    "presentations": 896,
+    "band_pixel_comparisons": 7612832,
+    "assertions": 7907723,
+    "filter_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "source_extents": [
+      [
+        240,
+        160
+      ],
+      [
+        356,
+        160
+      ]
+    ],
+    "output_extents": [
+      [
+        643,
+        401
+      ],
+      [
+        321,
+        679
+      ]
+    ],
+    "qualities": [
+      0,
+      720
+    ],
+    "stretch": [
+      false,
+      true
+    ],
+    "inputs": [
+      "normal RGB frame",
+      "real FrameBlend midpoint"
+    ],
+    "source_preserved": true,
+    "disable_exact_restoration": true,
+    "cinematic_bands_opaque_black": true,
+    "post_filter_overlay_unchanged": true,
+    "renderer": "SDL 2.30.0 software"
+  },
+  "patch_stack": {
+    "result": "PASS",
+    "tests": 3,
+    "patches": 10,
+    "prefixes": 11,
+    "guarded_files": 7,
+    "unknown_edits_rejected_without_writes": true,
+    "wrong_engine_pin_rejected": true,
+    "idempotent": true,
+    "last_seconds": 3.17
+  },
+  "related_validation": {
+    "native_implementation_suite": {
+      "tests": 9,
+      "normal": "PASS",
+      "ASan_UBSan": "PASS",
+      "sources": [
+        "validation/test_mod_profiles.cpp",
+        "validation/test_mod_profiles.py"
+      ],
+      "evidence_origin": "Implementer run reported to coordinator; cases overlap independent suite."
+    },
+    "java_interface": {
+      "report": "validation/ANDROID_0.10.4_MODS_SETTINGS.md",
+      "json": "validation/android-0.10.4-mods-java.json",
+      "compile": "PASS Android API35 Java17",
+      "stream_copy_checks": 26,
+      "package_and_guide_checks": 37,
+      "lifecycle_verification": "source review; not Android device execution"
+    },
+    "cinematic": "validation/CINEMATIC_0.10.4_VALIDATION.md"
+  },
+  "corrections_verified": [
+    "Atomic state publication no longer deletes the previous output after rename failure.",
+    "Failed ROM verification clears previous catalog authorization and published profile.",
+    "Strict bounded selection parser rejects malformed/unknown/duplicate/incomplete state; recovery disables all profiles with warning."
+  ],
+  "limitations": [
+    "No physical Android or Pixel 7 Pro UI/GPU test.",
+    "No full gameplay rerun or additional panoramic level coverage.",
+    "No FPS/battery benchmark.",
+    "SDL system library not instrumented.",
+    "LeakSanitizer disabled; ASan/UBSan active.",
+    "Pre-existing touch_layout.h misleading-indentation warning retained with narrow -Wno-error exemption for rendering test.",
+    "Deterministic filesystem fault injection; not all power-loss or allocation failures simulated."
+  ],
+  "source_sha256": {
+    "src/mod_profiles.h": "1d6d2101d9f079315e1c5b84447711fc22d1641f3eaeb8fa6c7cda71d6c7c7a3",
+    "src/mod_catalog.inc": "38dba3edd3da11d1ff73da3a8ef6bdd7584825dffdcfe7283b40d26c0c7ecc84",
+    "src/mod_color_profile.h": "030432341dbeea91547742524d6a17bdcba84ac17824018e27c9dc36b4e02464",
+    "src/mod_profiles_jni.cpp": "a0124ea3d00525219351dd70f540262893e14dacfdb6233681c0d9293a8aa6b0",
+    "src/main.cpp": "5953418a319aa88bed1b53dc589536edad84d9fab5c632518f874f451d5aef73",
+    "src/frame_interpolation.h": "bba6be8ab352290e40689b4865ff4e82ba05ceff10b303a9264b2f5edee38897",
+    "src/image_filters.h": "df3fa18e28cc3817916c6b46358d6a7f490166decff298a03b2f7bc187b8a53a",
+    "src/video_scaler.h": "3c8881f319f03d2212ddc26d12202fca7759482324ebe37878efb01008b823db",
+    "CMakeLists.txt": "2a184697b5fd3dde160c63ba8670eff03dfc31e9dd95a35a99ceb6775ff8a0a8",
+    "patches/gbarecomp-mod-profiles.patch": "15cd20184c9d2af54a4e8cb6e072f08a61ece1ba678dfa1add739017a460dbe1",
+    "tools/apply_interpolation_patch.py": "7f892326c6d9c3f571e1c5b798a25106411c32defa6cef88a07fc093e35486bf",
+    "android/java/org/gbarecomp/GbaGameActivity.java": "6cc3b4ad0955b797999ca1806559655d4dd6e20da26463185e09dd089b3e5323",
+    "android/java/org/gbarecomp/GbaNative.java": "b5b187d95a8a12fcf350d100e8163ffec56f31625f2f11cdab852448df4ed4ea",
+    "android/java/org/gbarecomp/SettingsPanel.java": "8b0ff44d8df462c8ac4cd8692b461c2491a7a7acfe8383b34dec9bb53eb1a089",
+    "android/java/org/gbarecomp/ModsUi.java": "60aa6f59812429cef24cf80c41ed272022dd9b7ba09a38c557ec3548d4256765",
+    "android/java/org/gbarecomp/ModArchiveCopy.java": "bab94a70c1eac917ded0a69f4011e598cd3cf1e8be9ac8695ab29f701e1b1f4f",
+    "validation/mod_adversarial_probe.cpp": "0991450bccd171363bdd76b8827bb13a72f29a0d6605c906dd8db5be9684f8f1",
+    "validation/mod_adversarial_test.py": "5a8b0c7694cc76c1a6c156663a3a69fb5452473c7253b6ae173622e0de5ff10b",
+    "validation/mod_render_contract_test.cpp": "4e821f8b8ef224fc97412bdfaf7b159a682f773f9639d65317910986532b1899",
+    "validation/test_window_patch_stack.py": "24feb9a92e6f896e95546e5e61be095f346e7d7dc85b9eb1a1b9f9b2b92a9cba",
+    "validation/test_mod_profiles.cpp": "b9453891571445b1faa67b396f79e76a8d583349ee71e2df3ad63026698ae449",
+    "validation/test_mod_profiles.py": "9ceb43a7c5bbd6250fb453c88ee4ea42f992d28de67c599e10ff40d6ce28563d",
+    "validation/MODS_0.10.4_VALIDATION.md": "d7cf72b2f19196bf847bd292149fb2592a7ad3ea115e27a36f1d8d8323a88150"
+  },
+  "patched_engine_sha256": {
+    "src/runtime/mod_runtime.cpp": "8efc638eb71a9ce1b840e5a458120d76857d4b9f73d9b6da7bad3a7e0035e5a8",
+    "src/runtime/host_window.cpp": "047e4bb068695766673196c03f1f0440218616f5c51d65673dc2bac6a305257b"
+  }
+}
