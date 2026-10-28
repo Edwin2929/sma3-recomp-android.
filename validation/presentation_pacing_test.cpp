@@ -24,6 +24,14 @@ struct FakePacer {
     explicit FakePacer(Clock::time_point& time) : now(time) {}
     void reset() { ++resets; next = now + period; }
     bool uncapped() const { return unlimited; }
+    Clock::time_point current_time() const { return now; }
+    Ns frame_period() const { return period; }
+    Ns preparation_cost() const { return budget.preparation(); }
+    Ns swap_cost() const { return budget.swap(); }
+    std::uint64_t schedule_generation() const { return resets; }
+    bool midpoint_preparation_due() const {
+        return now >= next - period / 2 - budget.preparation() - sma3::kPresentationServiceLead;
+    }
     bool midpoint_has_budget() const { return !unlimited && budget.permits(now, next, period); }
     bool wait_for_midpoint() {
         if (unlimited || !sma3::midpoint_is_timely(now, next, period)) return false;
@@ -79,26 +87,6 @@ void optional_budget_cases() {
                              "accepted midpoint after skipped slot is pixel-identical");
         }
     }
-    sma3::PresentationPacing schedule;
-    FakePacer pacer(now);
-    std::array<std::uint8_t, 3> pixel{10, 10, 10};
-    unsigned middle_calls = 0;
-    auto present = [&](const std::uint8_t* data, FakePacer* clock, bool middle) {
-        if (!clock) return true;
-        if (middle) {
-            ++middle_calls;
-            if (middle_calls == 2) require(data[0] == 35, "recovery blends latest captured guest frame");
-            return clock->wait_for_midpoint();
-        }
-        clock->wait_for_next_frame(); return true;
-    };
-    schedule.present(&pacer, pixel.data(), 3, 1, true, true, now, 0, present);
-    now += Ns{12000000}; pixel.fill(30);
-    schedule.present(&pacer, pixel.data(), 3, 2, true, true, now, 0, present);
-    require(middle_calls == 1 && pacer.full == 2, "late slot performs no optional render, full frame still waits exactly once");
-    pixel.fill(40);
-    schedule.present(&pacer, pixel.data(), 3, 3, true, true, now, 0, present);
-    require(middle_calls == 2 && pacer.full == 3, "eligible midpoint recovers on next guest frame");
 }
 
 void adaptive_wait_cases() {
@@ -140,25 +128,28 @@ void presentation_cases() {
         FakePacer pacer(now);
         std::vector<Clock::time_point> full_times, middle_times;
         std::array<std::uint8_t, 12> pixels{};
+        auto presenter = [&](const std::uint8_t*, FakePacer* clock, bool midpoint) {
+            now += Ns{300000};
+            clock->budget.observe_preparation(Ns{300000});
+            if (midpoint) {
+                if (!clock->wait_for_midpoint()) return false;
+                middle_times.push_back(now);
+            } else {
+                clock->wait_for_next_frame(); full_times.push_back(now);
+            }
+            return true;
+        };
         for (unsigned frame = 1; frame <= 180; ++frame) {
             now += Ns{frame % 2 ? 400000 : 2700000}; // variable guest preparation
+            schedule.service(&pacer, doubled, true, 0, presenter, true);
             pixels.fill(static_cast<std::uint8_t>(frame / 3));
             const auto input = pixels;
             const auto called = now;
             require(schedule.present(&pacer, pixels.data(), pixels.size(), frame, doubled, true,
-                called, 0, [&](const std::uint8_t*, FakePacer* clock, bool midpoint) {
-                    // Rendering precedes the wait, as in HostWindow::present_paced.
-                    now += Ns{frame % 3 == 0 ? 1800000 : 300000};
-                    if (midpoint) {
-                        if (!clock->wait_for_midpoint()) return false;
-                        middle_times.push_back(now);
-                    } else {
-                        clock->wait_for_next_frame(); full_times.push_back(now);
-                    }
-                    return true;
-                }), "normal presentation is fully paced");
+                called, 0, presenter), "normal presentation is fully paced");
             require(pixels == input, "presentation never changes guest framebuffer");
         }
+        schedule.service(&pacer, doubled, true, 0, presenter, true);
         require(pacer.full == 180 && full_times.size() == 180, "one full wait per guest frame");
         require(pacer.resets == 1, "steady workload does not reset frame phase");
         require(pacer.middle == (doubled ? 180u : 0u), "selected midpoint cadence");
@@ -166,7 +157,8 @@ void presentation_cases() {
             require(full_times[i] - full_times[i - 1] == period,
                     "variable CPU/render work stays inside full-frame budget");
         for (unsigned i = 0; i < middle_times.size(); ++i)
-            require(full_times[i] - middle_times[i] == period / 2, "midpoint/full spacing");
+            require(middle_times[i] - full_times[i] == period - period / 2,
+                    "mandatory/deferred spacing");
         // Under the previous 60-FPS ordering, rendering finished before the wait.
         // These same prep costs made its swap intervals differ by milliseconds.
         const auto old_interval_a = period + Ns{2700000 + 300000 - 400000 - 1800000};

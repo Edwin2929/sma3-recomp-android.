@@ -13,8 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.graphics.Insets;
@@ -48,7 +46,6 @@ public class GbaGameActivity extends SDLActivity {
     private boolean nativeReady;
     private FrameLayout fpsOverlay;
     private TextView fpsLabel;
-    private static final Pattern FPS_TITLE = Pattern.compile("([0-9]+(?:[.,][0-9]+)?) fps$");
 
     private int overlayDp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
@@ -91,7 +88,7 @@ public class GbaGameActivity extends SDLActivity {
         openSettings(panel.dialog(this::showLanguageMenu), this::showLanguageMenu);
     }
     private boolean activityResumed;
-    private String lastFps;
+    private PresentationStats lastPresentationStats;
     private SurfaceHolder.Callback refreshCallback;
     private boolean surfaceAvailable;
     private DisplayRefreshController refreshController;
@@ -120,7 +117,7 @@ public class GbaGameActivity extends SDLActivity {
     }
     private void updateFpsText() {
         if (fpsLabel == null) return;
-        String fps = lastFps == null ? "—" : lastFps;
+        String fps = lastPresentationStats == null ? "—" : lastPresentationStats.fps;
         int target = wantsInterpolation() ? 120 : 60;
         Display display = getWindowManager().getDefaultDisplay();
         float physicalHz = presentationState == null
@@ -134,6 +131,15 @@ public class GbaGameActivity extends SDLActivity {
         if (Math.abs(appHz - physicalHz) > 1f)
             fpsLabel.append(" · " + tr("app ", "app ", "app ")
                 + String.format(Locale.US, "%.1f", appHz) + " Hz");
+        if (lastPresentationStats != null && lastPresentationStats.hasTimings()) {
+            fpsLabel.append("\n" + tr("Base: ", "Base: ", "Base: ")
+                + lastPresentationStats.baseFps + " · " + tr("extra: ", "extra: ", "extra: ")
+                + lastPresentationStats.extraFps + " FPS"
+                + "\n" + tr("Preparar: ", "Prepare: ", "Preparar: ")
+                + lastPresentationStats.preparationMs + " ms · "
+                + tr("presentar: ", "present: ", "apresentar: ")
+                + lastPresentationStats.swapMs + " ms");
+        }
         if (wantsInterpolation() && activityResumed && surfaceAvailable
                 && presentationState != null && !presentationState.doubleRateActive) {
             fpsLabel.append("\n" + tr("Presentación 60: Android no ha concedido 120 Hz.",
@@ -155,7 +161,7 @@ public class GbaGameActivity extends SDLActivity {
         super.onPause();
     }
     private void resetPresentationTiming() {
-        lastFps = null;
+        lastPresentationStats = null;
         try { GbaNative.resetPresentationTiming(); }
         catch (UnsatisfiedLinkError notLoadedYet) { /* first surface retries */ }
     }
@@ -442,7 +448,9 @@ public class GbaGameActivity extends SDLActivity {
         SettingsPanel panel = settingsPanel(tr("Rendimiento y FPS", "Performance and FPS", "Desempenho e FPS"),
             tr("Ajusta la presentación sin cambiar la velocidad del juego.", "Adjust presentation without changing game speed.", "Ajuste a apresentação sem alterar a velocidade do jogo."));
         panel.toggle(tr("Mostrar FPS", "Show FPS", "Mostrar FPS"),
-            tr("Muestra el contador durante la partida.", "Display the counter while playing.", "Mostra o contador durante a partida."),
+            tr("Muestra FPS reales, imágenes base y extra, y tiempos de preparación y presentación.",
+               "Show measured FPS, base and extra images, and preparation and presentation times.",
+               "Mostra FPS medidos, imagens base e extras, e tempos de preparação e apresentação."),
             getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("show-fps", false), checked -> {
                 getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putBoolean("show-fps", checked).apply();
                 updateFpsVisibility();
@@ -459,7 +467,7 @@ public class GbaGameActivity extends SDLActivity {
             wantsInterpolation() ? 1 : 0, which -> {
                 getSharedPreferences("sma3-options", MODE_PRIVATE).edit()
                     .putBoolean("interpolation-120", which == 1).apply();
-                lastFps = null;
+                lastPresentationStats = null;
                 applyPresentationMode();
                 showPerformanceMenu();
             });
@@ -479,6 +487,10 @@ public class GbaGameActivity extends SDLActivity {
             "La mezcla puede suavizar el movimiento, pero también producir estelas. El juego conserva su ritmo original; 120 FPS se refiere a las imágenes presentadas. El rendimiento depende del dispositivo y del ahorro de batería.",
             "Blending can smooth motion, but may also produce ghosting. The game keeps its original timing; 120 FPS refers to presented images. Performance depends on the device and battery-saving settings.",
             "A mistura pode suavizar o movimento, mas também produzir rastros. O jogo mantém seu ritmo original; 120 FPS refere-se às imagens apresentadas. O desempenho depende do aparelho e da economia de bateria."));
+        panel.paragraph(tr(
+            "En modo 120, la imagen completa aparece unos 8,4 ms después de la mezcla. Esta distribución da más tiempo al juego para calcular el siguiente fotograma.",
+            "In 120 mode, the complete image appears about 8.4 ms after the blend. This scheduling gives the game more time to calculate its next frame.",
+            "No modo 120, a imagem completa aparece cerca de 8,4 ms após a mistura. Essa distribuição dá mais tempo ao jogo para calcular o próximo quadro."));
         openSettings(panel.dialog(this::showOptions), this::showOptions);
     }
     private void showControlsMenu() {
@@ -646,8 +658,8 @@ public class GbaGameActivity extends SDLActivity {
     public void setTitle(CharSequence title) {
         super.setTitle(title);
         if (fpsLabel == null || title == null) return;
-        Matcher value = FPS_TITLE.matcher(title);
-        if (value.find()) { lastFps = value.group(1); updateFpsText(); }
+        PresentationStats value = PresentationStats.parse(title);
+        if (value != null) { lastPresentationStats = value; updateFpsText(); }
     }
 
 

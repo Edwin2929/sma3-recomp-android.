@@ -1,4 +1,4 @@
-# Rendimiento y objetivos de 60/120 FPS — 0.10.6 beta
+# Rendimiento y objetivos de 60/120 FPS — 0.10.7 beta
 
 Abre **Atrás → Rendimiento y FPS → Objetivo de presentación** y elige
 **60 FPS** o **120 FPS · mezcla 2×**. La elección se guarda al tocarla.
@@ -14,16 +14,60 @@ La opción 120 añade imágenes de presentación; no genera 120 estados
 independientes del juego. La mezcla puede producir estelas. El código conserva
 la detección de cambios de escena para evitar mezclar imágenes incompatibles.
 
-## Optimización de 0.10.6
+## Optimización de 0.10.7
 
-Se corrige una regresión de 0.10.5: una imagen intermedia podía pasar por
+Se corrige una limitación de la planificación anterior. Después de presentar
+la imagen completa, el mismo hilo calculaba el siguiente fotograma del juego.
+Para añadir su mezcla intermedia, ese trabajo y la preparación de la imagen
+debían terminar antes de unos **9,42 ms**. Un cálculo de 10–12 ms podía mantener
+el juego a su ritmo original y, aun así, perder casi todas las imágenes extra.
+Tener una pantalla a 120 Hz no elimina esa restricción del programa.
+
+El modo 120 distribuye ahora el trabajo así:
+
+1. En cada plazo del juego se presenta la mezcla de las dos imágenes terminadas.
+   Se utiliza la imagen actual sin mezcla al comenzar, ante un cambio de escena,
+   o si la imagen completa anterior no pudo presentarse.
+2. Una copia inmutable de la imagen completa se presenta aproximadamente
+   **8,37 ms después**, durante un punto de servicio del cálculo del siguiente
+   fotograma. Todo el dibujo permanece en el mismo hilo de SDL.
+3. El juego conserva **una sola espera de periodo completo por fotograma**.
+   El siguiente cálculo puede ocupar más de medio periodo sin perder por ello
+   todas las presentaciones adicionales.
+
+Esta distribución retrasa la salida de la imagen completa medio periodo
+respecto a la ruta anterior; es una compensación de latencia del modo 120,
+no una aceleración de la simulación. La mezcla sigue pudiendo producir estelas.
+
+La admisión considera el trabajo observado del juego, la copia/mezcla,
+la preparación, el intercambio de buffers y la pequeña espera de servicio.
+Una carga que no cabe en el periodo reduce las imágenes extra para conservar
+el ritmo del juego. Las imágenes que ya llegan tarde se descartan. No se
+presentan ráfagas atrasadas para aumentar el contador.
+
+Cambiar de modo de imagen, pausar/reanudar, cargar una partida, reiniciar el
+reloj o recrear la superficie invalida las imágenes pendientes. Antes de
+cambiar el tamaño lógico se resuelve o descarta la imagen del tamaño anterior.
+El servicio adicional no vuelve a ejecutar CPU/PPU/audio del juego ni procesa
+entradas o cargas de partida dentro de una instrucción.
+
+La [validación de 0.10.7](../validation/PERFORMANCE_0.10.7_VALIDATION.md) separa
+la reproducción con reloj simulado, el renderizado real de SDL en host y las
+comprobaciones del APK. La captura del usuario muestra **65,2 FPS**, objetivo
+120 y pantalla a **120,0 Hz**; no revela la versión de Android, el APK exacto,
+los filtros ni los costes de cada fase. Las pruebas de desarrollo no son una
+medición del nuevo APK en el Pixel 7 Pro.
+
+## Optimizaciones conservadas de 0.10.6
+
+0.10.6 corrigió una regresión de 0.10.5: una imagen intermedia podía pasar por
 perfiles de color, subida de textura, filtros y controles para ser descartada
-después por llegar tarde. Ahora se comprueba el plazo **antes de preparar
+después por llegar tarde. Se comprueba el plazo **antes de preparar
 esa imagen opcional**, usando el coste observado de preparación y presentación
 y reservando tiempo para la imagen completa. Si no hay presupuesto, solo se
 conserva el historial necesario para la próxima mezcla.
 
-La imagen completa mantiene su única espera y el juego conserva su velocidad.
+La presentación obligatoria mantiene su única espera y el juego conserva su velocidad.
 Al recuperarse de un pico de carga, el presupuesto vuelve a permitir imágenes
 intermedias. No se cambian automáticamente el filtro, la resolución, el modo
 de imagen ni la preferencia de 60/120 elegidos por el usuario.
@@ -38,11 +82,11 @@ Las mejoras y sus mediciones se documentan en
 Son comparaciones de componentes en el equipo de desarrollo; no son una
 medición de FPS del Pixel 7 Pro.
 
-## Base de temporización incorporada en 0.10.5
+## Historial de la temporización incorporada en 0.10.5
 
-La versión anterior preparaba y presentaba la imagen de 60 FPS antes de
+Antes de 0.10.5 se preparaba y presentaba la imagen de 60 FPS antes de
 esperar el final del periodo. Si variaba el tiempo de preparación, también
-variaba el instante visible de la presentación. Ahora se prepara la textura,
+variaba el instante visible de la presentación. Desde 0.10.5 se prepara la textura,
 el filtro y los controles, se envían los comandos de dibujo pendientes y
 se espera **justo antes de presentar**. Existe una sola espera de periodo
 completo por fotograma simulado.
@@ -79,6 +123,15 @@ El menú y el contador distinguen:
 - **Objetivo:** la opción elegida, 60 o 120.
 - **Presentación:** llamadas de presentación SDL completadas por segundo,
   calculadas con un reloj de alta resolución.
+- **Base y extra:** descomposición de las llamadas de presentación completadas
+  en la misma ventana de medida. Base corresponde al plazo del juego; en el
+  modo 120 puede ser una mezcla. Extra corresponde al plazo de medio periodo.
+  No son contadores de estados independientes de la simulación.
+- **Preparar:** promedio en milisegundos de conversión/perfiles, subida, filtros,
+  controles y envío de comandos SDL de las imágenes que se presentaron.
+- **Presentar:** promedio en milisegundos dentro de la llamada de intercambio
+  de buffers. Ambos tiempos excluyen la espera intencional del temporizador;
+  no representan una medición aislada de la GPU.
 - **Modo de pantalla:** los Hz del modo físico informado por Android.
 - **App:** la tasa informada para la aplicación, cuando difiere del modo
   físico. Android puede mantener el panel a 120 Hz y conceder menos a una app.
@@ -94,13 +147,14 @@ presentación; no acreditan estabilidad sostenida en un Pixel 7 Pro.
 
 ## Comprobación en el teléfono
 
-1. Instala 0.10.6 sobre la versión anterior y anota la versión de Android.
+1. Instala 0.10.7 sobre la versión anterior, sin desinstalarla, y anota la versión de Android.
 2. Activa el ajuste de pantalla fluida/alta frecuencia del teléfono y
    comprueba su modo de ahorro de batería.
 3. Empieza con Original (3:2), filtro Equilibrado y resolución Automática.
    Activa Mostrar FPS y compara 60 y 120 en la misma zona del juego.
 4. Repite con Panorámica (beta) y con los filtros que quieras utilizar.
-   Anota objetivo, presentación, Hz de pantalla y, si aparece, tasa de app.
+   Anota objetivo, presentación, base/extra, preparar/presentar, Hz de pantalla
+   y, si aparece, tasa de app. Repite la zona de la captura de 65,2 FPS.
 5. Cambia varias veces de 60 a 120, gira el teléfono, abre otra aplicación,
    vuelve al juego y apaga/enciende la pantalla. Comprueba sonido y controles.
 6. Mantén una sesión de al menos diez minutos y registra duración, temperatura
@@ -117,7 +171,7 @@ Las pruebas de reloj simulado, puntos intermedios tardíos, cambios de modo,
 reinicios, contador y política de selección de pantalla se documentan en
 [PERFORMANCE_0.10.5_VALIDATION.md](../validation/PERFORMANCE_0.10.5_VALIDATION.md).
 La compilación ARM64 y las comprobaciones del APK están en
-[android-0.10.6-build.json](../validation/android-0.10.6-build.json).
+[android-0.10.7-build.json](../validation/android-0.10.7-build.json).
 No se dispone de una prueba física de este APK ni de una medición de su GPU Android.
 
 Referencias oficiales:

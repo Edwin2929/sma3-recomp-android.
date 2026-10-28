@@ -2,10 +2,10 @@
 // Build with __ANDROID__, GBARECOMP_HAVE_SDL2, SMA3_FRAME_INTERPOLATION and
 // SMA3_MOD_PROFILES. Override SOURCE/HEADER to compare archived engine sources.
 // BENCH_VERSION=4 executes the original 0.10.4 presentation order; 5/6 use
-// the supplied production PresentationPacing. Guest work is an explicit sleep,
+// serial PresentationPacing, 7 uses cooperative callbacks. Guest work is sleep,
 // not ROM execution. No throughput number from this harness is Android FPS.
 #ifndef BENCH_VERSION
-#define BENCH_VERSION 6
+#define BENCH_VERSION 7
 #endif
 #ifndef SMA3_HOST_WINDOW_HEADER
 #define SMA3_HOST_WINDOW_HEADER "../../gbarecomp/src/runtime/host_window.h"
@@ -64,6 +64,7 @@ int main(int argc, char** argv) {
     const int filter=argc>4?std::atoi(argv[4]):1;
     const int target=argc>5?std::atoi(argv[5]):0;
     const int guest_us=argc>6?std::atoi(argv[6]):0;
+    const int poll_us=argc>7?std::max(1,std::atoi(argv[7])):1000;
     SDL_SetHint(SDL_HINT_VIDEODRIVER,"dummy");
     SDL_SetHint(SDL_HINT_RENDER_BATCHING,"1");
     if(SDL_Init(SDL_INIT_VIDEO)!=0){std::fprintf(stderr,"%s\n",SDL_GetError());return 1;}
@@ -87,7 +88,19 @@ int main(int argc, char** argv) {
     for(std::size_t i=0;i<pixels.size();++i) pixels[i]=std::uint8_t(i*17);
     auto draw=[&]{
         ++guest_frame;
-        if(guest_us>0)std::this_thread::sleep_for(std::chrono::microseconds(guest_us));
+        auto guest_remaining=std::chrono::nanoseconds(std::chrono::microseconds(guest_us));
+        while(guest_remaining.count()>0){
+            const auto began=std::chrono::steady_clock::now();
+            std::this_thread::sleep_for(std::min(guest_remaining,
+                std::chrono::nanoseconds(std::chrono::microseconds(poll_us))));
+            guest_remaining-=std::chrono::steady_clock::now()-began;
+#if BENCH_VERSION >= 7
+            scheduling.service(&pacer,target==120,true,0,
+                [&](const std::uint8_t* data,FramePacer* clock,bool optional){
+                    return window.present_paced(data,clock,optional);
+                });
+#endif
+        }
 #if BENCH_VERSION == 4
         if(target==120){
             const bool middle=legacy_blend.prepare(pixels.data(),pixels.size(),guest_frame);
@@ -97,6 +110,12 @@ int main(int argc, char** argv) {
         window.present(pixels.data());
         if(target==60)pacer.wait_for_next_frame();
 #else
+#if BENCH_VERSION >= 7
+        scheduling.service(&pacer,target==120,true,0,
+            [&](const std::uint8_t* data,FramePacer* clock,bool optional){
+                return window.present_paced(data,clock,optional);
+            },true);
+#endif
         if(target==0)window.present_paced(pixels.data(),&pacer,false);
         else scheduling.present(&pacer,pixels.data(),pixels.size(),guest_frame,target==120,true,
             std::chrono::steady_clock::now(),0,[&](const std::uint8_t* data,FramePacer* clock,bool middle){
@@ -112,7 +131,7 @@ int main(int argc, char** argv) {
     for(unsigned i=0;i<frames;++i){auto t=cpu_ns();draw();times.push_back((cpu_ns()-t)/1e6);}
     auto cpu_total=cpu_ns()-cpu_start,wall_total=ns_now()-wall_start;
     std::sort(times.begin(),times.end());
-    std::printf("{\"version\":%d,\"width\":%d,\"height\":%d,\"controls\":%s,\"filter\":%d,\"target\":%d,\"synthetic_guest_sleep_us\":%d,\"frames\":%u,\"guest_rate\":%.6f,\"present_rate\":%.6f,\"cpu_mean_ms\":%.6f,\"cpu_p50_ms\":%.6f,\"cpu_p95_ms\":%.6f,\"wall_total_ms\":%.6f,\"flush_mean_ms\":%.6f,\"present_mean_ms\":%.6f,\"upload_mean_ms\":%.6f,\"flush_calls\":%u,\"present_calls\":%u,\"upload_calls\":%u}\n",BENCH_VERSION,width,height,controls?"true":"false",filter,target,guest_us,frames,frames*1e9/wall_total,present_calls*1e9/wall_total,cpu_total/1e6/frames,times[frames/2],times[frames*95/100],wall_total/1e6,flush_ns/1e6/frames,present_ns/1e6/frames,upload_ns/1e6/frames,flush_calls,present_calls,upload_calls);
+    std::printf("{\"version\":%d,\"width\":%d,\"height\":%d,\"controls\":%s,\"filter\":%d,\"target\":%d,\"synthetic_guest_sleep_us\":%d,\"synthetic_poll_us\":%d,\"frames\":%u,\"guest_rate\":%.6f,\"present_rate\":%.6f,\"cpu_mean_ms\":%.6f,\"cpu_p50_ms\":%.6f,\"cpu_p95_ms\":%.6f,\"wall_total_ms\":%.6f,\"flush_mean_ms\":%.6f,\"present_mean_ms\":%.6f,\"upload_mean_ms\":%.6f,\"flush_calls\":%u,\"present_calls\":%u,\"upload_calls\":%u}\n",BENCH_VERSION,width,height,controls?"true":"false",filter,target,guest_us,poll_us,frames,frames*1e9/wall_total,present_calls*1e9/wall_total,cpu_total/1e6/frames,times[frames/2],times[frames*95/100],wall_total/1e6,flush_ns/1e6/frames,present_ns/1e6/frames,upload_ns/1e6/frames,flush_calls,present_calls,upload_calls);
     window.close();SDL_Quit();
     return 0;
 }

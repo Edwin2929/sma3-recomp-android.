@@ -1,27 +1,27 @@
-# Actualizar desde GitHub — 0.10.6 beta
+# Actualizar desde GitHub — 0.10.7 beta
 
 **Atrás → Actualizar está disponible desde 0.10.5.** También puedes abrir
 **Actualizar aplicación** desde la pantalla inicial, antes de cargar el juego.
 El apartado muestra la versión instalada, la última comprobación y las
 acciones disponibles.
 
-La entrega actual es **0.10.6-beta**, código **17**. La app comprueba si una
-imagen intermedia de 120 FPS puede llegar a tiempo antes de prepararla y evita
-trabajo que acabaría descartado. También optimiza filtros y escalado sin
-cambiar los ajustes elegidos. Las medidas de host no garantizan FPS estables
-en el Pixel 7 Pro.
-[Notas de 0.10.6](releases/v0.10.6-beta.md) ·
-[Validación de rendimiento](../validation/PERFORMANCE_0.10.6_VALIDATION.md).
+La entrega actual es **0.10.7-beta**, código **18**. Corrige una limitación de
+la planificación del modo 120 que podía omitir casi todas las imágenes extra
+cuando el cálculo del juego ocupaba más de medio periodo. El contador añade
+base/extra y tiempos de preparación/presentación. La mejora se verifica en
+pruebas controladas; su resultado físico en el Pixel 7 Pro sigue por medir.
+[Notas de 0.10.7](releases/v0.10.7-beta.md) ·
+[Validación de rendimiento](../validation/PERFORMANCE_0.10.7_VALIDATION.md).
 
 ## Primera instalación y uso
 
 Las versiones 0.10.4 y anteriores no tienen este actualizador. En ellas,
-instala **`sma3-recomp-0.10.6-beta-arm64.apk` manualmente sobre la aplicación
+instala **`sma3-recomp-0.10.7-beta-arm64.apk` manualmente sobre la aplicación
 existente, sin desinstalarla**. El archivo conserva el paquete y la firma
-y aumenta el código de versión a **17**. No borres los datos para actualizar.
+y aumenta el código de versión a **18**. No borres los datos para actualizar.
 
-Si ya usas 0.10.5, puedes seguir los pasos de búsqueda, descarga e instalación
-de este apartado cuando el mantenedor haya adjuntado el APK 0.10.6 a
+Si ya usas 0.10.5 o posterior, puedes seguir los pasos de búsqueda, descarga e instalación
+de este apartado cuando el mantenedor haya adjuntado el APK 0.10.7 a
 **Descarga**. La instalación manual encima de la aplicación también es válida.
 
 Después de instalarlo:
@@ -78,7 +78,7 @@ El nombre admitido es:
 sma3-recomp-<versionName>-arm64.apk
 ```
 
-Por ejemplo, **`sma3-recomp-0.10.7-beta-arm64.apk`** para la siguiente versión.
+Por ejemplo, **`sma3-recomp-0.10.7-beta-arm64.apk`** para esta entrega.
 Se comparan los componentes numéricos de versión: 0.10.10 es posterior a
 0.10.7. Se elige la mayor versión compatible, no simplemente el último
 archivo de la lista.
@@ -86,36 +86,37 @@ Una versión estable es posterior a su prerelease del mismo número.
 Los borradores, archivos incompletos, nombres genéricos y versiones que no
 superan la instalada no se ofrecen.
 
-En la comprobación pública del **25 de octubre de 2026**, Descarga contenía
-0.10.2-beta. Ese archivo es anterior a 0.10.5 y 0.10.6. La pantalla no ofrece
-una actualización si solo encuentra APK con una versión igual o inferior a
-la instalada; esta observación histórica no sustituye una consulta actual.
+En la consulta pública del **28 de octubre de 2026**, Descarga contiene
+**0.10.6-beta**. El APK 0.10.7 se entrega al mantenedor para su publicación
+manual. La pantalla no ofrece una actualización si solo encuentra una
+versión igual o inferior a la instalada; la disponibilidad debe comprobarse
+con **Buscar ahora** después de publicar el nuevo archivo.
 
 ## Publicar una futura actualización
 
 Para publicar esta entrega, el mantenedor adjunta manualmente el APK a la
-release existente **Descarga** con el nombre **`sma3-recomp-0.10.6-beta-arm64.apk`**, versión
-interna **`0.10.6-beta`** y código **17**. Sus datos de integridad e instalación
-están en las [notas de la entrega](releases/v0.10.6-beta.md).
+release existente **Descarga** con el nombre **`sma3-recomp-0.10.7-beta-arm64.apk`**, versión
+interna **`0.10.7-beta`** y código **18**. Sus datos de integridad e instalación
+están en las [notas de la entrega](releases/v0.10.7-beta.md).
 
 Para preparar una actualización posterior que puedan detectar los usuarios
-de 0.10.6:
+de 0.10.7:
 
-1. Compila una versión posterior, por ejemplo `versionName = '0.10.7-beta'`
-   y **`versionCode = 18`**, superior al 17 actual. Incrementa ambos respecto
+1. Compila una versión posterior, por ejemplo `versionName = '0.10.8-beta'`
+   y **`versionCode = 19`**, superior al 18 actual. Incrementa ambos respecto
    a la última entrega distribuida; no basta con renombrar el mismo APK.
 2. Conserva **`org.sma3.recomp.experimental`**, la arquitectura ARM64 y
    **la misma clave de firma**. Una compilación firmada con otra clave
    no puede actualizar esta línea de APK.
-3. Nombra el archivo exactamente **`sma3-recomp-0.10.7-beta-arm64.apk`**,
+3. Nombra el archivo exactamente **`sma3-recomp-0.10.8-beta-arm64.apk`**,
    usando el `versionName` real del APK.
 4. Adjunta ese APK a la release existente **Descarga** y espera a que GitHub
    termine de procesarlo. Los APK anteriores pueden permanecer allí.
-5. Desde 0.10.6, abre **Actualizar → Buscar ahora**, comprueba la versión
+5. Desde 0.10.7, abre **Actualizar → Buscar ahora**, comprueba la versión
    ofrecida, descarga e instala en un dispositivo de prueba. Comprueba
    después partidas, preferencias, mods y controles.
 
-El APK 0.10.6 se entrega por separado para esa publicación manual. Publicar
+El APK 0.10.7 se entrega por separado para esa publicación manual. Publicar
 el código y estas notas en `main` no adjunta el APK a Releases.
 
 ## Validaciones y fallos recuperables

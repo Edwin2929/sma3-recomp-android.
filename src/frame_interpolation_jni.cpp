@@ -33,7 +33,9 @@ Java_org_gbarecomp_GbaNative_setOptionsOpen(JNIEnv*, jclass, jboolean on) {
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setVideoOptions(JNIEnv*, jclass, jint quality, jint image_mode) {
     sma3::video_quality.store(quality == 720 || quality == 1080 ? quality : 0);
-    sma3::image_mode.store(sma3::validated_image_mode(image_mode));
+    const auto mode = sma3::validated_image_mode(image_mode);
+    if (sma3::image_mode.exchange(mode) != mode)
+        sma3::presentation_epoch.fetch_add(1, std::memory_order_relaxed);
 }
 
 extern "C" JNIEXPORT void JNICALL

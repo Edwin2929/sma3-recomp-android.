@@ -1,0 +1,257 @@
+--- a/src/runtime/host_platform.cpp
++++ b/src/runtime/host_platform.cpp
+@@ -47,12 +47,19 @@
+ }
+ 
+ void FramePacer::reset() {
++#if defined(SMA3_FRAME_INTERPOLATION)
++    ++schedule_generation_;
++#endif
+     next_ = clock::now() + period_;
+ }
+ 
+ #if defined(SMA3_FRAME_INTERPOLATION)
+ bool FramePacer::midpoint_has_budget() const {
+     return !uncapped_ && presentation_budget_.permits(clock::now(), next_, period_);
++}
++bool FramePacer::midpoint_preparation_due() const {
++    return !uncapped_ && clock::now() >= next_ - period_ / 2 -
++        presentation_budget_.preparation() - sma3::kPresentationServiceLead;
+ }
+ void FramePacer::note_presentation_preparation(std::chrono::nanoseconds duration) {
+     presentation_budget_.observe_preparation(duration);
+--- a/src/runtime/host_platform.h
++++ b/src/runtime/host_platform.h
+@@ -50,6 +50,16 @@
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     // Nonblocking admission before optional rendering; never advances time.
+     bool midpoint_has_budget() const;
++    bool midpoint_preparation_due() const;
++    std::chrono::steady_clock::time_point current_time() const {
++        return std::chrono::steady_clock::now();
++    }
++    std::chrono::nanoseconds frame_period() const { return period_; }
++    std::chrono::nanoseconds preparation_cost() const {
++        return presentation_budget_.preparation();
++    }
++    std::chrono::nanoseconds swap_cost() const { return presentation_budget_.swap(); }
++    std::uint64_t schedule_generation() const { return schedule_generation_; }
+     void note_presentation_preparation(std::chrono::nanoseconds duration);
+     void note_presentation_swap(std::chrono::nanoseconds duration);
+ #endif
+@@ -69,6 +79,7 @@
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     sma3::AdaptiveDeadlineWait adaptive_wait_;
+     sma3::OptionalPresentationBudget presentation_budget_;
++    std::uint64_t schedule_generation_ = 0;
+ #endif
+     std::chrono::nanoseconds period_{};
+     clock::time_point next_{};
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -2246,6 +2246,7 @@
+     if (midpoint && pacer && !pacer->midpoint_has_budget()) return false;
+     const auto preparation_started = pacer ? std::chrono::steady_clock::now()
+                                            : std::chrono::steady_clock::time_point{};
++    std::chrono::nanoseconds preparation_elapsed{};
+ #endif
+     auto* b = static_cast<Backend*>(impl_);
+ #if defined(SMA3_FRAME_INTERPOLATION)
+@@ -2395,8 +2396,9 @@
+         // before sleeping so their CPU/GPU preparation can overlap the wait.
+         if (SDL_RenderFlush(b->renderer) != 0) return false;
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-        pacer->note_presentation_preparation(std::chrono::duration_cast<std::chrono::nanoseconds>(
+-            std::chrono::steady_clock::now() - preparation_started));
++        preparation_elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
++            std::chrono::steady_clock::now() - preparation_started);
++        pacer->note_presentation_preparation(preparation_elapsed);
+ #endif
+         if (midpoint) {
+             if (!pacer->wait_for_midpoint()) return false;
+@@ -2419,8 +2421,9 @@
+     }
+ 
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-    if (pacer) pacer->note_presentation_swap(std::chrono::duration_cast<std::chrono::nanoseconds>(
+-        std::chrono::steady_clock::now() - swap_started));
++    const auto swap_elapsed = pacer ? std::chrono::duration_cast<std::chrono::nanoseconds>(
++        std::chrono::steady_clock::now() - swap_started) : std::chrono::nanoseconds{};
++    if (pacer) pacer->note_presentation_swap(swap_elapsed);
+ #endif
+ 
+     // FPS readout (DisplayPerf hotkey): presents/sec, refreshed twice a
+@@ -2430,10 +2433,16 @@
+         const double rate = b->presentation_rate.record(
+             SDL_GetPerformanceCounter(), SDL_GetPerformanceFrequency(),
+             sma3::presentation_epoch.load(std::memory_order_relaxed),
+-            sma3::interpolation_enabled.load(std::memory_order_relaxed));
++            sma3::interpolation_enabled.load(std::memory_order_relaxed), midpoint,
++            static_cast<std::uint64_t>(preparation_elapsed.count()),
++            static_cast<std::uint64_t>(swap_elapsed.count()));
+         if (rate >= 0.0) {
+-            char buf[192];
+-            std::snprintf(buf, sizeof(buf), "%s — %.1f fps", b->title.c_str(), rate);
++            char buf[320];
++            std::snprintf(buf, sizeof(buf),
++                "%s — %.1f fps [base=%.1f extra=%.1f prep=%.2f swap=%.2f]",
++                b->title.c_str(), rate, b->presentation_rate.base_rate(),
++                b->presentation_rate.extra_rate(), b->presentation_rate.preparation_ms(),
++                b->presentation_rate.swap_ms());
+             SDL_SetWindowTitle(b->window, buf);
+         }
+ #else
+--- a/src/runtime/host_window.h
++++ b/src/runtime/host_window.h
+@@ -141,7 +141,7 @@
+     // and present.
+     void present(const uint8_t* rgb888);
+     // Prepare all rendering work before the pacing slot, then swap once. A
+-    // stale optional midpoint is discarded; false means no image was swapped.
++    // stale optional half-period slot is discarded; false means no image was swapped.
+     bool present_paced(const uint8_t* rgb888, FramePacer* pacer, bool midpoint);
+ 
+     // Push `count` int16_t mono samples (32.768 kHz) into the audio
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -96,6 +96,9 @@
+ // instead of unwinding the guest stack — see the windowed runner below.
+ void runtime_set_frame_present_hook(std::function<bool()>);
+ void runtime_set_host_service_hook(std::function<void()>);
++#if defined(SMA3_FRAME_INTERPOLATION)
++void runtime_set_host_presentation_hook(std::function<void()>);
++#endif
+ void runtime_set_frame_start_hook(std::function<void()>);
+ void runtime_set_vblank_input_hook(std::function<void()>);
+ 
+@@ -3644,6 +3647,19 @@
+     bool sma3_frame_paced = false;
+ #ifdef SMA3_FRAME_INTERPOLATION
+     sma3::PresentationPacing sma3_presentation;
++    auto service_sma3_presentation = [&](bool force) {
++        sma3_presentation.service(pacer ? &*pacer : nullptr,
++            sma3::interpolation_enabled.load(std::memory_order_relaxed),
++            !fast_forward_active && !host_paused && !host_quit &&
++                !sma3::touch_editing.load(std::memory_order_relaxed),
++            sma3::presentation_epoch.load(std::memory_order_relaxed),
++            [&](const uint8_t* pixels, FramePacer* clock, bool optional) {
++                return win.present_paced(pixels, clock, optional);
++            }, force);
++    };
++    if (args.window) {
++        runtime_set_host_presentation_hook([&]() { service_sma3_presentation(false); });
++    }
+ #endif
+     auto present_game_frame = [&]() {
+ #ifdef SMA3_FRAME_INTERPOLATION
+@@ -3669,6 +3685,17 @@
+         win.present(live_fb.data());
+ #endif
+     };
++#ifdef SMA3_FRAME_INTERPOLATION
++    // Also covers an early load-state failure below. No callback may retain a
++    // captured renderer/pacer after its runner has returned.
++    struct ClearPresentationHooks {
++        ~ClearPresentationHooks() {
++            runtime_set_host_presentation_hook(nullptr);
++            runtime_set_host_service_hook(nullptr);
++            runtime_set_frame_present_hook(nullptr);
++        }
++    } clear_presentation_hooks;
++#endif
+ 
+     // Present-in-place (structural fix for frame-boundary resume dispatch-misses).
+     // When windowed, register a hook so the per-VBlank frame-present yield presents
+@@ -3703,6 +3730,10 @@
+                     (frame % static_cast<uint64_t>(
+                          fast_forward_multiplier) == 0);
+                 if (present_frame) {
++#ifdef SMA3_FRAME_INTERPOLATION
++                    // Cached pixels belong to the old view until this flush.
++                    service_sma3_presentation(true);
++#endif
+                     sync_resize_driven_view();
+                     if (ppu.has_latched_framebuffer()) {
+                         std::memcpy(live_fb.data(), ppu.latched_framebuffer(),
+@@ -4102,6 +4133,9 @@
+                     (frame % static_cast<uint64_t>(
+                          fast_forward_multiplier) == 0);
+                 if (present_frame) {
++#ifdef SMA3_FRAME_INTERPOLATION
++                    service_sma3_presentation(true);
++#endif
+                     sync_resize_driven_view();
+                     if (ppu.has_latched_framebuffer()) {
+                         std::memcpy(live_fb.data(), ppu.latched_framebuffer(),
+@@ -4187,6 +4221,9 @@
+     // pacer, live_fb, …) go out of scope at function return.
+     runtime_set_frame_present_hook(nullptr);
+     runtime_set_host_service_hook(nullptr);
++#ifdef SMA3_FRAME_INTERPOLATION
++    runtime_set_host_presentation_hook(nullptr);
++#endif
+     frame_phase.dump();  // HP-002: flush the phase ring (env-gated CSV)
+     // HP-002: flush the opt-in MMIO write ring (gba_io.cpp) to CSV.
+     // GBARECOMP_MMIO_DUMP=<path> arms capture. Offline analysis derives the scanline of
+--- a/src/runtime/runtime_bus_bridge.cpp
++++ b/src/runtime/runtime_bus_bridge.cpp
+@@ -15,6 +15,9 @@
+ #include "../gba/gba_irq.h"
+ #include "../gba/gba_m4a.h"
+ #include "../gba/gba_ppu.h"
++#if defined(SMA3_FRAME_INTERPOLATION)
++#include "frame_interpolation.h"
++#endif
+ 
+ #ifdef GBA_COSIM
+ #include "../debug/cosim.h"   // cosim_on_tick() — first-divergence checkpoint hook
+@@ -66,6 +69,11 @@
+ // guest input. It keeps a window responsive while one emulated frame spends a
+ // long time in translated software-rendering or decode code.
+ std::function<void()> g_host_service_hook;
++#if defined(SMA3_FRAME_INTERPOLATION)
++// Immutable-frame presentation only. It never pumps guest input or mutates
++// emulated state, and runs on the existing SDL/guest thread.
++std::function<void()> g_host_presentation_hook;
++#endif
+ // Optional game-owned extended-view policy. It runs on the emulation thread at
+ // the exact frame boundary, before scanline 0 of the next frame is composed.
+ // Null preserves the established renderer path for every existing game.
+@@ -708,6 +716,24 @@
+     auto* bus = gbarecomp::g_active_bus;
+     auto* ppu = gbarecomp::g_active_ppu;
+     if (!bus || !ppu || cycles == 0) return;
++
++#if defined(SMA3_FRAME_INTERPOLATION)
++    // Check the optional half-period image during long guest frames. Keep
++    // ordinary event service below at its original cadence; rendering polls
++    // must not cause repeated input/save-state processing inside an instruction.
++    if (g_host_presentation_hook) {
++        static uint32_t presentation_tick_divider = 0;
++        if ((++presentation_tick_divider & 0x3FFu) == 0 &&
++            sma3::interpolation_enabled.load(std::memory_order_relaxed)) {
++            static auto last_presentation_poll = std::chrono::steady_clock::now();
++            const auto now = std::chrono::steady_clock::now();
++            if (now - last_presentation_poll >= std::chrono::milliseconds(1)) {
++                last_presentation_poll = now;
++                g_host_presentation_hook();
++            }
++        }
++    }
++#endif
+ 
+     // Some software renderers execute millions of guest instructions before
+     // reaching a GBA frame boundary. Downsample the wall-clock check so native
+@@ -947,6 +973,12 @@
+ void runtime_set_host_service_hook(std::function<void()> h) {
+     g_host_service_hook = std::move(h);
+ }
++
++#if defined(SMA3_FRAME_INTERPOLATION)
++void runtime_set_host_presentation_hook(std::function<void()> h) {
++    g_host_presentation_hook = std::move(h);
++}
++#endif
+ 
+ void runtime_set_frame_start_hook(std::function<void()> h) {
+     g_frame_start_hook = std::move(h);
