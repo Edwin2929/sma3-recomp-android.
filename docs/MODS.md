@@ -1,17 +1,27 @@
-# Mods de color — Android 0.10.4 beta
+# Mods — Android 0.10.8 beta
 
 **Atrás → Mods** permite instalar paquetes `.gbamod`, ver sus datos,
 activarlos, desactivarlos y eliminarlos. Los cambios se aplican durante la
 partida y la selección se conserva entre sesiones.
 
-La integración actual admite **perfiles de color para SMA3 USA**, mediante
+## Color de Yoshi
+
+Desde **0.10.8**, la tarjeta **Color de Yoshi** abre un mod incorporado con
+48 colores predefinidos, barras RGB y códigos HEX. Personaliza el cuerpo
+del personaje, guarda la selección y permite volver al color original.
+No necesita importar un archivo y funciona junto al perfil global activo.
+Consulta la [guía del selector](MOD_COLOR_YOSHI.md).
+
+## Perfiles de la imagen completa
+
+La integración también admite **perfiles de color para SMA3 USA**, mediante
 el plugin `sma3.color-profile` incluido en el APK. Un perfil transforma los
 colores de la imagen terminada y puede combinarse con cualquier filtro de
 imagen. No modifica el archivo de ROM, las partidas ni la lógica del juego.
 
 ## Probar el ejemplo incluido
 
-1. Instala el APK **0.10.4-beta** encima de la versión anterior.
+1. Instala el APK **0.10.8-beta** encima de la versión anterior.
 2. Abre el juego y entra en **Atrás → Mods**.
 3. Toca **Instalar ejemplo**. Aparece **Tono cálido**, inicialmente desactivado.
 4. Abre **Tono cálido** y activa **Activar mod**.
@@ -42,6 +52,7 @@ no se sobrescriben silenciosamente los paquetes instalados.
 
 | Contenido | Compatibilidad |
 | --- | --- |
+| Mod incorporado **Color de Yoshi** | Disponible en el selector desde 0.10.8; independiente del perfil global. |
 | Perfil `.gbamod` para `sma3-usa` y `sma3.color-profile` | Admitido si pasa la validación del manifiesto y del archivo. |
 | Ejemplo **Tono cálido** incluido | Admitido; se instala desde el propio menú. |
 | Filtros de imagen, incluido Cinematográfico | Se pueden usar junto con el perfil activo. |

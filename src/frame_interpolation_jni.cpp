@@ -1,5 +1,6 @@
 #include "frame_interpolation.h"
 #include "presentation_pacing.h"
+#include "yoshi_color.h"
 #include <jni.h>
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setInterpolationEnabled(JNIEnv*, jclass, jboolean on) {
@@ -41,6 +42,14 @@ Java_org_gbarecomp_GbaNative_setVideoOptions(JNIEnv*, jclass, jint quality, jint
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setVideoFilter(JNIEnv*, jclass, jint filter) {
     sma3::image_filter.store(sma3::validated_image_filter(filter), std::memory_order_relaxed);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_org_gbarecomp_GbaNative_setYoshiColor(JNIEnv*, jclass, jboolean enabled, jint rgb) {
+    // Java accepts only a 24-bit color. Reject invalid JNI callers as well;
+    // alpha/sign bits must never become an unintended palette configuration.
+    if (rgb < 0 || rgb > 0xffffff) return;
+    sma3::set_yoshi_color(enabled == JNI_TRUE, static_cast<uint32_t>(rgb));
 }
 
 #include "localization.h"

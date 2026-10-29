@@ -208,6 +208,7 @@ public class GbaGameActivity extends SDLActivity {
             GbaNative.setVideoOptions(getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("video-quality", 0),
                 imageMode());
             GbaNative.setVideoFilter(imageFilter());
+            YoshiColorUi.applySaved(this);
             GbaNative.setTouchControlsVisible(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true));
             GbaNative.setTouchAppearance(touchStyle(), touchOpacity());
             for (int bit = 0; bit < 10; ++bit) GbaNative.setControllerButton(bit, padBinding(bit));
@@ -407,7 +408,7 @@ public class GbaGameActivity extends SDLActivity {
         panel.card(SettingsPanel.CONTROLS, tr("Controles", "Controls", "Controles"),
             tr("Pantalla táctil, mando y diseños personalizados", "Touchscreen, controller and custom layouts", "Tela de toque, controle e layouts personalizados"), this::showControlsMenu);
         panel.card(SettingsPanel.MODS, "Mods",
-            tr("Importar y administrar perfiles de color", "Import and manage color profiles", "Importar e gerenciar perfis de cor"), this::showMods);
+            tr("Color de Yoshi y perfiles de imagen", "Yoshi color and image profiles", "Cor do Yoshi e perfis de imagem"), this::showMods);
         panel.card(SettingsPanel.UPDATES, tr("Actualizar", "Updates", "Atualizar"),
             updatesUi == null ? tr("Buscar nuevas versiones en GitHub", "Check GitHub for new versions", "Buscar novas versões no GitHub") : updatesUi.summary(),
             this::showUpdates);

@@ -1,0 +1,2926 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "version": "0.10.8-beta",
+  "version_code": 19,
+  "result": "PASS",
+  "artifact": {
+    "file_name": "sma3-recomp-0.10.8-beta-arm64.apk",
+    "bytes": 27936024,
+    "sha256": "1cfe2f32ddd8f180df5ed1078afdabbcea6facb26b82cce178f0c9e18ed82a26"
+  },
+  "project_base_commit": "80f2f2354f86229c7dbfa360fb3ceb337eb47ff5",
+  "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+  "engine_patch_count": 16,
+  "native": {
+    "pass": true,
+    "source_sha256": {
+      "src/yoshi_color.cpp": "3da7ca1c0cf75de59cef8dd5a9f76d76f89c218608c55d7591386c0d7aba35a9",
+      "src/yoshi_color.h": "ae4040fc064eb4c7fb0634bf10ea8fe3ba0a118a1c156483f5ae359efc549188",
+      "src/yoshi_color_palette.h": "593212a5603448010d6041606a46ec498e315b2fe124a919b91d50aa8b51b5a0",
+      "validation/yoshi_color_test.cpp": "0332e749565c37140029ed1d91a9ef05318231c80771187da1e86c6be1fccfaa",
+      "patches/gbarecomp-yoshi-color.patch": "0d79ca016c5db02e4ff0da1acdc36baa0fed4091654461af60d83025109c4179",
+      "patches/gbarecomp-obj-color-effects.patch": "477848b1ad95cd834d47b41a2f597b272e2cae3524fdd92588279b69f4a66bfe",
+      "tools/apply_interpolation_patch.py": "c641fd710c7bfa629f04d5b44faa003544397b811cca2e1345c27b13fc717e09",
+      "validation/test_window_patch_stack.py": "a846d37313d1d58df3bd008bf7bb41be1359b4622d11516ef15497006429ed70",
+      "validation/yoshi-color-test.txt": "8f3b31ced0ca468bb5c1b40ab7bf0b6825130f2766899e42b0c9b1e5186faedd"
+    },
+    "native": {
+      "scenarios": 5,
+      "checks": 932845
+    },
+    "sanitizers": {
+      "asan": true,
+      "ubsan_except_vptr": true,
+      "leak_sanitizer": false,
+      "output": "PASS: 5 scenarios, 932845 checks; selective Yoshi color, 8 references, software/hardware fades, real native/wide PPU, immutable memory, restore and request epoch\n"
+    },
+    "window_regression": {
+      "scenarios": 488,
+      "checks": 8102978,
+      "output": "PASS: 488 synthetic scenarios, 8102978 internal assertions; real PPU, native center unchanged\n"
+    },
+    "patch_stack": {
+      "patches": 16,
+      "states": 17,
+      "protected_files": 9,
+      "tests": 3,
+      "pass": true
+    },
+    "old_effects_bug": {
+      "source": "current test and color hook with PPU patch15, before OBJ effect fix16",
+      "ppu_sha256": "2746fa26ed728e53e519dc2679d9b58aa353cf768f6712490c8bfe93c2b353b0",
+      "exit_code": 1,
+      "output": "FAIL: full hardware fade remains black\n",
+      "expected_failure_observed": true
+    }
+  },
+  "android_ui": {
+    "result": "PASS",
+    "model_checks": 5014,
+    "robolectric_tests": 4,
+    "robolectric_version": "4.16.1",
+    "robolectric_api": 34,
+    "android_compile_api": 35,
+    "jdk": "Temurin17.0.21+9",
+    "physical_device": false,
+    "sources": {
+      "android/java/org/gbarecomp/GbaGameActivity.java": "9645e87dc3f40a17db431db7ce0fdf88f198331c8763f9734dc65bfd4823587a",
+      "android/java/org/gbarecomp/GbaNative.java": "756df64417c37b478ac243f98f63415a0cc3ac77c600ee307739043ea125c5e8",
+      "android/java/org/gbarecomp/ModsUi.java": "a7d13a6218bd8742396ebc9c04c70b3b7b1db4b567430ec06f3bbe0d94b779d2",
+      "android/java/org/gbarecomp/SettingsPanel.java": "3741f4df29b7b03319d2fe833ee11c4b2b35c9d3312fafc8e6fb349c1e6a6761",
+      "android/java/org/gbarecomp/YoshiColorModel.java": "a23bf443955ea221c159eb70bd4349bf863b8608a64e01c447edb3b1b4fb478c",
+      "android/java/org/gbarecomp/YoshiColorUi.java": "3bdaa8ff67c57859fda431fb43081076f0d1f1d55aff991b38c86ef05dd198b8",
+      "validation/YoshiColorModelTest.java": "86c124e7bc456d32844b61363720e6db4033b7defcee8527c3edb819f4234944",
+      "validation/YoshiColorUiTest.java": "53159521d15b12f880227899c555a2b837034df3d96cd498b55f89be91e1e7a1",
+      "validation/run_yoshi_color_ui_test.py": "7ae2835a9a44c70d5cd1eedbd7f9428169353023daafaf2b5ffe81892c00d2e2",
+      "validation/YOSHI_COLOR_UI_VALIDATION.md": "1765a4b3a884b566c28d66c1ceedc4ecb42dd404b019b9513257210469a5ad7f"
+    },
+    "captures": {
+      "yoshi-color-landscape.png": "0cd4030cf743848ff3bf7d597a368f90073d83316393717b4aafc4aa5826a244",
+      "yoshi-color-rgb.png": "192d14ada52569e9117cfbdef134668b4d5445ee157509b4fa341da9112e6989",
+      "yoshi-color-reduced-height.png": "f6ffb2a7de3f6e8dcdad405fd08ba83768b00635ef986e19d69af7c7ac3b871e",
+      "yoshi-color-portrait.png": "7f56b9273a9caa7bc7578c80d42f6f5d1b51997e97e12d76ee696c847f06c8bf"
+    }
+  },
+  "presentation_regression": {
+    "result": "PASS",
+    "pacing_checks": 4992,
+    "cooperative_checks": 71,
+    "metrics_checks": 8,
+    "physical_fps_measurement": false,
+    "source_hashes": {
+      "pacing": "9cf75ea4a91986cdd82e5d1c61268add2602b0008276f41ba2b596e6d21fedd0",
+      "cooperative": "aa701f4daeaf81fe5b68df47679cafb2046d7513d8ba173c486e063e6b240dec",
+      "metrics": "bc153d21de758f5e9522a23fb114319a4bfee6f1ad8541a0220462eca2091123"
+    }
+  },
+  "fuzzy_arm_regression": {
+    "result": "PASS",
+    "scenarios": 144,
+    "checks": 3422,
+    "native_interpreter_registers_flags_memory_cycles_match": true,
+    "renderer_executed": false,
+    "binary_sha256": "e661bd94e75fb16e97b4bf42d97d81fff4e5bc90950f44216dfed3a475583cec",
+    "log_sha256": "07ad4d621cbcd24f100195aca53a74af71f95873ba42f2a19588b343020dc231",
+    "patch_count": 16
+  },
+  "gameplay_totals": {
+    "configurations": 6,
+    "executions": 27,
+    "executed_guest_frames": 18138,
+    "comparisons": 21,
+    "compared_states": 277,
+    "compared_capture_pairs": 256
+  },
+  "gameplay": [
+    {
+      "result": "PASS",
+      "width": 240,
+      "colors": [
+        "FF304F",
+        "A855F7",
+        "00D4C8",
+        "000000",
+        "FFFFFF"
+      ],
+      "fuzzy_recovery": null,
+      "transform_cycle": false,
+      "references": {
+        "disabled": "previous release",
+        "colors": "candidate with mod disabled"
+      },
+      "input_sha256": {
+        "baseline": "4dbcbd5459ff82bac50196ffbbe8a973db2189bbd11d74490068d7ac0f6cf495",
+        "candidate": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "402dc9d818ec362931310006eee326481ee1d8f77a012411984309264eed2626",
+        "actions": "aa41ad1ad0ddf155542dd972a0438abb251308f5a8f8d217bb80c13da7ead559"
+      },
+      "comparisons": {
+        "disabled": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "FF304F": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                73,
+                78,
+                88,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                73,
+                77,
+                97,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "A855F7": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                73,
+                78,
+                88,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                73,
+                77,
+                97,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "00D4C8": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                73,
+                78,
+                88,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                73,
+                77,
+                97,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "000000": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                73,
+                78,
+                88,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                73,
+                77,
+                97,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "FFFFFF": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                73,
+                78,
+                88,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                73,
+                77,
+                97,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        }
+      },
+      "limits": [
+        "Linux native replay; no Android UI, phone or FPS measurement.",
+        "PPU image bytes intentionally differ with color; timing must match.",
+        "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+        "Nonzero pixel changes prove rendering; sprite isolation has separate PPU tests."
+      ],
+      "configuration": "final-grass-240",
+      "source_report_sha256": "301c128106c07543f1c770e6515735e780e762d5ee35201ccab656f75e1c8c06"
+    },
+    {
+      "result": "PASS",
+      "width": 356,
+      "colors": [
+        "FF304F",
+        "A855F7",
+        "00D4C8",
+        "000000",
+        "FFFFFF"
+      ],
+      "fuzzy_recovery": null,
+      "transform_cycle": false,
+      "references": {
+        "disabled": "previous release",
+        "colors": "candidate with mod disabled"
+      },
+      "input_sha256": {
+        "baseline": "4dbcbd5459ff82bac50196ffbbe8a973db2189bbd11d74490068d7ac0f6cf495",
+        "candidate": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "402dc9d818ec362931310006eee326481ee1d8f77a012411984309264eed2626",
+        "actions": "aa41ad1ad0ddf155542dd972a0438abb251308f5a8f8d217bb80c13da7ead559"
+      },
+      "comparisons": {
+        "disabled": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "FF304F": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                131,
+                78,
+                146,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                131,
+                77,
+                155,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "A855F7": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                131,
+                78,
+                146,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                131,
+                77,
+                155,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "00D4C8": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                131,
+                78,
+                146,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                131,
+                77,
+                155,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "000000": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                131,
+                78,
+                146,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                131,
+                77,
+                155,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "FFFFFF": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                131,
+                78,
+                146,
+                101
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                131,
+                77,
+                155,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        }
+      },
+      "limits": [
+        "Linux native replay; no Android UI, phone or FPS measurement.",
+        "PPU image bytes intentionally differ with color; timing must match.",
+        "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+        "Nonzero pixel changes prove rendering; sprite isolation has separate PPU tests."
+      ],
+      "configuration": "final-grass-356",
+      "source_report_sha256": "5a69e634da306bd2129fecfcf3fc0ee043a3c96d535ea952690ac16dc1f0e1aa"
+    },
+    {
+      "result": "PASS",
+      "width": 356,
+      "colors": [
+        "00D4C8",
+        "A855F7"
+      ],
+      "fuzzy_recovery": null,
+      "transform_cycle": false,
+      "references": {
+        "disabled": "previous release",
+        "colors": "candidate with mod disabled"
+      },
+      "input_sha256": {
+        "baseline": "4dbcbd5459ff82bac50196ffbbe8a973db2189bbd11d74490068d7ac0f6cf495",
+        "candidate": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "3e5f6cac0d2d4f98a9af301a41531fede721da497fb77230f2170bfd57560a89",
+        "actions": "aa41ad1ad0ddf155542dd972a0438abb251308f5a8f8d217bb80c13da7ead559"
+      },
+      "comparisons": {
+        "disabled": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "00D4C8": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 129,
+              "bounds": [
+                259,
+                31,
+                283,
+                52
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 118,
+              "bounds": [
+                259,
+                31,
+                283,
+                48
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        },
+        "A855F7": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 129,
+              "bounds": [
+                259,
+                31,
+                283,
+                52
+              ]
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 118,
+              "bounds": [
+                259,
+                31,
+                283,
+                48
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0
+        }
+      },
+      "limits": [
+        "Linux native replay; no Android UI, phone or FPS measurement.",
+        "PPU image bytes intentionally differ with color; timing must match.",
+        "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+        "Nonzero pixel changes prove rendering; sprite isolation has separate PPU tests."
+      ],
+      "configuration": "final-castle-356",
+      "source_report_sha256": "da9657b023cc7eef2c91e20bb2458bd3ae9f59bae5f83dea1e2830b84b857707"
+    },
+    {
+      "result": "PASS",
+      "width": 356,
+      "colors": [
+        "A855F7"
+      ],
+      "fuzzy_recovery": null,
+      "transform_cycle": true,
+      "references": {
+        "disabled": "previous release",
+        "colors": "candidate with mod disabled"
+      },
+      "input_sha256": {
+        "baseline": "4dbcbd5459ff82bac50196ffbbe8a973db2189bbd11d74490068d7ac0f6cf495",
+        "candidate": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "f810aff15a8bda2b1187bcc8ca3ceac71793b0c0ec8e1c7b682d5421b3b823d4",
+        "actions": "c44cece39d9df5c8cc61dc31a1474172fbc1ad0e1858b9bee7c04e39ef707615"
+      },
+      "comparisons": {
+        "disabled": {
+          "trace_rows_equal": 1527,
+          "states_equal_except_pixels_inactive_rtc": 34,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 36,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 390,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 510,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 570,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 675,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1316,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1406,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1526,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 25
+        },
+        "A855F7": {
+          "trace_rows_equal": 1527,
+          "states_equal_except_pixels_inactive_rtc": 34,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 36,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 390,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 510,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 570,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 675,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1316,
+              "transformation": 0,
+              "pixels": 167,
+              "bounds": [
+                219,
+                87,
+                247,
+                103
+              ]
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 154,
+              "bounds": [
+                230,
+                62,
+                249,
+                87
+              ]
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                156,
+                74,
+                180,
+                95
+              ]
+            },
+            {
+              "elapsed_frame": 1406,
+              "transformation": 0,
+              "pixels": 122,
+              "bounds": [
+                161,
+                76,
+                183,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                156,
+                75,
+                171,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                156,
+                75,
+                171,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1526,
+              "transformation": 0,
+              "pixels": 140,
+              "bounds": [
+                156,
+                75,
+                179,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 25
+        }
+      },
+      "limits": [
+        "Linux native replay; no Android UI, phone or FPS measurement.",
+        "PPU image bytes intentionally differ with color; timing must match.",
+        "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+        "Nonzero pixel changes prove rendering; sprite isolation has separate PPU tests."
+      ],
+      "configuration": "final-car-356",
+      "source_report_sha256": "0512b1a91d4d73511a46ef655b3f391faeb2ee0446f041218f8011aacaaaa4e6"
+    },
+    {
+      "result": "PASS",
+      "width": 240,
+      "colors": [
+        "A855F7"
+      ],
+      "fuzzy_recovery": {
+        "pass": true,
+        "first_effect_elapsed_frame": 1018,
+        "first_effect_guest_frame": 14418,
+        "recovery_elapsed_frame": 1800,
+        "recovery_guest_frame": 15200,
+        "active_frames": 782,
+        "maximum_amplitude": 24576,
+        "normal_frames_at_end": 101,
+        "required_normal_tail_frames": 100,
+        "observed_countdown_steps": 686,
+        "observed_amplitude_growth_steps": 191,
+        "observed_amplitude_fade_steps": 96,
+        "no_restart_or_death": true,
+        "effect_was_not_disabled": true
+      },
+      "transform_cycle": false,
+      "references": {
+        "disabled": "previous release",
+        "colors": "candidate with mod disabled"
+      },
+      "verify_previous_release_obj_brightness_fix": true,
+      "input_sha256": {
+        "baseline": "4dbcbd5459ff82bac50196ffbbe8a973db2189bbd11d74490068d7ac0f6cf495",
+        "candidate": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+        "actions": "3feda686b60190a08369c14843f961ce7422b4d65b2d60a1ae4f3296909214a3"
+      },
+      "comparisons": {
+        "disabled": {
+          "trace_rows_equal": 1901,
+          "states_equal_except_pixels_inactive_rtc": 41,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 1,
+              "transformation": 0,
+              "pixels": 577,
+              "bounds": [
+                41,
+                25,
+                228,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 26,
+              "transformation": 0,
+              "pixels": 182,
+              "bounds": [
+                41,
+                25,
+                218,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 92,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 450,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 550,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1002,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1018,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 1525,
+              "bounds": [
+                0,
+                0,
+                224,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 1807,
+              "bounds": [
+                0,
+                0,
+                224,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 1925,
+              "bounds": [
+                66,
+                0,
+                224,
+                146
+              ]
+            },
+            {
+              "elapsed_frame": 1150,
+              "transformation": 0,
+              "pixels": 1918,
+              "bounds": [
+                66,
+                0,
+                224,
+                148
+              ]
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 1726,
+              "bounds": [
+                63,
+                0,
+                224,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 1664,
+              "bounds": [
+                48,
+                16,
+                240,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 1760,
+              "bounds": [
+                33,
+                16,
+                240,
+                143
+              ]
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 2059,
+              "bounds": [
+                17,
+                0,
+                238,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 2136,
+              "bounds": [
+                2,
+                0,
+                224,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 1783,
+              "bounds": [
+                0,
+                0,
+                224,
+                143
+              ]
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 1598,
+              "bounds": [
+                0,
+                16,
+                224,
+                159
+              ]
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 1709,
+              "bounds": [
+                0,
+                0,
+                224,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 1640,
+              "bounds": [
+                66,
+                0,
+                224,
+                141
+              ]
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 1948,
+              "bounds": [
+                66,
+                0,
+                240,
+                112
+              ]
+            },
+            {
+              "elapsed_frame": 1860,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 25957
+        },
+        "A855F7": {
+          "trace_rows_equal": 1901,
+          "states_equal_except_pixels_inactive_rtc": 41,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 1,
+              "transformation": 0,
+              "pixels": 382,
+              "bounds": [
+                200,
+                26,
+                228,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 26,
+              "transformation": 0,
+              "pixels": 76,
+              "bounds": [
+                203,
+                26,
+                218,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 92,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 49,
+              "bounds": [
+                149,
+                75,
+                157,
+                89
+              ]
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                92,
+                75,
+                115,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 128,
+              "bounds": [
+                73,
+                74,
+                97,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 128,
+              "bounds": [
+                73,
+                74,
+                97,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 450,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 129,
+              "bounds": [
+                73,
+                74,
+                97,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 123,
+              "bounds": [
+                78,
+                75,
+                100,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 550,
+              "transformation": 0,
+              "pixels": 123,
+              "bounds": [
+                79,
+                77,
+                99,
+                100
+              ]
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                73,
+                75,
+                88,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 141,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 115,
+              "bounds": [
+                73,
+                76,
+                89,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                73,
+                74,
+                97,
+                95
+              ]
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 129,
+              "bounds": [
+                73,
+                73,
+                97,
+                94
+              ]
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 128,
+              "bounds": [
+                73,
+                74,
+                97,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 1002,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1018,
+              "transformation": 0,
+              "pixels": 42,
+              "bounds": [
+                73,
+                75,
+                91,
+                95
+              ]
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 63,
+              "bounds": [
+                75,
+                81,
+                96,
+                99
+              ]
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                78,
+                96,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                74,
+                96,
+                92
+              ]
+            },
+            {
+              "elapsed_frame": 1150,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                75,
+                96,
+                93
+              ]
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                85,
+                96,
+                103
+              ]
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                90,
+                96,
+                108
+              ]
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                76,
+                96,
+                94
+              ]
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                69,
+                96,
+                87
+              ]
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                80,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                92,
+                96,
+                110
+              ]
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                80,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                68,
+                96,
+                86
+              ]
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                76,
+                96,
+                94
+              ]
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                82,
+                96,
+                100
+              ]
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                73,
+                80,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1860,
+              "transformation": 0,
+              "pixels": 139,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1900,
+              "transformation": 0,
+              "pixels": 141,
+              "bounds": [
+                73,
+                75,
+                96,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 0
+        }
+      },
+      "completed_existing_sessions_reused_after_input_verification": true,
+      "limits": [
+        "Linux native replay; no Android UI, phone or FPS measurement.",
+        "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+        "PPU timing matches. Pixel differences versus 0.10.7 are separately attributed to the verified brightness correction.",
+        "Colors are compared to the same final build with the mod disabled."
+      ],
+      "configuration": "final-fuzzy-240-1900",
+      "source_report_sha256": "2738814b2a45167f4ce011da0af9c53de9e4665ed2a7a2241389974e0dd3bee7"
+    },
+    {
+      "result": "PASS",
+      "width": 356,
+      "colors": [
+        "A855F7"
+      ],
+      "fuzzy_recovery": {
+        "pass": true,
+        "first_effect_elapsed_frame": 1018,
+        "first_effect_guest_frame": 14418,
+        "recovery_elapsed_frame": 1800,
+        "recovery_guest_frame": 15200,
+        "active_frames": 782,
+        "maximum_amplitude": 24576,
+        "normal_frames_at_end": 101,
+        "required_normal_tail_frames": 100,
+        "observed_countdown_steps": 686,
+        "observed_amplitude_growth_steps": 191,
+        "observed_amplitude_fade_steps": 96,
+        "no_restart_or_death": true,
+        "effect_was_not_disabled": true
+      },
+      "transform_cycle": false,
+      "references": {
+        "disabled": "previous release",
+        "colors": "candidate with mod disabled"
+      },
+      "verify_previous_release_obj_brightness_fix": true,
+      "input_sha256": {
+        "baseline": "4dbcbd5459ff82bac50196ffbbe8a973db2189bbd11d74490068d7ac0f6cf495",
+        "candidate": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+        "actions": "3feda686b60190a08369c14843f961ce7422b4d65b2d60a1ae4f3296909214a3"
+      },
+      "comparisons": {
+        "disabled": {
+          "trace_rows_equal": 1901,
+          "states_equal_except_pixels_inactive_rtc": 41,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 1,
+              "transformation": 0,
+              "pixels": 577,
+              "bounds": [
+                99,
+                25,
+                286,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 26,
+              "transformation": 0,
+              "pixels": 182,
+              "bounds": [
+                99,
+                25,
+                276,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 92,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 450,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 550,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1002,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1018,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 1525,
+              "bounds": [
+                58,
+                0,
+                282,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 1807,
+              "bounds": [
+                58,
+                0,
+                282,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 1925,
+              "bounds": [
+                124,
+                0,
+                282,
+                146
+              ]
+            },
+            {
+              "elapsed_frame": 1150,
+              "transformation": 0,
+              "pixels": 1918,
+              "bounds": [
+                124,
+                0,
+                282,
+                148
+              ]
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 1726,
+              "bounds": [
+                121,
+                0,
+                282,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 1664,
+              "bounds": [
+                106,
+                16,
+                298,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 1760,
+              "bounds": [
+                91,
+                16,
+                298,
+                143
+              ]
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 2059,
+              "bounds": [
+                75,
+                0,
+                296,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 2136,
+              "bounds": [
+                60,
+                0,
+                282,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 1783,
+              "bounds": [
+                58,
+                0,
+                282,
+                143
+              ]
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 1598,
+              "bounds": [
+                58,
+                16,
+                282,
+                159
+              ]
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 1709,
+              "bounds": [
+                58,
+                0,
+                282,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 1640,
+              "bounds": [
+                124,
+                0,
+                282,
+                141
+              ]
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 2251,
+              "bounds": [
+                5,
+                0,
+                316,
+                160
+              ]
+            },
+            {
+              "elapsed_frame": 1860,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 26260
+        },
+        "A855F7": {
+          "trace_rows_equal": 1901,
+          "states_equal_except_pixels_inactive_rtc": 41,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 1,
+              "transformation": 0,
+              "pixels": 382,
+              "bounds": [
+                258,
+                26,
+                286,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 26,
+              "transformation": 0,
+              "pixels": 76,
+              "bounds": [
+                261,
+                26,
+                276,
+                64
+              ]
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 92,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 49,
+              "bounds": [
+                207,
+                75,
+                215,
+                89
+              ]
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                150,
+                75,
+                173,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 128,
+              "bounds": [
+                131,
+                74,
+                155,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 128,
+              "bounds": [
+                131,
+                74,
+                155,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 450,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 129,
+              "bounds": [
+                131,
+                74,
+                155,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 123,
+              "bounds": [
+                136,
+                75,
+                158,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 550,
+              "transformation": 0,
+              "pixels": 123,
+              "bounds": [
+                137,
+                77,
+                157,
+                100
+              ]
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 130,
+              "bounds": [
+                131,
+                75,
+                146,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 141,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 115,
+              "bounds": [
+                131,
+                76,
+                147,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 126,
+              "bounds": [
+                131,
+                74,
+                155,
+                95
+              ]
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 129,
+              "bounds": [
+                131,
+                73,
+                155,
+                94
+              ]
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 128,
+              "bounds": [
+                131,
+                74,
+                155,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 1002,
+              "transformation": 0,
+              "pixels": 152,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1018,
+              "transformation": 0,
+              "pixels": 42,
+              "bounds": [
+                131,
+                75,
+                149,
+                95
+              ]
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 63,
+              "bounds": [
+                133,
+                81,
+                154,
+                99
+              ]
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                78,
+                154,
+                96
+              ]
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                74,
+                154,
+                92
+              ]
+            },
+            {
+              "elapsed_frame": 1150,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                75,
+                154,
+                93
+              ]
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                85,
+                154,
+                103
+              ]
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                90,
+                154,
+                108
+              ]
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                76,
+                154,
+                94
+              ]
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                69,
+                154,
+                87
+              ]
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                80,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                92,
+                154,
+                110
+              ]
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                80,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                68,
+                154,
+                86
+              ]
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                76,
+                154,
+                94
+              ]
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                82,
+                154,
+                100
+              ]
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 120,
+              "bounds": [
+                131,
+                80,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1860,
+              "transformation": 0,
+              "pixels": 139,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            },
+            {
+              "elapsed_frame": 1900,
+              "transformation": 0,
+              "pixels": 141,
+              "bounds": [
+                131,
+                75,
+                154,
+                98
+              ]
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 0
+        }
+      },
+      "completed_existing_sessions_reused_after_input_verification": true,
+      "limits": [
+        "Linux native replay; no Android UI, phone or FPS measurement.",
+        "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+        "PPU timing matches. Pixel differences versus 0.10.7 are separately attributed to the verified brightness correction.",
+        "Colors are compared to the same final build with the mod disabled."
+      ],
+      "configuration": "final-fuzzy-356-1900",
+      "source_report_sha256": "f39f57bf2c4acc59b302bf6247a4fa748460443fdf114dcae83cad0e88d1179e"
+    }
+  ],
+  "limits": [
+    "Host native replay and Robolectric only; no physical Android device, Android GPU or phone FPS measurement.",
+    "Game-wide coverage is incomplete; unrecognized graphics and transformed vehicles retain original colors.",
+    "Guest comparison excludes only the eight-byte inactive RTC wall-clock value; PPU pixels are compared separately from timing.",
+    "Previous-release Fuzzy pixel differences are attributed to the independently tested normal-OBJ brightness fix, not silently ignored.",
+    "ASan and UBSan passed the isolated native fixture; vptr and LeakSanitizer exclusions are documented.",
+    "Mid-frame savestate restore can display saved or partial pixels before the next frame start refreshes the selection."
+  ]
+}

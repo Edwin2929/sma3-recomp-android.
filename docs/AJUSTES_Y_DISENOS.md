@@ -1,4 +1,4 @@
-# Ajustes y diseños — Android 0.10.5 beta
+# Ajustes y diseños — Android 0.10.8 beta
 
 El botón **Atrás** abre un panel oscuro con acentos verdes, tarjetas por
 categoría y una descripción de cada opción. El contenido se puede desplazar
@@ -9,14 +9,16 @@ disponible para facilitar el uso horizontal y vertical.
 Hay seis apartados:
 
 - **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; submenús independientes de filtros y de resolución Automática, 720p y 1080p.
-- **Mods:** importar perfiles de color `.gbamod`, instalar el ejemplo incluido, consultar sus datos, activarlos, desactivarlos y eliminarlos.
+- **Mods:** personalizar el color de Yoshi con paleta, RGB y HEX; importar perfiles de color `.gbamod`, instalar el ejemplo incluido, consultar sus datos, activarlos, desactivarlos y eliminarlos.
 - **Rendimiento y FPS:** contador, objetivos de presentación de 60 y 120 FPS, estado de la pantalla y explicación de sus límites.
 - **Controles:** visibilidad de botones táctiles, símbolos o letras clásicas, opacidad, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
 - **Actualizar:** detección de nuevas versiones en GitHub, descarga del APK y acceso al instalador de Android.
 
 **Volver** o **Atrás** regresa al apartado anterior. **Volver al juego** cierra
-Ajustes. Las selecciones se guardan al cambiarlas; no hace falta reiniciar.
+Ajustes. Las opciones habituales se guardan al cambiarlas. El selector
+**Color de Yoshi** guarda únicamente al pulsar **Aplicar color** o **Usar
+color original**; **Cancelar** descarta el borrador. No hace falta reiniciar.
 Los textos del menú y del editor están en español, inglés y portugués.
 La actualización conserva las claves anteriores de preferencias, las
 asignaciones del mando y las tres ranuras de diseños.
@@ -72,6 +74,19 @@ Consulta la [guía de imagen](CALIDAD_IMAGEN.md) y el
 [estado de la panorámica](PANORAMICA_EN_DESARROLLO.md).
 
 ## Mods de color
+
+**Atrás → Mods → Color de Yoshi** abre el selector incorporado desde 0.10.8.
+Puedes elegir entre 48 colores, ajustar Rojo/Verde/Azul o escribir un código
+HEX `#RRGGBB` o `#RGB`. La muestra presenta sombra, base y luz. Los botones
+**Cancelar** y **Aplicar color** permanecen fuera del contenido desplazable.
+La paleta adapta el número de columnas al ancho disponible, con objetivos
+táctiles de al menos 48 dp cuando la pantalla ofrece ese espacio.
+
+**Usar color original** desactiva el cambio conservando la última selección.
+El mod se aplica a Yoshi normal durante el juego; vehículos, mapa y escenas
+sin gráficos identificados mantienen sus colores. Funciona junto al perfil
+global, que puede alterar la apariencia final del color elegido.
+[Guía del selector](MOD_COLOR_YOSHI.md).
 
 Entra en **Atrás → Mods → Instalar ejemplo** para añadir **Tono cálido**.
 Después toca su nombre y usa **Activar mod**. También puedes elegir

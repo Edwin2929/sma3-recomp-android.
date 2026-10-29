@@ -1,0 +1,114 @@
+Yoshi Color / Android 0.10.8-beta — native qualification, 2026-10-29
+
+Compiler: GCC 13.3.0, Linux x86_64.
+This report covers host unit/rendering checks, not a measurement on a phone.
+No original game ROM, BIOS or player save is needed for these public tests.
+
+1. Selective palette + production PPU
+
+PASS: 5 scenarios, 932845 checks; selective Yoshi color, 8 references,
+software/hardware fades, real native/wide PPU, immutable memory, restore
+and request epoch.
+
+The five groups exercise:
+- A closed scene list, verified scene owners, normal Yoshi only, all 16 OBJ
+  palette banks and all 1024 starting tiles. Same-bank Baby Mario tiles,
+  different banks, 8bpp and OBJ-window sprites are excluded.
+- Six fixed custom color oracles, eight reference palettes, both directions
+  of 32-step software fades, all 256 OBJ entries, exact input immutability,
+  malformed references, unsupported palettes, cache hits and invalidation.
+- The real compositor at 240x160 and 356x160. Exactly 24 body pixels change
+  in the synthetic scene; all other pixels, white belly, shoes, same-bank
+  Mario-shaped fixture, background and equal-color unrelated sprites remain
+  as before. The live scanline and full-frame paths agree for affine OBJ.
+- 256 combinations of viewport width, mod enable, normal/semi-transparent
+  OBJ, first/second target selection, window effects and four BLDCNT modes;
+  also EVY zero/clamping and a disabled second-target BG.
+- Atomic configuration publication and epoch invalidation, including invalid
+  RGB input, repeated identical requests, disabled drafts and a missing bus.
+
+Reproduction from the repository root (patched ../gbarecomp):
+
+  c++ -std=c++20 -O2 -I src -I ../gbarecomp/src/armv4t \
+    -I ../gbarecomp/external/arm-recomp-core/profiles/armv4t_gba \
+    -I ../gbarecomp/src/gba -I ../gbarecomp/src/runtime \
+    -I ../gbarecomp/src/debug validation/yoshi_color_test.cpp \
+    src/yoshi_color.cpp ../gbarecomp/src/gba/gba_ppu.cpp \
+    -o /tmp/sma3-yoshi-color-test
+  /tmp/sma3-yoshi-color-test
+
+2. Sanitizers
+
+PASS: the same 5 scenarios / 932845 checks with AddressSanitizer and
+UndefinedBehaviorSanitizer. Flags replace -O2 above with:
+
+  -O1 -g -fsanitize=address,undefined -fno-sanitize=vptr \
+    -fno-omit-frame-pointer
+
+Run with ASAN_OPTIONS=detect_leaks=0. Virtual-table checks are excluded
+because this isolated fixture stubs active_bus() as null and does not link
+the polymorphic GbaBus implementation/typeinfo. LeakSanitizer is not covered
+in this restricted process-inspection environment. No ASan/UBSan runtime
+diagnostics were reported.
+
+3. Independently reproducible pre-existing OBJ effect bug
+
+With only the palette hook (patch 15), the same test failed:
+  FAIL: full hardware fade remains black
+  exit code: 1
+
+That PPU source SHA256 was:
+  2746fa26ed728e53e519dc2679d9b58aa353cf768f6712490c8bfe93c2b353b0
+
+Normal OBJ ignored BLDCNT's first-target selection. Patch 16 separates
+ordinary selection from forced semi-transparent alpha in the existing
+one-byte field. Brightness no longer forces alpha on normal OBJ; forced
+alpha takes priority when an eligible lower target is present. The color
+mod can be disabled and the corrected hardware selection still applies.
+
+4. Existing window regression
+
+PASS: 488 synthetic scenarios, 8102978 internal assertions; real PPU,
+native center unchanged.
+Source: validation/widescreen_obj_window_render_test.cpp.
+
+5. Ordered patch stack
+
+PASS: all 16 patches and all 17 recognized prefix states, idempotent
+reapplication, rejection of unrelated edits to each of the 9 protected
+engine files without writes, and rejection of the wrong engine pin.
+Command: python3 -m unittest validation/test_window_patch_stack.py
+Result: 3 tests, OK (25.055 s in this run).
+
+6. Source identity for this report (SHA256)
+
+src/yoshi_color.cpp
+  3da7ca1c0cf75de59cef8dd5a9f76d76f89c218608c55d7591386c0d7aba35a9
+src/yoshi_color.h
+  ae4040fc064eb4c7fb0634bf10ea8fe3ba0a118a1c156483f5ae359efc549188
+src/yoshi_color_palette.h
+  593212a5603448010d6041606a46ec498e315b2fe124a919b91d50aa8b51b5a0
+validation/yoshi_color_test.cpp
+  0332e749565c37140029ed1d91a9ef05318231c80771187da1e86c6be1fccfaa
+patches/gbarecomp-yoshi-color.patch
+  0d79ca016c5db02e4ff0da1acdc36baa0fed4091654461af60d83025109c4179
+patches/gbarecomp-obj-color-effects.patch
+  477848b1ad95cd834d47b41a2f597b272e2cae3524fdd92588279b69f4a66bfe
+Patched engine src/gba/gba_ppu.cpp
+  de93ba1a7e5de1436a3bffc92c7a480480bd4023b6530973d279ba9498b0d065
+Patched engine src/gba/gba_ppu.h
+  5ffee9ad6a78db7e25f44a17a4140311634deaab9e6356d0b64c6a5c974df344
+
+Primary technical references used to identify the data and effects:
+- sma3-disasm c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071:
+  asm/LevelCode.asm (LoadHeaderPalettes, ROM 08013BC4–08013C04),
+  asm/Sprites/GoalRing.asm (Sub08054074),
+  asm/08040798.asm (Sub08042D28), and
+  asm/GameOver.asm (Sub0810BE54, Sub0810BE98, Sub0810BF10).
+  https://github.com/KarisaAdvynia/sma3-disasm/tree/c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071
+- GBATEK, LCD I/O Color Special Effects / Semi-Transparent OBJs.
+  https://problemkaputt.de/gbatek.htm#lcdiocolorspecialeffects
+  GBA-only transcription: https://rust-console.github.io/gbatek-gbaonly/#lcd-io-color-special-effects
+- Hardware-backed reproductions for semi-transparent OBJ and disabled BG:
+  https://github.com/mgba-emu/mgba/issues/2489
+  https://github.com/mgba-emu/mgba/issues/3804

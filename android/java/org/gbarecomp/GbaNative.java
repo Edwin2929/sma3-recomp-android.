@@ -23,6 +23,9 @@ public final class GbaNative {
     public static native String importMod(String cachedPath);
     public static native String setModEnabled(String id, boolean enabled);
     public static native String removeMod(String id);
+    // Built-in character palette mod; RGB is 0xRRGGBB. One atomic update,
+    // independent of installed whole-image color profiles.
+    public static native void setYoshiColor(boolean enabled, int rgb);
     public static native void setTouchControlsVisible(boolean visible);
     // Styles: 0 classic letters, 1 action symbols. Opacity is clamped to 20..100%.
     public static native void setTouchAppearance(int style, int opacityPercent);

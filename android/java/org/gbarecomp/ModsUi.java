@@ -40,6 +40,7 @@ final class ModsUi {
     private List<Mod> lastMods = Collections.emptyList();
     private String pendingWarning = "";
     private String shownWarning = "";
+    private YoshiColorUi yoshiColor;
 
     ModsUi(Activity activity, Translator translator, Presenter presenter, Runnable parent) {
         this.activity = activity;
@@ -138,9 +139,9 @@ final class ModsUi {
     private void showCatalog(List<Mod> mods, String notice, boolean success) {
         if (!alive()) return;
         SettingsPanel page = panel("Mods", tr(
-            "Importa perfiles de color y elige uno para jugar.",
-            "Import color profiles and choose one to play with.",
-            "Importe perfis de cor e escolha um para jogar."));
+            "Personaliza a Yoshi y los colores de la imagen.",
+            "Customize Yoshi and the colors of the image.",
+            "Personalize o Yoshi e as cores da imagem."));
         if (notice != null && !notice.isEmpty()) {
             if (success) page.paragraph(notice);
             else page.notice(tr("No se pudo completar", "Could not complete", "Não foi possível concluir"), notice);
@@ -150,6 +151,14 @@ final class ModsUi {
             shownWarning = pendingWarning;
             pendingWarning = "";
         }
+        page.section(tr("Incorporado", "Built-in", "Integrado"));
+        YoshiColorModel.Selection color = YoshiColorUi.read(activity);
+        page.card(SettingsPanel.MODS, tr("Color de Yoshi", "Yoshi color", "Cor do Yoshi"),
+            (color.enabled ? tr("Activo · ", "Active · ", "Ativo · ") + YoshiColorModel.hex(color.rgb)
+                : tr("Color original", "Original color", "Cor original"))
+                + tr(" · Paleta ampliada, RGB y códigos HEX", " · Expanded palette, RGB and HEX codes", " · Paleta ampliada, RGB e códigos HEX"),
+            this::showYoshiColor);
+        page.section(tr("Perfiles de toda la imagen", "Whole-image profiles", "Perfis de toda a imagem"));
         page.card(SettingsPanel.MODS, tr("Importar mod", "Import mod", "Importar mod"),
             tr("Elegir un archivo .gbamod · máximo 2 MiB", "Choose a .gbamod file · up to 2 MiB", "Escolher um arquivo .gbamod · até 2 MiB"),
             this::pickDocument);
@@ -172,14 +181,23 @@ final class ModsUi {
         }
         page.section(tr("Compatibilidad", "Compatibility", "Compatibilidade"));
         page.paragraph(tr(
-            "Esta versión admite perfiles de color para SMA3 en paquetes .gbamod. Los parches de ROM y los mods de otros juegos no son compatibles.",
-            "This version supports color profiles for SMA3 in .gbamod packages. ROM patches and mods for other games are not compatible.",
-            "Esta versão aceita perfis de cor para SMA3 em pacotes .gbamod. Patches de ROM e mods de outros jogos não são compatíveis."));
+            "Color de Yoshi viene incorporado y no necesita importar un archivo. Los paquetes .gbamod admiten perfiles de toda la imagen para SMA3. Los parches de ROM y los mods de otros juegos no son compatibles.",
+            "Yoshi color is built in and needs no imported file. The .gbamod packages support whole-image profiles for SMA3. ROM patches and mods for other games are not compatible.",
+            "Cor do Yoshi vem integrado e não precisa importar um arquivo. Os pacotes .gbamod aceitam perfis de toda a imagem para SMA3. Patches de ROM e mods de outros jogos não são compatíveis."));
         page.paragraph(tr(
-            "Solo se usa un perfil de color a la vez. Activar otro sustituye al anterior. Al desactivarlo, vuelven los colores normales. Se aplica sin reiniciar y la selección queda guardada.",
-            "One color profile is used at a time. Enabling another replaces the previous one. Disabling it restores normal colors. Changes apply without restarting and your selection is saved.",
-            "Um perfil de cor é usado por vez. Ativar outro substitui o anterior. Desativá-lo restaura as cores normais. As mudanças são aplicadas sem reiniciar e a seleção fica salva."));
+            "Solo se usa un perfil de imagen a la vez. Activar otro sustituye al anterior. Color de Yoshi se puede usar junto con ese perfil; se configura y desactiva por separado. Los cambios se aplican sin reiniciar y quedan guardados.",
+            "One image profile is used at a time. Enabling another replaces the previous one. Yoshi color can be used alongside that profile; configure or disable it separately. Changes apply without restarting and are saved.",
+            "Um perfil de imagem é usado por vez. Ativar outro substitui o anterior. Cor do Yoshi pode ser usado junto com esse perfil; configure ou desative separadamente. As mudanças são aplicadas sem reiniciar e ficam salvas."));
         open(page, parent);
+    }
+
+    private void showYoshiColor() {
+        if (!alive()) return;
+        if (yoshiColor != null) yoshiColor.close();
+        yoshiColor = new YoshiColorUi(activity, translator, presenter,
+            () -> showCatalog(lastMods, null, true),
+            message -> showCatalog(lastMods, message, true));
+        yoshiColor.show();
     }
 
     private void showDetails(Mod mod) {
@@ -310,6 +328,7 @@ final class ModsUi {
 
     void close() {
         closed = true;
+        if (yoshiColor != null) yoshiColor.close();
         worker.shutdownNow();
     }
 

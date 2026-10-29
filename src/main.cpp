@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <charconv>
+#include <string_view>
 #if defined(SMA3_PANORAMA) || defined(SMA3_WIDESCREEN_DIAGNOSTICS)
 #include "widescreen.h"
 #endif
@@ -10,6 +12,7 @@
 #include "runtime_arm.h"
 #include "localization.h"
 #include "mod_profiles.h"
+#include "yoshi_color.h"
 int sma3_ram_dispatch(uint32_t, int);
 
 #ifdef __ANDROID__
@@ -24,6 +27,17 @@ int main(int argc, char** argv) {
     g_runtime_bus_read_override = sma3::localized_read;
 #ifndef __ANDROID__
     if (const char* lang = std::getenv("SMA3_LANGUAGE")) sma3::language.store(std::atoi(lang));
+    // Desktop validation exercises the same palette mod as Android. Only a
+    // complete RGB code is accepted; missing/invalid input leaves it disabled.
+    if (const char* color = std::getenv("SMA3_YOSHI_COLOR")) {
+        std::string_view value(color);
+        if (!value.empty() && value.front() == '#') value.remove_prefix(1);
+        uint32_t rgb = 0;
+        const auto parsed = std::from_chars(value.data(), value.data() + value.size(), rgb, 16);
+        if (value.size() == 6 && parsed.ec == std::errc{} &&
+                parsed.ptr == value.data() + value.size() && rgb <= 0xffffff)
+            sma3::set_yoshi_color(true, rgb);
+    }
     // Desktop qualification can exercise the production callbacks directly;
     // Android takes its exclusive image mode only from the saved Java setting.
     if (const char* mode = std::getenv("SMA3_IMAGE_MODE")) {
@@ -34,6 +48,9 @@ int main(int argc, char** argv) {
     }
 #endif
     gbarecomp::RunOptions options;
+    options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo*) {
+        sma3::yoshi_color_frame();
+    };
 #ifdef SMA3_PANORAMA
     options.resize_driven_view = true;
     options.max_resize_view_width = 356;
@@ -42,6 +59,7 @@ int main(int argc, char** argv) {
     options.orientation = gbarecomp::RunOptions::Orientation::Any;
     options.freely_resizable_window = true;
     options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+        sma3::yoshi_color_frame();
         sma3::wide::frame(frame, sma3::image_mode.load() == sma3::ImageMode::Panorama);
     };
     options.presentation_request = [](gbarecomp::RunOptions::PresentationRequest* request) {
@@ -57,6 +75,7 @@ int main(int argc, char** argv) {
     if (std::getenv("SMA3_WIDE_PROBE_DIR")) {
         options.max_view_width = 356;
         options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+            sma3::yoshi_color_frame();
             sma3_probe_frame(frame);
             const char* authored = std::getenv("SMA3_AUTHORED_WIDE");
             if (authored && authored[0] == '1') sma3::wide::frame(frame);

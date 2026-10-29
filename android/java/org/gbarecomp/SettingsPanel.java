@@ -143,6 +143,38 @@ final class SettingsPanel {
         body.addView(text, space(2, 4, 2, 12));
     }
 
+    /** A custom editor remains inside the same bounded, scrollable body. */
+    void content(View view) {
+        body.addView(view, space(0, 0, 0, 10));
+    }
+
+    /** Optional second footer action; both buttons remain outside the scroll view. */
+    void secondaryNavigation(String title, Runnable action) {
+        root.removeView(navigation);
+        LinearLayout row = new LinearLayout(activity);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        Button secondary = new Button(activity);
+        secondary.setText(title);
+        secondary.setTextSize(15);
+        secondary.setAllCaps(false);
+        secondary.setTextColor(TEXT);
+        secondary.setMinHeight(dp(50));
+        secondary.setPadding(dp(8), dp(10), dp(8), dp(10));
+        secondary.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22a5e775),
+            shape(SURFACE, BORDER, 14), null));
+        secondary.setOnClickListener(v -> action.run());
+        LinearLayout.LayoutParams left = new LinearLayout.LayoutParams(0, -2, 1);
+        left.setMargins(0, 0, dp(8), 0);
+        row.addView(secondary, left);
+        row.addView(navigation, new LinearLayout.LayoutParams(0, -2, 1));
+        root.addView(row, space(0, 8, 0, 0));
+    }
+
+    void setNavigationEnabled(boolean enabled) {
+        navigation.setEnabled(enabled);
+        navigation.setAlpha(enabled ? 1f : .45f);
+    }
+
     void card(int icon, String title, String description, Runnable action) {
         LinearLayout row = new LinearLayout(activity);
         row.setOrientation(LinearLayout.HORIZONTAL);

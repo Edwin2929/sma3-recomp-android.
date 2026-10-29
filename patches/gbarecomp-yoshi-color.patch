@@ -1,0 +1,70 @@
+--- a/src/gba/gba_ppu.h
++++ b/src/gba/gba_ppu.h
+@@ -258,6 +258,14 @@
+ extern "C" int g_ws_pillarbox;  // Step C policy: black margins on non-field screens
+ extern "C" int g_ws_pillarbox_left;
+ extern "C" int g_ws_pillarbox_right;
++// Optional read-only, per-object presentation palette. Receives the complete
++// 512-byte OBJ palette and may return a same-sized host-owned substitute that
++// remains valid until the next callback. A null result preserves the guest
++// palette. Invoked outside the pixel loop, before native window/alpha/brightness
++// composition, in both native and expanded renderers. Never write guest memory.
++extern "C" const uint8_t* (*g_obj_palette_provider)(int oam_index,
++    uint16_t attr0, uint16_t attr1, uint16_t attr2, const uint8_t* object_palette);
++
+ // Optional per-game interpretation of the 9-bit OBJ X field in expanded-view
+ // rendering. Hardware-faithful signed decoding remains the default.
+ extern "C" int (*g_ws_obj_x_provider)(int raw_x, int* out_x);
+--- a/src/gba/gba_ppu.cpp
++++ b/src/gba/gba_ppu.cpp
+@@ -36,6 +36,8 @@
+ extern "C" int g_ws_pillarbox = 0;
+ extern "C" int g_ws_pillarbox_left = 0;
+ extern "C" int g_ws_pillarbox_right = 0;
++extern "C" const uint8_t* (*g_obj_palette_provider)(int, uint16_t, uint16_t,
++    uint16_t, const uint8_t*) = nullptr;
+ extern "C" int (*g_ws_obj_x_provider)(int, int*) = nullptr;
+ extern "C" int (*g_ws_obj_attr_x_provider)(int, std::uint16_t,
+                                             std::uint16_t, std::uint16_t,
+@@ -1284,6 +1286,11 @@
+             // into the next priority's BG band.
+             int key = priority * 256 + idx;
+             bool obj_target2 = (second_targets & (1u << 4)) != 0;
++            const uint8_t* object_palette = obj_pal;
++            if (g_obj_palette_provider) {
++                if (const auto* replacement = g_obj_palette_provider(
++                        idx, attr0, attr1, attr2, obj_pal)) object_palette = replacement;
++            }
+             auto emit_obj = [&](int tex_x, int tex_y, int screen_x) {
+                 if (screen_x < 0 || screen_x >= static_cast<int>(kScreenWidth)) return;
+                 if (!layer_enabled(static_cast<uint32_t>(screen_x), 4)) return;
+@@ -1314,7 +1321,7 @@
+                     if (pal_index == 0) return;
+                     pal_index = static_cast<uint8_t>(pal_index | (palette_bank << 4));
+                 }
+-                const uint16_t color = load_u16_le(&obj_pal[pal_index * 2]);
++                const uint16_t color = load_u16_le(&object_palette[pal_index * 2]);
+                 uint32_t ux = static_cast<uint32_t>(screen_x);
+                 bool t1 = blend_enabled(ux) &&
+                     obj_mode == 1;
+@@ -1994,6 +2001,11 @@
+             const bool native_clip = g_ws_obj_native_clip ||
+                 (g_ws_obj_native_clip_provider &&
+                  g_ws_obj_native_clip_provider(idx, attr0, attr1, attr2));
++            const uint8_t* object_palette = obj_pal;
++            if (g_obj_palette_provider) {
++                if (const auto* replacement = g_obj_palette_provider(
++                        idx, attr0, attr1, attr2, obj_pal)) object_palette = replacement;
++            }
+             auto emit_obj = [&](int tex_x, int tex_y, int screen_x) {
+                 if (screen_x < 0 || screen_x >= static_cast<int>(out_w)) return;
+                 // Opt-in policy: hardware-faithful OBJ placement only within
+@@ -2031,7 +2043,7 @@
+                     if (pal_index == 0) return;
+                     pal_index = static_cast<uint8_t>(pal_index | (palette_bank << 4));
+                 }
+-                const uint16_t color = load_u16_le(&obj_pal[pal_index * 2]);
++                const uint16_t color = load_u16_le(&object_palette[pal_index * 2]);
+                 uint32_t ux = static_cast<uint32_t>(screen_x);
+                 bool t1 = blend_enabled(ux) && obj_mode == 1;
+                 submit(ux, color, key, 4, t1, obj_target2);

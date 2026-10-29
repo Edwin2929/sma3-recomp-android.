@@ -18,10 +18,11 @@ PIN = 'e7728148c6829ba526f682876430a0c9022dc6c0'
 PATCH_NAMES = ('interpolation', 'controls', 'localization', 'touch-design',
                'widescreen-objects', 'widescreen-window', 'panorama-android',
                'panorama-stability', 'image-filters', 'mod-profiles',
-               'frame-pacing', 'touch-appearance', 'render-performance')
+               'frame-pacing', 'touch-appearance', 'render-performance',
+               'cooperative-presentation', 'yoshi-color', 'obj-color-effects')
 PATHS = tuple('src/runtime/' + name for name in
               ('host_platform.cpp', 'host_platform.h', 'host_window.cpp', 'host_window.h', 'runtime.cpp',
-               'mod_runtime.cpp')) + (
+               'runtime_bus_bridge.cpp', 'mod_runtime.cpp')) + (
                   'src/gba/gba_ppu.h', 'src/gba/gba_ppu.cpp')
 
 

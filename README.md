@@ -2,7 +2,23 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.7 beta — presentación de 120 con más margen
+## Versión actual: 0.10.8 beta — elige el color de Yoshi
+
+**Atrás → Mods → Color de Yoshi** abre un mod incorporado con **48 colores
+predefinidos**, barras **RGB** y entrada de códigos **HEX** (`#RRGGBB` o
+`#RGB`). Muestra el color y sus sombras antes de aplicarlo, guarda la elección
+y permite volver al color original. Se puede combinar con un perfil global
+de color y los filtros existentes.
+
+El cambio se realiza sobre los tonos del cuerpo del personaje durante el
+dibujo. No modifica la ROM ni los datos de la partida. El selector viene
+incluido en el APK y está desactivado inicialmente.
+
+[Cómo usar el mod](docs/MOD_COLOR_YOSHI.md) ·
+[Notas de 0.10.8](docs/releases/v0.10.8-beta.md) ·
+[Pruebas y límites](validation/YOSHI_COLOR_0.10.8_VALIDATION.md).
+
+### Presentación de 120 conservada de 0.10.7
 
 **0.10.7 corrige la distribución del trabajo que podía mantener la presentación
 cerca de 60 FPS aunque Android informara 120 Hz.** El modo 120 presenta una
@@ -61,7 +77,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.7 se detectará cuando el mantenedor adjunte su APK a Descarga.
+0.10.8 se detectará cuando el mantenedor adjunte su APK a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -175,7 +191,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.7**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.8**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -193,41 +209,46 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.7 beta — nueva entrega
+### APK 0.10.8 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.7-beta-arm64.apk`**, versión `0.10.7-beta`,
-código **18**, ARM64 y Android 9 o posterior. Se entrega al mantenedor para
-su publicación manual en la release **Descarga**. Corrige la planificación
-de las presentaciones adicionales y amplía el contador para diagnosticar
-las caídas de FPS. Conserva los símbolos y la opacidad de controles,
-el actualizador, los mods de color, los siete filtros, las correcciones de
+Archivo: **`sma3-recomp-0.10.8-beta-arm64.apk`**, versión `0.10.8-beta`,
+código **19**, ARM64 y Android 9 o posterior. Incluye el mod **Color de
+Yoshi** y conserva las mejoras de presentación de 0.10.7, los controles,
+el actualizador, los perfiles de color, los siete filtros, la corrección de
 Fuzzy y la panorámica con su advertencia de fase temprana.
 
-Instálalo encima de la versión anterior, sin desinstalarla. Conserva el
-paquete y el certificado y aumenta el código de versión. No borres los
-datos. Desde 0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el
-mantenedor haya publicado el archivo.
-[Archivo, instalación y SHA-256](docs/releases/v0.10.7-beta.md) ·
-[Verificación del APK](validation/android-0.10.7-build.json) ·
-[Validación de rendimiento](validation/PERFORMANCE_0.10.7_VALIDATION.md).
+Instálalo encima de la versión anterior, sin desinstalarla ni borrar datos.
+Conserva el paquete y el certificado y aumenta el código de versión. Desde
+0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el mantenedor haya
+publicado el archivo.
+[Instalación y datos del APK](docs/releases/v0.10.8-beta.md).
 
-### Publicación verificada: APK 0.10.6 beta
+### Publicación verificada: APK 0.10.7 beta
 
-En la consulta del **28 de octubre de 2026**, la release pública
+En la consulta del **29 de octubre de 2026**, la release pública
 **Descarga** contiene
-[**sma3-recomp-0.10.6-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.6-beta-arm64.apk).
-El tamaño anunciado es **27.895.064 bytes** y el digest publicado por GitHub
+[**sma3-recomp-0.10.7-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.7-beta-arm64.apk).
+El tamaño anunciado es **27.903.256 bytes** y el digest publicado por GitHub
 coincide con el APK entregado:
-`4847efea9629a76348c7e3aa2ac623a9865ef4de1946a3ffa9732d9f050e21b8`.
-[Notas de 0.10.6](docs/releases/v0.10.6-beta.md).
+`76829beab04fc9e3c62c15650d749eb9f37968421f1640e25373d4e48a055467`.
+[Notas de 0.10.7](docs/releases/v0.10.7-beta.md).
 
-El nuevo APK 0.10.7 aparecerá en
+El nuevo APK 0.10.8 aparecerá en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga)
 cuando el mantenedor lo adjunte manualmente. Publicar el código en `main`
 no publica el APK. Las indicaciones de disponibilidad en notas anteriores
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.8:** color selectivo comprobado en los compositores original y
+panorámico, interfaz probada con Robolectric y partidas nativas con cinco
+colores, transformación en coche y recuperación natural del efecto de
+Fuzzy. Se corrige además un fallo previo en la selección del brillo de los
+sprites. El APK ARM64 está compilado y firmado con el certificado anterior.
+No se ha probado esta versión en un teléfono ni se han medido FPS en Android.
+[Validación y alcance](validation/YOSHI_COLOR_0.10.8_VALIDATION.md) ·
+[APK](validation/android-0.10.8-build.json).
 
 **0.10.7:** reproducción determinista de la limitación, pruebas de cadencia,
 imágenes pendientes, pausas/reinicios, geometría, cambios de escena y cargas
@@ -489,8 +510,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.7 en Pixel 7 Pro: 60/120, símbolos, opacidad, detección/descarga/instalación de actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.7, comparando la zona de la captura de 65,2 FPS.
+- Probar 0.10.8 en Pixel 7 Pro: selector de color de Yoshi, 60/120, símbolos, opacidad, detección/descarga/instalación de actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.8, comparando la zona de la captura de 65,2 FPS.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.
