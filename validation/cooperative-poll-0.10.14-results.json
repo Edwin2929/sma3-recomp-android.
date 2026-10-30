@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "version": "0.10.14-beta",
+  "baseline_commit": "8852595d7d0344ee264cbd6943b8551363de4b5d",
+  "scope": "deterministic_synthetic_clock_not_android_fps_or_power",
+  "result": "PASS",
+  "checks": 4116,
+  "reference": "The legacy poll reproduces the 0.10.13 tick divider and independent 1 ms callback gate; scheduling, work and budgets are identical between comparisons.",
+  "phase_sweep": {
+    "name": "poll_phase_sweep",
+    "scope": "deterministic_synthetic_clock_not_phone",
+    "cases": 480,
+    "old_mean_delay_us": 561.772,
+    "new_mean_delay_us": 316.980333,
+    "old_max_delay_us": 1478.647,
+    "new_max_delay_us": 1478.647,
+    "old_late": 0,
+    "new_late": 0,
+    "old_clock_reads": 30032,
+    "new_clock_reads": 10163,
+    "old_callbacks": 7700,
+    "new_callbacks": 480
+  },
+  "cadence": [
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 60,
+      "guest_us": 2000,
+      "mandatory": 120,
+      "old_extra": 0,
+      "new_extra": 0,
+      "old_clock_reads": 0,
+      "new_clock_reads": 0,
+      "old_callbacks": 0,
+      "new_callbacks": 0,
+      "guest_hz": 59.727502
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 60,
+      "guest_us": 10000,
+      "mandatory": 120,
+      "old_extra": 0,
+      "new_extra": 0,
+      "old_clock_reads": 0,
+      "new_clock_reads": 0,
+      "old_callbacks": 0,
+      "new_callbacks": 0,
+      "guest_hz": 59.727502
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 60,
+      "guest_us": 14000,
+      "mandatory": 120,
+      "old_extra": 0,
+      "new_extra": 0,
+      "old_clock_reads": 0,
+      "new_clock_reads": 0,
+      "old_callbacks": 0,
+      "new_callbacks": 0,
+      "guest_hz": 59.727502
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 60,
+      "guest_us": 17000,
+      "mandatory": 120,
+      "old_extra": 0,
+      "new_extra": 0,
+      "old_clock_reads": 0,
+      "new_clock_reads": 0,
+      "old_callbacks": 0,
+      "new_callbacks": 0,
+      "guest_hz": 55.555556
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 120,
+      "guest_us": 2000,
+      "mandatory": 120,
+      "old_extra": 120,
+      "new_extra": 120,
+      "old_clock_reads": 960,
+      "new_clock_reads": 960,
+      "old_callbacks": 240,
+      "new_callbacks": 0,
+      "guest_hz": 59.727502
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 120,
+      "guest_us": 10000,
+      "mandatory": 120,
+      "old_extra": 120,
+      "new_extra": 120,
+      "old_clock_reads": 4800,
+      "new_clock_reads": 3360,
+      "old_callbacks": 1320,
+      "new_callbacks": 120,
+      "guest_hz": 59.727502
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 120,
+      "guest_us": 14000,
+      "mandatory": 120,
+      "old_extra": 120,
+      "new_extra": 120,
+      "old_clock_reads": 6720,
+      "new_clock_reads": 3360,
+      "old_callbacks": 1800,
+      "new_callbacks": 120,
+      "guest_hz": 59.727502
+    },
+    {
+      "name": "poll_cadence",
+      "scope": "deterministic_synthetic_clock_not_phone",
+      "mode": 120,
+      "guest_us": 17000,
+      "mandatory": 120,
+      "old_extra": 0,
+      "new_extra": 0,
+      "old_clock_reads": 8160,
+      "new_clock_reads": 0,
+      "old_callbacks": 2040,
+      "new_callbacks": 0,
+      "guest_hz": 55.555556
+    }
+  ],
+  "sanitizers": {
+    "address": "PASS",
+    "undefined_behavior": "PASS",
+    "leak_detection": false,
+    "leak_detection_reason": "Host /proc restrictions; ASan and UBSan remain active."
+  },
+  "regressions": {
+    "cooperative_presentation_checks": 88,
+    "presentation_pacing_checks": 4992,
+    "result": "PASS",
+    "patch_stack": {
+      "tests": 3,
+      "recognized_engine_states": 20,
+      "ordered_patches": 19,
+      "result": "PASS"
+    }
+  },
+  "lifecycle_cases": [
+    "mode60",
+    "paused_or_fast_forward",
+    "surface_epoch",
+    "external_pacer_reset_or_load",
+    "long_stall",
+    "clock_regression",
+    "uncapped",
+    "resumed_epoch",
+    "presenter_failure",
+    "immutable_pending_image",
+    "callback_reentry"
+  ],
+  "source_sha256": {
+    "src/cooperative_presentation.h": "a4fce3d22bbfada9a9309be06acb55269821410e493048d38896a7d787719fe4",
+    "src/presentation_pacing.h": "47c5dd472de1605c0b79a58a6f0d0c45e6e87fa1ab4995f05fdaca01780bab47",
+    "validation/cooperative_poll_test.cpp": "079342c97d9345973e7a106f9e7a22f8228e2edb013c360095081ba05e97bfb0",
+    "patches/gbarecomp-performance-stability.patch": "77868293093c5d1a3aa6fbdb1055c70e07826dfac99342fc00cace80fccc0fb4"
+  },
+  "limits": [
+    "No physical phone execution or thermal/battery measurement.",
+    "The phase sweep is synthetic and does not claim a measured Android latency improvement.",
+    "The clock sampling divider stays at 1024 guest runtime ticks; long work between tick calls can still miss a deadline.",
+    "Optional budget and late-frame rejection criteria are unchanged.",
+    "The 480 phase comparisons share initial sample phase. Inactive polling no longer advances its divider, so rearming can change phase relative to 0.10.13; this is not a universal earlier-callback claim. A separate 1024 phase sweep verifies at most 1024 active runtime ticks to sample a due request."
+  ],
+  "rearm_phase_sweep": {
+    "name": "poll_rearm_phase_sweep",
+    "scope": "deterministic_tick_bound_not_phone_latency",
+    "cases": 1024,
+    "maximum_ticks_to_due_callback": 1024,
+    "inactive_clock_reads": 0,
+    "inactive_callbacks": 0,
+    "reference_phase_alignment_required": false
+  }
+}

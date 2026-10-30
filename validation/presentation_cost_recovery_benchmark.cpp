@@ -27,8 +27,11 @@ struct Pacer {
     bool uncapped()const{return unlimited;}
     std::uint64_t schedule_generation()const{return resets;}
     bool midpoint_has_budget()const{return budget.permits(now,next,period);}
+    Clock::time_point midpoint_preparation_deadline()const{
+        return next-period/2-budget.preparation()-sma3::kPresentationServiceLead;
+    }
     bool midpoint_preparation_due()const{
-        return now>=next-period/2-budget.preparation()-sma3::kPresentationServiceLead;
+        return now>=midpoint_preparation_deadline();
     }
     bool wait_for_midpoint(){
         if(!sma3::midpoint_is_timely(now,next,period))return false;

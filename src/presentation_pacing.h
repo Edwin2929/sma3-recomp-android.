@@ -1,6 +1,7 @@
 #pragma once
 
 #include "frame_interpolation.h"
+#include "cooperative_presentation.h"
 #include <algorithm>
 #include <atomic>
 #include <chrono>
@@ -134,6 +135,8 @@ public:
     using Clock = std::chrono::steady_clock;
     using Duration = std::chrono::nanoseconds;
 
+    CooperativePresentationPoll& cooperative_poll() noexcept { return poll_; }
+
     // Normal polls return immediately until preparation is due. At a guest
     // boundary, force=true flushes any still-pending image BEFORE the caller
     // changes HostWindow geometry or replaces its framebuffer. Late images
@@ -141,10 +144,10 @@ public:
     template<class Pacer, class Presenter>
     bool service(Pacer* pacer, bool double_rate, bool realtime,
                  std::uint64_t epoch, Presenter presenter, bool force = false) {
-        if (!pending_) return false;
+        if (!poll_.armed()) return false;
         if (!pacer || !realtime || !double_rate || pacer->uncapped() ||
             epoch != epoch_ || pacer->schedule_generation() != generation_) {
-            pending_ = false;
+            poll_.cancel();
             return false;
         }
         const auto now = pacer->current_time();
@@ -153,7 +156,7 @@ public:
 #endif
         if (now < execution_started_ ||
             now - execution_started_ > std::chrono::milliseconds(100)) {
-            pending_ = false;
+            poll_.cancel();
             return false;
         }
         // Rendering the mandatory image may have raised the measured cost
@@ -163,7 +166,7 @@ public:
 #if defined(SMA3_PRESENTATION_DIAGNOSTICS)
             ++presentation_diagnostics::collector().total_budget_cancellations;
 #endif
-            pending_ = false;
+            poll_.cancel();
             deferred_succeeded_ = false;
             return false;
         }
@@ -173,7 +176,7 @@ public:
 #endif
             return false;
         }
-        pending_ = false;  // protect against callback re-entry
+        poll_.cancel();  // protect against callback re-entry
         if (!pacer->midpoint_has_budget()) {
             deferred_succeeded_ = false;
             return false;
@@ -246,9 +249,12 @@ public:
         service_elapsed_ = Duration::zero();
         // History and mandatory rendering have now been measured. Do not arm
         // an extra image using the cheaper estimate from before that work.
-        pending_ = can_double && has_total_budget(pacer);
+        if (can_double && has_total_budget(pacer))
+            poll_.arm(pacer->midpoint_preparation_deadline(), execution_started_);
+        else
+            poll_.cancel();
 #if defined(SMA3_PRESENTATION_DIAGNOSTICS)
-        presentation_diagnostics::collector().pending_armed(execution_started_, pending_);
+        presentation_diagnostics::collector().pending_armed(execution_started_, poll_.armed());
         presentation_diagnostics::collector().frame_costs(guest_, history_preparation_,
             pacer->preparation_cost(), pacer->swap_cost());
 #endif
@@ -275,13 +281,14 @@ private:
     void reset() {
         blend_.reset();
         full_.clear();
-        pending_ = deferred_succeeded_ = was_realtime_ = false;
+        poll_.cancel();
+        deferred_succeeded_ = was_realtime_ = false;
         guest_ = history_preparation_ = service_elapsed_ = Duration::zero();
         execution_started_ = {};
     }
     FrameBlend blend_;
     std::vector<std::uint8_t> full_;
-    bool pending_ = false;
+    CooperativePresentationPoll poll_;
     bool deferred_succeeded_ = false;
     bool was_realtime_ = false;
     bool was_double_ = false;

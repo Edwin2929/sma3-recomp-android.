@@ -1,0 +1,138 @@
+diff --git a/src/runtime/host_platform.cpp b/src/runtime/host_platform.cpp
+--- a/src/runtime/host_platform.cpp
++++ b/src/runtime/host_platform.cpp
+@@ -57,9 +57,12 @@
+ bool FramePacer::midpoint_has_budget() const {
+     return !uncapped_ && presentation_budget_.permits(clock::now(), next_, period_);
+ }
++FramePacer::clock::time_point FramePacer::midpoint_preparation_deadline() const {
++    return next_ - period_ / 2 -
++        presentation_budget_.preparation() - sma3::kPresentationServiceLead;
++}
+ bool FramePacer::midpoint_preparation_due() const {
+-    return !uncapped_ && clock::now() >= next_ - period_ / 2 -
+-        presentation_budget_.preparation() - sma3::kPresentationServiceLead;
++    return !uncapped_ && clock::now() >= midpoint_preparation_deadline();
+ }
+ void FramePacer::note_presentation_preparation(std::chrono::nanoseconds duration) {
+     presentation_budget_.observe_preparation(duration, period_);
+diff --git a/src/runtime/host_platform.h b/src/runtime/host_platform.h
+--- a/src/runtime/host_platform.h
++++ b/src/runtime/host_platform.h
+@@ -50,6 +50,7 @@
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     // Nonblocking admission before optional rendering; never advances time.
+     bool midpoint_has_budget() const;
++    std::chrono::steady_clock::time_point midpoint_preparation_deadline() const;
+     bool midpoint_preparation_due() const;
+     std::chrono::steady_clock::time_point current_time() const {
+         return std::chrono::steady_clock::now();
+diff --git a/src/runtime/runtime.cpp b/src/runtime/runtime.cpp
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -100,7 +100,7 @@
+ void runtime_set_frame_present_hook(std::function<bool()>);
+ void runtime_set_host_service_hook(std::function<void()>);
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-void runtime_set_host_presentation_hook(std::function<void()>);
++void runtime_set_host_presentation_hook(std::function<void()>, sma3::CooperativePresentationPoll*);
+ #endif
+ void runtime_set_frame_start_hook(std::function<void()>);
+ void runtime_set_vblank_input_hook(std::function<void()>);
+@@ -3679,7 +3679,8 @@
+             }, force);
+     };
+     if (args.window) {
+-        runtime_set_host_presentation_hook([&]() { service_sma3_presentation(false); });
++        runtime_set_host_presentation_hook([&]() { service_sma3_presentation(false); },
++                                          &sma3_presentation.cooperative_poll());
+     }
+ #endif
+     auto present_game_frame = [&]() {
+@@ -3711,7 +3712,7 @@
+     // captured renderer/pacer after its runner has returned.
+     struct ClearPresentationHooks {
+         ~ClearPresentationHooks() {
+-            runtime_set_host_presentation_hook(nullptr);
++            runtime_set_host_presentation_hook(nullptr, nullptr);
+             runtime_set_host_service_hook(nullptr);
+             runtime_set_frame_present_hook(nullptr);
+         }
+@@ -4262,7 +4263,7 @@
+     runtime_set_frame_present_hook(nullptr);
+     runtime_set_host_service_hook(nullptr);
+ #ifdef SMA3_FRAME_INTERPOLATION
+-    runtime_set_host_presentation_hook(nullptr);
++    runtime_set_host_presentation_hook(nullptr, nullptr);
+ #endif
+     frame_phase.dump();  // HP-002: flush the phase ring (env-gated CSV)
+     // HP-002: flush the opt-in MMIO write ring (gba_io.cpp) to CSV.
+diff --git a/src/runtime/runtime_bus_bridge.cpp b/src/runtime/runtime_bus_bridge.cpp
+--- a/src/runtime/runtime_bus_bridge.cpp
++++ b/src/runtime/runtime_bus_bridge.cpp
+@@ -16,7 +16,7 @@
+ #include "../gba/gba_m4a.h"
+ #include "../gba/gba_ppu.h"
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-#include "frame_interpolation.h"
++#include "cooperative_presentation.h"
+ #endif
+ #if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+ #include "presentation_diagnostics.h"
+@@ -76,6 +76,7 @@
+ // Immutable-frame presentation only. It never pumps guest input or mutates
+ // emulated state, and runs on the existing SDL/guest thread.
+ std::function<void()> g_host_presentation_hook;
++sma3::CooperativePresentationPoll* g_host_presentation_poll = nullptr;
+ #endif
+ // Optional game-owned extended-view policy. It runs on the emulation thread at
+ // the exact frame boundary, before scanline 0 of the next frame is composed.
+@@ -724,26 +725,24 @@
+     // Check the optional half-period image during long guest frames. Keep
+     // ordinary event service below at its original cadence; rendering polls
+     // must not cause repeated input/save-state processing inside an instruction.
+-    if (g_host_presentation_hook) {
+-        static uint32_t presentation_tick_divider = 0;
+-        if ((++presentation_tick_divider & 0x3FFu) == 0 &&
+-            sma3::interpolation_enabled.load(std::memory_order_relaxed)) {
+-            static auto last_presentation_poll = std::chrono::steady_clock::now();
++    if (g_host_presentation_poll) {
++        g_host_presentation_poll->poll([] {
+             const auto now = std::chrono::steady_clock::now();
+ #if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+             sma3::presentation_diagnostics::collector().clock_check(now);
+ #endif
+-            if (now - last_presentation_poll >= std::chrono::milliseconds(1)) {
+-                last_presentation_poll = now;
++            return now;
++        }, [](const auto now) {
+ #if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+-                sma3::presentation_diagnostics::collector().callback_started(now);
++            sma3::presentation_diagnostics::collector().callback_started(now);
++#else
++            (void)now;
+ #endif
+-                g_host_presentation_hook();
++            g_host_presentation_hook();
+ #if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+-                sma3::presentation_diagnostics::collector().callback_finished(now, std::chrono::steady_clock::now());
++            sma3::presentation_diagnostics::collector().callback_finished(now, std::chrono::steady_clock::now());
+ #endif
+-            }
+-        }
++        });
+     }
+ #endif
+ 
+@@ -987,8 +986,10 @@
+ }
+ 
+ #if defined(SMA3_FRAME_INTERPOLATION)
+-void runtime_set_host_presentation_hook(std::function<void()> h) {
++void runtime_set_host_presentation_hook(std::function<void()> h,
++                                        sma3::CooperativePresentationPoll* poll) {
+     g_host_presentation_hook = std::move(h);
++    g_host_presentation_poll = g_host_presentation_hook ? poll : nullptr;
+ }
+ #endif
+ 

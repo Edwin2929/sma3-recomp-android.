@@ -1,5 +1,6 @@
 #include "widescreen.h"
 #include "widescreen_tiles.h"
+#include "widescreen_tile_cache.h"
 #include "widescreen_edges.h"
 #include "widescreen_objects.h"
 #include "widescreen_strips.h"
@@ -27,6 +28,7 @@ bool gameplay = false;
 bool observing = false;
 bool ready = false;
 EdgeTileCache edge_tiles;
+RasterTileCache raster_tiles;
 ObjectPositions positions;
 std::array<ObjectPositions,3> submissions;
 unsigned submission_count=0;
@@ -152,12 +154,13 @@ int tile(int layer, int x, int y, uint16_t* output) {
     if (ready && layer < 2 && (wx < 0 || wx >= 4096) &&
         edge_tiles.tile(read, layer, wx, wy, output))
         return gba::kWsTilemapReplace;
-    const bool available=layer<2 ? foreground_tile(read,wx,wy,layer,output)
-        : background_tile(read,wx,wy,layer,image_rows[layer-2],output);
+    const bool available=raster_tiles.tile(read,layer,x,y,wx,wy,
+        layer<2 ? 0u : image_rows[layer-2],output);
     return available ? gba::kWsTilemapReplace : gba::kWsTilemapUnavailable;
 }
 void clear_observations() {
     edge_tiles.clear();
+    raster_tiles.clear();
     positions={}; submissions={}; strips={}; emitted={}; screen_objects={};
     window_copies={}; hazard64={}; submission_count=0;
     bounds_calls=0; bounds_extra_candidates=0; ready=false;
@@ -191,6 +194,7 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info, bool enabled) {
     // World maps may change after a block breaks or a state is restored.
     // Cache only the rows requested during this rasterized frame.
     edge_tiles.begin_frame();
+    raster_tiles.begin_frame();
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
         g_runtime_fn_entry_hook=object_submission;
     memory=gbarecomp::active_bus();

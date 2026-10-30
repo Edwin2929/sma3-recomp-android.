@@ -1,0 +1,273 @@
+{
+  "kind": "panorama_tile_cache_validation",
+  "version": "0.10.14-beta",
+  "result": "PASS",
+  "baseline": "0.10.13-beta",
+  "cache_bytes": 128,
+  "source_sha256": {
+    "src/widescreen.cpp": "13ba0b8078670ae96e11011c56f6890a37eb312d79928bcc152728b8d677ebbd",
+    "src/widescreen_tile_cache.h": "abb22e04484d4e7419b8a1072e6f86e451c935f74a1b68bb0c12282fb69a6de2",
+    "validation/widescreen_tile_cache_test.cpp": "aade6b4278fb8d7c182dadb9ea58cd464bcc843eb90c0616ee1a5c16cfae3631",
+    "validation/widescreen_tile_cache_benchmark.cpp": "8f5f96582f216fb91aa1755541f9009177f661afb4425497fa6cc8f44a2364c5"
+  },
+  "unit": {
+    "result": "PASS",
+    "checks": 66221603,
+    "differential_lookups": 14311186,
+    "cache_bytes": 128,
+    "raster_source_reads_before": 33146480,
+    "raster_source_reads_after": 4450980
+  },
+  "benchmark_method": {
+    "clock": "CLOCK_THREAD_CPUTIME_ID",
+    "cpu_affinity": [
+      8
+    ],
+    "rounds": 7,
+    "frames_per_sample": 200,
+    "order": "AB then BA, alternating each round",
+    "source_read_instrumentation": "counts measured separately; no read counters in timed loops",
+    "input": "frozen private GBAS v2 snapshots and verified ROM",
+    "unchanged_paths": [
+      "native center",
+      "complete BG3 wrapped map",
+      "existing exterior edge cache"
+    ],
+    "limits": [
+      "Tile lookup workload only, not the complete PPU or presentation.",
+      "Host CPU results do not measure Android GPU, FPS, thermal behavior or battery life."
+    ]
+  },
+  "cases": [
+    {
+      "kind": "frozen_scene_tile_lookup_cpu",
+      "result": "PASS",
+      "cache_bytes": 128,
+      "width": 356,
+      "frames_per_sample": 200,
+      "compared_entries": 74240,
+      "source_reads_before": 112200,
+      "source_reads_after": 16200,
+      "image_rows": [
+        64,
+        32
+      ],
+      "scenarios": [
+        {
+          "name": "baseline",
+          "median_cpu_ms_per_frame": 0.758047,
+          "cpu_samples_ms": [
+            0.778817,
+            0.758047,
+            0.75026,
+            0.857173,
+            0.75943,
+            0.736225,
+            0.745121
+          ]
+        },
+        {
+          "name": "cached",
+          "median_cpu_ms_per_frame": 0.632419,
+          "cpu_samples_ms": [
+            0.623211,
+            0.632419,
+            0.619386,
+            0.725042,
+            0.631714,
+            0.658987,
+            0.638334
+          ]
+        }
+      ],
+      "limit": "Host thread CPU helper workload only; timing omits read counters and excludes PPU/GPU/Android/display FPS",
+      "scene": "reference-level0-left",
+      "state_sha256": "622c9c912860b7f68aea66667b374f7f7a1214a3644e4852c97a3420706a8025",
+      "rom_sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941"
+    },
+    {
+      "kind": "frozen_scene_tile_lookup_cpu",
+      "result": "PASS",
+      "cache_bytes": 128,
+      "width": 356,
+      "frames_per_sample": 200,
+      "compared_entries": 55680,
+      "source_reads_before": 112160,
+      "source_reads_after": 16160,
+      "image_rows": [
+        64,
+        128
+      ],
+      "scenarios": [
+        {
+          "name": "baseline",
+          "median_cpu_ms_per_frame": 0.667749,
+          "cpu_samples_ms": [
+            0.667749,
+            0.692066,
+            0.941274,
+            0.642414,
+            0.678389,
+            0.641854,
+            0.65316
+          ]
+        },
+        {
+          "name": "cached",
+          "median_cpu_ms_per_frame": 0.531648,
+          "cpu_samples_ms": [
+            0.49628,
+            0.64688,
+            0.516632,
+            0.555114,
+            0.531648,
+            0.552982,
+            0.509
+          ]
+        }
+      ],
+      "limit": "Host thread CPU helper workload only; timing omits read counters and excludes PPU/GPU/Android/display FPS",
+      "scene": "reference-castle-left-wall",
+      "state_sha256": "a7f668a8fedc5d9432638edc9eb22275d9f63059e1b54c4eee5324f528908889",
+      "rom_sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941"
+    },
+    {
+      "kind": "frozen_scene_tile_lookup_cpu",
+      "result": "PASS",
+      "cache_bytes": 128,
+      "width": 356,
+      "frames_per_sample": 200,
+      "compared_entries": 74240,
+      "source_reads_before": 114008,
+      "source_reads_after": 16456,
+      "image_rows": [
+        64,
+        32
+      ],
+      "scenarios": [
+        {
+          "name": "baseline",
+          "median_cpu_ms_per_frame": 0.748736,
+          "cpu_samples_ms": [
+            0.778567,
+            0.74273,
+            0.748736,
+            0.792759,
+            0.75605,
+            0.720542,
+            0.747478
+          ]
+        },
+        {
+          "name": "cached",
+          "median_cpu_ms_per_frame": 0.623125,
+          "cpu_samples_ms": [
+            0.695615,
+            0.600818,
+            0.647385,
+            0.623036,
+            0.623125,
+            0.61255,
+            0.647402
+          ]
+        }
+      ],
+      "limit": "Host thread CPU helper workload only; timing omits read counters and excludes PPU/GPU/Android/display FPS",
+      "scene": "reference-castle-right",
+      "state_sha256": "f6099d90d5d95b1067e436047f6c34e94ec1af0d27841d398dbfb79ba906ed1e",
+      "rom_sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941"
+    },
+    {
+      "kind": "frozen_scene_tile_lookup_cpu",
+      "result": "PASS",
+      "cache_bytes": 128,
+      "width": 356,
+      "frames_per_sample": 200,
+      "compared_entries": 74240,
+      "source_reads_before": 204160,
+      "source_reads_after": 28160,
+      "image_rows": [
+        64,
+        32
+      ],
+      "scenarios": [
+        {
+          "name": "baseline",
+          "median_cpu_ms_per_frame": 0.931876,
+          "cpu_samples_ms": [
+            0.903118,
+            0.968408,
+            0.914888,
+            1.009653,
+            0.931876,
+            0.9326,
+            0.891235
+          ]
+        },
+        {
+          "name": "cached",
+          "median_cpu_ms_per_frame": 0.69398,
+          "cpu_samples_ms": [
+            0.715223,
+            0.646893,
+            0.918693,
+            0.746607,
+            0.69398,
+            0.65313,
+            0.681525
+          ]
+        }
+      ],
+      "limit": "Host thread CPU helper workload only; timing omits read counters and excludes PPU/GPU/Android/display FPS",
+      "scene": "car-interior",
+      "state_sha256": "f810aff15a8bda2b1187bcc8ca3ceac71793b0c0ec8e1c7b682d5421b3b823d4",
+      "rom_sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941"
+    },
+    {
+      "kind": "frozen_scene_tile_lookup_cpu",
+      "result": "PASS",
+      "cache_bytes": 128,
+      "width": 356,
+      "frames_per_sample": 200,
+      "compared_entries": 74240,
+      "source_reads_before": 205360,
+      "source_reads_after": 28328,
+      "image_rows": [
+        64,
+        32
+      ],
+      "scenarios": [
+        {
+          "name": "baseline",
+          "median_cpu_ms_per_frame": 0.917737,
+          "cpu_samples_ms": [
+            0.917901,
+            0.88612,
+            0.912498,
+            0.960248,
+            0.879837,
+            0.917737,
+            0.962539
+          ]
+        },
+        {
+          "name": "cached",
+          "median_cpu_ms_per_frame": 0.646147,
+          "cpu_samples_ms": [
+            0.645069,
+            0.653255,
+            0.657372,
+            0.646147,
+            0.626328,
+            0.682515,
+            0.642877
+          ]
+        }
+      ],
+      "limit": "Host thread CPU helper workload only; timing omits read counters and excludes PPU/GPU/Android/display FPS",
+      "scene": "fuzzy-entry",
+      "state_sha256": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+      "rom_sha256": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941"
+    }
+  ]
+}

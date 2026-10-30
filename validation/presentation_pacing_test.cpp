@@ -29,8 +29,11 @@ struct FakePacer {
     Ns preparation_cost() const { return budget.preparation(); }
     Ns swap_cost() const { return budget.swap(); }
     std::uint64_t schedule_generation() const { return resets; }
+    Clock::time_point midpoint_preparation_deadline() const {
+        return next - period / 2 - budget.preparation() - sma3::kPresentationServiceLead;
+    }
     bool midpoint_preparation_due() const {
-        return now >= next - period / 2 - budget.preparation() - sma3::kPresentationServiceLead;
+        return now >= midpoint_preparation_deadline();
     }
     bool midpoint_has_budget() const { return !unlimited && budget.permits(now, next, period); }
     bool wait_for_midpoint() {

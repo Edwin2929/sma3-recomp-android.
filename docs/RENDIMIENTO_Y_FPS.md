@@ -1,4 +1,4 @@
-# Rendimiento y objetivos de 60/120 FPS — 0.10.12 beta
+# Rendimiento y objetivos de 60/120 FPS — 0.10.14 beta
 
 Abre **Atrás → Rendimiento y FPS → Objetivo de presentación** y elige
 **60 FPS** o **120 FPS · mezcla 2×**. La elección se guarda al tocarla.
@@ -14,7 +14,27 @@ La opción 120 añade imágenes de presentación; no genera 120 estados
 independientes del juego. La mezcla puede producir estelas. El código conserva
 la detección de cambios de escena para evitar mezclar imágenes incompatibles.
 
-## Correcciones de 0.10.12
+## Optimizaciones de 0.10.14
+
+La búsqueda de terreno de los laterales panorámicos reutiliza el resultado
+para píxeles consecutivos del mismo bloque y fila. La caché ocupa 128 bytes,
+se renueva en cada fotograma y vuelve a leer al cambiar de fila, celda o
+escena. No conserva un mapa completo que pueda quedar obsoleto.
+
+El servicio cooperativo de 120 solo consulta el reloj cuando tiene una imagen
+pendiente. Al muestrear su plazo de preparación, ya no espera una compuerta
+independiente de 1 ms. Se conserva el muestreo amortizado y las comprobaciones
+de presupuesto, carga, época, pausa y modo antes de presentar.
+
+El objetivo es reducir trabajo repetido y demoras evitables. Las mediciones
+de componentes y SDL software no demuestran un porcentaje equivalente de
+FPS ni de batería en Android. No cambian el modo de imagen, la resolución o
+el filtro elegidos para obtener una cifra más alta.
+
+[Pruebas de 0.10.14](../validation/PERFORMANCE_0.10.14_VALIDATION.md) ·
+[Notas y APK](releases/v0.10.14-beta.md).
+
+## Correcciones conservadas de 0.10.12
 
 Un tirón aislado podía seguir suprimiendo imágenes adicionales después de
 volver a una carga normal, porque su duración se conservaba en una estimación
@@ -174,7 +194,7 @@ presentación; no acreditan estabilidad sostenida en un Pixel 7 Pro.
 
 ## Comprobación en el teléfono
 
-1. Instala 0.10.12 sobre la versión anterior, sin desinstalarla, y anota la versión de Android.
+1. Instala 0.10.14 sobre la versión anterior, sin desinstalarla, y anota la versión de Android.
 2. Activa el ajuste de pantalla fluida/alta frecuencia del teléfono y
    comprueba su modo de ahorro de batería.
 3. Empieza con Original (3:2), filtro Equilibrado y resolución Automática.
@@ -198,7 +218,7 @@ Las pruebas de reloj simulado, puntos intermedios tardíos, cambios de modo,
 reinicios, contador y política de selección de pantalla se documentan en
 [PERFORMANCE_0.10.5_VALIDATION.md](../validation/PERFORMANCE_0.10.5_VALIDATION.md).
 La compilación ARM64 y las comprobaciones del APK están en
-[android-0.10.12-build.json](../validation/android-0.10.12-build.json).
+[android-0.10.14-build.json](../validation/android-0.10.14-build.json).
 No se dispone de una prueba física de este APK ni de una medición de su GPU Android.
 
 Referencias oficiales:

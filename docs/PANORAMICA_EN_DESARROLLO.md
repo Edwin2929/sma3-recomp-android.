@@ -1,4 +1,14 @@
-# Panorámica real — Android 0.10.13 beta
+# Panorámica real — Android 0.10.14 beta
+
+## Eficiencia del dibujo en 0.10.14
+
+El proveedor de terreno reutiliza el bloque consultado por píxeles contiguos
+de una misma fila. La caché fija ocupa 128 bytes y se renueva al cambiar de
+fila, bloque, fotograma o estado. Los gráficos y las restricciones de cobertura
+de 0.10.13 se mantienen; esta optimización no habilita escenas nuevas.
+
+[Resultados y alcance](../validation/PERFORMANCE_0.10.14_VALIDATION.md) ·
+[Notas de 0.10.14](releases/v0.10.14-beta.md).
 
 ## Remate decorativo de los extremos en 0.10.13
 

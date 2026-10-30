@@ -39,6 +39,10 @@ def main():
     parser.add_argument('--sdl-include', type=Path,
                         default=ROOT.parent / 'gbarecomp/platform/android/third_party/SDL/include')
     parser.add_argument('--timeout', type=float, default=90)
+    parser.add_argument('--allow-empty-diagnostics', action='store_true',
+                        help='For a separately verified diagnostic build: allow no collector record '
+                             'only when SDL measured exactly the mandatory presentations. '
+                             'Missing internal metrics remain unavailable, not zero-filled.')
     args = parser.parse_args()
     if not sys.platform.startswith('linux'):
         parser.error('Requires Linux LD_PRELOAD and SDL2')
@@ -103,13 +107,20 @@ def main():
 def summarize(args, out):
     """Read one completed private run without re-executing the game."""
     log = (out / 'runner.log').read_text()
-    def record(prefix):
+    def record(prefix, allow_empty=False):
         rows = [line[len(prefix):] for line in log.splitlines() if line.startswith(prefix)]
+        if not rows and allow_empty:
+            return None
         if len(rows) != 1:
             raise RuntimeError('Expected one record: ' + prefix)
         return json.loads(rows[0])
-    diagnostics = record('[presentation-diagnostics] ')
+    diagnostics = record('[presentation-diagnostics] ', args.allow_empty_diagnostics)
     timing = record('[sdl-presentation-timing] ')
+    optional_presentations = timing['completed_present_calls'] - args.frames
+    if optional_presentations < 0 or (diagnostics is None and optional_presentations != 0):
+        raise RuntimeError('SDL presentation count disagrees with missing diagnostic record')
+    if diagnostics is not None and diagnostics['optional_success'] != optional_presentations:
+        raise RuntimeError('SDL optional presentation count disagrees with diagnostic record')
     coverage = json.loads((out / 'coverage.json').read_text())
     if (coverage.get('coverage') != 'FULLY_STATIC' or
             any(coverage.get(k) != 0 for k in ('distinct_misses', 'interpreted_insns', 'healed_native', 'failed'))):
@@ -131,7 +142,9 @@ def summarize(args, out):
     result = dict(scope='native_game_with_host_software_sdl_not_phone_fps', frames=args.frames,
                   fps=args.fps, drawable=args.drawable, mode=args.mode, filter=args.filter,
                   quality=args.quality, controls=bool(args.controls), timing=timing,
-                  diagnostics=diagnostics, final_runtime=final, final_png_sha256=sha(out / 'final.png'),
+                  diagnostics=diagnostics, diagnostics_available=diagnostics is not None,
+                  optional_presentations_measured=optional_presentations,
+                  final_runtime=final, final_png_sha256=sha(out / 'final.png'),
                   input_sha256={name: sha(getattr(args, name)) for name in
                                 ('runner', 'rom', 'bios', 'state', 'config')},
                   coverage='FULLY_STATIC', result='PASS')
@@ -139,8 +152,9 @@ def summarize(args, out):
         result['input_sha256']['actions'] = sha(args.actions)
     (out / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'result': 'PASS', 'timing': timing,
-                      'extra_presentations': diagnostics['optional_success'],
-                      'late_admissions': diagnostics['admission_late']}, indent=2))
+                      'extra_presentations': optional_presentations,
+                      'diagnostics_available': diagnostics is not None,
+                      'late_admissions': diagnostics['admission_late'] if diagnostics else None}, indent=2))
 
 
 if __name__ == '__main__':
