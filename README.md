@@ -2,7 +2,24 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.12 beta — rendimiento y recuperación del modo 120
+## Versión actual: 0.10.13 beta — remate decorativo de los bordes panorámicos
+
+**Panorámica (beta)** prolonga el terreno en los extremos exteriores del mapa
+para evitar que el suelo o una pared de piedra terminen bruscamente junto a
+un espacio vacío. Usa una franja de 32 píxeles del propio terreno, con sus
+colores, transparencias y textura; el cielo y los fondos conservan su dibujo.
+Se aplica automáticamente al seleccionar **Atrás → Imagen → Panorámica (beta)**.
+
+El añadido es decorativo: **no amplía la zona jugable ni elimina las paredes
+invisibles**. Se limita a los extremos comprobados del mapa; no rellena huecos
+interiores ni deduce paredes a partir de un límite de cámara. Las bandas de
+protección de Fuzzy, las transiciones y las escenas sin cobertura se mantienen.
+
+[Notas de 0.10.13](docs/releases/v0.10.13-beta.md) ·
+[Pruebas y límites](validation/PANORAMA_EDGES_0.10.13_VALIDATION.md) ·
+[Guía de imagen](docs/CALIDAD_IMAGEN.md#usar-panorámica-beta).
+
+### Optimizaciones conservadas de 0.10.12 — rendimiento del modo 120
 
 Se reduce trabajo repetido del reloj de vídeo y de los filtros. El planificador
 recupera antes las imágenes adicionales después de un tirón aislado; mantiene
@@ -137,7 +154,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.12 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
+0.10.13 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -251,12 +268,12 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.12**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.13**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
 | **Original (3:2)** | Conserva los **240 × 160** originales, centrados y con bandas cuando hacen falta. Predeterminada en una instalación nueva. |
-| **Panorámica (beta)** | Muestra más escenario en las escenas compatibles. Conserva las proporciones y usa bandas durante efectos o escenas sin cobertura. Incluye un aviso de fase temprana. |
+| **Panorámica (beta)** | Muestra más escenario y remata los extremos exteriores del mapa con terreno decorativo. Conserva las proporciones y los límites jugables; usa bandas durante efectos o escenas sin cobertura. Incluye un aviso de fase temprana. |
 | **Estirar a pantalla completa** | Llena el área disponible deformando el mismo fotograma original; no añade escenario. |
 
 La proporción original es **3:2**, porque 240 ÷ 160 = 1,5. En **0.9 y 0.9.1**,
@@ -269,38 +286,45 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.12 beta — nueva entrega
+### APK 0.10.13 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.12-beta-arm64.apk`**, versión `0.10.12-beta`,
-código **23**, ARM64 y Android 9 o posterior. Incluye la recuperación más rápida
-del modo 120 después de tirones, el reloj PPU optimizado y la eliminación de
-subidas y copias de textura redundantes. Conserva los 26 logros, su animación,
-el color de Yoshi, filtros, mods, controles y Panorámica (beta).
+Archivo: **`sma3-recomp-0.10.13-beta-arm64.apk`**, versión `0.10.13-beta`,
+código **24**, ARM64 y Android 9 o posterior. Añade el remate decorativo del
+terreno en los extremos exteriores de Panorámica (beta). Conserva las
+optimizaciones de 0.10.12, los 26 logros, su animación, el color de Yoshi,
+filtros, mods, controles y el actualizador.
 
 Instálalo encima de la versión anterior, sin desinstalarla ni borrar datos.
 Conserva el paquete y el certificado y aumenta el código de versión. Desde
 0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el mantenedor haya
 publicado el archivo con el nombre admitido.
-[Instalación y datos del APK](docs/releases/v0.10.12-beta.md).
+[Instalación y datos del APK](docs/releases/v0.10.13-beta.md).
 
-### Publicación verificada: APK 0.10.11 beta
+### Publicación verificada: APK 0.10.12 beta
 
-En la consulta del **30 de octubre de 2026**, la release pública
+En la consulta de preparación de 0.10.13, la release pública
 **Descarga** contiene
-[**sma3-recomp-0.10.11-beta-arm64.1.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.11-beta-arm64.1.apk).
+[**sma3-recomp-0.10.12-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.12-beta-arm64.apk).
 Su tamaño es **28.017.944 bytes** y su SHA-256 coincide con el APK entregado:
-`b596fbf6fba4a8176dcb4a4d292ecacb733f2fac7afa852b2eb129c3ff1ccaa5`.
-El sufijo adicional `.1` permite la descarga manual, pero no coincide con el
-patrón que utiliza el actualizador. Para esta nueva entrega conserva exactamente
-el nombre **`sma3-recomp-0.10.12-beta-arm64.apk`**.
+`60766c6dbf46ea9aeb48843bce610bd54ae860a56bed2f657271567ab0f8a81d`.
+El nombre coincide con el patrón del actualizador. Para esta nueva entrega
+conserva exactamente **`sma3-recomp-0.10.13-beta-arm64.apk`**.
 
-El APK 0.10.12 aparecerá en
+El APK 0.10.13 aparecerá en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga)
 cuando el mantenedor lo adjunte manualmente. Publicar el código en `main`
 no publica el APK. Las indicaciones de disponibilidad en notas anteriores
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.13:** pruebas de coordenadas, caché y volteos del relleno, comparaciones
+del centro original y de los estados del juego en ambos extremos del mapa,
+movimiento y transiciones. Se conserva la política de protección de Fuzzy y
+las ventanas. No equivale a cubrir todas las paredes interiores ni a una
+medición física en Pixel 7 Pro.
+[Validación y alcance](validation/PANORAMA_EDGES_0.10.13_VALIDATION.md) ·
+[APK](validation/android-0.10.13-build.json).
 
 **0.10.12:** comparación diferencial del reloj PPU, recuperación del presupuesto
 con reloj controlado, equivalencia de píxeles de los filtros y replays del juego
@@ -619,8 +643,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.12 en Pixel 7 Pro: los 26 logros, animación, actualización del registro anterior, suspensión y continuidad de Yo shi pude, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.12, comparando la zona de la captura de 65,2 FPS.
+- Probar 0.10.13 en Pixel 7 Pro: continuidad visual en los extremos panorámicos, los 26 logros, animación, suspensión y continuidad de Yo shi pude, color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.13, comparando la zona de la captura de 65,2 FPS.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

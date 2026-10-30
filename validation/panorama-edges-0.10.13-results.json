@@ -1,0 +1,2164 @@
+{
+  "result": "PASS",
+  "feature": "Panorama decoration beyond global world edges",
+  "candidate_runner_sha256": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+  "baseline_runner_sha256": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+  "cases": 9,
+  "widths": [
+    240,
+    347,
+    356
+  ],
+  "totals": {
+    "guest_frames": 969,
+    "trace_rows_equal": 978,
+    "sampled_captures": 39,
+    "compared_states": 48,
+    "changed_margin_pixels": 103398,
+    "protected_captures": 19
+  },
+  "baseline_reused_cases": 3,
+  "candidate_replays_fresh": 9,
+  "baseline_replays_fresh_in_width_matrix": 6,
+  "baseline_reuse_note": "Three 356px references were executed during this task before candidate compilation, then reused after full identity validation. They are not counted as fresh executions of the nine-case matrix.",
+  "checker_selftest": {
+    "result": "PASS",
+    "checks": 28,
+    "cases": [
+      "exact-240",
+      "native-center-240",
+      "exact-347",
+      "native-center-347",
+      "margin-left-347",
+      "protected-left-347",
+      "wrong-side-left-347",
+      "margin-right-347",
+      "protected-right-347",
+      "wrong-side-right-347",
+      "exact-356",
+      "native-center-356",
+      "margin-left-356",
+      "protected-left-356",
+      "wrong-side-left-356",
+      "margin-right-356",
+      "protected-right-356",
+      "wrong-side-right-356",
+      "wrong-dimensions",
+      "exact-ppu",
+      "ppu-clock",
+      "ppu-native-pixels",
+      "cpu-state",
+      "inactive-rtc-only",
+      "active-rtc-rejected",
+      "real-reference-self-comparison",
+      "missing-visible-decoration-rejected",
+      "unsampled-protected-frame-rejected"
+    ]
+  },
+  "checker_optimized_selftest": {
+    "result": "PASS",
+    "checks": 28,
+    "cases": [
+      "exact-240",
+      "native-center-240",
+      "exact-347",
+      "native-center-347",
+      "margin-left-347",
+      "protected-left-347",
+      "wrong-side-left-347",
+      "margin-right-347",
+      "protected-right-347",
+      "wrong-side-right-347",
+      "exact-356",
+      "native-center-356",
+      "margin-left-356",
+      "protected-left-356",
+      "wrong-side-left-356",
+      "margin-right-356",
+      "protected-right-356",
+      "wrong-side-right-356",
+      "wrong-dimensions",
+      "exact-ppu",
+      "ppu-clock",
+      "ppu-native-pixels",
+      "cpu-state",
+      "inactive-rtc-only",
+      "active-rtc-rejected",
+      "real-reference-self-comparison",
+      "missing-visible-decoration-rejected",
+      "unsampled-protected-frame-rejected"
+    ]
+  },
+  "visual_review": {
+    "reviewed_actual_candidate_captures": [
+      "outdoor356/frame00130",
+      "castle-left356/frame00130",
+      "castle-right356/frame00003"
+    ],
+    "outdoor": "The left margin continues the existing yellow floral ground and small tulip silhouettes. Native sky/clouds remain unchanged. No extra Yoshi, HUD or enemy appears.",
+    "castle_left": "Stone floor and ceiling continue beyond the former cut; the existing carved diagonal pattern is reflected within a 32px edge band. Foreground shape meets the original boundary without blank strips.",
+    "castle_right": "The right void becomes a continuous stone wall with existing palette and masonry. The pipe remains single and unaltered.",
+    "caveat": "Artwork continuation is decorative and does not enlarge collision or playable space; only global x<0 or x>=4096 is covered."
+  },
+  "fixture_provenance": {
+    "outdoor": "The private level 0 entry is synthetic and documented separately; 360 frames of native entry followed by 100 actual LEFT inputs and 30 no-input frames reach the original x=8 wall. No player teleport in the measured replay.",
+    "castle_left": "Natural previously validated castle traversal state followed by 100 actual LEFT inputs and 30 no-input frames; original x=8 stop retained.",
+    "castle_right": "Natural previously validated right-edge castle state; 3+60 no-input frames include the original pipe transition. Three protected captured frames remain exact."
+  },
+  "runs": [
+    {
+      "scene": "outdoor",
+      "result": "PASS",
+      "width": 240,
+      "baseline_reused": false,
+      "require_change": false,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "58148e650726ba1029e1844c6f447efb0fd573ff12c56714514397515f5f74ec",
+        "actions": "ed96b2eb56b13a82bb599509663cddc148cfe34d4dbfacb3c78b99824b16d703"
+      },
+      "comparison": {
+        "trace_rows_equal": 131,
+        "guest_frames": 130,
+        "sampled_captures": 4,
+        "compared_states": 5,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 0,
+        "protected_captures": 4,
+        "captures": [
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 7283,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 100,
+            "guest_frame": 7323,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 120,
+            "guest_frame": 7343,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 130,
+            "guest_frame": 7353,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1888.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "outdoor",
+      "result": "PASS",
+      "width": 347,
+      "baseline_reused": false,
+      "require_change": true,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "58148e650726ba1029e1844c6f447efb0fd573ff12c56714514397515f5f74ec",
+        "actions": "ed96b2eb56b13a82bb599509663cddc148cfe34d4dbfacb3c78b99824b16d703"
+      },
+      "comparison": {
+        "trace_rows_equal": 131,
+        "guest_frames": 130,
+        "sampled_captures": 4,
+        "compared_states": 5,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 9970,
+        "protected_captures": 0,
+        "captures": [
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 7283,
+            "game_state": 13,
+            "changed_pixels": 2494,
+            "left_changed_pixels": 2494,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 100,
+            "guest_frame": 7323,
+            "game_state": 13,
+            "changed_pixels": 2492,
+            "left_changed_pixels": 2492,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 120,
+            "guest_frame": 7343,
+            "game_state": 13,
+            "changed_pixels": 2492,
+            "left_changed_pixels": 2492,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 130,
+            "guest_frame": 7353,
+            "game_state": 13,
+            "changed_pixels": 2492,
+            "left_changed_pixels": 2492,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1888.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "outdoor",
+      "result": "PASS",
+      "width": 356,
+      "baseline_reused": true,
+      "require_change": true,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "58148e650726ba1029e1844c6f447efb0fd573ff12c56714514397515f5f74ec",
+        "actions": "ed96b2eb56b13a82bb599509663cddc148cfe34d4dbfacb3c78b99824b16d703"
+      },
+      "comparison": {
+        "trace_rows_equal": 131,
+        "guest_frames": 130,
+        "sampled_captures": 4,
+        "compared_states": 5,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 11046,
+        "protected_captures": 0,
+        "captures": [
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 7283,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 100,
+            "guest_frame": 7323,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 120,
+            "guest_frame": 7343,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 130,
+            "guest_frame": 7353,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1888.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "castle-left",
+      "result": "PASS",
+      "width": 240,
+      "baseline_reused": false,
+      "require_change": false,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "b18fa969171707884b21a00acc7797861247abd1abc4d8bbaecdea0674d73a68",
+        "actions": "ed96b2eb56b13a82bb599509663cddc148cfe34d4dbfacb3c78b99824b16d703"
+      },
+      "comparison": {
+        "trace_rows_equal": 131,
+        "guest_frames": 130,
+        "sampled_captures": 4,
+        "compared_states": 5,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 0,
+        "protected_captures": 4,
+        "captures": [
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 6923,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 100,
+            "guest_frame": 6963,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 120,
+            "guest_frame": 6983,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 130,
+            "guest_frame": 6993,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1936.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "castle-left",
+      "result": "PASS",
+      "width": 347,
+      "baseline_reused": false,
+      "require_change": true,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "b18fa969171707884b21a00acc7797861247abd1abc4d8bbaecdea0674d73a68",
+        "actions": "ed96b2eb56b13a82bb599509663cddc148cfe34d4dbfacb3c78b99824b16d703"
+      },
+      "comparison": {
+        "trace_rows_equal": 131,
+        "guest_frames": 130,
+        "sampled_captures": 4,
+        "compared_states": 5,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 22923,
+        "protected_captures": 0,
+        "captures": [
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 6923,
+            "game_state": 13,
+            "changed_pixels": 5732,
+            "left_changed_pixels": 5732,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 100,
+            "guest_frame": 6963,
+            "game_state": 13,
+            "changed_pixels": 5729,
+            "left_changed_pixels": 5729,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 120,
+            "guest_frame": 6983,
+            "game_state": 13,
+            "changed_pixels": 5731,
+            "left_changed_pixels": 5731,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 130,
+            "guest_frame": 6993,
+            "game_state": 13,
+            "changed_pixels": 5731,
+            "left_changed_pixels": 5731,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              53,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1936.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "castle-left",
+      "result": "PASS",
+      "width": 356,
+      "baseline_reused": true,
+      "require_change": true,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "b18fa969171707884b21a00acc7797861247abd1abc4d8bbaecdea0674d73a68",
+        "actions": "ed96b2eb56b13a82bb599509663cddc148cfe34d4dbfacb3c78b99824b16d703"
+      },
+      "comparison": {
+        "trace_rows_equal": 131,
+        "guest_frames": 130,
+        "sampled_captures": 4,
+        "compared_states": 5,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 25171,
+        "protected_captures": 0,
+        "captures": [
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 6923,
+            "game_state": 13,
+            "changed_pixels": 6294,
+            "left_changed_pixels": 6294,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 100,
+            "guest_frame": 6963,
+            "game_state": 13,
+            "changed_pixels": 6291,
+            "left_changed_pixels": 6291,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 120,
+            "guest_frame": 6983,
+            "game_state": 13,
+            "changed_pixels": 6293,
+            "left_changed_pixels": 6293,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 130,
+            "guest_frame": 6993,
+            "game_state": 13,
+            "changed_pixels": 6293,
+            "left_changed_pixels": 6293,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              0,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1936.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "castle-right",
+      "result": "PASS",
+      "width": 240,
+      "baseline_reused": false,
+      "require_change": false,
+      "changed_side": "right",
+      "explicit_protected_frames": [
+        60,
+        62,
+        63
+      ],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "635c0b8f0e3795a71b5ef05a7615ef4727cbbe43dacd909c895589f0936f8334",
+        "actions": "66025f3af881aa2ee5be7dfe3aca899a444af68aa58238870f6e38f61dd28193"
+      },
+      "comparison": {
+        "trace_rows_equal": 64,
+        "guest_frames": 63,
+        "sampled_captures": 5,
+        "compared_states": 6,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 0,
+        "protected_captures": 5,
+        "captures": [
+          {
+            "elapsed_frame": 3,
+            "guest_frame": 9962,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 14,
+            "guest_frame": 9973,
+            "game_state": 9,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 10019,
+            "game_state": 9,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 62,
+            "guest_frame": 10021,
+            "game_state": 10,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 63,
+            "guest_frame": 10022,
+            "game_state": 10,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          }
+        ],
+        "final_player_xy_velocity": [
+          368.0,
+          1024.0,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 10
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "castle-right",
+      "result": "PASS",
+      "width": 347,
+      "baseline_reused": false,
+      "require_change": true,
+      "changed_side": "right",
+      "explicit_protected_frames": [
+        60,
+        62,
+        63
+      ],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "635c0b8f0e3795a71b5ef05a7615ef4727cbbe43dacd909c895589f0936f8334",
+        "actions": "66025f3af881aa2ee5be7dfe3aca899a444af68aa58238870f6e38f61dd28193"
+      },
+      "comparison": {
+        "trace_rows_equal": 64,
+        "guest_frames": 63,
+        "sampled_captures": 5,
+        "compared_states": 6,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 16516,
+        "protected_captures": 3,
+        "captures": [
+          {
+            "elapsed_frame": 3,
+            "guest_frame": 9962,
+            "game_state": 13,
+            "changed_pixels": 8256,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 8256,
+            "bounds": [
+              293,
+              0,
+              347,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 14,
+            "guest_frame": 9973,
+            "game_state": 9,
+            "changed_pixels": 8260,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 8260,
+            "bounds": [
+              293,
+              0,
+              347,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 10019,
+            "game_state": 9,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 62,
+            "guest_frame": 10021,
+            "game_state": 10,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 63,
+            "guest_frame": 10022,
+            "game_state": 10,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          }
+        ],
+        "final_player_xy_velocity": [
+          368.0,
+          1024.0,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 10
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    },
+    {
+      "scene": "castle-right",
+      "result": "PASS",
+      "width": 356,
+      "baseline_reused": true,
+      "require_change": true,
+      "changed_side": "right",
+      "explicit_protected_frames": [
+        60,
+        62,
+        63
+      ],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "635c0b8f0e3795a71b5ef05a7615ef4727cbbe43dacd909c895589f0936f8334",
+        "actions": "66025f3af881aa2ee5be7dfe3aca899a444af68aa58238870f6e38f61dd28193"
+      },
+      "comparison": {
+        "trace_rows_equal": 64,
+        "guest_frames": 63,
+        "sampled_captures": 5,
+        "compared_states": 6,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 17772,
+        "protected_captures": 3,
+        "captures": [
+          {
+            "elapsed_frame": 3,
+            "guest_frame": 9962,
+            "game_state": 13,
+            "changed_pixels": 8881,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 8881,
+            "bounds": [
+              298,
+              0,
+              356,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 14,
+            "guest_frame": 9973,
+            "game_state": 9,
+            "changed_pixels": 8891,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 8891,
+            "bounds": [
+              298,
+              0,
+              356,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 10019,
+            "game_state": 9,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 62,
+            "guest_frame": 10021,
+            "game_state": 10,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          },
+          {
+            "elapsed_frame": 63,
+            "guest_frame": 10022,
+            "game_state": 10,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": true
+          }
+        ],
+        "final_player_xy_velocity": [
+          368.0,
+          1024.0,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 10
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    }
+  ],
+  "limits": [
+    "Native Linux replay, not physical Android or FPS evidence.",
+    "39 sampled captures, not every rendered frame.",
+    "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from guest comparison; all serialized native PPU pixels and timing are equal.",
+    "No proof for all levels or internal empty screens; protected fallback margins remain intentional.",
+    "The separate temporal case captures all 60 consecutive guest frames: two unchanged restore-guard frames followed by 58 continuously decorated images. It does not establish visual correctness across the full game."
+  ],
+  "checker_sha256": "33214f97fc60f7cf15e9d95c0910ae4b4665e13d4d20c45766d9930e834b7cc6",
+  "guard_scope": {
+    "world_x": "Decoration only for x < 0 or x >= 4096.",
+    "world_y": "Valid world rows 0 <= y < 2048 only.",
+    "layers": "Foreground BG0/BG1 only; authored BG2/BG3 remain unchanged.",
+    "native_center": "Never decorates the original 240x160 viewport.",
+    "fallback": "Unsupported scenes, protected native windows and active Fuzzy tile deformation retain existing guarded presentation.",
+    "internal_rooms": "Does not infer internal player walls from camera limits, empty map cells or scroll-prevention flags."
+  },
+  "temporal_stability": {
+    "result": "PASS",
+    "purpose": "Check the concrete per-frame cache concern: decoration must not disappear intermittently while the scene remains supported.",
+    "scene": "Outdoor left global wall, native player x=8 and camera x=0 throughout.",
+    "guest_frames": 60,
+    "captured_every_frame": true,
+    "sampled_captures": 60,
+    "compared_states": 61,
+    "fixed_framebuffer_dimensions": [
+      356,
+      160
+    ],
+    "initial_restore_guard_frames": [
+      1,
+      2
+    ],
+    "initial_restore_guard_exact_to_baseline": true,
+    "first_decorated_elapsed_frame": 3,
+    "consecutive_decorated_frames": 58,
+    "decorated_pixel_count_range": [
+      2759,
+      2763
+    ],
+    "intermittent_disappearance_after_warmup": false,
+    "distinct_decorated_margin_images": 11,
+    "animation_note": "The source scenery remains animated; bit-identical consecutive margins are not required. Every post-warmup image retains decoration and an exact native center.",
+    "matrix_totals_exclude_this_additional_test": true,
+    "run": {
+      "result": "PASS",
+      "width": 356,
+      "baseline_reused": false,
+      "require_change": true,
+      "changed_side": "left",
+      "explicit_protected_frames": [],
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "622c9c912860b7f68aea66667b374f7f7a1214a3644e4852c97a3420706a8025",
+        "actions": "4e8c0861df3b910988af40b05139437a2f5424bb9da665a3b38e1b347c9eb5c3"
+      },
+      "comparison": {
+        "trace_rows_equal": 61,
+        "guest_frames": 60,
+        "sampled_captures": 60,
+        "compared_states": 61,
+        "guest_sections_equal_except_inactive_rtc": [
+          "CPU0",
+          "BUS0",
+          "IO_0",
+          "AUD0",
+          "SAV0",
+          "META"
+        ],
+        "ppu_timing_equal": true,
+        "serialized_native_framebuffers_equal": true,
+        "native_centers_equal": true,
+        "changed_margin_pixels": 160126,
+        "protected_captures": 0,
+        "captures": [
+          {
+            "elapsed_frame": 1,
+            "guest_frame": 7354,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 2,
+            "guest_frame": 7355,
+            "game_state": 13,
+            "changed_pixels": 0,
+            "left_changed_pixels": 0,
+            "right_changed_pixels": 0,
+            "bounds": null,
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 3,
+            "guest_frame": 7356,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 4,
+            "guest_frame": 7357,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 5,
+            "guest_frame": 7358,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 6,
+            "guest_frame": 7359,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 7,
+            "guest_frame": 7360,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 8,
+            "guest_frame": 7361,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 9,
+            "guest_frame": 7362,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 10,
+            "guest_frame": 7363,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 11,
+            "guest_frame": 7364,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 12,
+            "guest_frame": 7365,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 13,
+            "guest_frame": 7366,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 14,
+            "guest_frame": 7367,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 15,
+            "guest_frame": 7368,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 16,
+            "guest_frame": 7369,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 17,
+            "guest_frame": 7370,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 18,
+            "guest_frame": 7371,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 19,
+            "guest_frame": 7372,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 20,
+            "guest_frame": 7373,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 21,
+            "guest_frame": 7374,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 22,
+            "guest_frame": 7375,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 23,
+            "guest_frame": 7376,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 24,
+            "guest_frame": 7377,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 25,
+            "guest_frame": 7378,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 26,
+            "guest_frame": 7379,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 27,
+            "guest_frame": 7380,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 28,
+            "guest_frame": 7381,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 29,
+            "guest_frame": 7382,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 30,
+            "guest_frame": 7383,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 31,
+            "guest_frame": 7384,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 32,
+            "guest_frame": 7385,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 33,
+            "guest_frame": 7386,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 34,
+            "guest_frame": 7387,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 35,
+            "guest_frame": 7388,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 36,
+            "guest_frame": 7389,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 37,
+            "guest_frame": 7390,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 38,
+            "guest_frame": 7391,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 39,
+            "guest_frame": 7392,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 40,
+            "guest_frame": 7393,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 41,
+            "guest_frame": 7394,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 42,
+            "guest_frame": 7395,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 43,
+            "guest_frame": 7396,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 44,
+            "guest_frame": 7397,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 45,
+            "guest_frame": 7398,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 46,
+            "guest_frame": 7399,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 47,
+            "guest_frame": 7400,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 48,
+            "guest_frame": 7401,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 49,
+            "guest_frame": 7402,
+            "game_state": 13,
+            "changed_pixels": 2759,
+            "left_changed_pixels": 2759,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 50,
+            "guest_frame": 7403,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 51,
+            "guest_frame": 7404,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 52,
+            "guest_frame": 7405,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 53,
+            "guest_frame": 7406,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 54,
+            "guest_frame": 7407,
+            "game_state": 13,
+            "changed_pixels": 2761,
+            "left_changed_pixels": 2761,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 55,
+            "guest_frame": 7408,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 56,
+            "guest_frame": 7409,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 57,
+            "guest_frame": 7410,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 58,
+            "guest_frame": 7411,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 59,
+            "guest_frame": 7412,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          },
+          {
+            "elapsed_frame": 60,
+            "guest_frame": 7413,
+            "game_state": 13,
+            "changed_pixels": 2763,
+            "left_changed_pixels": 2763,
+            "right_changed_pixels": 0,
+            "bounds": [
+              0,
+              92,
+              58,
+              160
+            ],
+            "native_center_exact": true,
+            "protected": false
+          }
+        ],
+        "final_player_xy_velocity": [
+          8.0,
+          1888.99609375,
+          0.0,
+          0.0
+        ],
+        "final_game_state": 13
+      },
+      "limits": [
+        "Linux native replay; no physical Android, full-game or FPS claim.",
+        "Only the pinned inactive RTC wall-clock field (8 bytes) is excluded from state comparison.",
+        "Native center and serialized PPU image are exact; only sampled panorama margin pixels may change.",
+        "Snapshots do not certify every unsampled output frame; the complete per-frame guest trace is compared.",
+        "Private entry fixtures can be synthetic; their provenance must be documented separately."
+      ]
+    }
+  }
+}

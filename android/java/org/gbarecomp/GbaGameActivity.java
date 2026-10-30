@@ -283,7 +283,7 @@ public class GbaGameActivity extends SDLActivity {
         TextView warning = panel.notice(tr("Panorámica (beta) · Aviso", "Panoramic (beta) · Notice", "Panorâmica (beta) · Aviso"), betaWarning);
         panel.choices(imageModeNames(), new String[]{
             tr("Conserva las proporciones originales, sin deformar la imagen.", "Keeps the original proportions without distortion.", "Mantém as proporções originais, sem deformar a imagem."),
-            tr("Muestra más escenario en las escenas compatibles. Puede dejar bandas.", "Shows more scenery in supported scenes. Bars may remain.", "Mostra mais cenário nas cenas compatíveis. Pode deixar faixas."),
+            tr("Muestra más escenario y prolonga decorativamente los extremos del mapa. La decoración no amplía la zona jugable. Puede dejar bandas.", "Shows more scenery and adds decorative terrain beyond the map edges. Decoration does not expand the playable area. Bars may remain.", "Mostra mais cenário e prolonga os extremos do mapa com decoração. A decoração não amplia a área jogável. Pode deixar faixas."),
             tr("Llena el área de juego. Puede deformar la imagen y no amplía el escenario.", "Fills the game area. May distort the image without showing more scenery.", "Preenche a área do jogo. Pode deformar a imagem sem ampliar o cenário.")
         }, imageMode(), mode -> {
             getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("image-mode", mode).apply();

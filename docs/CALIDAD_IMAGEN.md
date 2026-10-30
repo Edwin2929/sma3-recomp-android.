@@ -6,7 +6,7 @@ el filtro y la resolución de presentación se configuran por separado.
 | Modo | Qué muestra | Proporciones |
 | --- | --- | --- |
 | **Original (3:2)** | El fotograma original completo, centrado y con bandas cuando hacen falta. | Conserva 240:160 = 3:2. |
-| **Panorámica (beta)** | Escenario adicional a los lados en las escenas compatibles, con el centro original y bandas cuando falta cobertura de la escena. | Conserva la forma de los gráficos. Puede dejar bandas. |
+| **Panorámica (beta)** | Escenario adicional en escenas compatibles y terreno decorativo en los extremos exteriores del mapa; conserva el centro original y usa bandas cuando falta cobertura. | Conserva la forma de los gráficos y los límites jugables. Puede dejar bandas. |
 | **Estirar a pantalla completa** | El mismo fotograma original ocupa toda el área disponible. | Puede deformarlo. No muestra más escenario. |
 
 Original es el valor predeterminado en una instalación nueva. Al actualizar
@@ -126,6 +126,17 @@ de la imagen a una superficie con otra proporción.
 Selecciona **Atrás → Imagen → Panorámica (beta)**. El modo amplía
 el campo de visión en las escenas que el adaptador puede reconstruir; no
 estira los 240 píxeles originales para simular una vista más ancha.
+
+**Desde 0.10.13**, los extremos exteriores del mapa tienen una continuación
+decorativa del terreno: suelo, flores o piedra según los tiles que ya existen
+en ese borde. El cielo y las nubes del fondo se conservan. El efecto se aplica
+automáticamente con este modo y **no convierte esa decoración en una zona
+transitable ni elimina las paredes invisibles**.
+
+El relleno solo se usa más allá de los extremos horizontales comprobados del
+mapa; los huecos y paredes interiores conservan su dibujo. También se conservan
+las bandas de protección durante Fuzzy y las escenas que no pueden ampliarse
+con seguridad. [Alcance y funcionamiento](PANORAMICA_EN_DESARROLLO.md#remate-decorativo-de-los-extremos-en-01013).
 
 La altura lógica permanece en **160** y el ancho se adapta a la superficie,
 entre **240 y 356**. Estos son tamaños del fotograma lógico, no la resolución

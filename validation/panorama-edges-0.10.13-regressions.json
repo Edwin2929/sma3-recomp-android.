@@ -1,0 +1,425 @@
+{
+  "schema": "sma3-panorama-edges-regressions-v1",
+  "version": "0.10.13-beta",
+  "result": "PASS",
+  "generated_utc": "2026-10-30T04:10:14.830849+00:00",
+  "scope": {
+    "feature": "Native BG0/BG1 decorative continuation outside the global horizontal world bounds",
+    "world_x_interval": [
+      0,
+      4096
+    ],
+    "world_y_interval": [
+      0,
+      2048
+    ],
+    "interval_semantics": "half-open",
+    "native_center_unchanged": true,
+    "guest_map_or_collision_writes": false,
+    "internal_camera_stops_used_as_boundaries": false,
+    "source_band_pixels": 32,
+    "reflection_period_pixels": 64,
+    "engine_or_gameplay_changes": false
+  },
+  "source_sha256": {
+    "src/widescreen.cpp": "8d060182322994ceb6142e877b0690455d73a82351fe06f2ab95b4725fa72343",
+    "src/widescreen_edges.h": "c86af0212be372bb28d92beffad35a4e998d095273860bd2b51eb5b231fabddf",
+    "src/widescreen_tiles.h": "b90a935046b2dbbac41b9c07ca99ce20b266ff612622af06cbb67e9fb74f67db",
+    "validation/widescreen_edges_test.cpp": "4798ce287010080baf8ac54129bb85f5953b114cfaa5ebd7250e054e5e372406",
+    "validation/run_panorama_session.py": "ccc8ac045ca5e1c31596ae9fd5f04813806e729f4a834d1ceb49b7f4c04725f7",
+    "validation/validate_local_achievements_gameplay.py": "4c325cd5d1450b590e70aa106c02a5eef4fff49c45fe62e8fd6e67c45c8e8877",
+    "validation/validate_yoshi_color_gameplay.py": "830560e01a876c08234470a60f3cbf2333deb626e1c50e9d6d4a26a31603a4a3",
+    "validation/compare_panorama_sessions.py": "d781cf2921d22f737e0967cb96edc9ab91f8947443c1b2f82cdfcdee1372a013",
+    "runtime.toml": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2"
+  },
+  "runner_sha256": {
+    "baseline_0_10_12": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+    "candidate_0_10_13": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61"
+  },
+  "integration_review": {
+    "result": "PASS",
+    "frame_cache_reset": "begin_frame on every enabled frame; clear_observations on enable/disable and state_epoch change",
+    "provider_scope": "Existing PPU invokes the authored provider outside native240x160 only; helper additionally refuses all in-world X",
+    "safe_fallbacks": "ready must be true before decoration; Fuzzy tile shift and unresolved windows retain existing fallback",
+    "memory_access": "Bounded const RAM/ROM reader; no guest writes or heap allocations",
+    "cache_size_bytes": 8704,
+    "cache_invalid_rows": "Failed source rows are cached until next frame and do not leak partially resolved entries",
+    "midframe_scroll": "Lazy cache covers all256 logical8pixel rows and samples source Y after live scroll"
+  },
+  "unit_test": {
+    "result": "PASS",
+    "case_count": 225181,
+    "compiler_flags": [
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Werror",
+      "-g",
+      "-O1",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer"
+    ],
+    "address_sanitizer": true,
+    "undefined_behavior_sanitizer": true,
+    "leak_sanitizer": false,
+    "leak_sanitizer_limit": "Sandbox denies /proc task inspection; ASan and UBSan remain active",
+    "cache_size_bytes": 8704,
+    "maximum_asserted_source_reads_for_first_row": 64,
+    "source_reads_for_repeated_pixels_in_resolved_row": 0,
+    "source_reads_for_guarded_invalid_input": 0,
+    "binary_sha256": "7e0a71b6c070e26ec4705bd52cd5d2b2185477c132832414ef0ccef292ece20d",
+    "captured_output": "PASS: 225181 reflected edge/quadrant/flip/extreme cases; native map guards, lazy read budget, frame reset and corrupt-pointer recovery; 8704-byte cache",
+    "captured_log_sha256": "55eeb3bd4368bfafdbba056dc10bd9e7a5f41a715ba84924850d62cfdeb50b19",
+    "coverage": [
+      "both global edges",
+      "all subpixel phases and native quadrants",
+      "native HFlip/VFlip/palettes/layer masks",
+      "INT_MIN and INT_MAX",
+      "native-map and invalid-coordinate guards",
+      "bounded first-row work and cached failures",
+      "frame reset after source updates",
+      "corrupt pointer rejection and recovery"
+    ]
+  },
+  "regressions": {
+    "fuzzy_1900_width356": {
+      "result": "PASS",
+      "width": 356,
+      "native_frames": 1900,
+      "per_frame_trace_rows_equal": 1901,
+      "capture_count": 40,
+      "changed_sampled_pixels": 0,
+      "guest_state_files_equal_except_inactive_rtc": 41,
+      "exact_guest_sections": [
+        "CPU0",
+        "BUS0",
+        "IO_0",
+        "AUD0",
+        "SAV0",
+        "META"
+      ],
+      "ppu_timing_equal": true,
+      "baseline_executed_fresh_for_this_release": true,
+      "input_identity_verified": [
+        "runner_sha256",
+        "ROM_sha256",
+        "BIOS_sha256",
+        "state_sha256",
+        "runtime_config_sha256",
+        "actions",
+        "width",
+        "trace_every_frame",
+        "capture_schedule"
+      ],
+      "stable_vehicle_captures": 0,
+      "fuzzy_recovery": {
+        "pass": true,
+        "first_effect_elapsed_frame": 1018,
+        "first_effect_guest_frame": 14418,
+        "recovery_elapsed_frame": 1800,
+        "recovery_guest_frame": 15200,
+        "active_frames": 782,
+        "maximum_amplitude": 24576,
+        "normal_frames_at_end": 101,
+        "required_normal_tail_frames": 100,
+        "observed_countdown_steps": 686,
+        "observed_amplitude_growth_steps": 191,
+        "observed_amplitude_fade_steps": 96,
+        "no_restart_or_death": true,
+        "effect_was_not_disabled": true
+      },
+      "observed_achievement_fields": {
+        "schema": 2,
+        "completed_levels": 0,
+        "perfect_levels": 0,
+        "transformations": 0,
+        "red_coins": 0,
+        "flowers": 0,
+        "stars": 0,
+        "event_flags": 1
+      },
+      "achievement_report_equal_to_baseline": true,
+      "achievement_progress": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "yo_shi_pude": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "additional_checks": {
+        "captured_camera_x_min": 264,
+        "captured_camera_x_max": 2072,
+        "sampled_global_boundaries_exposed": false,
+        "active_effect_captures": 15,
+        "active_effect_captures_black_margins": 15,
+        "active_effect_capture_frames": [
+          1018,
+          1020,
+          1080,
+          1140,
+          1150,
+          1200,
+          1260,
+          1320,
+          1380,
+          1440,
+          1500,
+          1560,
+          1620,
+          1680,
+          1740
+        ],
+        "complete_achievement_report_equal": true,
+        "progress": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "yo_shi_pude": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "final_game_state": 13,
+        "final_transformation": 0,
+        "recovery_margin_checks": [
+          {
+            "elapsed_frame": 1800,
+            "left_margin_has_scene_pixels": true,
+            "right_margin_has_scene_pixels": true
+          },
+          {
+            "elapsed_frame": 1860,
+            "left_margin_has_scene_pixels": true,
+            "right_margin_has_scene_pixels": true
+          },
+          {
+            "elapsed_frame": 1900,
+            "left_margin_has_scene_pixels": true,
+            "right_margin_has_scene_pixels": true
+          }
+        ]
+      },
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+        "actions": "3feda686b60190a08369c14843f961ce7422b4d65b2d60a1ae4f3296909214a3",
+        "expected": "befad5e5fc29f7fbed8f7309b14d53f9cc58d92c98617c01bfcd2e55e7c02067"
+      },
+      "evidence_sha256": {
+        "summary": "1b3e3cdc9eca3e00a2855177ddc0508b05b2ff24fb012812dbee9a57a1357b5e",
+        "candidate_run_log": "d9b1a708cdbcd3e7fb880d318c4ea8d340d68de06e9a235c4774990dbee4c39c",
+        "baseline_run_log": "f0cb6418962bfee643fb7ffaf93ba85c7be5b35e118eadd3e62a1f76cc321d10",
+        "candidate_trace": "86c2dcdd3942ccff8b9d285463cabb3b5bbd820838a4d68ae7273d6d01fada20",
+        "candidate_status": "a6d2489c256719991e4699eb52b23ee48b7558b947d7ada57bd6c07a1abd81a2",
+        "candidate_captures_manifest": "ed0cf8865f91775e963aa7058b820453b336b4805b4adae0efbce51fe10dff46",
+        "candidate_coverage": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "candidate_achievements": "dd1cc1cb4aaa44cf18518d098c080a0afb0d405250111fb89cbc8839ba01bbf4",
+        "baseline_achievements": "dd1cc1cb4aaa44cf18518d098c080a0afb0d405250111fb89cbc8839ba01bbf4"
+      }
+    },
+    "car_1526_width356": {
+      "result": "PASS",
+      "width": 356,
+      "native_frames": 1526,
+      "per_frame_trace_rows_equal": 1527,
+      "capture_count": 33,
+      "changed_sampled_pixels": 0,
+      "guest_state_files_equal_except_inactive_rtc": 34,
+      "exact_guest_sections": [
+        "CPU0",
+        "BUS0",
+        "IO_0",
+        "AUD0",
+        "SAV0",
+        "META"
+      ],
+      "ppu_timing_equal": true,
+      "baseline_executed_fresh_for_this_release": false,
+      "input_identity_verified": [
+        "runner_sha256",
+        "ROM_sha256",
+        "BIOS_sha256",
+        "state_sha256",
+        "runtime_config_sha256",
+        "actions",
+        "width",
+        "trace_every_frame",
+        "capture_schedule"
+      ],
+      "stable_vehicle_captures": 25,
+      "fuzzy_recovery": null,
+      "observed_achievement_fields": {
+        "schema": 2,
+        "completed_levels": 0,
+        "perfect_levels": 0,
+        "transformations": 1,
+        "red_coins": 0,
+        "flowers": 0,
+        "stars": 0,
+        "event_flags": 0
+      },
+      "achievement_report_equal_to_baseline": true,
+      "achievement_progress": [
+        2,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "yo_shi_pude": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "additional_checks": {
+        "captured_camera_x_min": 93,
+        "captured_camera_x_max": 469,
+        "sampled_global_boundaries_exposed": false,
+        "active_effect_captures": 0,
+        "active_effect_captures_black_margins": 0,
+        "active_effect_capture_frames": [],
+        "complete_achievement_report_equal": true,
+        "progress": [
+          2,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "yo_shi_pude": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "final_game_state": 13,
+        "final_transformation": 0
+      },
+      "native_coverage": {
+        "coverage": "FULLY_STATIC",
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "input_sha256": {
+        "baseline": "84adabcc0c585219314a304165a1d19b4e924b87e4deee8b23dde623b1aa1ba1",
+        "candidate": "6e02d7ddd005f5b0271d9ef99190c5be37724926a0b84b71f224b31c211ddd61",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "f810aff15a8bda2b1187bcc8ca3ceac71793b0c0ec8e1c7b682d5421b3b823d4",
+        "actions": "c44cece39d9df5c8cc61dc31a1474172fbc1ad0e1858b9bee7c04e39ef707615",
+        "expected": "f6dabc543ba6a56201e3e5fd26d7a69e01032506d68153bc2edc0935bae92a99"
+      },
+      "evidence_sha256": {
+        "summary": "e2625411b869d8a02bc0fb8e828985a0006ba1410bd6afbcb1de940c296209eb",
+        "candidate_run_log": "1b770e4359ffea0e62c7b2ce071916321b559b4a1c91ed28ca1e58c2d3c70115",
+        "baseline_run_log": "0efa89947835da9eb5d8f75692cc1de2c810fb9b2e1c2eafcda286fdf3a45d87",
+        "candidate_trace": "fedacaff769487746ee191aba56823ab131f4cea3455820903b1c80d42c12a22",
+        "candidate_status": "16610df2a7acc0454099259ab396cadfeaf90dc4726c18f0cbe92497cd6d164c",
+        "candidate_captures_manifest": "0d516fca810380f768b700ee1321036a0cf27cdb9743de49253633a8acaae6a3",
+        "candidate_coverage": "60b83507dc31c73f9ac132d7087c429ff5eede077b145a2e120abc6152158e68",
+        "candidate_achievements": "29d37e978a968f2b42ecbe5b0bdc484e60e972bc5595f2f14db1940eefc317f2",
+        "baseline_achievements": "29d37e978a968f2b42ecbe5b0bdc484e60e972bc5595f2f14db1940eefc317f2"
+      }
+    }
+  },
+  "cpu_helper_microbenchmark": {
+    "result": "PASS",
+    "host_architecture": "x86_64",
+    "cache_size_bytes": 8704,
+    "samples_per_scenario": 7,
+    "frames_per_sample": 800,
+    "raster_scope": "58pixel by160row margin, both BG0/BG1 layers; single global edge",
+    "instrumentation": "Read-only frozen guest memory plus per-read counter; callback boundary retained in both paths",
+    "fixtures": {
+      "outdoor-left": {
+        "previous_helper_median_ms_per_frame": 0.076434,
+        "decorated_helper_median_ms_per_frame": 0.09789,
+        "median_difference_ms_per_frame": 0.021456,
+        "decorated_source_reads_per_frame": 840,
+        "decorated_min_ms_per_frame": 0.091889,
+        "decorated_max_ms_per_frame": 0.102374
+      },
+      "castle-left": {
+        "previous_helper_median_ms_per_frame": 0.086107,
+        "decorated_helper_median_ms_per_frame": 0.111398,
+        "median_difference_ms_per_frame": 0.025291,
+        "decorated_source_reads_per_frame": 800,
+        "decorated_min_ms_per_frame": 0.105084,
+        "decorated_max_ms_per_frame": 0.151466
+      },
+      "castle-right": {
+        "previous_helper_median_ms_per_frame": 0.087348,
+        "decorated_helper_median_ms_per_frame": 0.116943,
+        "median_difference_ms_per_frame": 0.029595,
+        "decorated_source_reads_per_frame": 840,
+        "decorated_min_ms_per_frame": 0.10096,
+        "decorated_max_ms_per_frame": 0.206053
+      }
+    },
+    "limitations": [
+      "Instrumented CPU helper microbenchmark only; not full emulator or Android device FPS.",
+      "Uses frozen read-only guest RAM/ROM; no game logic advances.",
+      "Per-row source-read counter adds measurement overhead.",
+      "Two layers, one58pixel margin and160visible rows; main-thread CPU and GPU work excluded.",
+      "Cold-row diagnostic samples20 source rows; a nonaligned160pixel raster can span21 source rows.",
+      "Microbenchmark excludes the remaining PPU, graphics upload, Android scheduling and display; it is not a120FPS device measurement."
+    ],
+    "benchmark_source_sha256": "d2c13bbc30abb2203236e11b087c6c0ecf47e23eb57bdd1a30a8ba625e14be1a",
+    "private_result_sha256": "a427edd5c1b2872a94ad4d628c9309de3b6bf47def6475186a115cf40cee438e"
+  },
+  "execution_accounting": {
+    "successful_new_native_replays": 3,
+    "new_native_frames": 5326,
+    "reused_prior_native_replays": 1,
+    "environment_blocked_harness_attempts": 2,
+    "guest_game_executions_in_blocked_attempts": 0,
+    "environment_block": "Initial sandbox attempts denied socket.socket before launching either native runner. Repeated with approved localhost TCP capability, without Internet access.",
+    "blocked_logs_sha256": {
+      "fuzzy-baseline-356-driver.log": "69187a1a2631a14693e9566392e9171be6f1464cb80414a57c7b5a0f900b2c4e",
+      "car-356-driver.log": "d7c032b7c5b86a781d0dfac7d4568e54631f4cbe6568e80bce7b7993653176f7"
+    }
+  },
+  "limitations": [
+    "Linux native replays and CPU microbenchmark; Android phone FPS and touch/GPU behavior are not measured here.",
+    "Exact guest comparison excludes only the pinned inactive RTC wall-clock field; PPU timing and all sampled RGB pixels are checked separately.",
+    "Replay fixtures may use synthetic entrance/position preparation; actual Fuzzy contact, recovery and car cycle execute original game logic.",
+    "These two regression routes do not expose global map boundaries; boundary-specific changed-pixel and center-identity evidence is reported in the separate edge matrix.",
+    "Decoration intentionally does not infer inaccessible internal rooms, empty cells or camera stops."
+  ]
+}

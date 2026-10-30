@@ -19,7 +19,8 @@ PATCH_NAMES = ('interpolation', 'controls', 'localization', 'touch-design',
                'widescreen-objects', 'widescreen-window', 'panorama-android',
                'panorama-stability', 'image-filters', 'mod-profiles',
                'frame-pacing', 'touch-appearance', 'render-performance',
-               'cooperative-presentation', 'yoshi-color', 'obj-color-effects')
+               'cooperative-presentation', 'yoshi-color', 'obj-color-effects',
+               'achievement-suspend', 'performance-120')
 PATHS = tuple('src/runtime/' + name for name in
               ('host_platform.cpp', 'host_platform.h', 'host_window.cpp', 'host_window.h', 'runtime.cpp',
                'runtime_bus_bridge.cpp', 'mod_runtime.cpp')) + (

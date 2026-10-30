@@ -1,5 +1,6 @@
 #include "widescreen.h"
 #include "widescreen_tiles.h"
+#include "widescreen_edges.h"
 #include "widescreen_objects.h"
 #include "widescreen_strips.h"
 #include "widescreen_ui.h"
@@ -25,6 +26,7 @@ unsigned image_rows[2]{};
 bool gameplay = false;
 bool observing = false;
 bool ready = false;
+EdgeTileCache edge_tiles;
 ObjectPositions positions;
 std::array<ObjectPositions,3> submissions;
 unsigned submission_count=0;
@@ -144,11 +146,18 @@ int tile(int layer, int x, int y, uint16_t* output) {
     // CPU state, timing, open-bus or prefetch state is modified by this reader.
     const int wx=x + int(int16_t(reg(0x10+layer*4)));
     const int wy=y + int(int16_t(reg(0x12+layer*4)));
+    // Decoration belongs only to verified panoramic scenery beyond the
+    // complete world map. Never infer a boundary from empty cells, camera
+    // stops or the screen-table scrolling flag; those can be playable space.
+    if (ready && layer < 2 && (wx < 0 || wx >= 4096) &&
+        edge_tiles.tile(read, layer, wx, wy, output))
+        return gba::kWsTilemapReplace;
     const bool available=layer<2 ? foreground_tile(read,wx,wy,layer,output)
         : background_tile(read,wx,wy,layer,image_rows[layer-2],output);
     return available ? gba::kWsTilemapReplace : gba::kWsTilemapUnavailable;
 }
 void clear_observations() {
+    edge_tiles.clear();
     positions={}; submissions={}; strips={}; emitted={}; screen_objects={};
     window_copies={}; hazard64={}; submission_count=0;
     bounds_calls=0; bounds_extra_candidates=0; ready=false;
@@ -179,6 +188,9 @@ void frame(const gbarecomp::ExtendedViewFrameInfo* info, bool enabled) {
         clear_observations();
         epoch=info->state_epoch;
     }
+    // World maps may change after a block breaks or a state is restored.
+    // Cache only the rows requested during this rasterized frame.
+    edge_tiles.begin_frame();
     if (!g_runtime_fn_entry_hook || g_runtime_fn_entry_hook==object_submission)
         g_runtime_fn_entry_hook=object_submission;
     memory=gbarecomp::active_bus();

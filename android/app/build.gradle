@@ -1,8 +1,8 @@
 plugins { id 'com.android.application' }
 ext.gbaGame = [
     applicationId: 'org.sma3.recomp.experimental',
-    versionCode: 23,
-    versionName: '0.10.12-beta',
+    versionCode: 24,
+    versionName: '0.10.13-beta',
     title: 'SMA3 Recomp experimental',
     romSha1: ['7352d2bd064d9ebaec579e264228aa21c7345b80'],
     romSize: 4194304,
@@ -13,7 +13,7 @@ ext.gbaGame = [
     engineRoot: file('../../../gbarecomp'),
     biosRequired: true,
     orientation: 'any',
-    payloadVersion: '0.10.12',
+    payloadVersion: '0.10.13',
     nativeJobs: 2,
     debugAbis: ['arm64-v8a'],
     cmakeArguments: ['-DSMA3_PANORAMA=ON'],

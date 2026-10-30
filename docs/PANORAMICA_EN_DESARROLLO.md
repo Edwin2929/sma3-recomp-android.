@@ -1,4 +1,39 @@
-# Panorámica real — Android 0.10.4 beta
+# Panorámica real — Android 0.10.13 beta
+
+## Remate decorativo de los extremos en 0.10.13
+
+Los márgenes panorámicos pueden mostrar espacio más allá del mapa original.
+Desde 0.10.13, las capas de terreno prolongan una banda de **32 píxeles** del
+borde para dar continuidad al suelo, sus adornos y las paredes. La banda se
+refleja de forma alternada, conservando la fase de cada tile de 8 píxeles,
+sus volteos, paleta y transparencia. No se refleja el fotograma completo:
+Yoshi, enemigos, objetos y HUD de sprites conservan su ubicación original.
+Los fondos BG2/BG3 mantienen sus mapas y desplazamientos, incluidos el cielo
+y las nubes originales.
+
+La extensión es **solo decorativa** y aparece automáticamente con
+**Panorámica (beta)**. No añade colisiones, plataformas transitables, enemigos
+ni espacio jugable. Se activa únicamente fuera de los límites horizontales
+comprobados del mapa de SMA3 USA: X menor que 0 o mayor o igual que 4096,
+con Y dentro de 0–2047. El centro original de 240 × 160 se conserva.
+
+Una celda vacía, una pantalla sin usar o una cámara que deja de desplazarse
+no demuestran que exista una pared. Por eso **las paredes interiores y los
+huecos dentro del mapa no reciben relleno automático**. No se ocultan pozos
+ni se cambia el terreno que puede explorar el jugador. Las zonas de aire
+conservan el fondo: no se inventa suelo donde el borde original no lo tiene.
+
+Se usa una caché pequeña, sin asignaciones durante el dibujo, invalidada en
+cada fotograma y al cargar otro estado. Solo se resuelven las filas que se
+solicitan en los extremos. Las reglas existentes de ventanas, iluminación,
+Fuzzy, coherencia de objetos y escenas no compatibles siguen decidiendo
+cuándo pueden verse los márgenes. Las bandas de protección no se decoran.
+
+[Notas de 0.10.13](releases/v0.10.13-beta.md) ·
+[Pruebas, imágenes comparadas y límites](../validation/PANORAMA_EDGES_0.10.13_VALIDATION.md).
+
+Los apartados siguientes conservan la historia de cada versión; sus cifras
+y restricciones se refieren a las entregas indicadas.
 
 ## Mods y filtro cinematográfico en 0.10.4
 
