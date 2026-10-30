@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "scope": "Production Android UI/store with controlled JNI snapshots; no physical phone or ARM64 game",
+  "framework": "Robolectric 4.16.1",
+  "android_api": 34,
+  "physical_device": false,
+  "model_output": "PASS 115 time-trial model checks\n",
+  "test_output": "JUnit version 4.13.2\n[Robolectric] WARN: Android SDK 36 requires Java 21 (have Java 17). Tests won't be run on SDK 36 unless explicitly requested.\n........\nTime: 8.965\n\nOK (8 tests)\n\n",
+  "captures": [
+    "time-trial-es-landscape.png",
+    "time-trial-es-portrait.png",
+    "time-trial-record-en.png",
+    "time-trial-record-es.png",
+    "time-trial-record-pt.png"
+  ],
+  "source_sha256": {
+    "android/java/org/gbarecomp/TimeTrialModel.java": "2679c64312a84e05c09eab30178f178d1eec72ec86949177d1d9e9ce5b13c5af",
+    "android/java/org/gbarecomp/TimeTrialStore.java": "948bfea15db2c464d906ee1ea743087432876ec9558120d0209b362d9fbf00bf",
+    "android/java/org/gbarecomp/TimeTrialUi.java": "ba55cf64bd0793a08d1c99b2caa6df9e51b968d01168cb886c799de5e279f0fe",
+    "android/java/org/gbarecomp/SettingsPanel.java": "178a5fcd718d3d52dee00b47b8e78416f7cf05235416908297407eb0e0afa53f",
+    "android/java/org/gbarecomp/GbaNative.java": "43cb4d90b24a0807de0592ea64243a27adb9bc2457c33105e6f5712067084481",
+    "validation/TimeTrialModelTest.java": "19be3dd006b487246820b608f6c9be468a1007990810ad61f50f2d9b9aeb4053",
+    "validation/TimeTrialUiTest.java": "7ca76f95d05857c3b13c558cfd488000987ed33f28b8d0c47d895ca7ccde27c7"
+  }
+}

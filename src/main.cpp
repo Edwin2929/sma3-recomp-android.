@@ -14,6 +14,7 @@
 #include "mod_profiles.h"
 #include "yoshi_color.h"
 #include "local_achievements.h"
+#include "time_trial.h"
 #include "challenge_lifecycle.h"
 #ifdef SMA3_PRESENTATION_DIAGNOSTICS
 #include "frame_interpolation.h"
@@ -39,6 +40,9 @@ int main(int argc, char** argv) {
     g_runtime_bus_read_override = sma3::localized_read;
 #ifndef __ANDROID__
     if (const char* lang = std::getenv("SMA3_LANGUAGE")) sma3::language.store(std::atoi(lang));
+    // Host qualification uses the same opt-in observer and snapshot as JNI.
+    if (const char* timer = std::getenv("SMA3_TIME_TRIAL"))
+        sma3::time_trial_set_enabled(std::string_view(timer) == "1");
     // Desktop validation exercises the same palette mod as Android. Only a
     // complete RGB code is accepted; missing/invalid input leaves it disabled.
     if (const char* color = std::getenv("SMA3_YOSHI_COLOR")) {
@@ -93,6 +97,7 @@ int main(int argc, char** argv) {
 #endif
     options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
         sma3::local_achievements_frame(frame);
+        sma3::time_trial_frame(frame);
         sma3::yoshi_color_frame();
     };
 #ifdef SMA3_PANORAMA
@@ -104,6 +109,7 @@ int main(int argc, char** argv) {
     options.freely_resizable_window = true;
     options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
         sma3::local_achievements_frame(frame);
+        sma3::time_trial_frame(frame);
         sma3::yoshi_color_frame();
         sma3::wide::frame(frame, sma3::image_mode.load() == sma3::ImageMode::Panorama);
     };
@@ -121,6 +127,7 @@ int main(int argc, char** argv) {
         options.max_view_width = 356;
         options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
             sma3::local_achievements_frame(frame);
+            sma3::time_trial_frame(frame);
             sma3::yoshi_color_frame();
             sma3_probe_frame(frame);
             const char* authored = std::getenv("SMA3_AUTHORED_WIDE");
@@ -170,6 +177,22 @@ int main(int argc, char** argv) {
         options.resume_suspend_state_on_launch = true;
     }
     const int result = gbarecomp::run_game(argc, argv, options);
+    // Exit-only host evidence. Android never writes diagnostic files here.
+    if (const char* path = std::getenv("SMA3_TIME_TRIAL_REPORT")) {
+        const auto snapshot = sma3::time_trial_snapshot();
+        std::ofstream report(path);
+        report << "{\"schema\":1,\"snapshot\":[";
+        for (std::size_t i = 0; i < snapshot.size(); ++i) {
+            if (i) report << ',';
+            report << snapshot[i];
+        }
+        report << "]}\n";
+        report.close();
+        if (!report) {
+            std::fprintf(stderr, "Cannot write time-trial qualification report\n");
+            return result ? result : 1;
+        }
+    }
     // Desktop qualification reads the same published snapshot as Android.
     // This report is host-only; the guest frame observer never performs I/O.
     if (const char* path = std::getenv("SMA3_LOCAL_ACHIEVEMENTS_REPORT")) {

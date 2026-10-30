@@ -32,6 +32,10 @@ public final class GbaNative {
     // [schema=1, status, save-slot+1, main courses completed]. Status:
     // 0 not started, 1 active, 2 Baby Mario lost, 3 unverified, 4 earned.
     public static native long[] getYoShiPudeStatus();
+    public static native void setTimeTrialEnabled(boolean enabled);
+    // Versioned 74-word snapshot: status, guest-frame time, last completion,
+    // hardware clock ratio and 60 session minima. See TimeTrialModel.
+    public static native long[] getTimeTrial();
     public static native void setTouchControlsVisible(boolean visible);
     // Styles: 0 classic letters, 1 action symbols. Opacity is clamped to 20..100%.
     public static native void setTouchAppearance(int style, int opacityPercent);

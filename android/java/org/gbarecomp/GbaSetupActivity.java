@@ -63,6 +63,7 @@ public class GbaSetupActivity extends Activity {
     private boolean romReady;
     private int displayedLanguage;
     private UpdatesUi updatesUi;
+    private BugReportUi bugReportUi;
     private AlertDialog updateDialog;
 
     private String tr(String es, String en, String pt) {
@@ -80,6 +81,7 @@ public class GbaSetupActivity extends Activity {
         super.onCreate(savedInstanceState);
         config = GbaGameConfig.load(this);
         updatesUi = new UpdatesUi(this, this::tr, this::openUpdateDialog, this::dismissUpdates);
+        bugReportUi = new BugReportUi(this, this::tr, this::openUpdateDialog, this::dismissUpdates);
         setRequestedOrientation(GbaGameActivity.orientationFor(config.orientation));
         if (hasBundledPrivateAssets()) {
             startActivity(new Intent(this, gameActivityClass()));
@@ -111,6 +113,7 @@ public class GbaSetupActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if (updatesUi != null) updatesUi.onResume();
+        if (bugReportUi != null) bugReportUi.onResume();
         enterImmersiveMode();
         if (playButton != null) {
             if (displayedLanguage != getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("menu-language", 1)) {
@@ -122,12 +125,14 @@ public class GbaSetupActivity extends Activity {
 
     @Override
     protected void onPause() {
+        if (bugReportUi != null) bugReportUi.onPause();
         if (updatesUi != null) updatesUi.onPause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        if (bugReportUi != null) bugReportUi.close();
         if (updatesUi != null) updatesUi.close();
         dismissUpdates();
         worker.shutdownNow();
@@ -290,6 +295,10 @@ public class GbaSetupActivity extends Activity {
         Button updateButton = actionButton(tr("Actualizar aplicación", "Update app", "Atualizar aplicativo"));
         updateButton.setOnClickListener(view -> updatesUi.show());
         root.addView(updateButton, margins(-1, dp(48), 0, dp(4), 0, dp(10)));
+
+        Button reportButton = actionButton(tr("Reportar un problema", "Report a problem", "Relatar um problema"));
+        reportButton.setOnClickListener(view -> bugReportUi.show());
+        root.addView(reportButton, margins(-1, dp(48), 0, 0, 0, dp(10)));
 
         infoStatus = text("", 13, SettingsPanel.SECONDARY);
         infoStatus.setGravity(Gravity.CENTER);

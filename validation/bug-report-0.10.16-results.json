@@ -1,0 +1,48 @@
+{
+  "result": "PASS",
+  "version": "0.10.16-beta",
+  "scope": "Android host UI and pure report composer; no physical phone or game JNI execution",
+  "framework": "Robolectric 4.16.1",
+  "android_api": 34,
+  "physical_device": false,
+  "native_game_loaded": false,
+  "external_intents_intercepted": true,
+  "reports_sent_or_issues_submitted": 0,
+  "model_checks": 669,
+  "ui_tests": 8,
+  "cases": [
+    "Explicit preference allowlist excludes arbitrary strings and private paths",
+    "UTF-8, control characters, immutable snapshots and size boundaries",
+    "Requested FPS and latest observed sample distinguished",
+    "Editable complete preview preserved across navigation and share return",
+    "Copy and ACTION_SEND contain exactly the reviewed text, with no attachment",
+    "GitHub draft URL preserves Unicode; large reports use full clipboard without body truncation",
+    "Setup screen works without JNI; native catalog contributes aggregate counts only",
+    "Abandoned preparation does not reopen a page; background completion waits for resume",
+    "English, Spanish and Portuguese form/actions/template",
+    "Portrait and landscape keep navigation outside the scroll body"
+  ],
+  "captures": [
+    "report-form-landscape.png",
+    "report-form-portrait.png",
+    "report-preview-landscape.png",
+    "report-preview-portrait.png"
+  ],
+  "source_sha256": {
+    "android/java/org/gbarecomp/BugReportModel.java": "621d12f9ce90f55daaec84505f8c1e954acec60c29ef21e3d216614bdcfbc0fd",
+    "android/java/org/gbarecomp/BugReportCollector.java": "c19006823e5f5f265ddf53cd7c2129660bbca682506b3434257251e7fb57e2e7",
+    "android/java/org/gbarecomp/BugReportUi.java": "1793bf970886df9b8c7b7b3d05d8f38e3cdd6c960cc95b2b3c79f8179b050b66",
+    "android/java/org/gbarecomp/GbaGameConfig.java": "facd0bbf3fc2c87a180be48888c19da2858df43ef48b85704c1d9ff286d665fc",
+    "android/java/org/gbarecomp/PresentationStats.java": "9f02205075a2c85a311081142c44f5dee8ed95d9c6ed931b2abc65ad4614cbb4",
+    "android/java/org/gbarecomp/SettingsPanel.java": "178a5fcd718d3d52dee00b47b8e78416f7cf05235416908297407eb0e0afa53f",
+    "validation/BugReportUiTest.java": "3835ee995c636f55949e749716105702632b8b2356d370b2b824e616e713a65d",
+    "validation/BugReportModelTest.java": "1d0e3a8f537cd2c868e27187b553062b74f3d588e6083e89867ff62d034aa1f4",
+    "validation/run_bug_report_ui_test.py": "aa94bbc5cfce9d2cd983692bae466e3062f23d5be1665a6349acc50908b70a41"
+  },
+  "native_fixture_sha256": "e9f439a6fe919b321df50882a5ff162fc930595a3c9081d7f38892a8b3408516",
+  "model_output": "PASS BugReportModel checks=669\n",
+  "test_output": "JUnit version 4.13.2\n[Robolectric] WARN: Android SDK 36 requires Java 21 (have Java 17). Tests won't be run on SDK 36 unless explicitly requested.\n........\nTime: 10.991\n\nOK (8 tests)\n\n",
+  "limits": [
+    "Host framework intercepts external apps; actual clipboard, share destinations and browser behavior require physical Android testing."
+  ]
+}

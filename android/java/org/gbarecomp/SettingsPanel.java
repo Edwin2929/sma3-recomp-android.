@@ -43,7 +43,7 @@ final class SettingsPanel {
     static final int ACCENT = 0xffa5e775;
     private static final int SELECTED = 0xff28432d;
     private static final int WARNING = 0xffffd48a;
-    static final int IMAGE = 0, PERFORMANCE = 1, CONTROLS = 2, LANGUAGE = 3, LAYOUT = 4, MODS = 5, UPDATES = 6, ACHIEVEMENTS = 7;
+    static final int IMAGE = 0, PERFORMANCE = 1, CONTROLS = 2, LANGUAGE = 3, LAYOUT = 4, MODS = 5, UPDATES = 6, ACHIEVEMENTS = 7, TIME_TRIAL = 8, BUG_REPORT = 9;
 
     private final Activity activity;
     private final LinearLayout root;
@@ -409,6 +409,17 @@ final class SettingsPanel {
                 canvas.drawArc(new RectF(22, 8, 31, 20), -90, 180, false, paint);
                 canvas.drawLine(18, 25, 18, 30, paint);
                 canvas.drawLine(12, 30, 24, 30, paint);
+            } else if (icon == TIME_TRIAL) {
+                canvas.drawCircle(18, 21, 10, paint);
+                canvas.drawLine(18, 7, 18, 11, paint);
+                canvas.drawLine(14, 6, 22, 6, paint);
+                canvas.drawLine(25, 11, 28, 8, paint);
+                canvas.drawLine(18, 21, 18, 15, paint);
+                canvas.drawLine(18, 21, 23, 23, paint);
+            } else if (icon == BUG_REPORT) {
+                canvas.drawRoundRect(new RectF(8, 6, 28, 30), 3, 3, paint);
+                canvas.drawLine(18, 11, 18, 19, paint);
+                canvas.drawCircle(18, 23, .8f, paint);
             } else if (icon == MODS) {
                 canvas.drawRoundRect(new RectF(7, 10, 29, 29), 3, 3, paint);
                 canvas.drawLine(7, 16, 29, 16, paint);

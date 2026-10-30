@@ -2,6 +2,7 @@
 #include "presentation_pacing.h"
 #include "yoshi_color.h"
 #include "local_achievements.h"
+#include "time_trial.h"
 #include <bit>
 #include <jni.h>
 extern "C" JNIEXPORT void JNICALL
@@ -77,6 +78,22 @@ Java_org_gbarecomp_GbaNative_getYoShiPudeStatus(JNIEnv* env, jclass) {
     auto output = env->NewLongArray(static_cast<jsize>(values.size()));
     if (output)
         env->SetLongArrayRegion(output, 0, static_cast<jsize>(values.size()), values.data());
+    return output;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_org_gbarecomp_GbaNative_setTimeTrialEnabled(JNIEnv*, jclass, jboolean enabled) {
+    sma3::time_trial_set_enabled(enabled == JNI_TRUE);
+}
+
+extern "C" JNIEXPORT jlongArray JNICALL
+Java_org_gbarecomp_GbaNative_getTimeTrial(JNIEnv* env, jclass) {
+    const auto snapshot = sma3::time_trial_snapshot();
+    std::array<jlong, std::tuple_size_v<sma3::TimeTrialSnapshot>> values{};
+    for (std::size_t i = 0; i < values.size(); ++i)
+        values[i] = std::bit_cast<jlong>(snapshot[i]);
+    auto output = env->NewLongArray(static_cast<jsize>(values.size()));
+    if (output) env->SetLongArrayRegion(output, 0, static_cast<jsize>(values.size()), values.data());
     return output;
 }
 

@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "release": "0.10.16-beta",
+  "result": "PASS",
+  "scope": "Controlled pure C++ unit tests of guest observations, not a natural full-course playthrough or physical Android device test",
+  "checks_per_run": 2176,
+  "optimized": {
+    "flags": "-std=c++20 -O2 -Wall -Wextra -Werror",
+    "output": "PASS 2176 time trial unit checks",
+    "binary_sha256": "fb18f58a2a5396cde16104f4ea2fed97c0bfd3f3c0577e236d401c8642300e45"
+  },
+  "sanitized": {
+    "flags": "-std=c++20 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer",
+    "ASAN_OPTIONS": "detect_leaks=0",
+    "output": "PASS 2176 time trial unit checks",
+    "stderr": "",
+    "binary_sha256": "a79338585c23dcdc9f294731f914277a2812a8839abdcefb043326cd5921f921"
+  },
+  "source_sha256": {
+    "src/time_trial.h": "b50dfacb3386cd32f18b823efc38f35bbf6111c94aaeac6979d251acf8e504aa",
+    "src/time_trial_detail.h": "fcf841197a1a0a2d984e6644dbe27be6ee4058e3fd52e9ef90993b710d6abaa1",
+    "src/time_trial.cpp": "4b0ea8b4102779547a914c906b4d4e0a2e3a06bfea02763b9fe85edce6d6866f",
+    "validation/time_trial_test.cpp": "82f04156c43646beeab56111d2fa964a9a6736aa4c6df900b94d18add6b2e69a"
+  },
+  "covered": [
+    "Disabled-by-default snapshot schema74 and nominal PPU clock",
+    "Main entrance only; intro excluded; gameplay timing in PPU intervals",
+    "Duplicate presentation frame ignored",
+    "Start/inventory leading-interval pause accounting",
+    "Natural-goal observation and boss transition observation (synthetic controlled observations)",
+    "Completion only once and best minimum after faster/slower retries",
+    "All60 supported level indices, Extra/Secret mapping and unsupported welcome",
+    "Screen exits/midpoints cannot start a record; room/Bandit transitions retain timer",
+    "All death states, leaving level/slot, invalid mode/arena, source replacement",
+    "Epoch restore, clock gaps/backwards/wrap, midlevel enable and loaded intro rejection",
+    "Toggling preserves session minima without resuming partial attempt"
+  ],
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+}

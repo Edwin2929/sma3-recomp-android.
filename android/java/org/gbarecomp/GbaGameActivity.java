@@ -154,8 +154,12 @@ public class GbaGameActivity extends SDLActivity {
         applyPresentationMode();
         if (updatesUi != null) updatesUi.onResume();
         if (achievementsUi != null) achievementsUi.onResume();
+        if (timeTrialUi != null) timeTrialUi.onResume();
+        if (bugReportUi != null) bugReportUi.onResume();
     }
     @Override protected void onPause() {
+        if (timeTrialUi != null) timeTrialUi.onPause();
+        if (bugReportUi != null) bugReportUi.onPause();
         if (achievementsUi != null) achievementsUi.onPause();
         if (updatesUi != null) updatesUi.onPause();
         activityResumed = false;
@@ -171,6 +175,8 @@ public class GbaGameActivity extends SDLActivity {
     private ModsUi modsUi;
     private UpdatesUi updatesUi;
     private AchievementsUi achievementsUi;
+    private TimeTrialUi timeTrialUi;
+    private BugReportUi bugReportUi;
     private OnBackInvokedCallback optionsBackCallback;
 
     private String[] gbaButtons() { return new String[]{"A", "B", "Select", "Start", tr("Derecha", "Right", "Direita"), tr("Izquierda", "Left", "Esquerda"), tr("Arriba", "Up", "Cima"), tr("Abajo", "Down", "Baixo"), "R", "L"}; }
@@ -212,6 +218,7 @@ public class GbaGameActivity extends SDLActivity {
                 imageMode());
             GbaNative.setVideoFilter(imageFilter());
             YoshiColorUi.applySaved(this);
+            TimeTrialUi.applySaved(this);
             GbaNative.setTouchControlsVisible(getSharedPreferences("sma3-options", MODE_PRIVATE).getBoolean("touch-visible", true));
             GbaNative.setTouchAppearance(touchStyle(), touchOpacity());
             for (int bit = 0; bit < 10; ++bit) GbaNative.setControllerButton(bit, padBinding(bit));
@@ -417,11 +424,16 @@ public class GbaGameActivity extends SDLActivity {
         panel.card(SettingsPanel.ACHIEVEMENTS, tr("Logros", "Achievements", "Conquistas"),
             achievementsUi == null ? tr("Retos y progreso guardados en este dispositivo", "Challenges and progress saved on this device", "Desafios e progresso salvos neste dispositivo")
                 : achievementsUi.summary(), this::showAchievements);
+        panel.card(SettingsPanel.TIME_TRIAL, tr("Contrarreloj", "Time trial", "Contra o relógio"),
+            timeTrialUi == null ? tr("Cronómetro y récord personal por nivel", "Timer and personal best for each level", "Cronômetro e recorde pessoal por fase")
+                : timeTrialUi.summary(), this::showTimeTrial);
         panel.card(SettingsPanel.UPDATES, tr("Actualizar", "Updates", "Atualizar"),
             updatesUi == null ? tr("Buscar nuevas versiones en GitHub", "Check GitHub for new versions", "Buscar novas versões no GitHub") : updatesUi.summary(),
             this::showUpdates);
         panel.card(SettingsPanel.LANGUAGE, tr("Idiomas", "Languages", "Idiomas"),
             tr("Idioma del menú y traducción del juego", "Menu language and game translation", "Idioma do menu e tradução do jogo"), this::showLanguageMenu);
+        panel.card(SettingsPanel.BUG_REPORT, tr("Reportar un problema", "Report a problem", "Relatar um problema"),
+            tr("Prepara, revisa y comparte los detalles", "Prepare, review and share the details", "Prepare, revise e compartilhe os detalhes"), this::showBugReport);
         openSettings(panel.dialog(null), null);
     }
     private void showUpdates() {
@@ -435,6 +447,22 @@ public class GbaGameActivity extends SDLActivity {
             if (activityResumed) achievementsUi.onResume();
         }
         achievementsUi.show();
+    }
+    private void showTimeTrial() {
+        if (timeTrialUi == null) {
+            timeTrialUi = new TimeTrialUi(this, this::tr, this::openSettings, this::showOptions, fpsOverlay, fpsLabel);
+            if (activityResumed) timeTrialUi.onResume();
+        }
+        timeTrialUi.show();
+    }
+    private void showBugReport() {
+        if (bugReportUi == null) {
+            bugReportUi = new BugReportUi(this, this::tr, this::openSettings, this::showOptions,
+                () -> new BugReportUi.RuntimeInfo(nativeReady, lastPresentationStats,
+                    presentationState == null ? null : presentationState.doubleRateActive));
+            if (activityResumed) bugReportUi.onResume();
+        }
+        bugReportUi.show();
     }
     private void showMods() {
         ensureModsUi();
@@ -657,6 +685,8 @@ public class GbaGameActivity extends SDLActivity {
         if (modsUi != null) modsUi.close();
         if (updatesUi != null) updatesUi.close();
         if (achievementsUi != null) achievementsUi.close();
+        if (timeTrialUi != null) timeTrialUi.close();
+        if (bugReportUi != null) bugReportUi.close();
         if(designEditor!=null)designEditor.dismiss();
         try { GbaNative.setTouchEditing(false); } catch(UnsatisfiedLinkError ignored) {}
         if (Build.VERSION.SDK_INT >= 33 && optionsBackCallback != null) {
@@ -695,6 +725,10 @@ public class GbaGameActivity extends SDLActivity {
         refreshController = new DisplayRefreshController(this);
         updatesUi = new UpdatesUi(this, this::tr, this::openSettings, this::showOptions);
         achievementsUi = new AchievementsUi(this, this::tr, this::openSettings, this::showOptions);
+        timeTrialUi = new TimeTrialUi(this, this::tr, this::openSettings, this::showOptions, fpsOverlay, fpsLabel);
+        bugReportUi = new BugReportUi(this, this::tr, this::openSettings, this::showOptions,
+            () -> new BugReportUi.RuntimeInfo(nativeReady, lastPresentationStats,
+                presentationState == null ? null : presentationState.doubleRateActive));
         displayManager = (DisplayManager) getSystemService(DISPLAY_SERVICE);
         if (displayManager != null) displayManager.registerDisplayListener(displayListener, null);
         refreshCallback = new SurfaceHolder.Callback() {
