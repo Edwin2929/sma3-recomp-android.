@@ -51,11 +51,11 @@ struct Harness {
     auto presenter(){return [&](const unsigned char*data,Pacer*clock,bool deferred){
         if(!clock){samples.push_back({deferred,data[0],now});return true;}
         if(deferred&&!clock->midpoint_has_budget())return false;
-        now+=prep;clock->budget.observe_preparation(prep);
+        now+=prep;clock->budget.observe_preparation(prep,period);
         if(deferred){if(!clock->wait_for_midpoint())return false;}
         else clock->wait_for_next_frame();
         samples.push_back({deferred,data[0],now});
-        now+=swap;clock->budget.observe_swap(swap);return true;
+        now+=swap;clock->budget.observe_swap(swap,period);return true;
     };}
     void guest(Ns work,bool service=true){
         while(work>Ns::zero()){
@@ -158,6 +158,63 @@ void cases(){
     Harness fast;fast.boundary(10);fast.realtime=false;fast.guest(Ns{10000000});fast.boundary(20);
     require(fast.pacer.full==1&&fast.pacer.middle==0&&fast.samples.back().pixel==20,"fastforward does not add waits or use stale pending");
 }
+void bounded_cost_cases(){
+    sma3::OptionalPresentationBudget budget;
+    budget.observe_preparation(Ns{68000000},period);
+    budget.observe_swap(Ns{68000000},period);
+    require(budget.preparation()==period&&budget.swap()==period,
+        "a full-period cost already rejects every optional image");
+    budget.observe_preparation(Ns{-1},period);
+    require(budget.preparation()==period,"negative cost cannot reduce overload protection");
+    for(Ns invalid_horizon:{Ns{0},Ns{-1},Ns::max()}){
+        sma3::OptionalPresentationBudget invalid;
+        invalid.observe_preparation(Ns::max(),invalid_horizon);
+        invalid.observe_swap(Ns::max(),invalid_horizon);
+        require(invalid.preparation()==invalid.kMaximumSample&&invalid.swap()==invalid.kMaximumSample,
+            "invalid or oversized horizon uses bounded safe fallback without overflow");
+        invalid.observe_preparation(Ns{750000},period);
+        require(invalid.preparation()<=period,"changing horizon also bounds existing history");
+    }
+    for(int kind=0;kind<3;++kind){
+        const char* source=kind==0?"guest":kind==1?"preparation":"swap";
+        Harness h;
+        for(int i=0;i<60;++i){h.guest(Ns{10000000});h.boundary(i%200);}
+        h.guest(kind==0?Ns{68000000}:Ns{10000000});
+        if(kind==1)h.prep=Ns{68000000};
+        if(kind==2)h.swap=Ns{68000000};
+        h.boundary(60);h.prep=Ns{750000};h.swap=Ns{250000};
+        unsigned recovered=0,extras=0;
+        for(unsigned i=1;i<=30;++i){
+            const auto before=h.pacer.middle;
+            h.guest(Ns{10000000});h.boundary(60+i);
+            if(h.pacer.middle!=before){if(!recovered)recovered=i;++extras;}
+        }
+        // Preserve the conservative 1/8 decay. With two rendering costs in
+        // the budget, render recovery needs more cheap samples than guest
+        // recovery, but must stay below about 300 ms rather than remembering
+        // a 68 ms stall for almost half a second.
+        require(recovered>0&&recovered<=unsigned(kind==0?4:18),
+            "one transient stall cannot suppress extras for its entire long decay history");
+        const auto began=h.now;const auto first=h.pacer.full;
+        for(int i=0;i<120;++i){h.guest(Ns{10000000});h.boundary(i%200);}
+        const double guest_fps=(h.pacer.full-first)/std::chrono::duration<double>(h.now-began).count();
+        require(h.pacer.full-first==120&&std::abs(guest_fps-1e9/period.count())<.00001,
+            "recovery preserves native simulation cadence and every mandatory image");
+        std::printf("{\"name\":\"transient_stall_recovery\",\"source\":\"%s\",\"type\":\"synthetic_deterministic_clock_not_phone_measurement\",\"stall_us\":68000,\"first_recovered_frame\":%u,\"extras_next_30\":%u,\"stable_guest_fps\":%.6f}\n",
+            source,recovered,extras,guest_fps);
+        Harness sustained;
+        if(kind==1)sustained.prep=Ns{25000000};
+        if(kind==2)sustained.swap=Ns{25000000};
+        const Ns work=kind==0?Ns{25000000}:Ns{10000000};
+        for(int i=0;i<60;++i){sustained.guest(work);sustained.boundary(i);}
+        const auto optional=sustained.pacer.middle;const auto mandatory=sustained.pacer.full;
+        for(int i=0;i<120;++i){sustained.guest(work);sustained.boundary(i);}
+        require(sustained.pacer.middle==optional&&sustained.pacer.full-mandatory==120,
+            "sustained overload stays in mandatory-only mode without missing guest boundaries");
+        std::printf("{\"name\":\"sustained_overload\",\"source\":\"%s\",\"type\":\"synthetic_deterministic_clock_not_phone_measurement\",\"cost_us\":25000,\"extras_next_120\":%u}\n",
+            source,sustained.pacer.middle-optional);
+    }
+}
 int main(){
     workload("two_ms_guest",Ns{2000000});
     workload("ten_ms_guest",Ns{10000000});
@@ -170,5 +227,6 @@ int main(){
     workload("near_capacity_14_4ms_finepoll",Ns{14400000},true,Ns{100000});
     workload("near_capacity_14_5ms_finepoll",Ns{14500000},true,Ns{100000});
     workload("ten_ms_guest_one_ms_poll",Ns{10000000},true,Ns{1000000});
-    cases();std::printf("PASS cooperative presentation checks=%u\n",checks);
+    cases();bounded_cost_cases();std::printf("PASS cooperative presentation checks=%u\n",checks);
+    return 0;
 }

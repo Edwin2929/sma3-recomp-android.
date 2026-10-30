@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "measurement_type": "synthetic_deterministic_clock_not_android_or_real_guest_fps",
+  "purpose": "Verify recovery after transient cost spikes without admitting extra images under sustained overload or changing native simulation cadence.",
+  "baseline_algorithms_commit": "42b7b6e463a9fdfe258e4a1cd3ea260b6235276e",
+  "normal_guest_ns": 10000000,
+  "normal_preparation_ns": 750000,
+  "normal_swap_ns": 250000,
+  "guest_period_ns": 16742706,
+  "poll_interval_ns": 500000,
+  "warmup_frames": 60,
+  "transient_cost_ns": 68000000,
+  "recovery_observation_frames": 30,
+  "steady_cadence_check_frames": 120,
+  "sustained_overload_cost_ns": 25000000,
+  "sustained_overload_warmup_frames": 60,
+  "sustained_overload_check_frames": 120,
+  "baseline_estimate_horizon_ns": 100000000,
+  "candidate_estimate_horizon_ns": 16742706,
+  "unchanged_decay": "estimate=max(sample,estimate-estimate/8), with both operands bounded by the admission horizon",
+  "unchanged_margins": {
+    "service_lead_ns": 600000,
+    "preparation_margin_ns": 100000,
+    "lateness_period_fraction": "1/16"
+  },
+  "results": [
+    {
+      "version": "baseline",
+      "recovery": [
+        {
+          "source": "guest",
+          "stall_us": 68000,
+          "first_recovered": 13,
+          "extras_next_30": 18,
+          "stable_guest_fps": 59.727502
+        },
+        {
+          "source": "preparation",
+          "stall_us": 68000,
+          "first_recovered": 26,
+          "extras_next_30": 5,
+          "stable_guest_fps": 59.727502
+        },
+        {
+          "source": "swap",
+          "stall_us": 68000,
+          "first_recovered": 28,
+          "extras_next_30": 3,
+          "stable_guest_fps": 59.727502
+        }
+      ],
+      "sustained_overload": [
+        {
+          "sustained_source": "guest",
+          "cost_us": 25000,
+          "extras_next_120": 0
+        },
+        {
+          "sustained_source": "preparation",
+          "cost_us": 25000,
+          "extras_next_120": 0
+        },
+        {
+          "sustained_source": "swap",
+          "cost_us": 25000,
+          "extras_next_120": 0
+        }
+      ]
+    },
+    {
+      "version": "candidate",
+      "recovery": [
+        {
+          "source": "guest",
+          "stall_us": 68000,
+          "first_recovered": 3,
+          "extras_next_30": 28,
+          "stable_guest_fps": 59.727502
+        },
+        {
+          "source": "preparation",
+          "stall_us": 68000,
+          "first_recovered": 16,
+          "extras_next_30": 15,
+          "stable_guest_fps": 59.727502
+        },
+        {
+          "source": "swap",
+          "stall_us": 68000,
+          "first_recovered": 17,
+          "extras_next_30": 14,
+          "stable_guest_fps": 59.727502
+        }
+      ],
+      "sustained_overload": [
+        {
+          "sustained_source": "guest",
+          "cost_us": 25000,
+          "extras_next_120": 0
+        },
+        {
+          "sustained_source": "preparation",
+          "cost_us": 25000,
+          "extras_next_120": 0
+        },
+        {
+          "sustained_source": "swap",
+          "cost_us": 25000,
+          "extras_next_120": 0
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "cooperative_presentation_checks": 88,
+    "presentation_pacing_checks": 4992,
+    "invalid_negative_and_oversized_horizons": "PASS",
+    "negative_costs": "PASS",
+    "previous_history_when_horizon_changes": "PASS"
+  },
+  "interpretation": "The maximum estimate only affects admission of optional images. Actual timestamps, FPS counts, mandatory deadlines, guest work and waits are not clamped. A continuously overloaded cost is observed each frame and still rejects optional images.",
+  "limits": "Deterministic scheduler validation is not an Android hardware benchmark and does not guarantee 120 Hz display output."
+}

@@ -1,4 +1,4 @@
-# Rendimiento y objetivos de 60/120 FPS — 0.10.7 beta
+# Rendimiento y objetivos de 60/120 FPS — 0.10.12 beta
 
 Abre **Atrás → Rendimiento y FPS → Objetivo de presentación** y elige
 **60 FPS** o **120 FPS · mezcla 2×**. La elección se guarda al tocarla.
@@ -14,7 +14,34 @@ La opción 120 añade imágenes de presentación; no genera 120 estados
 independientes del juego. La mezcla puede producir estelas. El código conserva
 la detección de cambios de escena para evitar mezclar imágenes incompatibles.
 
-## Optimización de 0.10.7
+## Correcciones de 0.10.12
+
+Un tirón aislado podía seguir suprimiendo imágenes adicionales después de
+volver a una carga normal, porque su duración se conservaba en una estimación
+que decae lentamente. Ahora esa estimación se limita al periodo del juego:
+un coste de ese tamaño ya impide admitir trabajo adicional. Se mantienen los
+márgenes, los plazos y el rechazo de sobrecarga continua.
+
+En una prueba controlada con un único pico de 68 ms, la recuperación pasa de
+13 a 3 fotogramas si el pico ocurre en el cálculo del juego; de 26 a 16 si
+ocurre al preparar la imagen; y de 28 a 17 si ocurre al intercambiar buffers.
+Son resultados del planificador con reloj controlado. **Los FPS y tiempos
+mostrados siguen usando mediciones reales completas.**
+
+Además, se reduce el trabajo del reloj de vídeo, Scale2x/Scale3x evitan una
+subida de textura redundante y las salidas que ya coinciden con 720p/1080p
+omiten una copia final 1:1. La comparación de 568 salidas conserva exactamente
+los mismos píxeles. El filtro y la calidad seleccionados se mantienen.
+
+La ruta de Android sigue solicitando 120 Hz y verificando la tasa concedida a
+la app. No se encontró un bloqueo fijo a 60 Hz que justificara quitar esa
+comprobación. La capacidad de mantener mezcla 2× depende del trabajo de cada
+escena, filtros y dispositivo. No se ha certificado esta entrega en el Pixel.
+
+[Pruebas completas de 0.10.12](../validation/PERFORMANCE_0.10.12_VALIDATION.md) ·
+[Notas y APK](releases/v0.10.12-beta.md).
+
+## Planificación incorporada en 0.10.7
 
 Se corrige una limitación de la planificación anterior. Después de presentar
 la imagen completa, el mismo hilo calculaba el siguiente fotograma del juego.
@@ -147,7 +174,7 @@ presentación; no acreditan estabilidad sostenida en un Pixel 7 Pro.
 
 ## Comprobación en el teléfono
 
-1. Instala 0.10.7 sobre la versión anterior, sin desinstalarla, y anota la versión de Android.
+1. Instala 0.10.12 sobre la versión anterior, sin desinstalarla, y anota la versión de Android.
 2. Activa el ajuste de pantalla fluida/alta frecuencia del teléfono y
    comprueba su modo de ahorro de batería.
 3. Empieza con Original (3:2), filtro Equilibrado y resolución Automática.
@@ -171,7 +198,7 @@ Las pruebas de reloj simulado, puntos intermedios tardíos, cambios de modo,
 reinicios, contador y política de selección de pantalla se documentan en
 [PERFORMANCE_0.10.5_VALIDATION.md](../validation/PERFORMANCE_0.10.5_VALIDATION.md).
 La compilación ARM64 y las comprobaciones del APK están en
-[android-0.10.7-build.json](../validation/android-0.10.7-build.json).
+[android-0.10.12-build.json](../validation/android-0.10.12-build.json).
 No se dispone de una prueba física de este APK ni de una medición de su GPU Android.
 
 Referencias oficiales:

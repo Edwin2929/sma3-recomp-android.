@@ -15,6 +15,11 @@
 #include "yoshi_color.h"
 #include "local_achievements.h"
 #include "challenge_lifecycle.h"
+#ifdef SMA3_PRESENTATION_DIAGNOSTICS
+#include "frame_interpolation.h"
+#include "image_filters.h"
+#include "controller_options.h"
+#endif
 int sma3_ram_dispatch(uint32_t, int);
 
 #ifndef __ANDROID__
@@ -55,6 +60,37 @@ int main(int argc, char** argv) {
     }
 #endif
     gbarecomp::RunOptions options;
+#ifdef SMA3_PRESENTATION_DIAGNOSTICS
+    // Explicit desktop qualification of the production scheduler and scaler.
+    // This option is forbidden for Android builds: its preferences still come
+    // exclusively from the saved Android settings and display capability.
+    if (const char* fps = std::getenv("SMA3_PRESENTATION_FPS")) {
+        if (std::string_view(fps) != "60" && std::string_view(fps) != "120") {
+            std::fprintf(stderr, "SMA3_PRESENTATION_FPS must be 60 or 120\n");
+            return 1;
+        }
+        sma3::interpolation_enabled.store(std::string_view(fps) == "120");
+    }
+    if (const char* filter = std::getenv("SMA3_IMAGE_FILTER")) {
+        int value = -1;
+        const std::string_view input(filter);
+        const auto parsed = std::from_chars(input.data(), input.data() + input.size(), value);
+        if (parsed.ec != std::errc{} || parsed.ptr != input.data() + input.size() || value < 0 || value > 6) {
+            std::fprintf(stderr, "SMA3_IMAGE_FILTER must be an integer from 0 to 6\n");
+            return 1;
+        }
+        sma3::image_filter.store(sma3::validated_image_filter(value));
+    }
+    if (const char* quality = std::getenv("SMA3_VIDEO_QUALITY")) {
+        const std::string_view input(quality);
+        if (input != "0" && input != "720" && input != "1080") {
+            std::fprintf(stderr, "SMA3_VIDEO_QUALITY must be 0, 720 or 1080\n");
+            return 1;
+        }
+        sma3::video_quality.store(input == "720" ? 720 : input == "1080" ? 1080 : 0);
+    }
+    options.show_fps_by_default = true;
+#endif
     options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
         sma3::local_achievements_frame(frame);
         sma3::yoshi_color_frame();

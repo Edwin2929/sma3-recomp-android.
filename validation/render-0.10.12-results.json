@@ -1,0 +1,466 @@
+{
+  "scope": "Host SDL software/thread CPU only; not Android GPU/FPS evidence.",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "affinity_cpu": 0,
+  "ordering": "ABBA, two rounds of 60 changed real frames per filter/size in each process; copy routes alternate five rounds of five frames.",
+  "elapsed_seconds": 43.549430687002314,
+  "upload": [
+    {
+      "width": 240,
+      "filter": 1,
+      "baseline": {
+        "native_us": 23.700716999999997,
+        "filtered_us": 0.0,
+        "total_us": 203.546783,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 0.0
+      },
+      "candidate": {
+        "native_us": 21.739508,
+        "filtered_us": 0.0,
+        "total_us": 292.12,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 0.0
+      }
+    },
+    {
+      "width": 240,
+      "filter": 3,
+      "baseline": {
+        "native_us": 24.5530085,
+        "filtered_us": 92.9367585,
+        "total_us": 678.1445665,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 1.0
+      },
+      "candidate": {
+        "native_us": 0.0,
+        "filtered_us": 152.091575,
+        "total_us": 969.3049500000001,
+        "native_uploads_per_present": 0.0,
+        "filtered_uploads_per_present": 1.0
+      }
+    },
+    {
+      "width": 240,
+      "filter": 4,
+      "baseline": {
+        "native_us": 28.664192,
+        "filtered_us": 258.92866649999996,
+        "total_us": 2424.6394,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 1.0
+      },
+      "candidate": {
+        "native_us": 0.0,
+        "filtered_us": 385.2931165,
+        "total_us": 3814.82845,
+        "native_uploads_per_present": 0.0,
+        "filtered_uploads_per_present": 1.0
+      }
+    },
+    {
+      "width": 356,
+      "filter": 1,
+      "baseline": {
+        "native_us": 35.998725,
+        "filtered_us": 0.0,
+        "total_us": 167.61545,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 0.0
+      },
+      "candidate": {
+        "native_us": 44.9092335,
+        "filtered_us": 0.0,
+        "total_us": 261.913125,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 0.0
+      }
+    },
+    {
+      "width": 356,
+      "filter": 3,
+      "baseline": {
+        "native_us": 37.9128085,
+        "filtered_us": 143.15254149999998,
+        "total_us": 1578.3654084999998,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 1.0
+      },
+      "candidate": {
+        "native_us": 0.0,
+        "filtered_us": 222.887875,
+        "total_us": 2276.7680250000003,
+        "native_uploads_per_present": 0.0,
+        "filtered_uploads_per_present": 1.0
+      }
+    },
+    {
+      "width": 356,
+      "filter": 4,
+      "baseline": {
+        "native_us": 37.2386,
+        "filtered_us": 377.3754,
+        "total_us": 2820.2343835,
+        "native_uploads_per_present": 1.0,
+        "filtered_uploads_per_present": 1.0
+      },
+      "candidate": {
+        "native_us": 0.0,
+        "filtered_us": 372.26560800000004,
+        "total_us": 3078.52625,
+        "native_uploads_per_present": 0.0,
+        "filtered_uploads_per_present": 1.0
+      }
+    }
+  ],
+  "copy": [
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "0",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "15.894031",
+      "after_ms": "16.913015"
+    },
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "1",
+      "before_copies": "2",
+      "after_copies": "1",
+      "before_ms": "10.828647",
+      "after_ms": "8.702004"
+    },
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "2",
+      "before_copies": "2",
+      "after_copies": "1",
+      "before_ms": "5.169611",
+      "after_ms": "4.608189"
+    },
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "3",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "18.182064",
+      "after_ms": "17.547266"
+    },
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "4",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "16.930713",
+      "after_ms": "16.907182"
+    },
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "5",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "19.254650",
+      "after_ms": "18.728980"
+    },
+    {
+      "quality": "720",
+      "width": "1280",
+      "height": "720",
+      "filter": "6",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "18.730118",
+      "after_ms": "16.966334"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "0",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "17.727316",
+      "after_ms": "18.454408"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "1",
+      "before_copies": "2",
+      "after_copies": "2",
+      "before_ms": "16.146978",
+      "after_ms": "15.850998"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "2",
+      "before_copies": "2",
+      "after_copies": "2",
+      "before_ms": "7.273577",
+      "after_ms": "7.848000"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "3",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "18.533170",
+      "after_ms": "19.067368"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "4",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "19.065596",
+      "after_ms": "18.837410"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "5",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "20.417841",
+      "after_ms": "20.464921"
+    },
+    {
+      "quality": "720",
+      "width": "1281",
+      "height": "720",
+      "filter": "6",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "18.081780",
+      "after_ms": "18.144795"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "0",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "30.456496",
+      "after_ms": "32.317153"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "1",
+      "before_copies": "2",
+      "after_copies": "1",
+      "before_ms": "21.160390",
+      "after_ms": "18.729420"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "2",
+      "before_copies": "2",
+      "after_copies": "1",
+      "before_ms": "11.464753",
+      "after_ms": "8.283483"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "3",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "30.452089",
+      "after_ms": "31.097849"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "4",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "37.644181",
+      "after_ms": "37.459446"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "5",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "35.464996",
+      "after_ms": "33.889264"
+    },
+    {
+      "quality": "1080",
+      "width": "1920",
+      "height": "1080",
+      "filter": "6",
+      "before_copies": "3",
+      "after_copies": "2",
+      "before_ms": "29.691642",
+      "after_ms": "31.030194"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "0",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "37.155645",
+      "after_ms": "36.474491"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "1",
+      "before_copies": "2",
+      "after_copies": "2",
+      "before_ms": "36.823272",
+      "after_ms": "35.271258"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "2",
+      "before_copies": "2",
+      "after_copies": "2",
+      "before_ms": "16.475993",
+      "after_ms": "16.523261"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "3",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "36.526789",
+      "after_ms": "36.296649"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "4",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "48.629372",
+      "after_ms": "53.471115"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "5",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "54.041768",
+      "after_ms": "53.685334"
+    },
+    {
+      "quality": "1080",
+      "width": "1921",
+      "height": "1080",
+      "filter": "6",
+      "before_copies": "3",
+      "after_copies": "3",
+      "before_ms": "40.868011",
+      "after_ms": "38.790726"
+    }
+  ],
+  "baseline_commit": "42b7b6e463a9fdfe258e4a1cd3ea260b6235276e",
+  "hashes": {
+    "baseline_host_window": "c23e600db6cab69e472991e2f0b15434479ffef9fa05de673ee3ed9264111e10",
+    "candidate_host_window": "4d04f678102c981b1685d0c0333efb0b3a4703904238ad0ce1a29ef31f3b4508",
+    "baseline_scaler": "7db775a2b4167a5cc6a2e23499474f47645ec8db555cd07644e4be50224af6ef",
+    "candidate_scaler": "04385718366d47a9f5aba668915d8228f17a5a70866d24638a764a1020f53933",
+    "upload_regression": "9aea50ac8b22da99d9ef4179de5e8bfdb5b296a2ae1d68a5af736e5205231486",
+    "scaler_regression": "6f101e136ca2e39a9c7578ed2c5d833642413e41dde9dcc8d73d05554b7d7f11",
+    "baseline_probe_binary": "48913e488123d5cb470334bf29f843fdebfd5130071b3b9f9ed991169043bd8f",
+    "candidate_probe_binary": "dc2a795597d4b6911c446059ae5b11944e3e48ef5e5e60386c47349f938895a7",
+    "pixel_comparison": "824bee860c47ba3d2232ca8ded40de8b4da3d0b3655b41e03ad4a12a704c8a4e"
+  },
+  "pixel_equivalence": {
+    "complete_presentations": 568,
+    "compared_bytes": 4564684800,
+    "native_upload_elisions": 170,
+    "final_copy_elisions": 14,
+    "equality": "full-byte comparison before swap",
+    "source_widths": [
+      240,
+      356
+    ],
+    "source_height": 160,
+    "sizes": [
+      [
+        960,
+        540
+      ],
+      [
+        2400,
+        1080
+      ],
+      [
+        1080,
+        2400
+      ],
+      [
+        3120,
+        1440
+      ],
+      [
+        1280,
+        720
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "filters": "all seven",
+    "quality": [
+      0,
+      720,
+      1080
+    ],
+    "fallback_failures": [
+      "filtered upload",
+      "target allocation",
+      "target binding"
+    ],
+    "controls": "hidden/visible with held-button variants",
+    "source_inputs": "real prior grass, Fuzzy and castle RGB screenshots; 240-wide cases use centered crops without resampling"
+  },
+  "regressions": {
+    "presentation_upload_test": "PASS 699 checks",
+    "video_scaler_test": "PASS 45 geometry and 130 render cases"
+  }
+}

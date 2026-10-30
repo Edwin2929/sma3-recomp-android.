@@ -1,26 +1,25 @@
-# Actualizar desde GitHub — 0.10.11 beta
+# Actualizar desde GitHub — 0.10.12 beta
 
 **Atrás → Actualizar está disponible desde 0.10.5.** También puedes abrir
 **Actualizar aplicación** desde la pantalla inicial, antes de cargar el juego.
 El apartado muestra la versión instalada, la última comprobación y las
 acciones disponibles.
 
-La entrega actual es **0.10.11-beta**, código **22**. Añade la animación de
-logro y **Yo shi pude**, para un total de 26 retos. Al actualizar conserva
-los 25 registros anteriores, sus fechas y la preferencia de avisos. El nuevo
-reto requiere una partida nueva observada desde el principio.
-[Notas de 0.10.11](releases/v0.10.11-beta.md) ·
-[Guía de logros](LOGROS_LOCALES.md).
+La entrega actual es **0.10.12-beta**, código **23**. Optimiza el reloj de vídeo,
+elimina trabajo redundante de filtros y recupera antes la mezcla 2× después
+de un tirón aislado. Conserva los 26 logros, sus fechas y la configuración.
+[Notas de 0.10.12](releases/v0.10.12-beta.md) ·
+[Guía de rendimiento](RENDIMIENTO_Y_FPS.md).
 
 ## Primera instalación y uso
 
 Las versiones 0.10.4 y anteriores no tienen este actualizador. En ellas,
-instala **`sma3-recomp-0.10.11-beta-arm64.apk` manualmente sobre la aplicación
+instala **`sma3-recomp-0.10.12-beta-arm64.apk` manualmente sobre la aplicación
 existente, sin desinstalarla**. El archivo conserva el paquete y la firma
-y aumenta el código de versión a **22**. No borres los datos para actualizar.
+y aumenta el código de versión a **23**. No borres los datos para actualizar.
 
 Si ya usas 0.10.5 o posterior, puedes seguir los pasos de búsqueda, descarga e instalación
-de este apartado cuando el mantenedor haya adjuntado el APK 0.10.11 a
+de este apartado cuando el mantenedor haya adjuntado el APK 0.10.12 a
 **Descarga**. La instalación manual encima de la aplicación también es válida.
 
 Después de instalarlo:
@@ -77,45 +76,49 @@ El nombre admitido es:
 sma3-recomp-<versionName>-arm64.apk
 ```
 
-Por ejemplo, **`sma3-recomp-0.10.11-beta-arm64.apk`** para esta entrega.
-Se comparan los componentes numéricos de versión: 0.10.12 es posterior a
-0.10.11. Se elige la mayor versión compatible, no simplemente el último
+Por ejemplo, **`sma3-recomp-0.10.12-beta-arm64.apk`** para esta entrega.
+Se comparan los componentes numéricos de versión: 0.10.13 es posterior a
+0.10.12. Se elige la mayor versión compatible, no simplemente el último
 archivo de la lista.
 Una versión estable es posterior a su prerelease del mismo número.
 Los borradores, archivos incompletos, nombres genéricos y versiones que no
 superan la instalada no se ofrecen.
 
-En la consulta pública del **29 de octubre de 2026**, Descarga contiene
-**0.10.8-beta**. El APK 0.10.11 se entrega al mantenedor para su publicación
-manual. La pantalla no ofrece una actualización si solo encuentra una
-versión igual o inferior a la instalada; la disponibilidad debe comprobarse
-con **Buscar ahora** después de publicar el nuevo archivo.
+En la consulta pública del **30 de octubre de 2026**, Descarga contiene
+**0.10.11-beta**, con el nombre `sma3-recomp-0.10.11-beta-arm64.1.apk`.
+Ese sufijo `.1` no coincide con el patrón del actualizador: el archivo puede
+instalarse manualmente, pero no se ofrece desde la búsqueda de la app.
+
+El APK 0.10.12 se entrega al mantenedor para su publicación manual con el
+nombre exacto **`sma3-recomp-0.10.12-beta-arm64.apk`**. Comprueba su disponibilidad
+con **Buscar ahora** después de publicarlo. La app no ofrece versiones iguales
+o inferiores a la instalada.
 
 ## Publicar una futura actualización
 
 Para publicar esta entrega, el mantenedor adjunta manualmente el APK a la
-release existente **Descarga** con el nombre **`sma3-recomp-0.10.11-beta-arm64.apk`**, versión
-interna **`0.10.11-beta`** y código **22**. Sus datos de integridad e instalación
-están en las [notas de la entrega](releases/v0.10.11-beta.md).
+release existente **Descarga** con el nombre **`sma3-recomp-0.10.12-beta-arm64.apk`**, versión
+interna **`0.10.12-beta`** y código **23**. Sus datos de integridad e instalación
+están en las [notas de la entrega](releases/v0.10.12-beta.md).
 
 Para preparar una actualización posterior que puedan detectar los usuarios
-de 0.10.11:
+de 0.10.12:
 
-1. Compila una versión posterior, por ejemplo `versionName = '0.10.12-beta'`
-   y **`versionCode = 23`**, superior al 22 actual. Incrementa ambos respecto
+1. Compila una versión posterior, por ejemplo `versionName = '0.10.13-beta'`
+   y **`versionCode = 24`**, superior al 23 actual. Incrementa ambos respecto
    a la última entrega distribuida; no basta con renombrar el mismo APK.
 2. Conserva **`org.sma3.recomp.experimental`**, la arquitectura ARM64 y
    **la misma clave de firma**. Una compilación firmada con otra clave
    no puede actualizar esta línea de APK.
-3. Nombra el archivo exactamente **`sma3-recomp-0.10.12-beta-arm64.apk`**,
+3. Nombra el archivo exactamente **`sma3-recomp-0.10.13-beta-arm64.apk`**,
    usando el `versionName` real del APK.
 4. Adjunta ese APK a la release existente **Descarga** y espera a que GitHub
    termine de procesarlo. Los APK anteriores pueden permanecer allí.
-5. Desde 0.10.11, abre **Actualizar → Buscar ahora**, comprueba la versión
+5. Desde 0.10.12, abre **Actualizar → Buscar ahora**, comprueba la versión
    ofrecida, descarga e instala en un dispositivo de prueba. Comprueba
    después partidas, preferencias, mods y controles.
 
-El APK 0.10.11 se entrega por separado para esa publicación manual. Publicar
+El APK 0.10.12 se entrega por separado para esa publicación manual. Publicar
 el código y estas notas en `main` no adjunta el APK a Releases.
 
 ## Validaciones y fallos recuperables

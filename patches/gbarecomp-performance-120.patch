@@ -1,0 +1,153 @@
+diff --git a/src/gba/gba_ppu.cpp b/src/gba/gba_ppu.cpp
+--- a/src/gba/gba_ppu.cpp
++++ b/src/gba/gba_ppu.cpp
+@@ -231,22 +231,31 @@
+ }
+ 
+ GbaPpu::TickEvents GbaPpu::tick(uint32_t cycles, uint16_t vcount_compare) {
+-    // Coarse but correct: walk dot-by-dot, advancing scanline counters
+-    // as we cross dot boundaries. The cycle_in_dot_ accumulator lets
+-    // sub-dot ticks (less than 4 cycles) stash residue for the next
+-    // call.
++    // Only HBlank and scanline boundaries change observable timing state.
++    // Advance whole dots to the end of each line instead of visiting every
++    // dot. The scheduler still stops at the same hardware events, and this
++    // method preserves their OR semantics when a tick spans several lines.
++    // Keep the uint32 cycle accumulator and sub-dot residue unchanged.
+     TickEvents ev{};
+     cycle_in_dot_ += cycles;
+-    while (cycle_in_dot_ >= kCyclesPerDot) {
+-        cycle_in_dot_ -= kCyclesPerDot;
+-        bool was_visible = (dot_in_scanline_ < kDotsVisible);
+-        ++dot_in_scanline_;
+-        if (was_visible && dot_in_scanline_ == kDotsVisible) {
++    uint32_t dots = cycle_in_dot_ / kCyclesPerDot;
++    cycle_in_dot_ %= kCyclesPerDot;
++    while (dots != 0) {
++        // Legacy snapshots can contain an invalid dot. Consume one dot in
++        // that case, matching the old loop's normalization (and uint32 wrap)
++        // instead of making a zero-length step at dot == kDotsPerScanline.
++        const uint32_t remaining = dot_in_scanline_ < kDotsPerScanline
++            ? kDotsPerScanline - dot_in_scanline_ : 1u;
++        const uint32_t step = dots < remaining ? dots : remaining;
++        const bool was_visible = dot_in_scanline_ < kDotsVisible;
++        dot_in_scanline_ += step;
++        dots -= step;
++        if (was_visible && dot_in_scanline_ >= kDotsVisible) {
+             ev.hblank_started = true;
+         }
+         if (dot_in_scanline_ >= kDotsPerScanline) {
+             dot_in_scanline_ = 0;
+-            bool was_in_visible_window = (scanline_ < kLinesVisible);
++            const bool was_in_visible_window = scanline_ < kLinesVisible;
+             ++scanline_;
+             if (scanline_ >= kLinesTotal) {
+                 scanline_ = 0;
+diff --git a/src/runtime/host_platform.cpp b/src/runtime/host_platform.cpp
+--- a/src/runtime/host_platform.cpp
++++ b/src/runtime/host_platform.cpp
+@@ -62,10 +62,10 @@
+         presentation_budget_.preparation() - sma3::kPresentationServiceLead;
+ }
+ void FramePacer::note_presentation_preparation(std::chrono::nanoseconds duration) {
+-    presentation_budget_.observe_preparation(duration);
++    presentation_budget_.observe_preparation(duration, period_);
+ }
+ void FramePacer::note_presentation_swap(std::chrono::nanoseconds duration) {
+-    presentation_budget_.observe_swap(duration);
++    presentation_budget_.observe_swap(duration, period_);
+ }
+ #endif
+ 
+diff --git a/src/runtime/host_window.cpp b/src/runtime/host_window.cpp
+--- a/src/runtime/host_window.cpp
++++ b/src/runtime/host_window.cpp
+@@ -1444,7 +1444,7 @@
+ PresentationLayout current_presentation_layout(Backend* b, int* out_w, int* out_h) {
+     int drawable_w = 0;
+     int drawable_h = 0;
+-#if defined(__ANDROID__)
++#if defined(__ANDROID__) || defined(SMA3_PRESENTATION_DIAGNOSTICS)
+     if (SDL_GetRendererOutputSize(b->renderer, &drawable_w, &drawable_h) != 0 ||
+         drawable_w <= 0 || drawable_h <= 0) {
+         SDL_GetWindowSize(b->window, &drawable_w, &drawable_h);
+@@ -1857,7 +1857,7 @@
+         log_display_mode(b->window, "open");
+     }
+     b->cadence.init();
+-#if defined(__ANDROID__)
++#if defined(__ANDROID__) || defined(SMA3_PRESENTATION_DIAGNOSTICS)
+     // Mobile presentation owns the whole drawable: a centered integer-scaled
+     // game viewport plus dedicated side rails for touch controls.
+     SDL_RenderSetLogicalSize(b->renderer, 0, 0);
+@@ -2270,7 +2270,18 @@
+     // path. It sees full RGB888, including 120 FPS blend midpoint values.
+     rgb888 = sma3::mods::apply(rgb888, b->base_w, b->base_h, b->mod_profile_fb);
+ #endif
+-    SDL_UpdateTexture(b->texture, nullptr, rgb888, b->base_w * 3);
++#if (defined(__ANDROID__) || defined(SMA3_PRESENTATION_DIAGNOSTICS)) && \
++    defined(SMA3_FRAME_INTERPOLATION)
++    // Scale2x/3x upload their own freshly generated pixels. Keep one filter
++    // snapshot for the complete presentation, so a UI change cannot skip the
++    // native upload and then select a path that still samples that texture.
++    const auto image_filter = sma3::validated_image_filter(static_cast<int>(
++        sma3::image_filter.load(std::memory_order_relaxed)));
++    const bool filtered_upload = image_filter == sma3::ImageFilter::Scale2x ||
++                                 image_filter == sma3::ImageFilter::Scale3x;
++    if (!filtered_upload)
++#endif
++        SDL_UpdateTexture(b->texture, nullptr, rgb888, b->base_w * 3);
+     SDL_SetRenderDrawColor(b->renderer, 7, 11, 20, 255);
+     SDL_RenderClear(b->renderer);
+ #if defined(__ANDROID__)
+@@ -2337,12 +2348,16 @@
+         std::fflush(stderr);
+     }
+     if (touch_input_enabled(b)) publish_touch_presentation(b);
+-#if defined(__ANDROID__)
++#if defined(__ANDROID__) || defined(SMA3_PRESENTATION_DIAGNOSTICS)
+     const SDL_Rect destination{layout.x, layout.y, layout.width, layout.height};
+ #if defined(SMA3_FRAME_INTERPOLATION)
+     if (!b->video_scaler.draw(b->renderer, b->texture, b->base_w, b->base_h,
+                               destination, sma3::video_quality.load(),
+-                              sma3::image_filter.load(std::memory_order_relaxed), rgb888)) {
++                              image_filter, rgb888)) {
++        // A failed filter must fall back to this frame, even when its native
++        // upload was unnecessary on the successful filtered path.
++        if (filtered_upload)
++            SDL_UpdateTexture(b->texture, nullptr, rgb888, b->base_w * 3);
+         SDL_SetRenderTarget(b->renderer, nullptr);
+         SDL_SetTextureScaleMode(b->texture, SDL_ScaleModeNearest);
+         SDL_RenderCopy(b->renderer, b->texture, nullptr, &destination);
+diff --git a/src/runtime/runtime_bus_bridge.cpp b/src/runtime/runtime_bus_bridge.cpp
+--- a/src/runtime/runtime_bus_bridge.cpp
++++ b/src/runtime/runtime_bus_bridge.cpp
+@@ -17,6 +17,9 @@
+ #include "../gba/gba_ppu.h"
+ #if defined(SMA3_FRAME_INTERPOLATION)
+ #include "frame_interpolation.h"
++#endif
++#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
++#include "presentation_diagnostics.h"
+ #endif
+ 
+ #ifdef GBA_COSIM
+@@ -727,9 +730,18 @@
+             sma3::interpolation_enabled.load(std::memory_order_relaxed)) {
+             static auto last_presentation_poll = std::chrono::steady_clock::now();
+             const auto now = std::chrono::steady_clock::now();
++#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
++            sma3::presentation_diagnostics::collector().clock_check(now);
++#endif
+             if (now - last_presentation_poll >= std::chrono::milliseconds(1)) {
+                 last_presentation_poll = now;
++#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
++                sma3::presentation_diagnostics::collector().callback_started(now);
++#endif
+                 g_host_presentation_hook();
++#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
++                sma3::presentation_diagnostics::collector().callback_finished(now, std::chrono::steady_clock::now());
++#endif
+             }
+         }
+     }

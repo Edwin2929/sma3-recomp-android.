@@ -2,7 +2,18 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.11 beta — animaciones y «Yo shi pude»
+## Versión actual: 0.10.12 beta — rendimiento y recuperación del modo 120
+
+Se reduce trabajo repetido del reloj de vídeo y de los filtros. El planificador
+recupera antes las imágenes adicionales después de un tirón aislado; mantiene
+el rechazo cuando la carga no cabe y conserva la velocidad original del juego.
+El objetivo de mezcla 2× sigue siendo aproximadamente **119,45 presentaciones/s**.
+
+[Notas de 0.10.12](docs/releases/v0.10.12-beta.md) ·
+[Pruebas y límites](validation/PERFORMANCE_0.10.12_VALIDATION.md) ·
+[Guía de 60/120 FPS](docs/RENDIMIENTO_Y_FPS.md).
+
+### Funciones conservadas de 0.10.11 — animaciones y «Yo shi pude»
 
 **Atrás → Logros** contiene **26 logros locales**. La nueva animación muestra
 un huevo dentro de una medalla verde que se despliega con **Logro desbloqueado**
@@ -126,7 +137,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.11 se detectará cuando el mantenedor adjunte su APK a Descarga.
+0.10.12 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -240,7 +251,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.11**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.12**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -258,37 +269,46 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.11 beta — nueva entrega
+### APK 0.10.12 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.11-beta-arm64.apk`**, versión `0.10.11-beta`,
-código **22**, ARM64 y Android 9 o posterior. Añade **Yo shi pude** como logro
-26 y la animación de desbloqueo. Conserva el color de Yoshi, los controles,
-el actualizador, los perfiles de color, los siete filtros, la corrección de
-Fuzzy y la panorámica con su advertencia de fase temprana.
+Archivo: **`sma3-recomp-0.10.12-beta-arm64.apk`**, versión `0.10.12-beta`,
+código **23**, ARM64 y Android 9 o posterior. Incluye la recuperación más rápida
+del modo 120 después de tirones, el reloj PPU optimizado y la eliminación de
+subidas y copias de textura redundantes. Conserva los 26 logros, su animación,
+el color de Yoshi, filtros, mods, controles y Panorámica (beta).
 
 Instálalo encima de la versión anterior, sin desinstalarla ni borrar datos.
 Conserva el paquete y el certificado y aumenta el código de versión. Desde
 0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el mantenedor haya
-publicado el archivo.
-[Instalación y datos del APK](docs/releases/v0.10.11-beta.md).
+publicado el archivo con el nombre admitido.
+[Instalación y datos del APK](docs/releases/v0.10.12-beta.md).
 
-### Publicación verificada: APK 0.10.8 beta
+### Publicación verificada: APK 0.10.11 beta
 
-En la consulta del **29 de octubre de 2026**, la release pública
+En la consulta del **30 de octubre de 2026**, la release pública
 **Descarga** contiene
-[**sma3-recomp-0.10.8-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.8-beta-arm64.apk).
-El tamaño anunciado es **27.936.024 bytes** y el digest publicado por GitHub
-coincide con el APK entregado:
-`1cfe2f32ddd8f180df5ed1078afdabbcea6facb26b82cce178f0c9e18ed82a26`.
-[Notas de 0.10.8](docs/releases/v0.10.8-beta.md).
+[**sma3-recomp-0.10.11-beta-arm64.1.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.11-beta-arm64.1.apk).
+Su tamaño es **28.017.944 bytes** y su SHA-256 coincide con el APK entregado:
+`b596fbf6fba4a8176dcb4a4d292ecacb733f2fac7afa852b2eb129c3ff1ccaa5`.
+El sufijo adicional `.1` permite la descarga manual, pero no coincide con el
+patrón que utiliza el actualizador. Para esta nueva entrega conserva exactamente
+el nombre **`sma3-recomp-0.10.12-beta-arm64.apk`**.
 
-El nuevo APK 0.10.11 aparecerá en
+El APK 0.10.12 aparecerá en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga)
 cuando el mantenedor lo adjunte manualmente. Publicar el código en `main`
 no publica el APK. Las indicaciones de disponibilidad en notas anteriores
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.12:** comparación diferencial del reloj PPU, recuperación del presupuesto
+con reloj controlado, equivalencia de píxeles de los filtros y replays del juego
+nativo. Las mediciones de SDL software en Linux se distinguen de la simulación
+determinista y de las comprobaciones del APK. No se ha medido esta entrega en
+un Pixel 7 Pro ni se certifican 120 FPS sostenidos en Android.
+[Validación y alcance](validation/PERFORMANCE_0.10.12_VALIDATION.md) ·
+[APK](validation/android-0.10.12-build.json).
 
 **0.10.11:** pruebas del catálogo de 26 logros, migración de los registros de
 0.10.9 y 0.10.10, animación, entrada táctil y ciclo de vida Android en
@@ -599,8 +619,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.11 en Pixel 7 Pro: los 26 logros, animación, actualización del registro anterior, suspensión y continuidad de Yo shi pude, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.11, comparando la zona de la captura de 65,2 FPS.
+- Probar 0.10.12 en Pixel 7 Pro: los 26 logros, animación, actualización del registro anterior, suspensión y continuidad de Yo shi pude, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.12, comparando la zona de la captura de 65,2 FPS.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

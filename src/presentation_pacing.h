@@ -6,6 +6,9 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+#include "presentation_diagnostics.h"
+#endif
 
 namespace sma3 {
 
@@ -67,29 +70,49 @@ public:
     static constexpr Duration kPreparationMargin{100000};
     static constexpr Duration kMaximumSample{100000000};
 
-    void observe_preparation(Duration sample) noexcept { observe(preparation_, sample); }
-    void observe_swap(Duration sample) noexcept { observe(swap_, sample); }
+    void observe_preparation(Duration sample, Duration horizon = kMaximumSample) noexcept {
+        observe(preparation_, sample, horizon);
+    }
+    void observe_swap(Duration sample, Duration horizon = kMaximumSample) noexcept {
+        observe(swap_, sample, horizon);
+    }
 
     bool permits(Clock::time_point now, Clock::time_point next,
                  Duration period) const noexcept {
         if (period.count() <= 0) return false;
         const Duration preparation = preparation_ + kPreparationMargin;
         const auto prepared = now + preparation;
-        if (!midpoint_is_timely(prepared, next, period)) return false;
+        if (!midpoint_is_timely(prepared, next, period)) {
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+            presentation_diagnostics::collector().admission(prepared, next, period, false, false);
+#endif
+            return false;
+        }
         const auto midpoint = std::max(prepared, next - period / 2);
         // The next mandatory image is prepared before its guest deadline. Its
         // swap comes after that deadline, as in the normal one-image path.
-        return midpoint + swap_ + preparation <= next;
+        const bool fits = midpoint + swap_ + preparation <= next;
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+        presentation_diagnostics::collector().admission(prepared, next, period, true, fits);
+#endif
+        return fits;
     }
 
     Duration preparation() const noexcept { return preparation_; }
     Duration swap() const noexcept { return swap_; }
 
 private:
-    static void observe(Duration& estimate, Duration sample) noexcept {
+    static void observe(Duration& estimate, Duration sample, Duration horizon) noexcept {
         if (sample.count() < 0) return;
-        sample = std::min(sample, kMaximumSample);
-        estimate = std::max(sample, estimate - estimate / 8);
+        // A cost consuming the entire guest period already excludes every
+        // optional image. Keeping a larger transient stall in this decaying
+        // estimate cannot strengthen that decision; it only delays recovery
+        // after normal work resumes. This limits admission history, not the
+        // measured presentation rate or the duration of any real work/wait.
+        const Duration maximum = horizon.count() > 0 ? std::min(horizon, kMaximumSample)
+                                                     : kMaximumSample;
+        sample = std::min(sample, maximum);
+        estimate = std::max(sample, std::min(estimate - estimate / 8, maximum));
     }
     Duration preparation_{}, swap_{};
 };
@@ -125,6 +148,9 @@ public:
             return false;
         }
         const auto now = pacer->current_time();
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+        presentation_diagnostics::collector().pending_polled(now, force);
+#endif
         if (now < execution_started_ ||
             now - execution_started_ > std::chrono::milliseconds(100)) {
             pending_ = false;
@@ -134,11 +160,19 @@ public:
         // after the original admission decision. Use those fresh observations
         // before spending guest time on its deferred image.
         if (!has_total_budget(pacer)) {
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+            ++presentation_diagnostics::collector().total_budget_cancellations;
+#endif
             pending_ = false;
             deferred_succeeded_ = false;
             return false;
         }
-        if (!force && !pacer->midpoint_preparation_due()) return false;
+        if (!force && !pacer->midpoint_preparation_due()) {
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+            ++presentation_diagnostics::collector().early_polls;
+#endif
+            return false;
+        }
         pending_ = false;  // protect against callback re-entry
         if (!pacer->midpoint_has_budget()) {
             deferred_succeeded_ = false;
@@ -146,6 +180,10 @@ public:
         }
         const auto began = pacer->current_time();
         deferred_succeeded_ = presenter(full_.data(), pacer, true);
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+        if (deferred_succeeded_) ++presentation_diagnostics::collector().optional_success;
+        else ++presentation_diagnostics::collector().optional_failure;
+#endif
         service_elapsed_ += pacer->current_time() - began;
         return deferred_succeeded_;
     }
@@ -171,7 +209,7 @@ public:
             // Audio/input/PPU-copy work between presentations belongs to the
             // guest budget. Subtract only our own cooperative rendering/wait.
             observe(guest_, std::chrono::duration_cast<Duration>(
-                now - execution_started_ - service_elapsed_));
+                now - execution_started_ - service_elapsed_), pacer->frame_period());
         }
         service(pacer, double_rate, realtime, epoch, presenter, true);
         const bool previous_full_succeeded = deferred_succeeded_;
@@ -198,7 +236,7 @@ public:
             blend_.reset();
         }
         observe(history_preparation_, std::chrono::duration_cast<Duration>(
-            pacer->current_time() - history_started));
+            pacer->current_time() - history_started), pacer->frame_period());
         if (!presenter(mandatory, pacer, false)) {
             // A lost SDL texture/window must not accidentally uncap the guest.
             pacer->wait_for_next_frame();
@@ -209,6 +247,11 @@ public:
         // History and mandatory rendering have now been measured. Do not arm
         // an extra image using the cheaper estimate from before that work.
         pending_ = can_double && has_total_budget(pacer);
+#if defined(SMA3_PRESENTATION_DIAGNOSTICS)
+        presentation_diagnostics::collector().pending_armed(execution_started_, pending_);
+        presentation_diagnostics::collector().frame_costs(guest_, history_preparation_,
+            pacer->preparation_cost(), pacer->swap_cost());
+#endif
         deferred_succeeded_ = false;
         return true;
     }
@@ -221,10 +264,13 @@ private:
             kPresentationServiceLead + OptionalPresentationBudget::kPreparationMargin
                 <= pacer->frame_period();
     }
-    static void observe(Duration& estimate, Duration sample) noexcept {
+    static void observe(Duration& estimate, Duration sample, Duration horizon) noexcept {
         if (sample.count() < 0) return;
-        sample = std::min(sample, OptionalPresentationBudget::kMaximumSample);
-        estimate = std::max(sample, estimate - estimate / 8);
+        const Duration maximum = horizon.count() > 0
+            ? std::min(horizon, OptionalPresentationBudget::kMaximumSample)
+            : OptionalPresentationBudget::kMaximumSample;
+        sample = std::min(sample, maximum);
+        estimate = std::max(sample, std::min(estimate - estimate / 8, maximum));
     }
     void reset() {
         blend_.reset();

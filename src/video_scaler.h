@@ -99,7 +99,7 @@ struct VideoScaler {
         // At an exact integer size the old final linear copy was 1:1. A
         // direct nearest copy produces those same pixels without allocating,
         // filling and copying a full-size intermediate target. Fractional
-        // sizes and explicit 720p/1080p pipelines retain their original path.
+        // sizes and explicit 720p/1080p resampling retain their original path.
         if(!quality && destination.w==factor*sw && destination.h==factor*sh)
             return SDL_SetTextureScaleMode(source,SDL_ScaleModeNearest)==0 &&
                 SDL_RenderCopy(renderer,source,nullptr,&destination)==0;
@@ -201,6 +201,13 @@ struct VideoScaler {
            std::int64_t(destination.y)+destination.h>std::numeric_limits<int>::max()) return false;
         quality=quality==720 || quality==1080 ? quality : 0;
         filter=validated_image_filter(static_cast<int>(filter));
+        // If the destination already is the requested 720p/1080p surface,
+        // the final output-texture copy would be exactly 1:1. Drawing the
+        // preceding pass directly there preserves the same sampling while
+        // avoiding a full-resolution target allocation and copy. This only
+        // changes the route for this draw; the selected quality stays intact.
+        if(quality && destination.w==quality*16/9 && destination.h==quality)
+            quality=0;
         if(!quality && output_texture) {
             SDL_DestroyTexture(output_texture); output_texture=nullptr; ow=oh=0;
         }

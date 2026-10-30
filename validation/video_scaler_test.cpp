@@ -155,7 +155,7 @@ void rendering() {
     // portrait/landscape transitions without a display server; Android is not run.
     const SDL_Point sizes[] = {{2400, 1080}, {1080, 2400}, {1080, 1080},
         {2048, 1536}, {1536, 2048}, {2341, 1081}, {1081, 2341},
-        {241, 160}, {1081, 720}, {240, 160}, {2400, 1080}};
+        {241, 160}, {1081, 720}, {240, 160}, {1280, 720}, {1920, 1080}, {2400, 1080}};
     for (unsigned index = 0; index < sizeof(sizes) / sizeof(sizes[0]); ++index) {
         context = "output size change";
         const auto size = sizes[index];
@@ -180,13 +180,15 @@ void rendering() {
             const auto dst = sma3::video_destination(output_w, output_h, 240, 160, stretch);
             check(scaler.draw(renderer, source, 240, 160, dst, quality), "render pipeline");
             check(SDL_GetRenderTarget(renderer) == canvas, "restored original render target");
-            if (quality) {
+            const bool needs_output = quality &&
+                (dst.w != quality * 16 / 9 || dst.h != quality);
+            if (needs_output) {
                 int w, h;
                 check(SDL_QueryTexture(scaler.output_texture, nullptr, nullptr, &w, &h) == 0,
                       "query HD buffer");
                 check(w == quality * 16 / 9 && h == quality, "720p/1080p intermediate buffer");
             } else check(scaler.output_texture == nullptr && scaler.ow == 0 && scaler.oh == 0,
-                         "automatic releases HD buffer");
+                         "automatic or exact-size output releases the redundant HD buffer");
             check(SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGBA32,
                   readback->pixels, readback->pitch) == 0, "read final displayed pixels");
             verify_pattern(readback, dst, stretch);
