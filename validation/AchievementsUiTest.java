@@ -24,7 +24,7 @@ import org.robolectric.Shadows;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 import org.robolectric.annotation.GraphicsMode;
-import org.robolectric.shadows.ShadowToast;
+import org.robolectric.shadows.ShadowChoreographer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +50,8 @@ public final class AchievementsUiTest {
     // Produced by the REAL 0.10.9 Disk.encode(), compiled with Model/Store from
     // commit 2c5dbc94a707460da3ae1aac1b93cb6d2fcdaa32. Keep bytes/order/newline.
     private static final String LEGACY_RECORD = "{\"schema\":1,\"notifications\":false,\"evidence\":{\"completed_levels\":16777215,\"perfect_levels\":511,\"transformations\":21,\"red_coins\":10,\"flowers\":3,\"stars\":30,\"events\":1},\"unlocked_at\":{\"first_flower\":1700000000100,\"five_flowers\":0,\"first_red_coin\":1700000000200,\"twenty_red_coins\":0,\"thirty_stars\":1700000000300,\"first_transformation\":1700000000400,\"fuzzy_recovery\":1700000000500,\"first_clear\":1700000000600,\"five_clears\":1700000000700,\"perfect_clear\":1700000000800}}\n";
+    // Exact real 0.10.10 Disk.encode() output from commit cdf8223ebdfc3317f3b00c5bfd5811943c555bc5.
+    private static final String PREVIOUS_RECORD = "{\"schema\":2,\"notifications\":false,\"recognized_on_upgrade\":22182912,\"evidence\":{\"completed_levels\":16777215,\"perfect_levels\":511,\"transformations\":23,\"red_coins\":10,\"flowers\":3,\"stars\":30,\"events\":1},\"unlocked_at\":{\"first_flower\":1700000000100,\"five_flowers\":0,\"first_red_coin\":1700000000200,\"twenty_red_coins\":0,\"thirty_stars\":1700000000300,\"first_transformation\":1700000000400,\"fuzzy_recovery\":1700000000500,\"first_clear\":1700000000600,\"five_clears\":1700000000700,\"perfect_clear\":1700000000800,\"three_flowers\":1700000009000,\"five_red_coins\":1700000009000,\"ten_red_coins\":1700000009000,\"ten_clears\":1700000009000,\"twenty_clears\":1700000009000,\"thirty_clears\":0,\"forty_clears\":0,\"five_perfect_clears\":1700000009000,\"ten_perfect_clears\":0,\"twenty_perfect_clears\":0,\"car_transformation\":1700000009000,\"mole_transformation\":1700000010000,\"helicopter_transformation\":1700000009000,\"train_transformation\":0,\"submarine_transformation\":1700000009000}}\n";
     private static final long[] LEGACY_METRICS = {16777215,511,21,10,3,30,1};
     private static final long[] LEGACY_DATES = {1700000000100L,0,1700000000200L,0,1700000000300L,
         1700000000400L,1700000000500L,1700000000600L,1700000000700L,1700000000800L};
@@ -77,15 +79,21 @@ public final class AchievementsUiTest {
     }
 
     @Before public void setup() {
+        ShadowChoreographer.setPaused(true);
+        ShadowChoreographer.setFrameDelay(Duration.ofMillis(16));
         controller = Robolectric.buildActivity(Activity.class).setup().visible(); activity = controller.get();
         disk = new MemoryDisk(); store = new AchievementsStore(disk, Runnable::run, new Handler(Looper.getMainLooper()));
-        nativeValue = new long[]{1,0,0,0,0,0,0,0}; language = 0; ShadowToast.reset();
+        nativeValue = new long[]{2,0,0,0,0,0,0,0}; language = 0;
     }
     @After public void cleanup() {
         if (ui != null) ui.close(); if (shown != null) shown.dismiss();
         controller.pause().stop().destroy(); idle();
     }
-    private void idle() { Shadows.shadowOf(Looper.getMainLooper()).idle(); }
+    private void idle() { advance(32); }
+    private void advance(long millis) {
+        while(millis>0){long step=Math.min(16,millis);Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(step));millis-=step;}
+    }
+    private View notice() { return activity.getWindow().getDecorView().findViewWithTag("achievement-banner"); }
     private void open() {
         if (ui != null) ui.close(); if (shown != null) shown.dismiss();
         ui = new AchievementsUi(activity, (es,en,pt) -> language == 0 ? es : language == 1 ? en : pt,
@@ -154,6 +162,7 @@ public final class AchievementsUiTest {
         assertArrayEquals(LEGACY_METRICS,value.metrics);
         assertArrayEquals(LEGACY_DATES,Arrays.copyOf(value.unlockedAt,10));
         for(int i=10;i<25;++i)assertEquals((RECOGNIZED&(1<<i))!=0,value.unlockedAt[i]>0);
+        assertEquals(0,value.unlockedAt[25]);
     }
     private void scrollToRecord(String id) {
         View anchor=panel().findViewWithTag("achievement-"+id);assertNotNull(anchor);
@@ -178,32 +187,99 @@ public final class AchievementsUiTest {
         for(int i=10;i<25;++i)if(upgraded.unlockedAt[i]>0){assertTrue(upgraded.unlockedAt[i]>=before);
             assertTrue(upgraded.unlockedAt[i]<=System.currentTimeMillis());assertEquals(upgraded.unlockedAt[10],upgraded.unlockedAt[i]);}
         String persisted=Files.readString(path.toPath());JSONObject json=new JSONObject(persisted);
-        assertEquals(2,json.getInt("schema"));assertEquals(25,json.getJSONObject("unlocked_at").length());
+        assertEquals(3,json.getInt("schema"));assertEquals(26,json.getJSONObject("unlocked_at").length());
         assertEquals(7,json.getJSONObject("evidence").length());
         store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));callbacks.clear();
-        store.poll(()->new long[]{1,0,0,0,0,0,0,0},callbacks::add);idle();
+        store.poll(()->new long[]{2,0,0,0,0,0,0,0},callbacks::add);idle();
         assertTrue(upgraded.same(store.latest().state));assertEquals(0,callbacks.get(0).newUnlocks);
         assertEquals(persisted,Files.readString(path.toPath()));
         assertTrue(AchievementsStore.Disk.decode(reversed(json).toString(),before+100000).state.same(upgraded));
         AchievementsStore.ReadResult reordered=AchievementsStore.Disk.decode(reversed(new JSONObject(LEGACY_RECORD)).toString(),123456);
         assertTrue(reordered.needsRewrite);assertLegacyPreserved(reordered.state);assertEquals(123456,reordered.state.unlockedAt[24]);
-        open();assertEquals(25,records());assertTrue(hasText("17 / 25 desbloqueados"));
+        open();assertEquals(26,records());assertTrue(hasText("17 / 26 desbloqueados"));
         assertTrue(hasText("Reconocido al ampliar los logros:"));assertTrue(hasText("Obtenido:"));assertFalse(notices().isChecked());
-        filter(1);assertEquals(17,records());filter(2);assertEquals(8,records());filter(0);
+        filter(1);assertEquals(17,records());filter(2);assertEquals(9,records());filter(0);
         View view=measure(360,760);scrollToRecord("three_flowers");capture(view,"achievements-upgrade-360x760");
         language=1;open();assertTrue(hasText("Recognized when achievements expanded:"));
         assertTrue(hasText("Car"));assertTrue(hasText("Submarine"));
         language=2;open();assertTrue(hasText("Reconhecida ao ampliar as conquistas:"));
-        assertTrue(hasText("Carro"));assertTrue(hasText("Submarino"));assertEquals(0,ShadowToast.shownToastCount());
+        assertTrue(hasText("Carro"));assertTrue(hasText("Submarino"));assertNull(notice());
 
         JSONObject empty=new JSONObject(LEGACY_RECORD);empty.put("notifications",true);
         for(String metric:AchievementsModel.METRIC_KEYS)empty.getJSONObject("evidence").put(metric,0);
         for(int i=0;i<10;++i)empty.getJSONObject("unlocked_at").put(AchievementsModel.DEFINITIONS[i].id,0);
         AchievementsStore.Disk emptyDisk=new AchievementsStore.Disk(recordFile("legacy-empty",empty.toString()));
         AchievementsStore emptyStore=new AchievementsStore(emptyDisk,Runnable::run,new Handler(Looper.getMainLooper()));
-        callbacks.clear();emptyStore.poll(()->new long[]{1,0,0,0,0,0,0,0},callbacks::add);idle();
+        callbacks.clear();emptyStore.poll(()->new long[]{2,0,0,0,0,0,0,0},callbacks::add);idle();
         assertFalse(emptyDisk.read().needsRewrite);assertEquals(0,emptyDisk.read().state.unlocked());
         assertTrue(emptyDisk.read().state.notifications);assertEquals(0,callbacks.get(0).newUnlocks);
+    }
+
+    @Test public void realTwentyFiveEncoderMigratesSilentlyAndAwardsCleanRunOnlyFromNewEvidence() throws Exception {
+        StringBuilder digest=new StringBuilder();
+        for(byte value:java.security.MessageDigest.getInstance("SHA-256").digest(PREVIOUS_RECORD.getBytes(StandardCharsets.UTF_8)))
+            digest.append(String.format("%02x",value&255));
+        assertEquals("fdbb7044d0e6241a36bd460a32c0a372b500ec349d6db607453e21262537a790",digest.toString());
+        JSONObject previous=new JSONObject(PREVIOUS_RECORD);
+        File path=recordFile("previous-real-encoder",PREVIOUS_RECORD);AchievementsStore.Disk actual=new AchievementsStore.Disk(path);
+        AchievementsStore.ReadResult projected=actual.read();assertTrue(projected.needsRewrite);
+        AchievementsModel.State old=projected.state;
+        assertEquals(18,old.unlocked());assertEquals(0,old.unlockedAt[25]);assertFalse(old.notifications);
+        assertEquals(RECOGNIZED,old.recognizedOnUpgrade);assertEquals(1,old.metrics[6]);
+        for(int i=0;i<25;++i)assertEquals(previous.getJSONObject("unlocked_at").getLong(AchievementsModel.DEFINITIONS[i].id),old.unlockedAt[i]);
+        for(int i=0;i<7;++i)assertEquals(previous.getJSONObject("evidence").getLong(AchievementsModel.METRIC_KEYS[i]),old.metrics[i]);
+        assertTrue(AchievementsStore.Disk.decode(reversed(previous).toString(),999999).state.same(old));
+        List<AchievementsStore.Result> callbacks=new ArrayList<>();
+        final boolean[] fail={true};
+        store=new AchievementsStore(new AchievementsStore.Persistence(){
+            public AchievementsStore.ReadResult read() throws IOException{return actual.read();}
+            public void write(AchievementsModel.State value) throws IOException{
+                if(fail[0])throw new IOException("Controlled 25-ID migration failure");actual.write(value);}
+        },Runnable::run,new Handler(Looper.getMainLooper()));
+        store.poll(()->null,callbacks::add);idle();assertEquals(AchievementsStore.Problem.WRITE,store.latest().problem);
+        assertEquals(PREVIOUS_RECORD,Files.readString(path.toPath()));assertTrue(old.same(store.latest().state));
+        assertEquals(0,callbacks.get(0).newUnlocks);
+        fail[0]=false;store.poll(()->{throw new UnsatisfiedLinkError("JNI unavailable on upgrade");},callbacks::add);idle();
+        assertEquals(AchievementsStore.Problem.NATIVE,store.latest().problem);
+        assertTrue(old.same(actual.read().state));assertFalse(actual.read().needsRewrite);
+        assertEquals(0,callbacks.get(1).newUnlocks);
+        JSONObject current=new JSONObject(Files.readString(path.toPath()));
+        assertEquals(3,current.getInt("schema"));assertEquals(26,current.getJSONObject("unlocked_at").length());
+        assertEquals(0,current.getJSONObject("unlocked_at").getLong("yo_shi_pude"));
+        store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));callbacks.clear();
+        store.poll(()->new long[]{2,0,0,0,0,0,0,0},callbacks::add);idle();
+        assertTrue(old.same(store.latest().state));assertEquals(0,callbacks.get(0).newUnlocks);
+        long before=System.currentTimeMillis();store.poll(()->new long[]{2,0,0,0,0,0,0,2},callbacks::add);idle();
+        AchievementsModel.State earned=actual.read().state;
+        assertEquals(19,earned.unlocked());assertEquals(1<<25,callbacks.get(1).newUnlocks);
+        assertTrue(earned.unlockedAt[25]>=before);assertFalse(earned.notifications);
+        assertEquals(RECOGNIZED,earned.recognizedOnUpgrade);assertEquals(3,earned.metrics[6]);
+        for(int i=0;i<25;++i)assertEquals(old.unlockedAt[i],earned.unlockedAt[i]);
+        store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));callbacks.clear();
+        store.poll(()->new long[]{2,0,0,0,0,0,0,2},callbacks::add);idle();
+        assertTrue(earned.same(actual.read().state));assertEquals(0,callbacks.get(0).newUnlocks);
+    }
+
+    @Test public void oldFormatsCannotClaimTheNewRunAndNewDatesCannotBeUpgradeRecognitions() throws Exception {
+        List<String> invalid=new ArrayList<>();
+        for(String record:new String[]{LEGACY_RECORD,PREVIOUS_RECORD}){
+            JSONObject forged=new JSONObject(record);forged.getJSONObject("evidence").put("events",3);invalid.add(forged.toString());
+            JSONObject expanded=new JSONObject(record);expanded.getJSONObject("unlocked_at").put("yo_shi_pude",0);invalid.add(expanded.toString());
+        }
+        AchievementsModel.State earned=AchievementsModel.merge(AchievementsModel.empty(),new long[]{2,0,0,0,0,0,0,2},777);
+        JSONObject forgedOrigin=new JSONObject(AchievementsStore.Disk.encode(earned));
+        forgedOrigin.put("recognized_on_upgrade",1<<25);invalid.add(forgedOrigin.toString());
+        JSONObject withoutDate=new JSONObject(AchievementsStore.Disk.encode(earned));
+        withoutDate.getJSONObject("unlocked_at").put("yo_shi_pude",0);invalid.add(withoutDate.toString());
+        JSONObject withoutEvent=new JSONObject(AchievementsStore.Disk.encode(earned));
+        withoutEvent.getJSONObject("evidence").put("events",0);invalid.add(withoutEvent.toString());
+        File path=recordFile("unsupported-clean-run",PREVIOUS_RECORD);
+        AchievementsStore.Disk actual=new AchievementsStore.Disk(path);
+        for(String record:invalid){
+            Files.writeString(path.toPath(),record);store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));
+            store.poll(()->new long[]{2,0,0,0,0,0,0,2},null);
+            assertEquals(AchievementsStore.Problem.READ,store.latest().problem);assertEquals(record,Files.readString(path.toPath()));
+        }
     }
 
     @Test public void migrationFailureRetriesSameRecognitionDateAndSurvivesRestart() throws Exception {
@@ -238,7 +314,7 @@ public final class AchievementsUiTest {
         // Silent recognition also applies to the user's enabled-notice preference.
         Files.writeString(path.toPath(),LEGACY_RECORD.replace("\"notifications\":false","\"notifications\":true"));
         store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));callbacks.clear();
-        store.poll(()->new long[]{1,0,0,0,0,0,0,0},callbacks::add);idle();
+        store.poll(()->new long[]{2,0,0,0,0,0,0,0},callbacks::add);idle();
         assertTrue(actual.read().state.notifications);assertEquals(0,callbacks.get(0).newUnlocks);
     }
 
@@ -251,7 +327,7 @@ public final class AchievementsUiTest {
         for(String missing:new String[]{"first_flower","perfect_clear"}){
             JSONObject value=new JSONObject(LEGACY_RECORD);value.getJSONObject("unlocked_at").remove(missing);invalid.add(value.toString());}
         JSONObject extra=new JSONObject(LEGACY_RECORD);extra.getJSONObject("unlocked_at").put("future_id",0);invalid.add(extra.toString());
-        JSONObject future=new JSONObject(good);future.put("schema",3);invalid.add(future.toString());
+        JSONObject future=new JSONObject(good);future.put("schema",4);invalid.add(future.toString());
         JSONObject missingOrigin=new JSONObject(good);missingOrigin.remove("recognized_on_upgrade");invalid.add(missingOrigin.toString());
         for(Object mask:new Object[]{1,1<<9,1<<21,1<<25,1L<<40,-1,"16777216"}){
             JSONObject value=new JSONObject(good);value.put("recognized_on_upgrade",mask);invalid.add(value.toString());}
@@ -260,39 +336,40 @@ public final class AchievementsUiTest {
         assertEquals(16,invalid.size());
         for(String value:invalid){
             Files.writeString(path.toPath(),value);store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));
-            store.poll(()->new long[]{1,(1L<<40)-1,(1L<<20)-1,31,20,5,30,1},null);
+            store.poll(()->new long[]{2,(1L<<40)-1,(1L<<20)-1,31,20,5,30,1},null);
             assertEquals(AchievementsStore.Problem.READ,store.latest().problem);assertEquals(value,Files.readString(path.toPath()));
             store.notifications(true,null);assertEquals(AchievementsStore.Problem.READ,store.latest().problem);
             assertEquals(value,Files.readString(path.toPath()));
         }
-        Files.writeString(path.toPath(),good);store.poll(()->new long[]{1,0,0,0,0,0,0,0},null);
+        Files.writeString(path.toPath(),good);store.poll(()->new long[]{2,0,0,0,0,0,0,0},null);
         assertEquals(AchievementsStore.Problem.NONE,store.latest().problem);assertTrue(expanded.same(actual.read().state));
     }
 
-    @Test public void allTwentyFiveNoticesAreGroupedAndFiltersRemainComplete() throws Exception {
-        open();ui.onResume();idle();nativeValue=new long[]{1,(1L<<40)-1,(1L<<20)-1,31,20,5,30,1};
-        Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1001));
-        assertEquals(25,disk.value.unlocked());assertEquals(0x1ffffff,AchievementsModel.newUnlocks(AchievementsModel.empty(),disk.value));
-        assertEquals(0,disk.value.recognizedOnUpgrade);assertEquals(1,ShadowToast.shownToastCount());
-        assertTrue(ShadowToast.getTextOfLatestToast().contains("25 logros"));assertTrue(hasText("25 / 25 desbloqueados"));
-        filter(0);assertEquals(25,records());filter(1);assertEquals(25,records());
+    @Test public void allTwentySixNoticesAreQueuedAndFiltersRemainComplete() throws Exception {
+        open();ui.onResume();idle();nativeValue=new long[]{2,(1L<<40)-1,(1L<<20)-1,31,20,5,30,3};
+        advance(1001);
+        assertEquals(26,disk.value.unlocked());assertEquals(0x3ffffff,AchievementsModel.newUnlocks(AchievementsModel.empty(),disk.value));
+        assertEquals(0,disk.value.recognizedOnUpgrade);assertNotNull(notice());
+        assertEquals("Logro desbloqueado: Primera flor",notice().getContentDescription());assertTrue(hasText("26 / 26 desbloqueados"));
+        filter(0);assertEquals(26,records());filter(1);assertEquals(26,records());
         filter(2);assertEquals(0,records());assertTrue(hasText("¡Completaste todos los logros disponibles!"));filter(0);
-        View view=measure(600,328);scrollToRecord("submarine_transformation");capture(view,"achievements-all25-600x328");
-        open();ui.onResume();Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1001));
-        assertEquals(1,ShadowToast.shownToastCount());
-        AchievementsStore.Disk actual=new AchievementsStore.Disk(new File(activity.getFilesDir(),"all25/progress.json"));
+        View view=measure(600,328);scrollToRecord("yo_shi_pude");capture(view,"achievements-all26-600x328");
+        open();ui.onResume();advance(1001);
+        assertNull(notice());
+        AchievementsStore.Disk actual=new AchievementsStore.Disk(new File(activity.getFilesDir(),"all26/progress.json"));
         actual.write(disk.value);assertTrue(actual.read().state.same(disk.value));
 
         long[] legacyAll=Arrays.copyOf(disk.value.unlockedAt,10);
-        AchievementsModel.State allRecognized=AchievementsModel.expandLegacy(disk.value.metrics,legacyAll,true,55555);
+        long[] legacyMetrics=disk.value.metrics.clone();legacyMetrics[6]=1;
+        AchievementsModel.State allRecognized=AchievementsModel.expandLegacy(legacyMetrics,legacyAll,true,55555);
         assertEquals(25,allRecognized.unlocked());assertEquals(AchievementsModel.EXPANDED_IDS_MASK,allRecognized.recognizedOnUpgrade);
         actual.write(allRecognized);assertTrue(actual.read().state.same(allRecognized));
         assertEquals(55555,actual.read().state.unlockedAt[24]);
     }
 
     @Test public void catalogFiltersAndRealLayouts() throws Exception {
-        nativeValue=new long[]{1,3,0,1,3,1,10,0};open();
-        assertEquals(25,records());assertTrue(hasText("5 / 25 desbloqueados"));
+        nativeValue=new long[]{2,3,0,1,3,1,10,0};open();
+        assertEquals(26,records());assertTrue(hasText("5 / 26 desbloqueados"));
         for(int[] size:new int[][]{{360,760},{600,328},{264,560},{360,240}}){
             View view=measure(size[0],size[1]);assertFooter(view);
             ViewGroup panel=(ViewGroup)view;
@@ -305,54 +382,87 @@ public final class AchievementsUiTest {
         filter(1);assertEquals(5,records());assertTrue(hasText("Obtenido:"));
         for(View view:descendants(panel())) if(view.getTag()!=null&&view.getTag().equals("achievement-first_flower"))
             assertTrue(view.getContentDescription().toString().contains("Desbloqueado"));
-        filter(2);assertEquals(20,records());assertTrue(hasText("Progreso: 3 / 20"));
-        filter(0);assertEquals(25,records());
+        filter(2);assertEquals(21,records());assertTrue(hasText("Progreso: 3 / 20"));
+        filter(0);assertEquals(26,records());
+    }
+
+    @Test public void cleanRunStatusShowsNativeAttemptAndPreservesAnEarnedAchievement() throws Exception {
+        final long[][] value={{1,1,2,17}};
+        final boolean[] unavailable={false};
+        ui=new AchievementsUi(activity,(es,en,pt)->language==0?es:language==1?en:pt,
+            (dialog,parent)->{shown=dialog;dialog.show();SettingsPanel.fitWindow(activity,dialog);},
+            ()->shown.dismiss(),store,()->nativeValue.clone(),()->{
+                if(unavailable[0])throw new UnsatisfiedLinkError("Controlled unavailable challenge status");
+                return value[0];
+            });
+        ui.show();ui.onResume();idle();
+        assertTrue(hasText("Intento en curso · Archivo 2"));assertTrue(hasText("17 / 48 niveles principales completados"));
+        assertTrue(hasText("aunque lo recuperes"));assertEquals(0,disk.value.unlocked());
+        filter(1);View view=measure(360,760);capture(view,"achievements-clean-run-active-360x760");
+        value[0]=new long[]{1,2,2,17};advance(1001);
+        assertTrue(hasText("Intento terminado: Bebé Mario se separó de Yoshi."));
+        assertTrue(hasText("Empieza una partida nueva para volver a intentarlo."));
+        value[0]=new long[]{1,3,2,17};advance(1000);
+        assertTrue(hasText("Este intento no se puede verificar."));
+        value[0]=new long[]{1,4,2,48};advance(1000);
+        assertTrue(hasText("¡Yo shi pude! Reto completado."));assertEquals(0,disk.value.unlocked());
+        value[0]=new long[]{1,1,2,49};advance(1000);
+        assertTrue(hasText("El estado del reto estará disponible cuando el juego esté listo."));
+        unavailable[0]=true;advance(1000);
+        assertTrue(hasText("El estado del reto estará disponible cuando el juego esté listo."));
+        unavailable[0]=false;value[0]=new long[]{1,0,0,0};nativeValue[7]=2;
+        advance(1000);
+        assertEquals(1,disk.value.unlocked());assertTrue(disk.value.unlockedAt[25]>0);
+        assertTrue(hasText("¡Yo shi pude! Reto completado."));
+        unavailable[0]=true;nativeValue[7]=0;advance(1000);
+        assertTrue(hasText("¡Yo shi pude! Reto completado."));assertEquals(1,disk.value.unlocked());
     }
 
     @Test public void failedWritesRetainEvidenceAndAnnounceOnlyOnceAfterCommit() {
         disk.failWrite=true;open();ui.onResume();idle();nativeValue[5]=1;
-        Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1001));
+        advance(1001);
         assertEquals(0,disk.value.unlocked());assertEquals(1,store.latest().state.unlocked());
         assertEquals(AchievementsStore.Problem.WRITE,store.latest().problem);
-        long originalDate=store.latest().state.unlockedAt[0];assertEquals(0,ShadowToast.shownToastCount());
-        nativeValue[4]=1;Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1000));
-        assertEquals(2,store.latest().state.unlocked());disk.failWrite=false;nativeValue=new long[]{1,0,0,0,0,0,0,0};
-        Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1000));
+        long originalDate=store.latest().state.unlockedAt[0];assertNull(notice());
+        nativeValue[4]=1;advance(1000);
+        assertEquals(2,store.latest().state.unlocked());disk.failWrite=false;nativeValue=new long[]{2,0,0,0,0,0,0,0};
+        advance(1000);
         assertEquals(2,disk.value.unlocked());assertEquals(originalDate,disk.value.unlockedAt[0]);
-        assertEquals(1,ShadowToast.shownToastCount());assertTrue(ShadowToast.getTextOfLatestToast().contains("2 logros"));
-        Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1000));assertEquals(1,ShadowToast.shownToastCount());
+        assertNotNull(notice());assertEquals("Logro desbloqueado: Primera flor",notice().getContentDescription());
+        View firstNotice=notice();
+        advance(1000);assertSame(firstNotice,notice());
         notices().setChecked(false);idle();assertFalse(disk.value.notifications);
-        nativeValue[6]=30;Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1000));
-        assertEquals(3,disk.value.unlocked());assertEquals(1,ShadowToast.shownToastCount());
+        nativeValue[6]=30;advance(1000);
+        assertEquals(3,disk.value.unlocked());assertNull(notice());
     }
 
     @Test public void recreationLanguageChangesAndPauseDoNotReplayNotices() {
-        disk.value=AchievementsModel.merge(AchievementsModel.empty(),new long[]{1,1,0,0,1,1,0,0},77);
-        open();ui.onResume();idle();assertEquals(0,ShadowToast.shownToastCount());
+        disk.value=AchievementsModel.merge(AchievementsModel.empty(),new long[]{2,1,0,0,1,1,0,0},77);
+        open();ui.onResume();idle();assertNull(notice());
         nativeValue[3]=1;ui.onPause();idle();assertEquals(5,disk.value.unlocked());
-        assertEquals(0,ShadowToast.shownToastCount());
+        assertNull(notice());
         store=new AchievementsStore(disk,Runnable::run,new Handler(Looper.getMainLooper()));language=1;open();ui.onResume();idle();
-        assertTrue(hasText("Local achievements"));assertTrue(hasText("First flower"));assertEquals(0,ShadowToast.shownToastCount());
+        assertTrue(hasText("Local achievements"));assertTrue(hasText("First flower"));assertNull(notice());
         language=2;open();ui.onResume();idle();assertTrue(hasText("Conquistas locais"));assertTrue(hasText("Primeira flor"));
-        assertEquals(0,ShadowToast.shownToastCount());ui.close();shown.dismiss();nativeValue[7]=1;
-        Shadows.shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(3000));assertFalse(shown.isShowing());
-        assertEquals(0,ShadowToast.shownToastCount());
+        assertNull(notice());ui.close();shown.dismiss();nativeValue[7]=1;
+        advance(3000);assertFalse(shown.isShowing());
+        assertNull(notice());
     }
 
     @Test public void corruptAndFutureFilesArePreservedThenRecover() throws Exception {
         File path=new File(activity.getFilesDir(),"achievement-test/progress.json");
         AchievementsStore.Disk actual=new AchievementsStore.Disk(path);
-        AchievementsModel.State one=AchievementsModel.merge(AchievementsModel.empty(),new long[]{1,0,0,0,0,1,0,0},100);
+        AchievementsModel.State one=AchievementsModel.merge(AchievementsModel.empty(),new long[]{2,0,0,0,0,1,0,0},100);
         actual.write(one);assertTrue(actual.read().state.same(one));
         byte[] original=Files.readAllBytes(path.toPath());
-        for(String invalid:new String[]{"{broken",new String(original,StandardCharsets.UTF_8).replace("\"schema\":2","\"schema\":3")}){
+        for(String invalid:new String[]{"{broken",new String(original,StandardCharsets.UTF_8).replace("\"schema\":3","\"schema\":4")}){
             Files.write(path.toPath(),invalid.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             store=new AchievementsStore(actual,Runnable::run,new Handler(Looper.getMainLooper()));
-            store.poll(()->new long[]{1,1,0,0,0,0,0,0},null);
+            store.poll(()->new long[]{2,1,0,0,0,0,0,0},null);
             assertEquals(AchievementsStore.Problem.READ,store.latest().problem);
             assertEquals(invalid,new String(Files.readAllBytes(path.toPath()),java.nio.charset.StandardCharsets.UTF_8));
         }
-        Files.write(path.toPath(),original);store.poll(()->new long[]{1,1,0,0,0,0,0,0},null);
+        Files.write(path.toPath(),original);store.poll(()->new long[]{2,1,0,0,0,0,0,0},null);
         assertEquals(AchievementsStore.Problem.NONE,store.latest().problem);assertEquals(2,actual.read().state.unlocked());
         assertEquals(100,actual.read().state.unlockedAt[0]);
         Files.copy(path.toPath(),new File(path.getPath()+".bak").toPath());Files.write(path.toPath(),"broken".getBytes());
@@ -360,14 +470,14 @@ public final class AchievementsUiTest {
     }
 
     @Test public void nativeFailuresDoNotEraseSavedProgressOrOverwriteUnreadableData() {
-        disk.value=AchievementsModel.merge(AchievementsModel.empty(),new long[]{1,1,0,0,0,0,0,0},91);
+        disk.value=AchievementsModel.merge(AchievementsModel.empty(),new long[]{2,1,0,0,0,0,0,0},91);
         store.poll(()->{throw new UnsatisfiedLinkError("Test unavailable library");},null);
         assertEquals(1,store.latest().state.unlocked());assertEquals(AchievementsStore.Problem.NATIVE,store.latest().problem);
-        assertEquals(0,disk.writes);store.poll(()->new long[]{2,0,0,0,0,0,0,0},null);
+        assertEquals(0,disk.writes);store.poll(()->new long[]{3,0,0,0,0,0,0,0},null);
         assertEquals(1,store.latest().state.unlocked());assertEquals(0,disk.writes);
         disk.failRead=true;store=new AchievementsStore(disk,Runnable::run,new Handler(Looper.getMainLooper()));
         store.notifications(false,null);assertEquals(AchievementsStore.Problem.READ,store.latest().problem);assertEquals(0,disk.writes);
-        disk.failRead=false;store.poll(()->new long[]{1,2,0,0,0,0,0,0},null);
+        disk.failRead=false;store.poll(()->new long[]{2,2,0,0,0,0,0,0},null);
         assertEquals(2,Long.bitCount(disk.value.metrics[0]));assertEquals(91,disk.value.unlockedAt[7]);
     }
 
@@ -379,8 +489,8 @@ public final class AchievementsUiTest {
             public void write(AchievementsModel.State value)throws IOException{assertNotSame(Looper.getMainLooper(),Looper.myLooper());threads.add(Thread.currentThread().getName());memory.write(value);completed.countDown();}
         },worker,new Handler(Looper.getMainLooper()));
         try{
-            async.poll(()->new long[]{1,1,0,0,0,0,0,0},null);
-            async.poll(()->new long[]{1,2,0,0,0,0,0,0},null);
+            async.poll(()->new long[]{2,1,0,0,0,0,0,0},null);
+            async.poll(()->new long[]{2,2,0,0,0,0,0,0},null);
             assertTrue(completed.await(5,TimeUnit.SECONDS));assertEquals(2,Long.bitCount(memory.value.metrics[0]));
             assertEquals(2,threads.size());assertEquals(threads.get(0),threads.get(1));
         }finally{worker.shutdownNow();}

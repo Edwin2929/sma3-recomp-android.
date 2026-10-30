@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 
 /** One process-owned, serial store: lifecycle recreation cannot race disk writes. */
 final class AchievementsStore {
-    static final int FILE_SCHEMA = 2;
+    static final int FILE_SCHEMA = 3;
     interface NativeSnapshot { long[] read(); }
     interface Listener { void updated(Result result); }
     interface Persistence {
@@ -205,7 +205,7 @@ final class AchievementsStore {
             try {
                 JSONObject root = new JSONObject(json);
                 long schema = integer(root, "schema");
-                if (schema != 1 && schema != FILE_SCHEMA)
+                if (schema != 1 && schema != 2 && schema != FILE_SCHEMA)
                     throw new IOException("Unsupported achievement file");
                 if (schema == 1) keys(root, "schema", "notifications", "evidence", "unlocked_at");
                 else keys(root, "schema", "notifications", "recognized_on_upgrade", "evidence", "unlocked_at");
@@ -214,7 +214,8 @@ final class AchievementsStore {
                 JSONObject evidence = root.getJSONObject("evidence"), dates = root.getJSONObject("unlocked_at");
                 keys(evidence, AchievementsModel.METRIC_KEYS);
                 long[] metrics = new long[AchievementsModel.METRICS];
-                int count = schema == 1 ? AchievementsModel.LEGACY_COUNT : AchievementsModel.DEFINITIONS.length;
+                int count = schema == 1 ? AchievementsModel.LEGACY_COUNT
+                    : schema == 2 ? AchievementsModel.PREVIOUS_COUNT : AchievementsModel.DEFINITIONS.length;
                 String[] ids = new String[count];
                 for (int i = 0; i < count; ++i) ids[i] = AchievementsModel.DEFINITIONS[i].id;
                 keys(dates, ids);
@@ -226,6 +227,8 @@ final class AchievementsStore {
                 long recognized = integer(root, "recognized_on_upgrade");
                 if (recognized < 0 || recognized > AchievementsModel.ALL_IDS_MASK)
                     throw new IOException("Invalid expanded achievement mask");
+                if (schema == 2) return new ReadResult(AchievementsModel.expandPrevious(metrics, unlockedAt,
+                    (Boolean)notifications, (int)recognized), true);
                 return new ReadResult(new AchievementsModel.State(metrics, unlockedAt,
                     (Boolean)notifications, (int)recognized), false);
             } catch (JSONException | IllegalArgumentException error) {

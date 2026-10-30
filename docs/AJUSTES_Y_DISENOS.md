@@ -1,4 +1,4 @@
-# Ajustes y diseños — Android 0.10.10 beta
+# Ajustes y diseños — Android 0.10.11 beta
 
 El botón **Atrás** abre un panel oscuro con acentos verdes, tarjetas por
 categoría y una descripción de cada opción. El contenido se puede desplazar
@@ -10,7 +10,7 @@ Hay siete apartados:
 
 - **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; submenús independientes de filtros y de resolución Automática, 720p y 1080p.
 - **Mods:** personalizar el color de Yoshi con paleta, RGB y HEX; importar perfiles de color `.gbamod`, instalar el ejemplo incluido, consultar sus datos, activarlos, desactivarlos y eliminarlos.
-- **Logros:** 25 retos locales, progreso, fechas, filtros de estado y avisos de desbloqueo opcionales.
+- **Logros:** 26 retos locales, progreso, fechas, filtros de estado y animación de desbloqueo opcional y estado del reto **Yo shi pude**.
 - **Rendimiento y FPS:** contador, objetivos de presentación de 60 y 120 FPS, estado de la pantalla y explicación de sus límites.
 - **Controles:** visibilidad de botones táctiles, símbolos o letras clásicas, opacidad, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
@@ -26,13 +26,17 @@ asignaciones del mando y las tres ranuras de diseños.
 
 ## Logros locales
 
-**Atrás → Logros** presenta 25 retos con un resumen de desbloqueados y
+**Atrás → Logros** presenta 26 retos con un resumen de desbloqueados y
 tarjetas de progreso. Puedes filtrar **Todos / Logrados / Pendientes** y
-silenciar los avisos sin desactivar el registro. La lista se desplaza y el
+desactivar **Animación al desbloquear** sin desactivar el registro.
+El panel de **Yo shi pude**, debajo del total, muestra si el recorrido sigue
+válido y sus niveles principales completados. La lista se desplaza y el
 botón **Volver** permanece accesible fuera de ella.
 
 El progreso se guarda en este dispositivo, separado de la partida, y se
-conserva al actualizar sin borrar datos. Al pasar de 0.10.9 a 0.10.10 se
+conserva al actualizar sin borrar datos. 0.10.11 mantiene los 25 logros de
+0.10.10 y añade **Yo shi pude** pendiente, porque exige observar una nueva
+partida completa. Al actualizar desde 0.10.9 se
 mantienen los diez logros anteriores y sus fechas, y se reconocen los retos
 nuevos ya cumplidos según la evidencia local registrada. La fecha de esos
 nuevos reconocimientos corresponde a la ampliación, no a una fecha anterior

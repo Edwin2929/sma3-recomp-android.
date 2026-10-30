@@ -1,0 +1,171 @@
+{
+  "result": "PASS",
+  "version": "0.10.11-beta",
+  "candidate_sha256": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+  "reference_release": "0.10.9-beta",
+  "reference_sha256": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+  "reference_execution": "Previously recorded native replay reused after exact state, input tape, ROM, BIOS, config and binary identity validation. It was not rerun or relabeled as current.",
+  "validator_adaptation": "Private copy accepts native snapshot schema2; all gameplay, identity, pixel, state and coverage checks remain unchanged.",
+  "validator_source_sha256": "4c325cd5d1450b590e70aa106c02a5eef4fff49c45fe62e8fd6e67c45c8e8877",
+  "private_validator_sha256": "0d5605df97ddadd463b29b6f77b4818637b10522407ee79bd76c541a0dff1301",
+  "native_host": true,
+  "physical_android": false,
+  "cases": [
+    {
+      "name": "fuzzy",
+      "width": 240,
+      "result": "PASS",
+      "observed": {
+        "schema": 2,
+        "completed_levels": 0,
+        "perfect_levels": 0,
+        "transformations": 0,
+        "red_coins": 0,
+        "flowers": 0,
+        "stars": 0,
+        "event_flags": 1
+      },
+      "expected": {
+        "schema": 2,
+        "completed_levels": 0,
+        "perfect_levels": 0,
+        "transformations": 0,
+        "red_coins": 0,
+        "flowers": 0,
+        "stars": 0,
+        "event_flags": 1
+      },
+      "trace_rows_equal": 1901,
+      "saved_states_equal_except_inactive_rtc": 41,
+      "exact_guest_sections": [
+        "CPU0",
+        "BUS0",
+        "IO_0",
+        "AUD0",
+        "SAV0",
+        "META"
+      ],
+      "ppu_timing_equal": true,
+      "capture_count": 40,
+      "changed_pixels": 0,
+      "stable_vehicle_captures": 0,
+      "transformation_transitions": [
+        {
+          "elapsed_frame": 0,
+          "transformation": 0
+        }
+      ],
+      "fuzzy_recovery": {
+        "pass": true,
+        "first_effect_elapsed_frame": 1018,
+        "first_effect_guest_frame": 14418,
+        "recovery_elapsed_frame": 1800,
+        "recovery_guest_frame": 15200,
+        "active_frames": 782,
+        "maximum_amplitude": 24576,
+        "normal_frames_at_end": 101,
+        "required_normal_tail_frames": 100,
+        "observed_countdown_steps": 686,
+        "observed_amplitude_growth_steps": 191,
+        "observed_amplitude_fade_steps": 96,
+        "no_restart_or_death": true,
+        "effect_was_not_disabled": true
+      },
+      "fully_static": true,
+      "native_diagnostics": {
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "input_sha256": {
+        "baseline": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+        "candidate": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+        "actions": "3feda686b60190a08369c14843f961ce7422b4d65b2d60a1ae4f3296909214a3",
+        "expected": "befad5e5fc29f7fbed8f7309b14d53f9cc58d92c98617c01bfcd2e55e7c02067"
+      },
+      "private_summary_sha256": "9e52d4228b0a857faea0f98c79f78fcddfe492a2edb0b7f7827f9ab5934bbb2a",
+      "native_log_sha256": "ab7d9e71539ab89f77dbce2054e4081245a00134307135d46b06237eea195bb6"
+    },
+    {
+      "name": "car",
+      "width": 356,
+      "result": "PASS",
+      "observed": {
+        "schema": 2,
+        "completed_levels": 0,
+        "perfect_levels": 0,
+        "transformations": 1,
+        "red_coins": 0,
+        "flowers": 0,
+        "stars": 0,
+        "event_flags": 0
+      },
+      "expected": {
+        "schema": 2,
+        "completed_levels": 0,
+        "perfect_levels": 0,
+        "transformations": 1,
+        "red_coins": 0,
+        "flowers": 0,
+        "stars": 0,
+        "event_flags": 0
+      },
+      "trace_rows_equal": 1527,
+      "saved_states_equal_except_inactive_rtc": 34,
+      "exact_guest_sections": [
+        "CPU0",
+        "BUS0",
+        "IO_0",
+        "AUD0",
+        "SAV0",
+        "META"
+      ],
+      "ppu_timing_equal": true,
+      "capture_count": 33,
+      "changed_pixels": 0,
+      "stable_vehicle_captures": 25,
+      "transformation_transitions": [
+        {
+          "elapsed_frame": 0,
+          "transformation": 0
+        },
+        {
+          "elapsed_frame": 36,
+          "transformation": 2
+        },
+        {
+          "elapsed_frame": 1316,
+          "transformation": 0
+        }
+      ],
+      "fuzzy_recovery": null,
+      "fully_static": true,
+      "native_diagnostics": {
+        "distinct_misses": 0,
+        "interpreted_insns": 0,
+        "healed_native": 0,
+        "failed": 0
+      },
+      "input_sha256": {
+        "baseline": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+        "candidate": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+        "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+        "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+        "state": "f810aff15a8bda2b1187bcc8ca3ceac71793b0c0ec8e1c7b682d5421b3b823d4",
+        "actions": "c44cece39d9df5c8cc61dc31a1474172fbc1ad0e1858b9bee7c04e39ef707615",
+        "expected": "f6dabc543ba6a56201e3e5fd26d7a69e01032506d68153bc2edc0935bae92a99"
+      },
+      "private_summary_sha256": "2b02d1820ce1d09f5eab1a1c2660747ac7cb9d4fc19e9d7f0729b236b69ae45f",
+      "native_log_sha256": "9c2f0e6d640f35da5beb6c9700cbb944884e8f72f564d46ae20dacee2f7ac23c"
+    }
+  ],
+  "limits": [
+    "Two focused regressions, not an all-level gameplay claim.",
+    "Private entry/position states may be prepared; effects and transformation transitions are executed by the original native game.",
+    "Only the existing pinned inactive RTC wall-clock field is excluded from saved-state comparison; sampled image pixels and PPU timing must match exactly."
+  ]
+}

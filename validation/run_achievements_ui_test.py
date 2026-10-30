@@ -65,12 +65,13 @@ tasks.register('resolveUiRuntime', Copy) {
     fixture.mkdir(parents=True, exist_ok=True)
     (fixture / 'GbaNative.java').write_text("""package org.gbarecomp;
 final class GbaNative {
-    static long[] getLocalAchievements() { return new long[]{1,0,0,0,0,0,0,0}; }
+    static long[] getLocalAchievements() { return new long[]{2,0,0,0,0,0,0,0}; }
+    static long[] getYoShiPudeStatus() { return new long[]{1,0,0,0}; }
 }
 """)
     sources = [root / 'android/java/org/gbarecomp' / name for name in
-               ['AchievementsUi.java', 'AchievementsModel.java', 'AchievementsStore.java', 'SettingsPanel.java']]
-    sources += [root / 'validation/AchievementsUiTest.java'] + sorted(fixture.glob('*.java'))
+               ['AchievementsUi.java', 'AchievementBanner.java', 'AchievementsModel.java', 'AchievementsStore.java', 'SettingsPanel.java']]
+    sources += [root / 'validation/AchievementsUiTest.java', root / 'validation/AchievementBannerTest.java'] + sorted(fixture.glob('*.java'))
     classes = work / 'classes'
     classes.mkdir(exist_ok=True)
     compile_path = os.pathsep.join(map(str, [args.android_jar.resolve()] + libraries))
@@ -91,7 +92,8 @@ final class GbaNative {
                   '-Dsma3.ui.captures=' + str(work / 'captures'),
                   '--add-opens=java.base/java.lang=ALL-UNNAMED',
                   '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
-                  '-cp', runtime_path, 'org.junit.runner.JUnitCore', 'org.gbarecomp.AchievementsUiTest'])
+                  '-cp', runtime_path, 'org.junit.runner.JUnitCore', 'org.gbarecomp.AchievementsUiTest',
+                  'org.gbarecomp.AchievementBannerTest'])
     report = {'result': 'PASS', 'framework': 'Robolectric 4.16.1', 'android_api': 34,
               'physical_device': False, 'native_game_loaded': False,
               'production_ui_sources': [str(p.relative_to(root)) for p in sources if p.is_relative_to(root)],

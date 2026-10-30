@@ -1,12 +1,12 @@
-# 25 logros locales — Android 0.10.10 beta
+# 26 logros locales — Android 0.10.11 beta
 
-**Atrás → Logros** muestra 25 retos que se registran en este dispositivo.
+**Atrás → Logros** muestra 26 retos que se registran en este dispositivo.
 No hace falta crear una cuenta, iniciar sesión ni conectarse a Internet para
 obtenerlos. El registro existe desde 0.10.9 y se conserva al actualizar
-la aplicación manteniendo sus datos. 0.10.10 conserva los diez retos anteriores
-y añade quince.
+la aplicación manteniendo sus datos. 0.10.11 conserva los 25 retos anteriores
+y añade **Yo shi pude**, junto con una nueva animación al desbloquear logros.
 
-## Los 25 logros
+## Los 26 logros
 
 | Logro | Cómo obtenerlo |
 | --- | --- |
@@ -35,6 +35,7 @@ y añade quince.
 | **Helicóptero** | Transforma a Yoshi en helicóptero. |
 | **Tren** | Transforma a Yoshi en tren. |
 | **Submarino** | Transforma a Yoshi en submarino. |
+| **Yo shi pude** | Completa una partida nueva y los 48 niveles principales hasta el final sin que un golpe o enemigo separe a Bebé Mario de Yoshi en ningún mapa. |
 
 Los logros de flores y monedas rojas usan la mayor cantidad alcanzada en
 un solo nivel; no suman objetos de diferentes niveles. El progreso de niveles
@@ -46,7 +47,7 @@ usar uno no concede los otros cuatro.
 
 ## Consultar y recibir avisos
 
-El panel muestra el total desbloqueado sobre 25, una barra general y tarjetas con
+El panel muestra el total desbloqueado sobre 26, una barra general y tarjetas con
 la descripción de cada reto. Cada tarjeta indica su progreso o su fecha
 de obtención. La fecha usa el reloj del teléfono y se conserva desde el
 primer desbloqueo.
@@ -55,14 +56,76 @@ Los filtros **Todos**, **Logrados** y **Pendientes** permiten cambiar la lista.
 Desplázate para ver todos los retos y la opción de avisos. **Volver** permanece
 fuera del contenido desplazable.
 
-Al obtener un logro aparece un aviso breve. Puedes silenciar los avisos
-desde este mismo apartado; el registro de progreso sigue funcionando.
-El aviso solo se emite después de confirmar que el logro quedó guardado.
-No vuelve a anunciarse un logro ya registrado al abrir el menú o reiniciar.
+Al obtener un logro aparece una medalla con un huevo que se despliega en
+una tarjeta verde con **Logro desbloqueado** y su nombre. La animación se
+inspira en las celebraciones de consola y usa gráficos originales del port.
+Se sitúa arriba, dentro del área segura, no pausa el juego y deja pasar los
+toques hacia los controles. Si obtienes varios logros juntos, se muestran
+uno después de otro.
+
+Puedes desactivar **Animación al desbloquear** sin desactivar el registro.
+El aviso aparece después de guardar el logro; no se repiten reconocimientos
+al actualizar ni premios ya guardados. Al salir de la app se retiran los
+avisos y la cola pendiente. Si Android tiene las animaciones desactivadas,
+se muestra la tarjeta sin movimiento. El tiempo de lectura se adapta a la
+preferencia de accesibilidad del sistema. La tarjeta no añade sonidos.
+
+## Yo shi pude: una partida completa sin perder a Bebé Mario
+
+El panel de estado del reto aparece debajo del resumen de logros. Indica
+**Intento en curso**, el archivo de partida y cuántos de los **48 niveles
+principales** se han completado en ese intento. La introducción no aumenta
+el contador. Los niveles secretos y extra son opcionales para completar
+el juego; si los visitas durante el intento, una pérdida de Bebé Mario
+también lo invalida.
+
+1. Crea una **partida nueva desde el menú del juego**. El port debe observar
+   su creación y recorrido desde la introducción. Una partida anterior o
+   importada no demuestra qué ocurrió antes de activar este registro.
+2. Completa el juego sin que ningún golpe o enemigo separe a Bebé Mario de
+   Yoshi. **Recuperarlo enseguida no restaura la validez del intento.**
+3. El logro se concede al observar los 48 niveles principales y la llegada
+   al final después de la victoria sobre Bebé Bowser. Las animaciones normales
+   de entrega entre Yoshis, transformaciones y Superestrella no cuentan
+   como pérdidas.
+
+Si pierdes a Bebé Mario, puedes seguir jugando normalmente. El panel marca
+**Intento terminado**; para intentar este logro otra vez, comienza otra
+partida nueva. Los otros logros y sus fechas no se borran. El reto no añade
+una condición independiente de «cero muertes»; comprueba las separaciones
+de Bebé Mario y la continuidad del recorrido.
+
+### Pausar y continuar el intento
+
+Al enviar la app a segundo plano, el port guarda un estado automático y
+un comprobante del intento asociado a ese estado exacto. Si Android cierra
+la app mientras está suspendida, la siguiente apertura puede continuar
+ese punto y el intento verificado. Al continuar, ese comprobante se consume;
+un estado anterior no permite deshacer una pérdida.
+
+**Cargar manualmente un estado, rebobinar o continuar desde una partida
+antigua no acredita este reto.** Tampoco se conserva la validez si el proceso
+se termina de forma abrupta en primer plano sin una suspensión comprobada.
+En esos casos el juego puede seguir, pero hay que empezar una partida nueva
+para registrar un recorrido completo. Para interrumpir una sesión, envía
+la app a segundo plano y permite que termine su guardado automático.
+
+Si no se puede consumir el comprobante por un error de almacenamiento, la
+sesión se detiene antes de continuar la ejecución. Esto evita reutilizar
+un comprobante anterior después de acciones que no pudieron conservarse.
+El comprobante del reto es independiente del archivo de partida y del
+registro de los otros logros.
+
+## Actualizar desde 0.10.10
+
+Al instalar 0.10.11 encima de 0.10.10 se conservan los **25 IDs, fechas,
+progreso y preferencia de avisos** anteriores. **Yo shi pude** empieza
+pendiente: los registros antiguos no contenían la historia completa de
+pérdidas de Bebé Mario y no pueden concederlo retroactivamente.
 
 ## Actualizar desde los diez logros de 0.10.9
 
-Al instalar 0.10.10 sobre 0.10.9 se conservan el progreso local, las fechas
+Al instalar 0.10.11 sobre 0.10.9 se conservan el progreso local, las fechas
 de los diez logros anteriores y la preferencia de avisos. Los retos nuevos
 que ya cumplan esa evidencia se reconocen sin repetir las acciones.
 
@@ -81,7 +144,7 @@ no tenía este registro, los logros comienzan a reconocerse al jugar.
 
 ## Partidas anteriores y estados instantáneos
 
-Los logros observan acciones del juego. **Importar o cargar una partida
+Los primeros 25 logros observan acciones del juego. **Importar o cargar una partida
 antigua con récords ya obtenidos no los concede automáticamente.**
 Puedes seguir usando tu partida: las acciones que realices durante el juego
 se podrán reconocer normalmente. El reconocimiento al ampliar el catálogo
@@ -92,7 +155,8 @@ sí solo el logro. Llegar a la meta durante la nueva sesión sí puede registrar
 ese nivel. Un récord antiguo de cien puntos tampoco sustituye completar
 y confirmar una nueva puntuación de cien.
 
-Cargar un estado no borra los logros ya guardados. La detección reinicia
+Cargar un estado no borra los logros ya guardados. El intento en curso de
+**Yo shi pude** sigue las reglas específicas de continuidad descritas arriba. La detección reinicia
 las secuencias incompletas al cargar, cambiar de nivel o perder continuidad.
 En particular, cargar directamente el final del efecto de Fuzzy o una pantalla
 de puntuación no sustituye observar la secuencia válida.
@@ -122,7 +186,7 @@ Los retos se apoyan en las escenas y transiciones identificadas de SMA3 USA.
 No se ha completado todo el juego ni probado esta versión en todos los
 dispositivos. La panorámica mantiene su etiqueta beta y sus límites anteriores.
 
-[Pruebas y límites de 0.10.10](../validation/LOCAL_ACHIEVEMENTS_0.10.10_VALIDATION.md) ·
-[Interfaz y migración](../validation/LOCAL_ACHIEVEMENTS_25_UI_VALIDATION.md) ·
-[Evidencia nativa reutilizada](../validation/LOCAL_ACHIEVEMENTS_25_NATIVE_AUDIT.md) ·
-[Notas de 0.10.10](releases/v0.10.10-beta.md).
+[Pruebas y límites de 0.10.11](../validation/LOCAL_ACHIEVEMENTS_0.10.11_VALIDATION.md) ·
+[Interfaz y migración](../validation/LOCAL_ACHIEVEMENTS_26_STATE_VALIDATION.md) ·
+[Detección del recorrido](../validation/YO_SHI_PUDE_NATIVE.md) ·
+[Notas de 0.10.11](releases/v0.10.11-beta.md).

@@ -1,0 +1,446 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "version": "0.10.11-beta",
+  "date_local": "2026-10-29",
+  "date_utc": "2026-10-30",
+  "previous_commit": "cdf8223ebdfc3317f3b00c5bfd5811943c555bc5",
+  "artifact": {
+    "file_name": "sma3-recomp-0.10.11-beta-arm64.apk",
+    "bytes": 28017944,
+    "sha256": "b596fbf6fba4a8176dcb4a4d292ecacb733f2fac7afa852b2eb129c3ff1ccaa5"
+  },
+  "application": {
+    "application_id": "org.sma3.recomp.experimental",
+    "version_code": 22,
+    "version_name": "0.10.11-beta",
+    "payload_version": "0.10.11",
+    "min_sdk": 28,
+    "target_sdk": 35,
+    "abi": "arm64-v8a"
+  },
+  "catalog": {
+    "total": 26,
+    "previous": 25,
+    "new_id": "yo_shi_pude",
+    "new_title": "Yo shi pude",
+    "all_previous_ids_titles_descriptions_preserved": true,
+    "native_snapshot_schema": 2,
+    "disk_schema": 3,
+    "old_record_does_not_award_new_challenge": true
+  },
+  "java_validation": {
+    "model_checks": 2055,
+    "robolectric_tests": 22,
+    "catalog_store_status_tests": 13,
+    "banner_tests": 9,
+    "framework": "Robolectric 4.16.1",
+    "android_api": 34,
+    "compile_api": 35,
+    "real_previous_encoder_tests": 1,
+    "gates": {
+      "schema1_and_schema2_migrate_silently_without_jni": true,
+      "all25_old_dates_and_preferences_preserved": true,
+      "new_challenge_cannot_be_recognized_from_old_records": true,
+      "fuzzy_and_clean_run_event_bits_independent": true,
+      "pending_migration_write_retries_without_replacing_old_file": true,
+      "process_restart_after_migration_stable": true,
+      "invalid_expanded_or_forged_record_variants_preserved": 23,
+      "all26_notification_bits": true,
+      "catalog_filters_and_narrow_portrait_landscape": true,
+      "attempt_status_slot_and_48_course_progress": true,
+      "unavailable_or_invalid_status_does_not_erase_earned_reward": true,
+      "background_serial_store": true,
+      "animation_queue_deduplication_lifecycle_preference": true,
+      "animation_entry_expand_hold_collapse_exit": true,
+      "disabled_system_animations_keep_readable_notice": true,
+      "touch_and_multitouch_pass_through": true
+    }
+  },
+  "real_previous_fixture": {
+    "source_commit": "cdf8223ebdfc3317f3b00c5bfd5811943c555bc5",
+    "bytes": 944,
+    "sha256": "fdbb7044d0e6241a36bd460a32c0a372b500ec349d6db607453e21262537a790",
+    "encoder": "unmodified 0.10.10 AchievementsStore.Disk.encode",
+    "unlocked_before_and_after_migration": 18
+  },
+  "ui_captures": [
+    {
+      "file_name": "achievement-banner-large-text-264.png",
+      "bytes": 55334,
+      "sha256": "06b15c6ae709f0924470711db9c50c5ba799035229c60acfba769e1c6d64629e"
+    },
+    {
+      "file_name": "achievement-banner-phase-0.png",
+      "bytes": 964,
+      "sha256": "13172224ec69a04289e68a11e1338240d77738bd096468e2c1f134b33f672d42"
+    },
+    {
+      "file_name": "achievement-banner-phase-1.png",
+      "bytes": 15414,
+      "sha256": "0008f58d853d1fc19fef6d2c15e608e2cfad5af795dc372ac06ff52f39dfd294"
+    },
+    {
+      "file_name": "achievement-banner-phase-2.png",
+      "bytes": 30450,
+      "sha256": "c493b22582d877e1fdf9b530fefd9852b6e91ca8700eae627cf618c33ad21b4b"
+    },
+    {
+      "file_name": "achievement-banner-phase-3.png",
+      "bytes": 31463,
+      "sha256": "02389db35b58c06c33c96658a30395140177236ff9cf8d6baa361166bdac3745"
+    },
+    {
+      "file_name": "achievement-banner-phase-4.png",
+      "bytes": 16840,
+      "sha256": "8bc701ae02c62f66bd3235ce70a3f98c72de87f74dc1cf1f437c6295d06a0f81"
+    },
+    {
+      "file_name": "achievement-banner-phase-5.png",
+      "bytes": 964,
+      "sha256": "13172224ec69a04289e68a11e1338240d77738bd096468e2c1f134b33f672d42"
+    },
+    {
+      "file_name": "achievement-banner-reduced-motion.png",
+      "bytes": 29284,
+      "sha256": "033254bc937473d13fca902b03344f05029b6cbf60c5e7f96b2c3575349c5590"
+    },
+    {
+      "file_name": "achievement-banner-safe-264.png",
+      "bytes": 35146,
+      "sha256": "a2582d5dbe1f1596cfb0b7601ca97343ae73d2ee1c630b667e5840075002da6d"
+    },
+    {
+      "file_name": "achievement-banner-safe-360.png",
+      "bytes": 34511,
+      "sha256": "4438b46298898bfafa5f37ba4ab4e00e7f92928baa0b0d75a3b949661c7bdcaf"
+    },
+    {
+      "file_name": "achievement-banner-safe-600.png",
+      "bytes": 36653,
+      "sha256": "395c4d1ba948941383e7950ac7844ab66f2154ee3788ed722c94b9eabb4b52d2"
+    },
+    {
+      "file_name": "achievements-264x560.png",
+      "bytes": 79840,
+      "sha256": "a37597a40f1d9a1beaa55bd5c3e7ea1ab137b0e0620aaebfeec1458ca26f74ff"
+    },
+    {
+      "file_name": "achievements-360x240.png",
+      "bytes": 28816,
+      "sha256": "c03501a4221c9e77da4131cf5a30a040cf72a8fbc416029b4624cd2797edbf7a"
+    },
+    {
+      "file_name": "achievements-360x760.png",
+      "bytes": 116275,
+      "sha256": "5850bf16dd76efc2f6c57289dd2d3ad923faea306e2bc03ca0f9e6e772d23c25"
+    },
+    {
+      "file_name": "achievements-600x328.png",
+      "bytes": 54015,
+      "sha256": "041ddfef1f79c80348221e07ae76fffe73e17aa78dd7f75a989da8b4a527fb2c"
+    },
+    {
+      "file_name": "achievements-all26-600x328.png",
+      "bytes": 50829,
+      "sha256": "307aead068185e7bfde85e1db64c23e0e8f4cc6190c50adb9975014b4dc26351"
+    },
+    {
+      "file_name": "achievements-clean-run-active-360x760.png",
+      "bytes": 147295,
+      "sha256": "f4176f601e8e14da672cb3e4cd9800562c0bddf871ab7fa4f349b2ff08827621"
+    },
+    {
+      "file_name": "achievements-upgrade-360x760.png",
+      "bytes": 122287,
+      "sha256": "37fe7b8cd935a90f9dc74ca4d8a32b6c14e3d204c2b758f1cf5d80f80f5e0605"
+    }
+  ],
+  "native_unit_tests": {
+    "campaign_groups": 5,
+    "campaign_checks": 1473,
+    "legacy_collector_checks": 166657,
+    "normal": "PASS",
+    "address_undefined_sanitizers": "PASS",
+    "leak_sanitizer_enabled": false
+  },
+  "native_cases": [
+    {
+      "name": "fresh",
+      "result": "PASS",
+      "native_observations": 3468,
+      "native_trace_sha256": "18d83e627708b2e2320fa32c480dcfece14eee1dcb9eaf51eff3e0b854e5dde5",
+      "controlled_fixture": false,
+      "synthetic_tracker_prefix": false,
+      "synthetic_prior_main_goals": 0,
+      "final_challenge_status": 1,
+      "observed_main_goals_in_tracker": 0,
+      "first_failure_guest_frame": null,
+      "earned_guest_frame": null,
+      "super_star_return_frames": 0
+    },
+    {
+      "name": "controlled_ending",
+      "result": "PASS",
+      "native_observations": 3730,
+      "native_trace_sha256": "92f3c1a2892eced5c325cc607b6dec6636806f9b26f17a7b101b20117429b93d",
+      "controlled_fixture": true,
+      "synthetic_tracker_prefix": true,
+      "synthetic_prior_main_goals": 47,
+      "final_challenge_status": 4,
+      "observed_main_goals_in_tracker": 48,
+      "first_failure_guest_frame": null,
+      "earned_guest_frame": 17972,
+      "super_star_return_frames": 0
+    },
+    {
+      "name": "controlled_star",
+      "result": "PASS",
+      "native_observations": 180,
+      "native_trace_sha256": "0f8cfc2e6ec70b1e7605b91882ae5251b92c326b5805a80c9acabbce5a003b19",
+      "controlled_fixture": true,
+      "synthetic_tracker_prefix": true,
+      "synthetic_prior_main_goals": 0,
+      "final_challenge_status": 1,
+      "observed_main_goals_in_tracker": 0,
+      "first_failure_guest_frame": null,
+      "earned_guest_frame": null,
+      "super_star_return_frames": 16
+    },
+    {
+      "name": "controlled_loss",
+      "result": "PASS",
+      "native_observations": 120,
+      "native_trace_sha256": "5465d9ab32926d3977f585bd03fdce4eecf3763efb7acef3c18921e001aa90f9",
+      "controlled_fixture": true,
+      "synthetic_tracker_prefix": true,
+      "synthetic_prior_main_goals": 0,
+      "final_challenge_status": 2,
+      "observed_main_goals_in_tracker": 0,
+      "first_failure_guest_frame": 6601,
+      "earned_guest_frame": null,
+      "super_star_return_frames": 0
+    }
+  ],
+  "credits": {
+    "reference_comparison": "PASS",
+    "scenarios": 96,
+    "checks": 2378,
+    "allocation_bases": [
+      "03002B64",
+      "03004D50",
+      "03005400"
+    ],
+    "work_packets": 4,
+    "return_modes": [
+      "ARM",
+      "Thumb"
+    ],
+    "instruction_pause_offsets": [
+      0,
+      10,
+      46,
+      356
+    ],
+    "compared": [
+      "R0-R15",
+      "CPSR",
+      "IWRAM",
+      "EWRAM",
+      "instruction cycles"
+    ],
+    "negative_dispatch_checks": true,
+    "guest_execution": {
+      "final_course_id": 67,
+      "entry_guest_frame": 17972,
+      "first_state19_guest_frame": 18000,
+      "first_state1a_guest_frame": 18060,
+      "continued_frames_after_first_state19": 200,
+      "dispatch_misses": 0,
+      "interpreted_instructions": 0,
+      "native_healing": 0
+    }
+  },
+  "checkpoint_storage": {
+    "result": "PASS",
+    "checks": 510,
+    "asan_ubsan": true,
+    "lsan": false,
+    "exact_state_bound": true,
+    "proof_consumed_before_continuing": true,
+    "truncation_every_byte_mutation_mismatch_and_symlink_cases": true
+  },
+  "checkpoint_lifecycle_unit": {
+    "result": "PASS",
+    "checks": 18,
+    "asan_ubsan": true,
+    "lsan": false,
+    "injected_errors": [
+      "unlink EACCES",
+      "fsync EIO"
+    ],
+    "halts_before_new_guest_action_on_unconsumed_proof": true
+  },
+  "actual_host_lifecycle": {
+    "result": "PASS",
+    "method": "Real host engine, SDL dummy/software; private preload pushes ordinary SDL lifecycle events; input replay starts fresh file; no RAM writes.",
+    "report_sha256": "c579be4586e67e8c220b629ad0cd99881e2d5875f5c1037109b483119b707d89",
+    "runner_sha256": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+    "cases": [
+      {
+        "name": "killed in actual background wait, automatic resume",
+        "result": "PASS",
+        "final_summary": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "name": "exact old automatic image without consumed proof",
+        "result": "PASS",
+        "final_summary": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "same-process actual background and foreground",
+        "result": "PASS",
+        "final_summary": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    ],
+    "suspend_state_bytes": 553424,
+    "proof_bytes": 296,
+    "public_report": {
+      "file_name": "yo-shi-pude-lifecycle-report.json",
+      "sha256": "1fcc249b2ce94f96d6c3e282d30462c58e2b7c443600e1c8565384878aef3b27"
+    }
+  },
+  "source_sha256": {
+    "android/java/org/gbarecomp/AchievementsModel.java": "d0f19405b3be4b294f68f2fbd721d9e801ffeb600b484cbc990bf747e99bcbc8",
+    "android/java/org/gbarecomp/AchievementsStore.java": "a4185d923e6e2ce094316a618d250c817ee6d91f612c69f87be4f50f3a29ff4b",
+    "android/java/org/gbarecomp/AchievementsUi.java": "a7c5533a26e64970c795a6a3d73a6f64c004b9277b529128a1f935ac0144cdc5",
+    "android/java/org/gbarecomp/AchievementBanner.java": "9f749f7c4b975cbaaef435be60aa886c7d69e281e65f3fb3d33341f0c638c59c",
+    "validation/AchievementsModelTest.java": "ae477bd95df8012849a51377dd6ab90766ddcaa3f4435ab6490ce70045dccb33",
+    "validation/AchievementsUiTest.java": "a09be62e2e49cdad97f7d49aef3840b98d8d5a963672ae6ae7be0928df38a4c7",
+    "validation/AchievementBannerTest.java": "76989529276c5b511d43c14f05c36054ec3be63f75c79c5898283e64c4dc6787",
+    "validation/run_achievements_ui_test.py": "cb862dd0af65e7148cedd4266a94d7fc50c0bf65b7b83d36541c9e0486fe01a2",
+    "src/no_mario_loss_challenge.h": "e87d0f9d574e55bbc737e6d333a5bee707ca480002adee2f67237dc87e844c55",
+    "src/local_achievements.cpp": "866e8f434ed16c484e593496a05c4b1fa4e8b085c496c4ed066dbf8c26b06a43",
+    "src/local_achievements.h": "106949ffd07c468b7749d196a6e150f2be7f6139fc1101720811589cead61f93",
+    "src/local_achievements_detail.h": "b1576345867fbd836931d703989df19155d625bc4cd0f849c135801484c96a57",
+    "validation/no_mario_loss_challenge_test.cpp": "84bb0619aaf90519bf6ee72dd60d729dc6d34bc0b99c542b954dec4cd748598a",
+    "validation/local_achievements_test.cpp": "3f01171961a1d6fe80e113b3000a9383d76b625d0c107b921e194f09c545a232",
+    "validation/replay_no_mario_loss_trace.cpp": "85f6e6344fda7722509d2263761d72d7aa57043715609a11379cb33e02f7f93f",
+    "src/challenge_checkpoint.cpp": "7f606b5b615c89064678c32a96eea49b9ef9e7419439dc5a56c61f8eb177f8f8",
+    "src/challenge_checkpoint.h": "2b44912cb3a50305ece6c8e51cd7a62c07e17ed63d40c213f31cd76df405de1d",
+    "src/challenge_lifecycle.cpp": "bc4349876f0d1061b6eb4201909cbc3ce74e207697fecc880ddae7a554545910",
+    "src/challenge_lifecycle.h": "6073cbba345d2b7a693e40246a47c0c7065d0baac31a9678f6b988ccb3025045",
+    "src/credits_dispatch.cpp": "8dc250dcf373b69dc23d9375c3a3dff9d4f637f0fdef2670595afdb545ee3983",
+    "src/ram_dispatch.cpp": "23c360a153ee3f05d04c25ecc7cf37101658c220697b375dc54ee6087cc10f98",
+    "src/main.cpp": "46eecab8df838a79146aa168220762beb0bfb5f6f050037cd08ed3a2bc2800dc",
+    "src/frame_interpolation_jni.cpp": "7453415d72531468695de179a13ab68035b2e5c1093587c596997366b1c428f6",
+    "patches/gbarecomp-achievement-suspend.patch": "98877af8101f60e2a05e894b18e79b77cc72c22b3a2b7d699eb2ad016d7fa71d",
+    "tools/generate_credits.py": "d05552f0ec0add34a321ada142ee90b784efa1404e2210a6acc780c060b43e1b",
+    "tools/generate_sources.py": "b44fb11720a2c4ad91ef17e249746e65fdcd3ae8dacafca45b8b54dcf9b243e2",
+    "validation/challenge_checkpoint_test.cpp": "64745371ac38aad0b6f9ed3cb8d96dbc904de02403e4fc97d21bdcfc01ed3af0",
+    "validation/challenge_lifecycle_test.cpp": "aaa2eee77064026a4ab6d01ce26fad2ae173f146e192dd662c9bc6fb3285317a",
+    "validation/credits_test.cpp": "ab801372c746b53cde3b495ef67a4607a905af0420797562ef2378677312d56e"
+  },
+  "build_report": {
+    "file_name": "android-0.10.11-build.json",
+    "sha256": "a96ff5e94fd1236abb5cc9c23e508e632aa18cb08f0b4dbcc1b2703fd41db365"
+  },
+  "native_report": {
+    "file_name": "yo-shi-pude-native-report.json",
+    "sha256": "6a65c400ae59b736d443d1487cc23443efef66fd99efb00c1abd4c8d76df5941"
+  },
+  "scope": {
+    "production_sources_tested": true,
+    "ui_uses_controlled_jni": true,
+    "native_controlled_prefixes_only_in_standalone_test_verifier": true,
+    "full_clean_campaign_played": false,
+    "natural_final_boss_fight_played": false,
+    "all_enemy_types_played": false,
+    "all_credits_played": false,
+    "physical_android_tested": false,
+    "android_fps_measured": false,
+    "release_apk_uploaded_by_assistant": false
+  },
+  "focused_regressions": {
+    "result": "PASS",
+    "candidate_sha256": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+    "reference_release": "0.10.9-beta",
+    "reference_sha256": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+    "reference_execution": "Previously recorded native replay reused after exact state, input tape, ROM, BIOS, config and binary identity validation. It was not rerun or relabeled as current.",
+    "cases": [
+      {
+        "name": "fuzzy",
+        "width": 240,
+        "result": "PASS",
+        "observed": {
+          "schema": 2,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 1
+        },
+        "trace_rows_equal": 1901,
+        "saved_states_equal_except_inactive_rtc": 41,
+        "ppu_timing_equal": true,
+        "capture_count": 40,
+        "changed_pixels": 0,
+        "fully_static": true,
+        "native_diagnostics": {
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "failed": 0
+        }
+      },
+      {
+        "name": "car",
+        "width": 356,
+        "result": "PASS",
+        "observed": {
+          "schema": 2,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 1,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "trace_rows_equal": 1527,
+        "saved_states_equal_except_inactive_rtc": 34,
+        "ppu_timing_equal": true,
+        "capture_count": 33,
+        "changed_pixels": 0,
+        "fully_static": true,
+        "native_diagnostics": {
+          "distinct_misses": 0,
+          "interpreted_insns": 0,
+          "healed_native": 0,
+          "failed": 0
+        }
+      }
+    ],
+    "report": {
+      "file_name": "achievement-0.10.11-focused-native-regressions.json",
+      "sha256": "6688aa6fd8cb902997d95c0b636105d68039bb32b6d6c598efb1c42493619202"
+    }
+  }
+}

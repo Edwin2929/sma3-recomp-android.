@@ -68,6 +68,11 @@ inline Observation observe(const std::uint8_t* ram, std::size_t size,
 class Tracker {
 public:
     const LocalAchievementsSnapshot& progress() const noexcept { return progress_; }
+    void earned_no_mario_loss() noexcept { progress_[7] |= 2; }
+    void merge_restored_progress(const LocalAchievementsSnapshot& saved) noexcept {
+        for (std::size_t i = 1; i < progress_.size(); ++i)
+            progress_[i] = i >= 4 && i <= 6 ? std::max(progress_[i], saved[i]) : progress_[i] | saved[i];
+    }
 
     void invalidate() noexcept {
         have_clock_ = false;
@@ -211,7 +216,7 @@ private:
         }
     }
 
-    LocalAchievementsSnapshot progress_{{1, 0, 0, 0, 0, 0, 0, 0}};
+    LocalAchievementsSnapshot progress_{{2, 0, 0, 0, 0, 0, 0, 0}};
     Observation previous_;
     std::uint64_t frame_count_ = 0, epoch_ = 0;
     unsigned fuzzy_countdown_ = 0, fuzzy_growth_ = 0, fuzzy_fade_ = 0;

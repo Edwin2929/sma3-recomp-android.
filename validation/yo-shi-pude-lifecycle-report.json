@@ -1,0 +1,157 @@
+{
+  "result": "PASS",
+  "version": "0.10.11-beta",
+  "candidate_sha256": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+  "native_host": true,
+  "physical_android": false,
+  "methods": [
+    "Fresh file created through actual title input replay",
+    "SDL_APP_WILLENTERBACKGROUND and SDL_APP_DIDENTERFOREGROUND through private SDL_PushEvent helper",
+    "SIGKILL while actual SDL_WaitEvent blocks",
+    "Real automatic state/proof persistence and process restart"
+  ],
+  "cases": [
+    {
+      "name": "killed in actual background wait, automatic resume",
+      "result": "PASS",
+      "earned_snapshot": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "challenge_status": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "checkpoint": {
+        "proof_bytes": 296,
+        "proof_sha256": "4c9c1badf11143d8e239f753fb40ebb100b55087e389a8b1be2e08468487786c",
+        "state_bytes": 553424,
+        "state_sha256": "15e21fb28ea4d27baf76d90e219872b1c8a9312f19faed34eecba9eb3fb73f4f",
+        "marker_frame": 752
+      },
+      "resumed_frame": 782,
+      "resumed_epoch": 1,
+      "proof_and_marker_absent_after_resume": true
+    },
+    {
+      "name": "exact old automatic image without consumed proof",
+      "result": "PASS",
+      "earned_snapshot": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "challenge_status": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "gameplay_continues_without_eligible_attempt": true
+    },
+    {
+      "name": "same-process actual background and foreground",
+      "result": "PASS",
+      "earned_snapshot": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "challenge_status": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "checkpoint": {
+        "proof_bytes": 296,
+        "proof_sha256": "f073d2d0238c9734af4762beac0a12546f822da499f17a1ac7dad76c8e511ead",
+        "state_bytes": 553424,
+        "state_sha256": "7c735f94d6f3e2365d7d6c360bac4c5dc19ab1aff7bf092c82df55df522da584",
+        "marker_frame": 752
+      },
+      "resumed_frame": 783,
+      "resumed_epoch": 0,
+      "proof_and_marker_absent_after_resume": true
+    }
+  ],
+  "phase_evidence": [
+    {
+      "phase": "killed-background-final-r3/before-kill",
+      "observations": 753,
+      "first_frame": 0,
+      "last_frame": 752,
+      "status_values": [
+        0,
+        1
+      ],
+      "first_active_frame": 694,
+      "trace_sha256": "07e43c78a4c874e63b540ea53af62a49ee647d53038679dc8c9923e3a0f4b92e",
+      "log_sha256": "a0acd79d333cd6dea0357a573f4e59f2df8f1737e4f5cc324bf83fa8b73c5c46"
+    },
+    {
+      "phase": "killed-background-final-r3/automatic-resume",
+      "observations": 33,
+      "first_frame": 0,
+      "last_frame": 784,
+      "status_values": [
+        0,
+        1
+      ],
+      "first_active_frame": 753,
+      "trace_sha256": "6ce37001b5d1c2c833134ef9bd0263b39c910214ffce6998f21f5bff3b1b6678",
+      "log_sha256": "410d5984107772dd773b3153c09e49497a8adc9a416e497db98cf3e27f0e49fa"
+    },
+    {
+      "phase": "killed-background-final-r3/consumed-replay",
+      "observations": 32,
+      "first_frame": 0,
+      "last_frame": 783,
+      "status_values": [
+        0
+      ],
+      "first_active_frame": null,
+      "trace_sha256": "c54d6fc4b0e9d6ca61c10eb9454ed90c64b4ce320be69d3c3c04e28e32abd0d8",
+      "log_sha256": "28e17ee90d5fb79bf2e00ee47ee12b764ba8db22d3bb575540c907e6a14008ab"
+    },
+    {
+      "phase": "same-process-final-r3/live-resume",
+      "observations": 785,
+      "first_frame": 0,
+      "last_frame": 784,
+      "status_values": [
+        0,
+        1
+      ],
+      "first_active_frame": 694,
+      "trace_sha256": "09d08647e7adc74285f8c55fc945d880b10d34f0e4bd22d4cb8e01cefc11e152",
+      "log_sha256": "ad232b8844fcf1ae1de4431fb0ec8d5b74e1c88b62f58984af91fd92bf8b8510"
+    }
+  ],
+  "private_report_sha256": "c579be4586e67e8c220b629ad0cd99881e2d5875f5c1037109b483119b707d89",
+  "helper_sha256": "f2cea7c6bca9f029eaa5595d572951483e4dc01c704a7663376235a4b5594989",
+  "limitations": [
+    "Real host SDL/runtime and files, not a physical Android install.",
+    "Normal input replay starts a fresh file; lifecycle helper only pushes SDL events and performs no game RAM writes.",
+    "The state replay without proof is safely ineligible status0, not eligible and not earned.",
+    "Proof consumption before subsequent guest execution is supported by source integration review; files are also observed consumed after actual resume."
+  ]
+}

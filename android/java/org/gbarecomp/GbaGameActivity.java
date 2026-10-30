@@ -868,7 +868,7 @@ public class GbaGameActivity extends SDLActivity {
 
     /** Files the player (or the running game) owns once they exist. */
     private static boolean isPlayerOwned(String name) {
-        return name.equals("state.toml") || name.equals("progress-v1.json") || name.endsWith(".sav") ||
+        return name.equals("state.toml") || name.equals("progress-v1.json") || name.equals("yo-shi-pude-v1.bin") || name.endsWith(".sav") ||
                name.equals("config.ini") || name.equals("keybinds.ini");
     }
 }

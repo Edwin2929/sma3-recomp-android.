@@ -1,0 +1,104 @@
+--- a/src/runtime/runtime.cpp
++++ b/src/runtime/runtime.cpp
+@@ -20,6 +20,9 @@
+ // step_once() becomes a real `runtime_dispatch` driver.
+ 
+ #include "runtime.h"
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++#include "challenge_lifecycle.h"
++#endif
+ #ifdef SMA3_FRAME_INTERPOLATION
+ #include "frame_interpolation.h"
+ #include "presentation_pacing.h"
+@@ -2216,7 +2219,7 @@
+         return debug::save_state(path.c_str(), make_snapshot_ctx(), &e);
+     };
+     auto do_savestate_load = [&](const std::string& path,
+-                                 std::string& e) -> bool {
++                                 std::string& e, bool trusted_suspend = false) -> bool {
+         if (!debug::load_state(path.c_str(), make_snapshot_ctx(), &e)) {
+             return false;
+         }
+@@ -2235,6 +2238,9 @@
+         g_runtime_cycles = 0;
+         runtime_fp_reset();
+         ++g_runtime_state_epoch;
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++        if (!trusted_suspend) sma3::local_achievements_untrusted_restore();
++#endif
+         return true;
+     };
+     auto do_savestate_save_bytes = [&](std::vector<uint8_t>& bytes,
+@@ -2251,6 +2257,9 @@
+         g_runtime_cycles = 0;
+         runtime_fp_reset();
+         ++g_runtime_state_epoch;
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++        sma3::local_achievements_untrusted_restore();
++#endif
+         return true;
+     };
+ 
+@@ -3463,6 +3472,9 @@
+             std::string e;
+             const std::string state_path = suspend_state_path();
+             const bool suspended = do_savestate_save(state_path, e);
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++            sma3::local_achievements_suspend(state_path.c_str(), suspended);
++#endif
+             if (suspended) {
+                 std::ofstream marker(suspend_marker_path(), std::ios::trunc);
+                 marker << ppu.frame_count() << "\n";
+@@ -3479,8 +3491,17 @@
+                 if (win.wait_for_foreground()) {
+                     // Live again: the suspend state is only a crash guard.
+                     clear_suspend_marker();
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++                    if (!sma3::local_achievements_live()) {
++                        std::fprintf(stderr, "[SMA3] Cannot consume challenge suspend proof; stopping before gameplay\n");
++                        host_quit = true;
++                    }
++#endif
+                     if (pacer) pacer->reset();
+                 } else {
++                    // Preserve the automatic image when the OS terminates
++                    // the already-suspended process.
++                    suspend_on_exit = suspended;
+                     host_quit = true;
+                 }
+             }
+@@ -3814,7 +3835,15 @@
+         if (std::filesystem::exists(suspend_marker_path(), ec) &&
+             std::filesystem::exists(suspend_state_path(), ec)) {
+             std::string e;
+-            if (do_savestate_load(suspend_state_path(), e)) {
++            if (do_savestate_load(suspend_state_path(), e, true)) {
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++                if (!sma3::local_achievements_resume(suspend_state_path().c_str())) {
++                    std::fprintf(stderr, "[SMA3] Cannot consume challenge suspend proof; resume stopped\n");
++                    gbarecomp::overlay_loader_shutdown();
++                    runtime_shutdown();
++                    return 1;
++                }
++#endif
+                 std::printf("suspend_resumed path=\"%s\" frame=%llu\n",
+                             suspend_state_path().c_str(),
+                             static_cast<unsigned long long>(ppu.frame_count()));
+@@ -3828,6 +3857,17 @@
+             clear_suspend_marker();
+         }
+     }
++
++#ifdef SMA3_LOCAL_ACHIEVEMENTS
++    // Discard stale suspend proof before any foreground execution, including
++    // a normal boot or a failed automatic restore.
++    if (!sma3::local_achievements_live()) {
++        std::fprintf(stderr, "[SMA3] Cannot discard challenge suspend proof; launch stopped\n");
++        gbarecomp::overlay_loader_shutdown();
++        runtime_shutdown();
++        return 1;
++    }
++#endif
+ 
+     // Deterministic demo-input driver for headless runs (opt-in via
+     // GBARECOMP_DEMO_INPUT). A no-input headless run idles on the

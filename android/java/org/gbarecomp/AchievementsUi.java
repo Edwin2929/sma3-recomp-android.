@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -37,28 +36,39 @@ final class AchievementsUi {
     private final Runnable parent;
     private final AchievementsStore store;
     private final AchievementsStore.NativeSnapshot source;
+    private final AchievementsStore.NativeSnapshot challengeSource;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final AtomicBoolean sampling = new AtomicBoolean();
     private boolean closed, resumed, binding;
     private int filter;
     private AlertDialog shown;
-    private TextView summary, problem;
+    private TextView summary, problem, challenge;
+    private long[] challengeStatus;
     private ProgressBar total;
     private LinearLayout records;
     private Switch notifications;
     private final Button[] filters = new Button[3];
-    private Toast toast;
+    private final AchievementBanner banner;
+    private long foregroundEpoch;
     private AchievementsModel.State rendered;
     private int renderedFilter = -1;
 
     AchievementsUi(Activity activity, Translator translator, Presenter presenter, Runnable parent) {
-        this(activity, translator, presenter, parent, AchievementsStore.get(activity), GbaNative::getLocalAchievements);
+        this(activity, translator, presenter, parent, AchievementsStore.get(activity),
+            GbaNative::getLocalAchievements, GbaNative::getYoShiPudeStatus);
     }
 
     AchievementsUi(Activity activity, Translator translator, Presenter presenter, Runnable parent,
                    AchievementsStore store, AchievementsStore.NativeSnapshot source) {
+        this(activity, translator, presenter, parent, store, source, () -> new long[]{1,0,0,0});
+    }
+
+    AchievementsUi(Activity activity, Translator translator, Presenter presenter, Runnable parent,
+                   AchievementsStore store, AchievementsStore.NativeSnapshot source,
+                   AchievementsStore.NativeSnapshot challengeSource) {
         this.activity = activity; this.translator = translator; this.presenter = presenter;
-        this.parent = parent; this.store = store; this.source = source;
+        this.parent = parent; this.store = store; this.source = source; this.challengeSource = challengeSource;
+        this.banner = new AchievementBanner(activity, translator::text);
     }
 
     private String tr(String es, String en, String pt) { return translator.text(es, en, pt); }
@@ -83,6 +93,8 @@ final class AchievementsUi {
     void onResume() {
         if (!alive() || resumed) return;
         resumed = true;
+        ++foregroundEpoch;
+        banner.resume();
         handler.removeCallbacks(tick);
         handler.post(tick);
     }
@@ -90,8 +102,9 @@ final class AchievementsUi {
     void onPause() {
         if (!resumed) return;
         resumed = false;
+        ++foregroundEpoch;
         handler.removeCallbacks(tick);
-        if (toast != null) toast.cancel();
+        banner.pause();
         // A final queued sample is independent of any in-flight UI request.
         // The process-owned worker can finish it after this Activity closes.
         store.poll(source, null);
@@ -102,35 +115,30 @@ final class AchievementsUi {
         onPause();
         closed = true;
         handler.removeCallbacks(tick);
-        if (toast != null) toast.cancel();
+        banner.close();
         shown = null; rendered = null;
     }
 
     private void sample() {
         if (!alive() || !sampling.compareAndSet(false, true)) return;
-        store.poll(source, result -> {
+        long epoch = foregroundEpoch;
+        final long[][] status = new long[1][];
+        store.poll(() -> {
+            // Keep JNI sampling on the store's serial worker, away from rendering/input.
+            try { status[0] = validatedStatus(challengeSource.read()); }
+            catch (UnsatisfiedLinkError | RuntimeException unavailable) { status[0] = null; }
+            return source.read();
+        }, result -> {
             sampling.set(false);
             if (!alive()) return;
+            challengeStatus = status[0];
             update(result);
-            if (resumed && result.state.notifications && result.newUnlocks != 0) announce(result.newUnlocks);
+            if (!result.state.notifications) banner.enabled(false);
+            if (resumed && epoch == foregroundEpoch && result.state.notifications && result.newUnlocks != 0) {
+                banner.enabled(true);
+                banner.enqueue(result.newUnlocks);
+            }
         });
-    }
-
-    private void announce(int mask) {
-        int count = Integer.bitCount(mask);
-        String message;
-        if (count == 1) {
-            int index = Integer.numberOfTrailingZeros(mask);
-            message = tr("Logro desbloqueado: ", "Achievement unlocked: ", "Conquista desbloqueada: ")
-                + tr(AchievementsModel.DEFINITIONS[index].title);
-        } else {
-            message = count + tr(" logros desbloqueados. Ver en Ajustes → Logros.",
-                " achievements unlocked. View in Settings → Achievements.",
-                " conquistas desbloqueadas. Veja em Configurações → Conquistas.");
-        }
-        if (toast != null) toast.cancel();
-        toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     void show() {
@@ -150,6 +158,21 @@ final class AchievementsUi {
         LinearLayout.LayoutParams track = new LinearLayout.LayoutParams(-1, dp(8));
         track.setMargins(0, dp(12), 0, dp(2)); overview.addView(total, track);
         page.content(overview);
+
+        LinearLayout challengeCard = column();
+        challengeCard.setPadding(dp(12), dp(10), dp(12), dp(10));
+        challengeCard.setBackground(shape(SettingsPanel.SURFACE, SettingsPanel.BORDER, 14));
+        TextView challengeHeading = text(tr("Yo shi pude · Reto de partida", "Yo shi pude · Run challenge", "Yo shi pude · Desafio da partida"),
+            12, SettingsPanel.ACCENT);
+        challengeHeading.setTypeface(Typeface.DEFAULT_BOLD);
+        challengeHeading.setAccessibilityHeading(true);
+        challengeCard.addView(challengeHeading);
+        challenge = text("", 14, SettingsPanel.TEXT);
+        challenge.setTag("yo-shi-pude-status");
+        challenge.setPadding(0, dp(4), 0, 0);
+        challenge.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        challengeCard.addView(challenge);
+        page.content(challengeCard);
 
         LinearLayout tabs = new LinearLayout(activity);
         tabs.setOrientation(LinearLayout.HORIZONTAL);
@@ -176,9 +199,14 @@ final class AchievementsUi {
         page.content(problem);
         records = column();
         page.content(records);
+        page.section(tr("Reglas del reto", "Challenge rules", "Regras do desafio"));
+        page.paragraph(tr(
+            "Empieza una partida nueva y completa los 48 niveles principales hasta derrotar a Bebé Bowser. Si un golpe o enemigo separa a Bebé Mario de Yoshi, el intento termina aunque lo recuperes. Los relevos y las transformaciones normales no cuentan como pérdida. Puedes continuar con el guardado automático verificado del port; cargar un estado manual o una partida antigua no sirve para este reto.",
+            "Start a new game and complete all 48 main levels through Baby Bowser's defeat. If a hit or enemy separates Baby Mario from Yoshi, the attempt ends even if you rescue him. Normal handoffs and transformations do not count as a loss. You can continue using the port's verified automatic save; manual states or old saves cannot qualify for this challenge.",
+            "Comece um jogo novo e conclua as 48 fases principais até derrotar Baby Bowser. Se um golpe ou inimigo separar Baby Mario de Yoshi, a tentativa termina mesmo se você o resgatar. As trocas de Yoshi e transformações normais não contam como perda. Você pode continuar pelo salvamento automático verificado do port; estados manuais ou partidas antigas não valem para este desafio."));
         page.section(tr("Preferencias", "Preferences", "Preferências"));
         notifications = new Switch(activity);
-        notifications.setText(tr("Avisos al desbloquear", "Unlock notices", "Avisos ao desbloquear"));
+        notifications.setText(tr("Animación al desbloquear", "Unlock animation", "Animação ao desbloquear"));
         notifications.setTextColor(SettingsPanel.TEXT); notifications.setTextSize(16);
         notifications.setMinHeight(dp(56)); notifications.setSwitchPadding(dp(14));
         notifications.setPadding(dp(14), dp(10), dp(14), dp(10));
@@ -189,6 +217,8 @@ final class AchievementsUi {
         notifications.setTrackTintList(ColorStateList.valueOf(0xff4a5c50));
         notifications.setOnCheckedChangeListener((view, enabled) -> {
             if (binding) return;
+            ++foregroundEpoch;
+            banner.enabled(enabled);
             store.notifications(enabled, result -> { if (alive()) update(result); });
         });
         page.content(notifications);
@@ -206,6 +236,7 @@ final class AchievementsUi {
     private void update(AchievementsStore.Result result) {
         if (shown == null || !shown.isShowing()) return;
         AchievementsModel.State state = result.state;
+        updateChallenge(state);
         summary.setText(state.unlocked() + " / " + AchievementsModel.DEFINITIONS.length
             + tr(" desbloqueados", " unlocked", " desbloqueadas"));
         total.setProgress(state.unlocked());
@@ -252,6 +283,39 @@ final class AchievementsUi {
                 : tr("¡Completaste todos los logros disponibles!", "You completed all available achievements!",
                      "Você completou todas as conquistas disponíveis!"), 15, SettingsPanel.SECONDARY));
         }
+    }
+
+    static long[] validatedStatus(long[] status) {
+        if (status == null || status.length != 4 || status[0] != 1 || status[1] < 0 || status[1] > 4
+                || status[2] < 0 || status[2] > 3 || status[3] < 0 || status[3] > 48) return null;
+        return status.clone();
+    }
+
+    private void updateChallenge(AchievementsModel.State state) {
+        if (challenge == null) return;
+        boolean earned = state.unlockedAt[25] > 0;
+        if (earned || (challengeStatus != null && challengeStatus[1] == 4)) {
+            challenge.setText(tr("¡Yo shi pude! Reto completado.", "Yo shi pude! Challenge completed.", "Yo shi pude! Desafio concluído."));
+            return;
+        }
+        if (challengeStatus == null) {
+            challenge.setText(tr("El estado del reto estará disponible cuando el juego esté listo.",
+                "Challenge status will be available when the game is ready.",
+                "O estado do desafio estará disponível quando o jogo estiver pronto."));
+            return;
+        }
+        int status = (int) challengeStatus[1];
+        String slot = challengeStatus[2] == 0 ? "" : tr(" · Archivo ", " · File ", " · Arquivo ") + challengeStatus[2];
+        if (status == 1) challenge.setText(tr("Intento en curso", "Attempt in progress", "Tentativa em andamento") + slot
+            + "\n" + challengeStatus[3] + tr(" / 48 niveles principales completados", " / 48 main levels completed", " / 48 fases principais concluídas"));
+        else if (status == 2) challenge.setText(tr("Intento terminado: Bebé Mario se separó de Yoshi.",
+            "Attempt ended: Baby Mario was separated from Yoshi.", "Tentativa encerrada: Baby Mario se separou de Yoshi.")
+            + slot + "\n" + tr("Empieza una partida nueva para volver a intentarlo.", "Start a new game to try again.", "Comece um jogo novo para tentar novamente."));
+        else if (status == 3) challenge.setText(tr("Este intento no se puede verificar.", "This attempt cannot be verified.", "Esta tentativa não pode ser verificada.")
+            + slot + "\n" + tr("Empieza una partida nueva para registrar el recorrido completo.",
+                "Start a new game to track the whole run.", "Comece um jogo novo para registrar o percurso completo."));
+        else challenge.setText(tr("Sin intento activo. Empieza una partida nueva para comenzar.",
+            "No active attempt. Start a new game to begin.", "Nenhuma tentativa ativa. Comece um jogo novo para iniciar."));
     }
 
     private void addRecord(int index, AchievementsModel.State state) {

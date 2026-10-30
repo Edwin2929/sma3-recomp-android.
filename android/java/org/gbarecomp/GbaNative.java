@@ -29,6 +29,9 @@ public final class GbaNative {
     // Versioned, monotonic evidence observed on the game thread. This read
     // does not clear events or alter the game or its save data.
     public static native long[] getLocalAchievements();
+    // [schema=1, status, save-slot+1, main courses completed]. Status:
+    // 0 not started, 1 active, 2 Baby Mario lost, 3 unverified, 4 earned.
+    public static native long[] getYoShiPudeStatus();
     public static native void setTouchControlsVisible(boolean visible);
     // Styles: 0 classic letters, 1 action symbols. Opacity is clamped to 20..100%.
     public static native void setTouchAppearance(int style, int opacityPercent);

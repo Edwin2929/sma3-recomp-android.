@@ -2,21 +2,39 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.10 beta — 25 logros locales
+## Versión actual: 0.10.11 beta — animaciones y «Yo shi pude»
 
-**Atrás → Logros** amplía el catálogo a **25 retos en total**. Conserva los
-diez anteriores y añade metas de recolección, diez a cuarenta niveles distintos,
-cinco, diez y veinte niveles distintos con cien puntos y un logro por cada vehículo:
-coche, topo, helicóptero, tren y submarino.
+**Atrás → Logros** contiene **26 logros locales**. La nueva animación muestra
+un huevo dentro de una medalla verde que se despliega con **Logro desbloqueado**
+y el nombre del reto. Los premios se muestran uno a uno, sin pausar el juego
+ni interceptar los controles. Se puede desactivar desde **Animación al desbloquear**.
 
-Al actualizar desde 0.10.9 se mantienen el progreso, las fechas de los logros
-anteriores y la preferencia de avisos. Los retos nuevos que ya cumplan la
-evidencia local guardada se reconocen sin repetirlos; su fecha corresponde
-a la ampliación del catálogo. No se importan récords de la partida.
+**Yo shi pude** exige completar una partida nueva, sus 48 niveles principales
+y el final sin que un golpe o enemigo separe a Bebé Mario de Yoshi en ningún
+mapa. Recuperarlo no elimina la pérdida; las entregas entre Yoshis y las
+transformaciones normales no cuentan como daño. Un panel bajo el resumen
+muestra la validez del intento y su progreso.
 
-[Guía de los 25 logros](docs/LOGROS_LOCALES.md) ·
-[Notas de 0.10.10](docs/releases/v0.10.10-beta.md) ·
-[Pruebas y límites](validation/LOCAL_ACHIEVEMENTS_0.10.10_VALIDATION.md).
+La suspensión automática permite continuar un intento verificado después
+de cerrar la app en segundo plano. Los estados manuales y partidas antiguas
+no acreditan este recorrido. Los **25 logros anteriores, sus fechas y la
+preferencia de avisos** se conservan al actualizar sin borrar datos.
+
+También se corrige un cierre reproducido al iniciar los créditos: se añade
+la rutina gráfica que el juego copia a RAM y se comprueba antes de ejecutarla
+como código nativo. [Corrección y pruebas](validation/CREDITS_0.10.11_VALIDATION.md).
+
+[Guía de los 26 logros](docs/LOGROS_LOCALES.md) ·
+[Notas de 0.10.11](docs/releases/v0.10.11-beta.md) ·
+[Pruebas y límites](validation/LOCAL_ACHIEVEMENTS_0.10.11_VALIDATION.md).
+
+### Catálogo ampliado en 0.10.10
+
+0.10.10 amplió los diez primeros logros a 25, con umbrales de colecciones,
+niveles distintos, puntuaciones perfectas y cinco vehículos individuales.
+Los retos reconocidos desde evidencia local anterior conservaron su fecha
+de reconocimiento y los primeros diez mantuvieron sus fechas originales.
+[Notas de 0.10.10](docs/releases/v0.10.10-beta.md).
 
 ### Logros locales incorporados en 0.10.9
 
@@ -108,7 +126,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.10 se detectará cuando el mantenedor adjunte su APK a Descarga.
+0.10.11 se detectará cuando el mantenedor adjunte su APK a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -222,7 +240,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.10**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.11**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -240,11 +258,11 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.10 beta — nueva entrega
+### APK 0.10.11 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.10-beta-arm64.apk`**, versión `0.10.10-beta`,
-código **21**, ARM64 y Android 9 o posterior. Amplía a **25 logros locales** y
-conserva el mod Color de Yoshi, la presentación de 0.10.7, los controles,
+Archivo: **`sma3-recomp-0.10.11-beta-arm64.apk`**, versión `0.10.11-beta`,
+código **22**, ARM64 y Android 9 o posterior. Añade **Yo shi pude** como logro
+26 y la animación de desbloqueo. Conserva el color de Yoshi, los controles,
 el actualizador, los perfiles de color, los siete filtros, la corrección de
 Fuzzy y la panorámica con su advertencia de fase temprana.
 
@@ -252,7 +270,7 @@ Instálalo encima de la versión anterior, sin desinstalarla ni borrar datos.
 Conserva el paquete y el certificado y aumenta el código de versión. Desde
 0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el mantenedor haya
 publicado el archivo.
-[Instalación y datos del APK](docs/releases/v0.10.10-beta.md).
+[Instalación y datos del APK](docs/releases/v0.10.11-beta.md).
 
 ### Publicación verificada: APK 0.10.8 beta
 
@@ -264,13 +282,23 @@ coincide con el APK entregado:
 `1cfe2f32ddd8f180df5ed1078afdabbcea6facb26b82cce178f0c9e18ed82a26`.
 [Notas de 0.10.8](docs/releases/v0.10.8-beta.md).
 
-El nuevo APK 0.10.10 aparecerá en
+El nuevo APK 0.10.11 aparecerá en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga)
 cuando el mantenedor lo adjunte manualmente. Publicar el código en `main`
 no publica el APK. Las indicaciones de disponibilidad en notas anteriores
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.11:** pruebas del catálogo de 26 logros, migración de los registros de
+0.10.9 y 0.10.10, animación, entrada táctil y ciclo de vida Android en
+Robolectric. El detector nuevo observa el recorrido y conserva un comprobante
+vinculado a la suspensión automática. Sus pruebas distinguen escenas reales,
+fixtures preparados y casos unitarios; no equivalen a haber completado una
+campaña entera sin daño. No se ha instalado esta entrega en un teléfono ni
+medido sus FPS en Android.
+[Validación y alcance](validation/LOCAL_ACHIEVEMENTS_0.10.11_VALIDATION.md) ·
+[APK](validation/android-0.10.11-build.json).
 
 **0.10.10:** se valida el catálogo de 25 logros, sus umbrales y máscaras,
 la actualización del registro de diez logros, conservación de fechas,
@@ -498,6 +526,19 @@ APK resultante: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 Para compilar únicamente las bibliotecas nativas: `python3 tools/bootstrap_android_build.py --native-only`.
 
+0.10.11 añade la rutina Thumb que el juego copia a una dirección dinámica
+de RAM al iniciar los créditos. `generate_sources.py` también la genera.
+Para actualizar un entorno con las demás fuentes ya preparadas:
+
+```sh
+python3 tools/generate_credits.py --rom /ruta/sma3-usa.gba --recompiler ../gbarecomp/build/gba_recompile
+```
+
+La compilación comprueba que estas fuentes existen. En ejecución, se verifica
+el puntero publicado por el juego y cada byte de la copia antes de seleccionar
+el código nativo. La corrección mantiene la ejecución estática y evita el
+cierre observado al entrar en los créditos; no introduce un intérprete en el APK.
+
 0.10.4 habilita el catálogo nativo de perfiles de color con
 `GBARECOMP_ENABLE_MODS=ON` y añade un décimo parche al motor fijado. Gradle
 genera el paquete de ejemplo desde `mods/examples/tono-calido` usando
@@ -558,8 +599,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.10 en Pixel 7 Pro: los 25 logros, actualización del registro anterior, persistencia y avisos, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.10, comparando la zona de la captura de 65,2 FPS.
+- Probar 0.10.11 en Pixel 7 Pro: los 26 logros, animación, actualización del registro anterior, suspensión y continuidad de Yo shi pude, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.11, comparando la zona de la captura de 65,2 FPS.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

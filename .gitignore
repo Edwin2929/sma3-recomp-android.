@@ -46,4 +46,5 @@ validation/*.json
 # Generated transformation code and private font data
 generated-morph/
 generated-effects/
+generated-credits/
 src/localization_data.h

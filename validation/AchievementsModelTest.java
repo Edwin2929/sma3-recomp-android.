@@ -15,7 +15,7 @@ public final class AchievementsModelTest {
         throw new AssertionError("Malformed snapshot was accepted");
     }
     private static long[] snapshot(int metric, long value) {
-        long[] result = new long[8]; result[0] = 1; result[metric + 1] = value; return result;
+        long[] result = new long[8]; result[0] = 2; result[metric + 1] = value; return result;
     }
     public static void main(String[] arguments) {
         HashSet<String> ids = new HashSet<>();
@@ -23,8 +23,8 @@ public final class AchievementsModelTest {
             "first_transformation","fuzzy_recovery","first_clear","five_clears","perfect_clear","three_flowers",
             "five_red_coins","ten_red_coins","ten_clears","twenty_clears","thirty_clears","forty_clears",
             "five_perfect_clears","ten_perfect_clears","twenty_perfect_clears","car_transformation",
-            "mole_transformation","helicopter_transformation","train_transformation","submarine_transformation"};
-        check(AchievementsModel.DEFINITIONS.length == 25, "Exactly 25 definitions");
+            "mole_transformation","helicopter_transformation","train_transformation","submarine_transformation","yo_shi_pude"};
+        check(AchievementsModel.DEFINITIONS.length == 26, "Exactly 26 definitions");
         for (int i = 0; i < expectedIds.length; ++i)
             check(AchievementsModel.DEFINITIONS[i].id.equals(expectedIds[i]), "Stable catalog append order");
         for (AchievementsModel.Definition definition : AchievementsModel.DEFINITIONS) {
@@ -76,6 +76,15 @@ public final class AchievementsModelTest {
         check(fuzzy.unlockedAt[6] == 73 && fuzzy.unlocked() == 1, "Natural Fuzzy event");
         check(AchievementsModel.newUnlocks(AchievementsModel.empty(), fuzzy) == 1 << 6, "Notice mask");
         check(AchievementsModel.newUnlocks(fuzzy, fuzzy) == 0, "No old notices");
+        AchievementsModel.State noSeparation = AchievementsModel.merge(AchievementsModel.empty(), snapshot(6, 2), 74);
+        check(noSeparation.unlockedAt[25] == 74 && noSeparation.unlocked() == 1, "Full clean run event");
+        check(noSeparation.unlockedAt[6] == 0, "Clean run never impersonates Fuzzy recovery");
+        check(fuzzy.unlockedAt[25] == 0, "Fuzzy recovery never proves a clean run");
+        check(AchievementsModel.newUnlocks(AchievementsModel.empty(), noSeparation) == 1 << 25, "26th notice bit");
+        AchievementsModel.State bothEvents = AchievementsModel.merge(noSeparation, snapshot(6, 1), 75);
+        check(bothEvents.unlocked() == 2 && bothEvents.unlockedAt[25] == 74 && bothEvents.unlockedAt[6] == 75,
+            "Independent events keep their first dates");
+        check(AchievementsModel.merge(bothEvents, snapshot(6, 0), 76).same(bothEvents), "Restart cannot erase earned run");
         check(!AchievementsModel.merge(fuzzy.notifications(false), snapshot(3, 1), 80).notifications, "Notice setting survives progress");
 
         for (int mask = 0; mask <= 31; ++mask) {
@@ -106,18 +115,18 @@ public final class AchievementsModelTest {
                 check(value.unlockedAt[threshold[0]] == (amount >= threshold[2] ? 700 : 0), "Expanded collection threshold");
             }
         }
-        long[] all = {1, (1L<<40)-1, (1L<<20)-1, 31, 20, 5, 30, 1};
+        long[] all = {2, (1L<<40)-1, (1L<<20)-1, 31, 20, 5, 30, 3};
         AchievementsModel.State complete = AchievementsModel.merge(AchievementsModel.empty(), all, 12345);
-        check(complete.unlocked() == 25, "All 25 criteria");
-        check(AchievementsModel.newUnlocks(AchievementsModel.empty(), complete) == 0x1ffffff, "All 25 notice bits including bit 24");
+        check(complete.unlocked() == 26, "All 26 criteria");
+        check(AchievementsModel.newUnlocks(AchievementsModel.empty(), complete) == 0x3ffffff, "All 26 notice bits including bit 25");
         check(complete.recognizedOnUpgrade == 0, "Fresh play has earned dates");
         for (long date : complete.unlockedAt) check(date == 12345, "Simultaneous date");
         check(AchievementsModel.merge(complete, snapshot(0, 0), 0).same(complete), "Zero clock/restart cannot erase");
-        all[0] = 2; invalid(all); invalid(null); invalid(new long[7]); invalid(new long[9]);
+        all[0] = 3; invalid(all); invalid(null); invalid(new long[7]); invalid(new long[9]);
         invalid(snapshot(0, 1L << 60)); invalid(snapshot(1, 1)); invalid(snapshot(2, 32));
         invalid(snapshot(3, -1)); invalid(snapshot(3, 21)); invalid(snapshot(4, 6));
-        invalid(snapshot(5, 31)); invalid(snapshot(6, 2));
-        long[] metrics = new long[7], dates = new long[25]; dates[0] = 1;
+        invalid(snapshot(5, 31)); invalid(snapshot(6, 4));
+        long[] metrics = new long[7], dates = new long[26]; dates[0] = 1;
         try { new AchievementsModel.State(metrics, dates, true); throw new AssertionError("Date without evidence accepted"); }
         catch (IllegalArgumentException expected) { ++checks; }
         long[] legacyMetrics = {(1L<<24)-1, (1L<<9)-1, 21, 10, 3, 30, 1};
@@ -127,6 +136,7 @@ public final class AchievementsModelTest {
         int[] newlyRecognized = {10,11,12,13,14,17,20,22,24};
         int recognized = 0; for (int index : newlyRecognized) recognized |= 1 << index;
         check(migrated.unlocked() == 17, "Legacy partial evidence recognizes nine additions");
+        check(migrated.unlockedAt[25] == 0, "Ten-ID migration never invents a clean run");
         check(migrated.recognizedOnUpgrade == recognized, "Recognition origin includes submarine bit 24");
         check(!migrated.notifications, "Legacy muted preference preserved");
         check(Arrays.equals(legacyMetrics,beforeMetrics) && Arrays.equals(legacyDates,beforeDates), "Legacy input immutability");
@@ -148,6 +158,22 @@ public final class AchievementsModelTest {
         catch (IllegalArgumentException expected) { ++checks; }
         try { AchievementsModel.expandLegacy(legacyMetrics,new long[10],false,30000); throw new AssertionError("Missing original date accepted"); }
         catch (IllegalArgumentException expected) { ++checks; }
+        AchievementsModel.State upgraded25 = AchievementsModel.expandPrevious(migrated.metrics,
+            Arrays.copyOf(migrated.unlockedAt,25),false,migrated.recognizedOnUpgrade);
+        check(upgraded25.same(migrated), "25-ID expansion preserves every metric/date/origin/preference");
+        check(upgraded25.unlockedAt[25] == 0, "25-ID migration cannot infer a past clean run");
+        long[] impossibleLegacy = legacyMetrics.clone(); impossibleLegacy[6] |= 2;
+        try { AchievementsModel.expandLegacy(impossibleLegacy,legacyDates,false,999); throw new AssertionError("Legacy clean-run evidence accepted"); }
+        catch (IllegalArgumentException expected) { ++checks; }
+        try { AchievementsModel.expandPrevious(impossibleLegacy,Arrays.copyOf(migrated.unlockedAt,25),false,recognized);
+            throw new AssertionError("Previous clean-run evidence accepted"); }
+        catch (IllegalArgumentException expected) { ++checks; }
+        for (int size : new int[]{10,24,26}) {
+            try { AchievementsModel.expandPrevious(migrated.metrics,new long[size],false,recognized);
+                throw new AssertionError("Wrong previous date count accepted"); }
+            catch (IllegalArgumentException expected) { ++checks; }
+        }
+        long[] oldSnapshot = snapshot(6,1); oldSnapshot[0] = 1; invalid(oldSnapshot);
         System.out.println("PASS local achievement model checks=" + checks + ", definitions=" + ids.size());
     }
 }

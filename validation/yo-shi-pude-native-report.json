@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "version": "0.10.11-beta",
+  "date": "2026-10-30",
+  "result": "PASS",
+  "disassembly_revision": "c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071",
+  "runner_sha256": "8288c3080c6e9ec498cfa392d060642dd9dd2f618a77338cd7adcc3e0f88323d",
+  "unit_tests": {
+    "campaign_groups": 5,
+    "campaign_checks": 1473,
+    "legacy_collector_checks": 166657,
+    "normal": "PASS",
+    "address_undefined_sanitizers": "PASS",
+    "leak_sanitizer_enabled": false
+  },
+  "native_cases": [
+    {
+      "name": "fresh",
+      "result": "PASS",
+      "native_observations": 3468,
+      "native_trace_sha256": "18d83e627708b2e2320fa32c480dcfece14eee1dcb9eaf51eff3e0b854e5dde5",
+      "controlled_fixture": false,
+      "synthetic_tracker_prefix": false,
+      "synthetic_prior_main_goals": 0,
+      "final_challenge_status": 1,
+      "observed_main_goals_in_tracker": 0,
+      "first_failure_guest_frame": null,
+      "earned_guest_frame": null,
+      "super_star_return_frames": 0
+    },
+    {
+      "name": "controlled_ending",
+      "result": "PASS",
+      "native_observations": 3730,
+      "native_trace_sha256": "92f3c1a2892eced5c325cc607b6dec6636806f9b26f17a7b101b20117429b93d",
+      "controlled_fixture": true,
+      "synthetic_tracker_prefix": true,
+      "synthetic_prior_main_goals": 47,
+      "final_challenge_status": 4,
+      "observed_main_goals_in_tracker": 48,
+      "first_failure_guest_frame": null,
+      "earned_guest_frame": 17972,
+      "super_star_return_frames": 0
+    },
+    {
+      "name": "controlled_star",
+      "result": "PASS",
+      "native_observations": 180,
+      "native_trace_sha256": "0f8cfc2e6ec70b1e7605b91882ae5251b92c326b5805a80c9acabbce5a003b19",
+      "controlled_fixture": true,
+      "synthetic_tracker_prefix": true,
+      "synthetic_prior_main_goals": 0,
+      "final_challenge_status": 1,
+      "observed_main_goals_in_tracker": 0,
+      "first_failure_guest_frame": null,
+      "earned_guest_frame": null,
+      "super_star_return_frames": 16
+    },
+    {
+      "name": "controlled_loss",
+      "result": "PASS",
+      "native_observations": 120,
+      "native_trace_sha256": "5465d9ab32926d3977f585bd03fdce4eecf3763efb7acef3c18921e001aa90f9",
+      "controlled_fixture": true,
+      "synthetic_tracker_prefix": true,
+      "synthetic_prior_main_goals": 0,
+      "final_challenge_status": 2,
+      "observed_main_goals_in_tracker": 0,
+      "first_failure_guest_frame": 6601,
+      "earned_guest_frame": null,
+      "super_star_return_frames": 0
+    }
+  ],
+  "fresh_campaign_armed_guest_frame": 693,
+  "fresh_live_summary": [
+    1,
+    1,
+    1,
+    0
+  ],
+  "credits": {
+    "final_course_id": 67,
+    "entry_guest_frame": 17972,
+    "first_state19_guest_frame": 18000,
+    "first_state1a_guest_frame": 18060,
+    "continued_frames_after_first_state19": 200,
+    "dispatch_misses": 0,
+    "interpreted_instructions": 0,
+    "native_healing": 0
+  },
+  "source_sha256": {
+    "src/no_mario_loss_challenge.h": "e87d0f9d574e55bbc737e6d333a5bee707ca480002adee2f67237dc87e844c55",
+    "src/local_achievements.cpp": "866e8f434ed16c484e593496a05c4b1fa4e8b085c496c4ed066dbf8c26b06a43",
+    "src/local_achievements.h": "106949ffd07c468b7749d196a6e150f2be7f6139fc1101720811589cead61f93",
+    "src/local_achievements_detail.h": "b1576345867fbd836931d703989df19155d625bc4cd0f849c135801484c96a57",
+    "validation/no_mario_loss_challenge_test.cpp": "84bb0619aaf90519bf6ee72dd60d729dc6d34bc0b99c542b954dec4cd748598a",
+    "validation/local_achievements_test.cpp": "3f01171961a1d6fe80e113b3000a9383d76b625d0c107b921e194f09c545a232",
+    "validation/replay_no_mario_loss_trace.cpp": "85f6e6344fda7722509d2263761d72d7aa57043715609a11379cb33e02f7f93f"
+  },
+  "scope": {
+    "full_clean_campaign_executed": false,
+    "natural_bowser_fight_executed": false,
+    "natural_super_star_collection_executed": false,
+    "all_enemy_types_executed": false,
+    "android_device_run": false,
+    "note": "Controlled cases execute real guest routines from private prepared states. Synthetic start/prior-course observations are used only by the standalone verifier, never in the APK or achievement store."
+  }
+}

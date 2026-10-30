@@ -20,6 +20,7 @@ run(exe,'--rom',rom,'--config',root/'ram.toml','--out',root/'generated-ram','--o
 run(sys.executable,root/'tools/generate_overlays.py','--rom',rom,'--recompiler',exe)
 run(sys.executable,root/'tools/generate_morph.py','--rom',rom,'--recompiler',exe)
 run(sys.executable,root/'tools/generate_effects.py','--rom',rom,'--recompiler',exe)
+run(sys.executable,root/'tools/generate_credits.py','--rom',rom,'--recompiler',exe)
 run(sys.executable,root/'tools/generate_localization.py','--rom',rom,'--disasm',a.disasm.resolve())
 print('Generated sources are local build inputs and are ignored by Git.')
 

@@ -87,7 +87,7 @@ def main():
     require(set(expected) == set(FIELDS) and all(
         type(expected[key]) is int and 0 <= expected[key] < 2**64 for key in FIELDS),
         'Expected snapshot must define all eight unsigned integer fields')
-    require(expected['schema'] == 1, 'Unknown expected snapshot schema')
+    require(expected['schema'] in (1, 2), 'Unknown expected snapshot schema')
     args.output.mkdir(parents=True, exist_ok=True)
     require(not any(args.output.iterdir()), 'Use a new empty output directory')
     if args.reuse_baseline:

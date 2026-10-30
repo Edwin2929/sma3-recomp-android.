@@ -68,6 +68,18 @@ Java_org_gbarecomp_GbaNative_getLocalAchievements(JNIEnv* env, jclass) {
     return output;
 }
 
+extern "C" JNIEXPORT jlongArray JNICALL
+Java_org_gbarecomp_GbaNative_getYoShiPudeStatus(JNIEnv* env, jclass) {
+    const auto status = sma3::local_achievements_challenge_status();
+    std::array<jlong, 4> values{};
+    for (std::size_t i = 0; i < values.size(); ++i)
+        values[i] = std::bit_cast<jlong>(status[i]);
+    auto output = env->NewLongArray(static_cast<jsize>(values.size()));
+    if (output)
+        env->SetLongArrayRegion(output, 0, static_cast<jsize>(values.size()), values.data());
+    return output;
+}
+
 #include "localization.h"
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setLanguage(JNIEnv*, jclass, jint language) {

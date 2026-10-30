@@ -14,6 +14,7 @@
 #include "mod_profiles.h"
 #include "yoshi_color.h"
 #include "local_achievements.h"
+#include "challenge_lifecycle.h"
 int sma3_ram_dispatch(uint32_t, int);
 
 #ifndef __ANDROID__
@@ -101,6 +102,8 @@ int main(int argc, char** argv) {
         return 1;
     }
     const std::string root(storage);
+    sma3::local_achievements_checkpoint_path((root + "/achievements/yo-shi-pude-v1.bin").c_str());
+    options.resume_suspend_state_on_launch = true;
     if (chdir(root.c_str()) != 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Cannot open app storage directory");
         return 1;
@@ -124,9 +127,15 @@ int main(int argc, char** argv) {
     for (auto& argument : arguments) pointers.push_back(argument.data());
     return gbarecomp::run_game(static_cast<int>(pointers.size()), pointers.data(), options);
 #else
+    // Optional private replay directory exercises the same suspend proof on
+    // the host. Production Android always uses its protected files directory.
+    if (const char* path = std::getenv("SMA3_CHALLENGE_CHECKPOINT")) {
+        sma3::local_achievements_checkpoint_path(path);
+        options.resume_suspend_state_on_launch = true;
+    }
     const int result = gbarecomp::run_game(argc, argv, options);
     // Desktop qualification reads the same published snapshot as Android.
-    // There is no file I/O in the guest frame callback or the Android build.
+    // This report is host-only; the guest frame observer never performs I/O.
     if (const char* path = std::getenv("SMA3_LOCAL_ACHIEVEMENTS_REPORT")) {
         const auto progress = sma3::local_achievements_snapshot();
         std::ofstream report(path);
@@ -134,6 +143,12 @@ int main(int argc, char** argv) {
         for (std::size_t i = 0; i < progress.size(); ++i) {
             if (i) report << ',';
             report << progress[i];
+        }
+        report << "],\"yo_shi_pude\":[";
+        const auto challenge_status = sma3::local_achievements_challenge_status();
+        for (std::size_t i = 0; i < challenge_status.size(); ++i) {
+            if (i) report << ',';
+            report << challenge_status[i];
         }
         report << "]}\n";
         report.close();

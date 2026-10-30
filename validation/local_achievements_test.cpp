@@ -14,7 +14,7 @@ void require(bool value, const char* message) {
     ++checks;
     if (!value) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
 }
-const LocalAchievementsSnapshot empty{{1, 0, 0, 0, 0, 0, 0, 0}};
+const LocalAchievementsSnapshot empty{{2, 0, 0, 0, 0, 0, 0, 0}};
 Observation normal(unsigned course = 0) {
     Observation o;
     o.valid = true; o.state = 0x0d; o.course = course; o.room = 0;
@@ -140,7 +140,7 @@ void continuity() {
         if (kind == 7) s.o.state = 14;
         if (kind == 8) s.o.valid = false;
         s.step();
-        require(s.tracker.progress() == LocalAchievementsSnapshot{{1, 0, 0, 0, 1, 0, 0, 0}},
+        require(s.tracker.progress() == LocalAchievementsSnapshot{{2, 0, 0, 0, 1, 0, 0, 0}},
                 "discontinuity/death/room change does not invent pickups or erase history");
     }
     Session s;

@@ -4,8 +4,9 @@ import java.util.Arrays;
 
 /** Pure, monotonic evidence model. IDs and metric positions are persistent contracts. */
 final class AchievementsModel {
-    static final int SCHEMA = 1; // Native snapshot contract; independent of the file format.
+    static final int SCHEMA = 2; // Native snapshot contract; independent of the file format.
     static final int LEGACY_COUNT = 10;
+    static final int PREVIOUS_COUNT = 25;
     static final int METRICS = 7;
     static final long LEVEL_MASK = (1L << 60) - 1;
     static final long TRANSFORMATION_MASK = 0x1f;
@@ -55,7 +56,7 @@ final class AchievementsModel {
         new Definition("first_transformation", 2, 1, true,
             "Cambio de forma", "A new shape", "Mudança de forma",
             "Transforma a Yoshi usando una burbuja.", "Transform Yoshi using a morph bubble.", "Transforme Yoshi usando uma bolha."),
-        new Definition("fuzzy_recovery", 6, 1, false,
+        new Definition("fuzzy_recovery", 6, 1, false, 1,
             "Cabeza despejada", "Clear head", "Cabeça leve",
             "Supera de forma natural el efecto de un Fuzzy.", "Naturally recover from a Fuzzy's effect.", "Recupere-se naturalmente do efeito de um Fuzzy."),
         new Definition("first_clear", 0, 1, true,
@@ -117,11 +118,18 @@ final class AchievementsModel {
             "Transforma a Yoshi en tren.", "Transform Yoshi into a train.", "Transforme Yoshi em trem."),
         new Definition("submarine_transformation", 2, 1, false, 16,
             "Submarino", "Submarine", "Submarino",
-            "Transforma a Yoshi en submarino.", "Transform Yoshi into a submarine.", "Transforme Yoshi em submarino.")
+            "Transforma a Yoshi en submarino.", "Transform Yoshi into a submarine.", "Transforme Yoshi em submarino."),
+        new Definition("yo_shi_pude", 6, 1, false, 2,
+            "Yo shi pude", "Yo shi pude", "Yo shi pude",
+            "Completa el juego desde una partida nueva sin que te quiten a Bebé Mario en ningún mapa.",
+            "Complete the game from a new save without Baby Mario ever being knocked away in any level.",
+            "Conclua o jogo desde uma nova partida sem que tirem o Bebê Mario de você em nenhuma fase.")
     };
 
     static final int ALL_IDS_MASK = (1 << DEFINITIONS.length) - 1;
-    static final int EXPANDED_IDS_MASK = ALL_IDS_MASK & ~((1 << LEGACY_COUNT) - 1);
+    // Only the fifteen 0.10.10 additions can be recognized from older evidence.
+    // A previous save cannot prove the full no-separation run for Yo shi pude.
+    static final int EXPANDED_IDS_MASK = ((1 << PREVIOUS_COUNT) - 1) & ~((1 << LEGACY_COUNT) - 1);
 
     static final class State {
         final long[] metrics;
@@ -167,7 +175,7 @@ final class AchievementsModel {
         if ((values[0] & ~LEVEL_MASK) != 0 || (values[1] & ~LEVEL_MASK) != 0
                 || (values[1] & ~values[0]) != 0 || (values[2] & ~TRANSFORMATION_MASK) != 0
                 || values[3] < 0 || values[3] > 20 || values[4] < 0 || values[4] > 5
-                || values[5] < 0 || values[5] > 30 || (values[6] & ~1L) != 0)
+                || values[5] < 0 || values[5] > 30 || (values[6] & ~3L) != 0)
             throw new IllegalArgumentException("Invalid achievement evidence");
     }
 
@@ -190,6 +198,8 @@ final class AchievementsModel {
     /** Recognize only new IDs from previously saved local evidence, preserving original dates. */
     static State expandLegacy(long[] metrics, long[] oldDates, boolean notifications, long now) {
         validateMetrics(metrics);
+        if ((metrics[6] & ~1L) != 0)
+            throw new IllegalArgumentException("Unsupported legacy event evidence");
         if (oldDates == null || oldDates.length != LEGACY_COUNT)
             throw new IllegalArgumentException("Legacy achievement date count");
         long[] dates = Arrays.copyOf(oldDates, DEFINITIONS.length);
@@ -197,13 +207,21 @@ final class AchievementsModel {
             if (dates[i] < 0 || (dates[i] > 0) != (DEFINITIONS[i].progress(metrics) == DEFINITIONS[i].target))
                 throw new IllegalArgumentException("Legacy achievement evidence mismatch");
         int recognized = 0;
-        for (int i = LEGACY_COUNT; i < DEFINITIONS.length; ++i) {
+        for (int i = LEGACY_COUNT; i < PREVIOUS_COUNT; ++i) {
             if (DEFINITIONS[i].progress(metrics) == DEFINITIONS[i].target) {
                 dates[i] = Math.max(1, now);
                 recognized |= 1 << i;
             }
         }
         return new State(metrics, dates, notifications, recognized);
+    }
+
+    /** Preserve all 25 original dates and their origin; the new run is unproven. */
+    static State expandPrevious(long[] metrics, long[] oldDates, boolean notifications, int recognized) {
+        validateMetrics(metrics);
+        if ((metrics[6] & ~1L) != 0 || oldDates == null || oldDates.length != PREVIOUS_COUNT)
+            throw new IllegalArgumentException("Unsupported previous achievement record");
+        return new State(metrics, Arrays.copyOf(oldDates, DEFINITIONS.length), notifications, recognized);
     }
 
     static int newUnlocks(State saved, State next) {
