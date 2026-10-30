@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "version": "0.10.15-beta",
+  "result": "PASS",
+  "scope": "C++ production localized_read with the generated verified-ROM resources; not a full game playthrough or Android device run",
+  "checks": 2164740,
+  "text_pointer_slots": 287,
+  "graphics_pointer_slots": 4,
+  "stable_font_pointer_slots": 2,
+  "languages": 3,
+  "rom_mirrors_per_bank": 3,
+  "widths_bytes": [
+    1,
+    2,
+    4
+  ],
+  "cases": [
+    "Every byte of every bank and legacy Portuguese glyph range",
+    "Little-endian reads including end padding",
+    "All ROM wait-state mirrors",
+    "Sorted unique verified pointer slots",
+    "Original-value guards and partial-pointer rejection",
+    "Stable credits font selection across language changes",
+    "Previously resolved resources remain readable while selecting another language",
+    "Non-ROM, invalid width and null-output rejection"
+  ],
+  "normal": {
+    "result": "PASS",
+    "compiler": "g++",
+    "flags": [
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ]
+  },
+  "sanitizers": {
+    "result": "PASS",
+    "checks": 2164740,
+    "enabled": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "leak_sanitizer_enabled": false,
+    "note": "Leak detection disabled for the restricted execution environment."
+  },
+  "existing_localization_test": {
+    "result": "PASS",
+    "pointer_slots": 287,
+    "languages": 3
+  },
+  "source_sha256": {
+    "src/localization.cpp": "1ebe08104914d65ce905386c4d1a28741f8a49b8f3e4c1c31fdffb6fe5f65ced",
+    "src/localization.h": "b0570acdb82bc5876911f76e3a438e72efed1edb418f3cd018070d6a4022199a",
+    "src/localization_data.h": "86c2cb00567a566521c2a71835a78a68b66744fb2f41147b8b5441345de8e544",
+    "validation/localization_resources_test.cpp": "1a17c3b2317cb6f1414610b3a538c5a6adff38cfd3c04ae99b56a52a217f270b",
+    "validation/localization_test.cpp": "4cbfe5ef16f62c76094b0df6b54ad2ed1d7a63b5b77ea82215215136be22eafa"
+  },
+  "limits": [
+    "No physical Android installation or display measurement.",
+    "Actual native UI and credits-renderer verification is reported separately."
+  ]
+}

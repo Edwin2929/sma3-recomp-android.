@@ -2,7 +2,28 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.14 beta — eficiencia de panorámica y presentación
+## Versión actual: 0.10.15 beta — traducción ampliada del juego
+
+La traducción al español latinoamericano y portugués de Brasil añade
+**seis rótulos de archivos y pausa/inventario** y **veinte paquetes de créditos
+por idioma**. Incluye las cabeceras de archivos, copiar y borrar; mundo,
+mejor puntuación y puntos totales; cargos, agradecimientos y mensajes finales.
+Los nombres del equipo original se conservan.
+
+Los 187 textos anteriores mantienen exactamente sus bytes y direcciones.
+El total pasa a **207 paquetes por idioma**, además de los rótulos gráficos.
+Los acentos de los créditos se adaptan a su fuente y se comprueba el ancho
+de las líneas. Actívalo en **Atrás → Idiomas → Idioma del juego**.
+
+La traducción sigue siendo parcial: quedan otros rótulos, botones ilustrados,
+estrellas/monedas/flores, el menú de suspensión y Mario Bros. Los gráficos
+nuevos aparecen cuando el juego vuelve a cargar la pantalla correspondiente.
+
+[Notas de 0.10.15](docs/releases/v0.10.15-beta.md) ·
+[Cobertura de idiomas](docs/IDIOMAS.md) ·
+[Pruebas y límites](validation/LOCALIZATION_0.10.15_VALIDATION.md).
+
+### Optimizaciones conservadas de 0.10.14 — panorámica y presentación
 
 La panorámica reutiliza la resolución del mismo bloque de terreno entre
 píxeles contiguos, mediante una caché de 128 bytes que se renueva por fila y
@@ -171,7 +192,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.14 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
+0.10.15 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -278,14 +299,14 @@ de objetos de 0.10 y todavía requiere comprobación física en el teléfono.
 
 - **0.5:** cobertura nativa de la rutina de transformación, mapeo de mando y opción para ocultar los controles táctiles. [Detalles](docs/CORRECCION_TRANSFORMACIONES.md).
 - **0.6:** escalado de presentación Automático, 720p y 1080p, con opción para estirar la imagen. Los gráficos originales siguen siendo de 240 × 160. [Detalles](docs/CALIDAD_IMAGEN.md).
-- **0.7:** selector de inglés, español latinoamericano y portugués de Brasil. Traducción parcial de 187 entradas por idioma; incluye 61 nombres de niveles. Créditos, rótulos gráficos y Mario Bros siguen en inglés. [Cobertura](docs/IDIOMAS.md).
+- **0.7:** incorporó inglés, español latinoamericano y portugués de Brasil, con 187 entradas por idioma y 61 nombres de niveles. En esa versión los créditos y rótulos gráficos seguían en inglés; 0.10.15 amplía esa cobertura. [Cobertura actual](docs/IDIOMAS.md).
 - Se conservan el contador de FPS y la mezcla temporal opcional de 120 FPS de 0.4. No son 120 estados independientes del juego; puede producir estelas. [Límites](docs/INTERPOLACION_120.md).
 
 Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre sesiones.
 
 ### Imagen completa sin deformaciones
 
-En **0.10.14**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.15**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -303,37 +324,42 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.14 beta — nueva entrega
+### APK 0.10.15 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.14-beta-arm64.apk`**, versión `0.10.14-beta`,
-código **25**, ARM64 y Android 9 o posterior. Reduce búsquedas repetidas de
-terreno panorámico y sondeos innecesarios de la presentación de 120.
-Conserva los bordes decorativos, los 26 logros y su animación, el color de
-Yoshi, filtros, mods, controles y el actualizador.
+Archivo: **`sma3-recomp-0.10.15-beta-arm64.apk`**, versión `0.10.15-beta`,
+código **26**, ARM64 y Android 9 o posterior. Amplía la traducción del juego
+al español y portugués en créditos y seis rótulos de archivos e inventario.
 
 Instálalo encima de la versión anterior, sin desinstalarla ni borrar datos.
 Conserva el paquete y el certificado y aumenta el código de versión. Desde
 0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el mantenedor haya
 publicado el archivo con el nombre admitido.
-[Instalación y datos del APK](docs/releases/v0.10.14-beta.md).
+[Instalación y datos del APK](docs/releases/v0.10.15-beta.md).
 
 ### Publicación verificada: APK 0.10.13 beta
 
-En la consulta de preparación de 0.10.14, la release pública
+En la consulta de preparación de 0.10.15, la release pública
 **Descarga** contiene
 [**sma3-recomp-0.10.13-beta-arm64.apk**](https://github.com/Edwin2929/sma3-recomp-android./releases/download/Descarga/sma3-recomp-0.10.13-beta-arm64.apk).
 Su tamaño es **28.017.944 bytes** y su SHA-256 coincide con el APK entregado:
 `37f46ea4b1826639dec53081b9dd198cc057539501f18ed2b0bc43ef7c51e6da`.
 El nombre coincide con el patrón del actualizador. Para esta nueva entrega
-conserva exactamente **`sma3-recomp-0.10.14-beta-arm64.apk`**.
+conserva exactamente **`sma3-recomp-0.10.15-beta-arm64.apk`**.
 
-El APK 0.10.14 aparecerá en
+El APK 0.10.15 aparecerá en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga)
 cuando el mantenedor lo adjunte manualmente. Publicar el código en `main`
 no publica el APK. Las indicaciones de disponibilidad en notas anteriores
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.15:** recursos contrastados con ROM/disassembly, conservación de textos
+anteriores, anchos y acentos de créditos, rótulos y campos numéricos, lectura
+de bancos y selección de idioma. El informe distingue pruebas de componentes,
+ejecución nativa, paquete Android y comprobación física pendiente.
+[Validación y alcance](validation/LOCALIZATION_0.10.15_VALIDATION.md) ·
+[APK](validation/android-0.10.15-build.json).
 
 **0.10.14:** comparación diferencial del proveedor de terreno, sondeo con
 reloj controlado y cancelación, replays nativos contra 0.10.13 y medición de
@@ -667,10 +693,10 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.14 en Pixel 7 Pro: continuidad visual en los extremos panorámicos, los 26 logros, animación, suspensión y continuidad de Yo shi pude, color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Probar 0.10.15 en Pixel 7 Pro: nuevos rótulos y créditos en español/portugués, carga de mensajes guardados, panorámica, logros, animación, suspensión, color de Yoshi, 60/120, actualizaciones, mods, filtros, Fuzzy, rotación, segundo plano, mandos y editor de controles.
 - Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.14, comparando la zona de la captura de 65,2 FPS y sesiones largas con 0.10.13.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
-- Completar la traducción de rótulos gráficos, créditos y Mario Bros.
+- Completar los demás rótulos gráficos, botones ilustrados, estrellas/monedas/flores, el menú de suspensión y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.
 - Documentar sonido, guardado, segundo plano y mandos físicos.
 - Medir estabilidad de FPS en sesiones largas y en más dispositivos.

@@ -1,0 +1,89 @@
+{
+  "version": "0.10.15",
+  "result": "PASS",
+  "scope": "Controlled component invocation of original statically recompiled CreditsText_ProcessMsg; no natural ending, PPU frame, Android or GPU claim.",
+  "renderer_address": "0x08033E94",
+  "font_resource_base": "0x09D00000",
+  "width_resource_base": "0x09D00600",
+  "verified_rom_sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+  "disassembly_commit": "c8532ec9a8d0038c3bfeb003dd0c7ea89d7e1071",
+  "execution": {
+    "result": "PASS",
+    "scope": "controlled original recompiled credits renderer, not natural ending or Android",
+    "english_packets_identical": 39,
+    "translated_packets_native_reference": 40,
+    "accent_cases": 28,
+    "native_executions": 186,
+    "offline_reference_executions": 68,
+    "offline_reference_instructions": 1297059,
+    "virtual_font_reads_in_translated_packets": 8220,
+    "virtual_width_reads_in_translated_packets": 685,
+    "checks": 38737
+  },
+  "matrix": {
+    "english_packets_unchanged_native_pixels": 39,
+    "spanish_translated_packets": 20,
+    "portuguese_translated_packets": 20,
+    "translated_packets_equal_native_reference_registers_flags_full_ram_cycles": 40,
+    "latched_packet_unchanged_after_language_switch": 40,
+    "new_accents": [
+      "á",
+      "ã",
+      "ç",
+      "é",
+      "ñ",
+      "ó",
+      "ú"
+    ],
+    "accent_cases": {
+      "glyphs": 7,
+      "x_parities": 2,
+      "credit_rows": 2,
+      "total": 28
+    },
+    "accent_native_buffer_equals_independent_tile_layout": true,
+    "buffer_and_stack_canaries_unchanged_every_execution": true
+  },
+  "native_coverage": {
+    "ok": true,
+    "program": "",
+    "code": "",
+    "sha1": "",
+    "coverage": "FULLY_STATIC",
+    "enabled": false,
+    "distinct_misses": 0,
+    "interpreted_insns": 0,
+    "healed_native": 0,
+    "native_calls": 0,
+    "inflight": 0,
+    "failed": 0,
+    "jump_table_candidate_regions": 0,
+    "misses": []
+  },
+  "coverage_qualification": "The native coverage checks are enforced separately after every native execution with GBARECOMP_STRICT_STATIC=1. Snapshot was captured immediately after the last native execution. The explicitly invoked offline interpreter reference is not part of the native acceptance path and is reported separately.",
+  "source_production_changes_for_this_test": false,
+  "sha256": {
+    "test_source": "cb3c462d08bfdc60bfc4eb3dce3bb683b2250836992d308cd16772793eebdd54",
+    "test_executable": "3a8143014e8533e2411b79aeaa2a36dfe652e16e456068d7c5bf9fc0523608a5",
+    "localization_source": "1ebe08104914d65ce905386c4d1a28741f8a49b8f3e4c1c31fdffb6fe5f65ced",
+    "private_generated_localization_header": "86c2cb00567a566521c2a71835a78a68b66744fb2f41147b8b5441345de8e544",
+    "original_static_game_archive": "c9b218c574672023bf18a217e7bd98dd2d9b9b9711ac4ca1a59ee6d18725c7e0",
+    "runtime_library": "74f68fd4b6491b3e277598923e9f02e70f838c815e5878ed814072fea4f4ba5c",
+    "armv4t_library": "065600c01e503deb831395a2f6f02b0877fe216f3d5b8cba30bed78f1bb110ce",
+    "gba_library": "c3751d1c9b05a72caf56a2212bb1a23728e088fde65750deb8a151d461bf99ee"
+  },
+  "native_acceptance": {
+    "executions": 186,
+    "strict_static": true,
+    "generated_function_entry_verified_every_execution": true,
+    "distinct_misses": 0,
+    "fallback_interpreted_instructions": 0,
+    "healed_native": 0
+  },
+  "offline_reference": {
+    "executions": 68,
+    "interpreted_instructions": 1297059,
+    "counted_as_native_acceptance": false,
+    "purpose": "Independent instruction execution for comparison of registers, flags, complete RAM and cycles; test executable only."
+  }
+}

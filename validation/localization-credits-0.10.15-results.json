@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "scope": "Generator/font/resource validation; not native gameplay or physical Android",
+  "checks": 19623,
+  "original_packets": 39,
+  "translated_packets_per_language": 20,
+  "translated_rows_checked": 80,
+  "accent_glyphs": 7,
+  "english_glyphs_identical": 53,
+  "resource_bytes": 1664,
+  "legacy_compatibility": {
+    "pointer_slots_identical": 267,
+    "bank_prefix_bytes_identical": [
+      16915,
+      16499
+    ]
+  },
+  "preview_scope": "Direct glyph-cell rendering of generated packets, not a gameplay screenshot",
+  "generated_header_sha256": "86c2cb00567a566521c2a71835a78a68b66744fb2f41147b8b5441345de8e544",
+  "deterministic_regeneration_identical": true,
+  "source_sha256": {
+    "tools/generate_localization.py": "dfc8cc8ae44c92e29545671bb8efef4eed1e92ed1c40aba7ac286d4cb7fb76c2",
+    "tools/localization_credits.py": "b04c104e5a30338f7ce18bf23626f65ca74c1bf8154807b24fab56dc52f0dc7e",
+    "localization/credits.tsv": "0fc4b26a134a1d6c4d13d36961868d655a4eb14b63811a721d475fe8e96ad69a",
+    "validation/localization_credits_test.py": "c7fda97e04a23831e693e91c06f00189fea7989aec78e518705a539b87ccb529"
+  },
+  "limits": [
+    "The preview is a glyph-cell contact sheet, not a native gameplay screenshot.",
+    "Physical Android credit rendering and a complete end-to-end credit sequence are outside this component test."
+  ]
+}

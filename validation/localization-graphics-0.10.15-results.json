@@ -1,0 +1,246 @@
+{
+  "records": [
+    {
+      "label": "YITitle_L0_Graphics_LZ77",
+      "original_address": "0x81a42d8",
+      "pointer_slot": "0x80fe930",
+      "bytes": [
+        1048,
+        1068
+      ],
+      "sha256": [
+        "7ab409fd3283ab4f254b69885618f0a530fde634479942cf6ad8ebf74f346e0b",
+        "38d16f694e5c596023e93e90599bc1da4f7c52ff626aa9e422fa64eb0ab35484"
+      ],
+      "category": "file_menu_headers",
+      "decoded_bytes": 3584,
+      "original_compressed_sha256": "f7fdc9340408298ab621b972c21307548c1b92071ff1e803cf92a0201fbceccf",
+      "original_decoded_sha256": "6608847af089d64027ca6a5f137f6b7266180b0a645113875b12c9b6feb0d191",
+      "regions": [
+        {
+          "label": "file_header",
+          "upper_tiles": [
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "lower_tiles": [
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "languages": [
+            {
+              "text": "ARCHIVOS",
+              "advance_px": 61,
+              "available_px": 72,
+              "painted_pixels": 239,
+              "border_preserved": true
+            },
+            {
+              "text": "ARQUIVOS",
+              "advance_px": 61,
+              "available_px": 72,
+              "painted_pixels": 244,
+              "border_preserved": true
+            }
+          ]
+        },
+        {
+          "label": "copy_header",
+          "upper_tiles": [
+            31,
+            32,
+            33,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87
+          ],
+          "lower_tiles": [
+            47,
+            48,
+            49,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103
+          ],
+          "languages": [
+            {
+              "text": "COPIAR",
+              "advance_px": 45,
+              "available_px": 88,
+              "painted_pixels": 179,
+              "border_preserved": true
+            },
+            {
+              "text": "COPIAR",
+              "advance_px": 45,
+              "available_px": 88,
+              "painted_pixels": 179,
+              "border_preserved": true
+            }
+          ]
+        },
+        {
+          "label": "erase_header",
+          "upper_tiles": [
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63
+          ],
+          "lower_tiles": [
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79
+          ],
+          "languages": [
+            {
+              "text": "BORRAR",
+              "advance_px": 48,
+              "available_px": 88,
+              "painted_pixels": 211,
+              "border_preserved": true
+            },
+            {
+              "text": "APAGAR",
+              "advance_px": 48,
+              "available_px": 88,
+              "painted_pixels": 199,
+              "border_preserved": true
+            }
+          ]
+        }
+      ],
+      "outside_regions_identical": true,
+      "palette_entries_unchanged": true,
+      "writer": "YITitle_LoadGraphics / 080FE7BE"
+    },
+    {
+      "label": "InvScr_TotalPointsChars",
+      "original_address": "0x8194868",
+      "pointer_slot": "0x80e75c0",
+      "bytes": [
+        24,
+        24
+      ],
+      "sha256": [
+        "1a23f48e457e5f39eb758f17cc4bcd64195000d10ab5df1bca396c27d73d558c",
+        "890301af69df37a97f2940f6e91a1db87e7fc9aa2a17212a36cc6293b3f9b2da"
+      ],
+      "category": "inventory_headers",
+      "texts": [
+        "PUNTOS TOTALES",
+        "PONTOS TOTAIS"
+      ],
+      "original_sha256": "75f2f484136a53a00484b8b041ef4eb800eb5c7ae705641ec211cc503b74b70b",
+      "numeric_fields_preserved": true,
+      "writer": "Sub080E71B8 / 080E731C"
+    },
+    {
+      "label": "InvScr_WHighScoreChars",
+      "original_address": "0x8194880",
+      "pointer_slot": "0x80e75d4",
+      "bytes": [
+        24,
+        24
+      ],
+      "sha256": [
+        "b0605a1cc4e6d79f352b0e3f95b41fef9558052f8689ae180ab4e109a3bb79c5",
+        "1dfcdbfdb38630a9ea54d711c39b7fd743e8b693eddda481e886f0cbc6ba0f83"
+      ],
+      "category": "inventory_headers",
+      "texts": [
+        "MEJOR",
+        "RECORDE"
+      ],
+      "original_sha256": "e9f2014a169913ab38b5ea42cdc9eee59523a3feb383ac868c234b903ba6fc4c",
+      "numeric_fields_preserved": true,
+      "writer": "Sub080E71B8 / 080E7346"
+    },
+    {
+      "label": "InvScr_WorldNumChars",
+      "original_address": "0x8194898",
+      "pointer_slot": "0x80e75e0",
+      "bytes": [
+        24,
+        24
+      ],
+      "sha256": [
+        "4d68467254a28e149444e2b233cb6269c6b4e79f381fd33dd44f96d596661a7d",
+        "4d68467254a28e149444e2b233cb6269c6b4e79f381fd33dd44f96d596661a7d"
+      ],
+      "category": "inventory_headers",
+      "texts": [
+        "MUNDO",
+        "MUNDO"
+      ],
+      "original_sha256": "3e82666948e98396bae545a28141fb36da71de76799241f9c2d9f68a8d144c55",
+      "numeric_fields_preserved": true,
+      "writer": "Sub080E71B8 / 080E7370"
+    }
+  ],
+  "labels_per_language": 6,
+  "pointer_slots": 4,
+  "bases": [
+    163577856,
+    164102144
+  ],
+  "bytes": [
+    1120,
+    1140
+  ],
+  "scope": "Three file headers and three inventory labels; other graphical labels remain unchanged",
+  "result": "PASS",
+  "checks": 78,
+  "resources_compared": 8,
+  "exact_untouched_graphics_bytes": 3696,
+  "preserved_border_pixels": 992,
+  "determinism": true,
+  "compression_cases": 15,
+  "rom_sha1": "7352d2bd064d9ebaec579e264228aa21c7345b80",
+  "source_sha256": {
+    "tools/localization_graphics.py": "e123ad1c070b0667bf6b86af54e3708682c606fd39d11921b8a264bcbe3ff099",
+    "localization/graphics.tsv": "f5d9bdcf4abd81010a95584d9b6c0a145a3aeee4a118f9fe79e80bbc08e50ab8"
+  },
+  "limits": [
+    "Resource-level checks only; native UI replay and physical Android remain separate."
+  ]
+}

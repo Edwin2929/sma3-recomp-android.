@@ -363,16 +363,18 @@ public class GbaGameActivity extends SDLActivity {
     private void showLanguageOptions() {
         int selected = getSharedPreferences("sma3-options", MODE_PRIVATE).getInt("game-language", 0);
         SettingsPanel panel = settingsPanel(tr("Idioma del juego", "Game language", "Idioma do jogo"),
-            tr("El cambio se aplica al siguiente mensaje.", "Changes apply to the next message.", "A alteração se aplica à próxima mensagem."));
+            tr("Los mensajes nuevos usan el idioma elegido. Los rótulos cambian cuando el juego vuelve a cargar la pantalla.",
+               "New messages use the selected language. Labels change when the game reloads the screen.",
+               "As novas mensagens usam o idioma escolhido. Os rótulos mudam quando o jogo recarrega a tela."));
         panel.choices(new String[]{"English (original)", "Español latinoamericano", "Português do Brasil"}, new String[]{"", "", ""}, selected, which -> {
             getSharedPreferences("sma3-options", MODE_PRIVATE).edit().putInt("game-language", which).apply();
             applyInputOptions();
         });
         panel.section(tr("Acerca de la traducción", "About the translation", "Sobre a tradução"));
         panel.paragraph(tr(
-            "La traducción es parcial: incluye diálogos, tutoriales, niveles, historia y textos de archivos. Los rótulos gráficos, créditos y Mario Bros conservan el inglés.",
-            "The translation is partial: it includes dialogue, tutorials, levels, story and file text. Graphic labels, credits and Mario Bros remain in English.",
-            "A tradução é parcial: inclui diálogos, tutoriais, fases, história e textos de arquivos. Rótulos gráficos, créditos e Mario Bros continuam em inglês."));
+            "Incluye diálogos, tutoriales, niveles, historia y textos de archivos. También traduce las cabeceras de archivos, mundo, récord, puntos totales y los cargos y mensajes de los créditos. Algunos rótulos y Mario Bros siguen en inglés.",
+            "Includes dialogue, tutorials, levels, story and file text. Also translates file headings, world, high score, total points, and credit roles and messages. Some labels and Mario Bros remain in English.",
+            "Inclui diálogos, tutoriais, fases, história e textos de arquivos. Também traduz os cabeçalhos de arquivos, mundo, recorde, pontos totais e os cargos e mensagens dos créditos. Alguns rótulos e Mario Bros continuam em inglês."));
         openSettings(panel.dialog(this::showLanguageMenu), this::showLanguageMenu);
     }
 
