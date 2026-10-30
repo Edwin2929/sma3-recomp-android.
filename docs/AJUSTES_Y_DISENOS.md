@@ -1,4 +1,4 @@
-# Ajustes y diseños — Android 0.10.8 beta
+# Ajustes y diseños — Android 0.10.9 beta
 
 El botón **Atrás** abre un panel oscuro con acentos verdes, tarjetas por
 categoría y una descripción de cada opción. El contenido se puede desplazar
@@ -6,10 +6,11 @@ y el botón de navegación permanece separado, debajo del contenido. El ancho
 se adapta a la pantalla, con un máximo de 600 dp; la altura se limita al área
 disponible para facilitar el uso horizontal y vertical.
 
-Hay seis apartados:
+Hay siete apartados:
 
 - **Imagen:** Original (3:2), Panorámica (beta) y Estirar a pantalla completa; submenús independientes de filtros y de resolución Automática, 720p y 1080p.
 - **Mods:** personalizar el color de Yoshi con paleta, RGB y HEX; importar perfiles de color `.gbamod`, instalar el ejemplo incluido, consultar sus datos, activarlos, desactivarlos y eliminarlos.
+- **Logros:** diez retos locales, progreso, fechas, filtros de estado y avisos de desbloqueo opcionales.
 - **Rendimiento y FPS:** contador, objetivos de presentación de 60 y 120 FPS, estado de la pantalla y explicación de sus límites.
 - **Controles:** visibilidad de botones táctiles, símbolos o letras clásicas, opacidad, mapeo de mando y diseños personalizados.
 - **Idiomas:** idioma del menú e idioma del juego, independientes.
@@ -22,6 +23,19 @@ color original**; **Cancelar** descarta el borrador. No hace falta reiniciar.
 Los textos del menú y del editor están en español, inglés y portugués.
 La actualización conserva las claves anteriores de preferencias, las
 asignaciones del mando y las tres ranuras de diseños.
+
+## Logros locales
+
+**Atrás → Logros** presenta diez retos con un resumen de desbloqueados y
+tarjetas de progreso. Puedes filtrar **Todos / Logrados / Pendientes** y
+silenciar los avisos sin desactivar el registro. La lista se desplaza y el
+botón **Volver** permanece accesible fuera de ella.
+
+El progreso se guarda en este dispositivo, separado de la partida, y se
+conserva al actualizar sin borrar datos. Se reconocen acciones observadas
+durante el juego; no se conceden logros por abrir el panel ni se importan
+automáticamente récords de partidas antiguas. No requiere cuenta o Internet.
+[Criterios, guardado y límites](LOGROS_LOCALES.md).
 
 ## Imagen sin deformaciones
 

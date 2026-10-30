@@ -1,6 +1,8 @@
 #include "frame_interpolation.h"
 #include "presentation_pacing.h"
 #include "yoshi_color.h"
+#include "local_achievements.h"
+#include <bit>
 #include <jni.h>
 extern "C" JNIEXPORT void JNICALL
 Java_org_gbarecomp_GbaNative_setInterpolationEnabled(JNIEnv*, jclass, jboolean on) {
@@ -50,6 +52,20 @@ Java_org_gbarecomp_GbaNative_setYoshiColor(JNIEnv*, jclass, jboolean enabled, ji
     // alpha/sign bits must never become an unintended palette configuration.
     if (rgb < 0 || rgb > 0xffffff) return;
     sma3::set_yoshi_color(enabled == JNI_TRUE, static_cast<uint32_t>(rgb));
+}
+
+extern "C" JNIEXPORT jlongArray JNICALL
+Java_org_gbarecomp_GbaNative_getLocalAchievements(JNIEnv* env, jclass) {
+    // The game thread owns observation. JNI only copies a small, coherent
+    // published snapshot; it never reads game memory or consumes events.
+    const auto progress = sma3::local_achievements_snapshot();
+    std::array<jlong, 8> values{};
+    for (std::size_t i = 0; i < values.size(); ++i)
+        values[i] = std::bit_cast<jlong>(progress[i]);
+    auto output = env->NewLongArray(static_cast<jsize>(values.size()));
+    if (output)
+        env->SetLongArrayRegion(output, 0, static_cast<jsize>(values.size()), values.data());
+    return output;
 }
 
 #include "localization.h"

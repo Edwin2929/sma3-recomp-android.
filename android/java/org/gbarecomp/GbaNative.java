@@ -26,6 +26,9 @@ public final class GbaNative {
     // Built-in character palette mod; RGB is 0xRRGGBB. One atomic update,
     // independent of installed whole-image color profiles.
     public static native void setYoshiColor(boolean enabled, int rgb);
+    // Versioned, monotonic evidence observed on the game thread. This read
+    // does not clear events or alter the game or its save data.
+    public static native long[] getLocalAchievements();
     public static native void setTouchControlsVisible(boolean visible);
     // Styles: 0 classic letters, 1 action symbols. Opacity is clamped to 20..100%.
     public static native void setTouchAppearance(int style, int opacityPercent);

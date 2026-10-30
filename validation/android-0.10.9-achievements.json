@@ -1,0 +1,2079 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "version": "0.10.9-beta",
+  "version_code": 20,
+  "date_local": "2026-10-29",
+  "local_timezone": "America/El_Salvador",
+  "date_utc": "2026-10-30",
+  "scope": "Local achievements, Android UI and persistence, native game replay and APK packaging.",
+  "source": {
+    "project_base_commit": "e953339d9b10a6e2fff267167ce884144dd374db",
+    "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+    "sdl_commit": "8e28503b164d4353262ed5abf102c25fa838e4f8",
+    "engine_patch_count": 16,
+    "selected_build_input_hashes_rechecked": 275,
+    "selected_build_input_hashes_match": true,
+    "gameplay_validator_sha256": "4291cefbd5d8f46ba97183c707d2358418239934572a451ad0e453e96bd42694",
+    "session_runner_sha256": "ccc8ac045ca5e1c31596ae9fd5f04813806e729f4a834d1ceb49b7f4c04725f7"
+  },
+  "artifact": {
+    "file_name": "sma3-recomp-0.10.9-beta-arm64.apk",
+    "bytes": 27968792,
+    "sha256": "9c2871ff541f9495660cb92128a7004ef9fe9dd49fcc298a388ced4a45a265e6"
+  },
+  "application": {
+    "application_id": "org.sma3.recomp.experimental",
+    "version_code": 20,
+    "version_name": "0.10.9-beta",
+    "payload_version": "0.10.9",
+    "min_sdk": 28,
+    "target_sdk": 35,
+    "abi": "arm64-v8a"
+  },
+  "signing": {
+    "certificate_sha256": "2390f57b35d436ff37b2a303189d18d463c8f5114a5ff809b2f2e6df60f58da3",
+    "v2_signature_verified": true,
+    "original_signing_key_reused": true,
+    "previous_version_code": 19,
+    "new_version_code": 20,
+    "in_place_upgrade_identity_checks_pass": true,
+    "in_place_upgrade_on_physical_device_tested": false
+  },
+  "build_report": {
+    "file": "android-0.10.9-build.json",
+    "sha256": "64a6fb3da8eda49c71631d64d370f463d5a9469b1ae2205efff8e12ba9ecdebd",
+    "assembly_input_files": 1807,
+    "assembly_sources_unchanged": true,
+    "generated_game_archive_recompiled_for_this_version": false,
+    "jni_bindings_verified": 20
+  },
+  "native": {
+    "result": "PASS",
+    "native_scenarios": 7,
+    "native_checks": 166657,
+    "asan": true,
+    "ubsan": true,
+    "leak_sanitizer": false,
+    "syntax_hook_warnings_as_errors": true,
+    "source_sha256": {
+      "src/local_achievements.h": "661ff115827787b81078f554081265b4dbc4ae28948c06aff5de512a553132a2",
+      "src/local_achievements.cpp": "ae21d992662db1f38a2eb6c42ed23e6e18e87930993a8fe2c33d2495d74ba7ae",
+      "src/local_achievements_detail.h": "22f7e8d3f6a3f43b37cc896ecdfe04cf463176a3e1228579152a75e56666e14c",
+      "validation/local_achievements_test.cpp": "c8593c04d5b5c121eaec9b96f2231b72b222e6a24310c2dee09aedbd39cc2e11",
+      "validation/LOCAL_ACHIEVEMENTS_NATIVE.md": "950541d1eb88c2468fc1bf0878e4ac86239b666c321daee8fc368872895db6f4"
+    },
+    "recorded_trace_checks": [
+      {
+        "configuration": "final-fuzzy-240-1900",
+        "result": "PASS",
+        "rows": 1901,
+        "sha256": "86c2dcdd3942ccff8b9d285463cabb3b5bbd820838a4d68ae7273d6d01fada20",
+        "output": "15200 1 0 0 0 0 0 0 1\nfinal 1 0 0 0 0 0 0 1",
+        "scope": "Replay of recorded 0.10.8 guest observations through current achievement Tracker; not an Android execution."
+      },
+      {
+        "configuration": "final-fuzzy-356-1900",
+        "result": "PASS",
+        "rows": 1901,
+        "sha256": "86c2dcdd3942ccff8b9d285463cabb3b5bbd820838a4d68ae7273d6d01fada20",
+        "output": "15200 1 0 0 0 0 0 0 1\nfinal 1 0 0 0 0 0 0 1",
+        "scope": "Replay of recorded 0.10.8 guest observations through current achievement Tracker; not an Android execution."
+      },
+      {
+        "configuration": "final-car-356",
+        "result": "PASS",
+        "rows": 1527,
+        "sha256": "fedacaff769487746ee191aba56823ab131f4cea3455820903b1c80d42c12a22",
+        "output": "7535 1 0 0 1 0 0 0 0\nfinal 1 0 0 1 0 0 0 0",
+        "scope": "Replay of recorded 0.10.8 guest observations through current achievement Tracker; not an Android execution."
+      }
+    ],
+    "limits": [
+      "Standalone observer/Tracker tests and previously recorded guest traces; live candidate and Android qualification are separate.",
+      "LeakSanitizer disabled because this environment restricts process inspection."
+    ],
+    "callback_phase_regression": {
+      "result": "PASS",
+      "scope": "Frozen per-PPU-frame observation trace through corrected Tracker, not a new runner execution",
+      "source_sha256": "5f8832d75fcd8e033933d166c7b64ae062a1ca4ab2e59e7bdded0de3af76e07a",
+      "rows": 1901,
+      "expected_recovery_frame": 15200,
+      "output": "15200 1 0 0 0 0 0 0 1\nfinal 1 0 0 0 0 0 0 1",
+      "counterexample_before_fix": {
+        "frame_before": 14454,
+        "frame_after": 14455,
+        "timer_before": 652,
+        "timer_after": 650,
+        "preceding_held_timer": 652,
+        "amplitude_before": 4608,
+        "amplitude_after": 4864
+      },
+      "source_description": "Private per-PPU-frame observation trace, identified by source_sha256"
+    }
+  },
+  "android_ui": {
+    "result": "PASS",
+    "model_checks": 598,
+    "definitions": 10,
+    "robolectric_tests": 6,
+    "robolectric_version": "4.16.1",
+    "robolectric_api": 34,
+    "android_compile_api": 35,
+    "java_source_count": 32,
+    "jdk": "Temurin17.0.21+9",
+    "physical_device": false,
+    "native_game_loaded": false,
+    "sources": {
+      "android/java/org/gbarecomp/AchievementsModel.java": "c60050100625f9d93d5cd623f6554cfa8d63f7547a508e519236fa09b8e66386",
+      "android/java/org/gbarecomp/AchievementsStore.java": "12ffacb83a1336de62812a8dd137e09d881ce0b7f1141200ba2cf97eb962418d",
+      "android/java/org/gbarecomp/AchievementsUi.java": "0f0b382e25bf6a76739ce98c8e9b24c660051e8daad95475583e15fcb4e585c2",
+      "android/java/org/gbarecomp/GbaGameActivity.java": "51318e19e84a245be4f1011e05559f616ee8b3e0dbb87041777c4eb44a1ef557",
+      "android/java/org/gbarecomp/SettingsPanel.java": "90b512ee900f6bdca3646edd28637806d045835941cfbe29195a7c146917d295",
+      "android/java/org/gbarecomp/GbaNative.java": "ed0166042acd34373d0d96e9ac2003a74644ac5cf3a8911467392e7044c249fd",
+      "validation/AchievementsModelTest.java": "e93ed91e171f76c730a475620fc7d9fd1a4d4d0953e195d8aad64bc67da88906",
+      "validation/AchievementsUiTest.java": "709e17b4585b04f6a1cd3c850e1a7bf8830161159ac6e3ff1b270edb4a743541",
+      "validation/run_achievements_ui_test.py": "1931d9835a4ed2cc8c9cd42db3a619a5c7a7333d8d32ead0678601916f4dccfe",
+      "validation/LOCAL_ACHIEVEMENTS_UI_VALIDATION.md": "42b1912b9b5af76fc68ec485bd431864abc6fe19d96696eba69209e8ed209bff"
+    },
+    "captures": {
+      "achievements-264x560.png": "d4fd8ca55632edb1cbffd883ee0fc353ecadaff9450a85fbdba26d7c43fa2fd7",
+      "achievements-360x240.png": "6344e4d77564f7e4e6675ef9c7ff4d30cfa15c57c976703c07a898610b0a682d",
+      "achievements-360x760.png": "69d27bb226efc7a928fb8ca32014559342d85d16e5e2dca6559aff5af25cd21c",
+      "achievements-600x328.png": "b2e0d25da844ae4cb24d7622de4c7ed822e8e69dee8e776dc4cf6a69f1f5269d"
+    },
+    "coverage": [
+      "ten localized criteria and filters",
+      "progress union/max with strict schema and bounds",
+      "atomic disk round-trip and legacy backup recovery",
+      "write failures retain evidence/dates and retry without duplicate notices",
+      "corrupt/future file preserved and read recovers",
+      "activity lifecycle and ES/EN/PT changes",
+      "native unavailable/invalid snapshot preserves durable progress",
+      "serialized writes off main thread"
+    ],
+    "limits": [
+      "Robolectric with controlled native snapshots; no physical Android device or real game events.",
+      "No power-cut test or server-backed anti-tampering guarantees."
+    ]
+  },
+  "gameplay": {
+    "baseline_version": "0.10.8-beta",
+    "candidate_revision": "final r3",
+    "configuration_count": 5,
+    "new_candidate_executions": 5,
+    "candidate_frames": 7258,
+    "new_reference_executions": 2,
+    "new_reference_frames": 1932,
+    "cached_reference_executions_reused": 3,
+    "new_execution_total": 7,
+    "new_frame_total": 9190,
+    "compared_trace_rows": 7263,
+    "compared_states": 256,
+    "compared_capture_pairs": 251,
+    "all_sampled_pixels_equal": true,
+    "all_ppu_timing_equal": true,
+    "coverage": "FULLY_STATIC",
+    "distinct_misses": 0,
+    "interpreted_instructions": 0,
+    "healed_native": 0,
+    "failed": 0,
+    "score_fixture": {
+      "initial_collection_counters_synthetic": true,
+      "real_goal_tally_and_confirmation_executed": true,
+      "natural_complete_100_point_level_run": false,
+      "loaded_collection_counters_retroactively_awarded": false
+    },
+    "flower_fixture": {
+      "entry_position_and_velocity_prepared": true,
+      "flower_sprite_or_collection_counters_modified": false,
+      "original_collision_collected_real_flower": true,
+      "collection_guest_frame": 13552,
+      "preexisting_red_coins_or_stars_retroactively_awarded": false
+    },
+    "score_session_profile": {
+      "opt_in": "--score-status",
+      "default_frame_contract_unchanged": true,
+      "maximum_pending_vblank": 1,
+      "observed_nonunit_frame_advances": [
+        2,
+        0
+      ],
+      "pending_vblank_at_end": 0,
+      "native_observer_continuity_rules_unchanged": true
+    },
+    "configurations": [
+      {
+        "configuration": "final-fuzzy-240",
+        "summary_sha256": "7863e2de0b035ae96f35f4792d75fc63d5ec56a9b8de35efa37796abc5fd6bdc",
+        "candidate_frames": 1900,
+        "result": "PASS",
+        "width": 240,
+        "observed": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 1
+        },
+        "expected": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 1
+        },
+        "baseline_reused": true,
+        "comparison": {
+          "trace_rows_equal": 1901,
+          "states_equal_except_pixels_inactive_rtc": 41,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 1,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 26,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 92,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 450,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 550,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1002,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1018,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1150,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1860,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 0
+        },
+        "fuzzy_recovery": {
+          "pass": true,
+          "first_effect_elapsed_frame": 1018,
+          "first_effect_guest_frame": 14418,
+          "recovery_elapsed_frame": 1800,
+          "recovery_guest_frame": 15200,
+          "active_frames": 782,
+          "maximum_amplitude": 24576,
+          "normal_frames_at_end": 101,
+          "required_normal_tail_frames": 100,
+          "observed_countdown_steps": 686,
+          "observed_amplitude_growth_steps": 191,
+          "observed_amplitude_fade_steps": 96,
+          "no_restart_or_death": true,
+          "effect_was_not_disabled": true
+        },
+        "score_checks": null,
+        "input_sha256": {
+          "baseline": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+          "candidate": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+          "actions": "3feda686b60190a08369c14843f961ce7422b4d65b2d60a1ae4f3296909214a3",
+          "expected": "c79f0f1353dc5f954066569f13c7a3695487357a50afd9400353336b1acd217f"
+        },
+        "limits": [
+          "Native Linux replay; not Android UI or phone FPS.",
+          "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+          "All sampled pixels and PPU timing must match the reference exactly.",
+          "Private test inputs may use synthetic entry/position preparation; achievements are observed from executed game transitions."
+        ]
+      },
+      {
+        "configuration": "final-fuzzy-356",
+        "summary_sha256": "573b57b430fee18fd9e0fdeb8222b92b17be0358daef78fb7c877352578214a5",
+        "candidate_frames": 1900,
+        "result": "PASS",
+        "width": 356,
+        "observed": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 1
+        },
+        "expected": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 1
+        },
+        "baseline_reused": true,
+        "comparison": {
+          "trace_rows_equal": 1901,
+          "states_equal_except_pixels_inactive_rtc": 41,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 1,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 26,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 92,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 450,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 550,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1002,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1018,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1150,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1860,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 0
+        },
+        "fuzzy_recovery": {
+          "pass": true,
+          "first_effect_elapsed_frame": 1018,
+          "first_effect_guest_frame": 14418,
+          "recovery_elapsed_frame": 1800,
+          "recovery_guest_frame": 15200,
+          "active_frames": 782,
+          "maximum_amplitude": 24576,
+          "normal_frames_at_end": 101,
+          "required_normal_tail_frames": 100,
+          "observed_countdown_steps": 686,
+          "observed_amplitude_growth_steps": 191,
+          "observed_amplitude_fade_steps": 96,
+          "no_restart_or_death": true,
+          "effect_was_not_disabled": true
+        },
+        "score_checks": null,
+        "input_sha256": {
+          "baseline": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+          "candidate": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "79d96045d360defe13b6d737e23af0da0af5a5d9d7c99476eb019b7ccd876fdb",
+          "actions": "3feda686b60190a08369c14843f961ce7422b4d65b2d60a1ae4f3296909214a3",
+          "expected": "c79f0f1353dc5f954066569f13c7a3695487357a50afd9400353336b1acd217f"
+        },
+        "limits": [
+          "Native Linux replay; not Android UI or phone FPS.",
+          "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+          "All sampled pixels and PPU timing must match the reference exactly.",
+          "Private test inputs may use synthetic entry/position preparation; achievements are observed from executed game transitions."
+        ]
+      },
+      {
+        "configuration": "final-car-356",
+        "summary_sha256": "73346e4c31ef137b64bb84a80384a79f16b035b4ece956e22c0fabee364035ef",
+        "candidate_frames": 1526,
+        "result": "PASS",
+        "width": 356,
+        "observed": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 1,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "expected": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 1,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "baseline_reused": true,
+        "comparison": {
+          "trace_rows_equal": 1527,
+          "states_equal_except_pixels_inactive_rtc": 34,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 36,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 390,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 510,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 570,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 675,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 2,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1316,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1406,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1526,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 25,
+          "verified_previous_release_brightness_pixels": 0
+        },
+        "fuzzy_recovery": null,
+        "score_checks": null,
+        "input_sha256": {
+          "baseline": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+          "candidate": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "f810aff15a8bda2b1187bcc8ca3ceac71793b0c0ec8e1c7b682d5421b3b823d4",
+          "actions": "c44cece39d9df5c8cc61dc31a1474172fbc1ad0e1858b9bee7c04e39ef707615",
+          "expected": "e3dc3a2c5fb46aa8a45c27873bfb43fa605237bb346ccf1312e7c8a89492450a"
+        },
+        "limits": [
+          "Native Linux replay; not Android UI or phone FPS.",
+          "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+          "All sampled pixels and PPU timing must match the reference exactly.",
+          "Private test inputs may use synthetic entry/position preparation; achievements are observed from executed game transitions."
+        ]
+      },
+      {
+        "configuration": "final-perfect-240",
+        "summary_sha256": "5935554f45094d033a476dfbe08a06b3ba075b93d1dc2429bbfdb1d1c232d1f6",
+        "candidate_frames": 1812,
+        "result": "PASS",
+        "width": 240,
+        "observed": {
+          "schema": 1,
+          "completed_levels": 2,
+          "perfect_levels": 2,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "expected": {
+          "schema": 1,
+          "completed_levels": 2,
+          "perfect_levels": 2,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 0,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "baseline_reused": false,
+        "comparison": {
+          "trace_rows_equal": 1813,
+          "states_equal_except_pixels_inactive_rtc": 137,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 40,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 65,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 66,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 67,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 180,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 240,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 300,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 360,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 362,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 420,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 480,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 540,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 600,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 602,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 604,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 660,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 682,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 683,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 720,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 736,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 737,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 738,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 739,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 741,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 742,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 743,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 780,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 796,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 828,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 829,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 830,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 831,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 832,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 833,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 834,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 835,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 836,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 837,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 838,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 839,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 840,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 841,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 842,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 843,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 844,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 845,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 846,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 847,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 848,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 849,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 850,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 851,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 852,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 853,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 854,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 855,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 856,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 857,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 858,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 859,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 891,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 892,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 893,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 894,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 895,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 896,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 897,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 898,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 899,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 900,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 901,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 902,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 903,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 904,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 905,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 906,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 907,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 908,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 909,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 910,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 911,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 912,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 944,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 945,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 946,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 947,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 948,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 949,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 950,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 960,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 982,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 983,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1020,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1031,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1052,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1080,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1086,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1088,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1100,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1101,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1125,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1140,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1155,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1156,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1157,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1200,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1260,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1320,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1328,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1329,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1330,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1360,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1361,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1362,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1378,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1380,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1426,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1427,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1440,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1500,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1527,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1528,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1560,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1570,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1571,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1572,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1602,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1603,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1610,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1620,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1680,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1740,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1800,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 1812,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 0
+        },
+        "fuzzy_recovery": null,
+        "score_checks": {
+          "confirmed_score": 100,
+          "confirmation_guest_frame": 14969,
+          "confirmation_command_index": 1329,
+          "nonunit_frame_advances": [
+            2,
+            0
+          ]
+        },
+        "input_sha256": {
+          "baseline": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+          "candidate": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "5aa52c7d4ed68b92a47f0f574af7df0e54eaf91e5dad25148035807163b2b0a6",
+          "actions": "22fc4a9fae5a0bc01304d23b897eed24cafef3834beadd6956c1edbdc060eebe",
+          "expected": "f649d7f16328e3aa140f9cf1837cbeabcb6e826b66f33ac4b4688957e2f9c82f"
+        },
+        "limits": [
+          "Native Linux replay; not Android UI or phone FPS.",
+          "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+          "All sampled pixels and PPU timing must match the reference exactly.",
+          "Private test inputs may use synthetic entry/position preparation; achievements are observed from executed game transitions."
+        ]
+      },
+      {
+        "configuration": "final-flower-240",
+        "summary_sha256": "a1545d78f369d46941eadd0eee1f766515470bde6bba7cad0be8baaa22c63a39",
+        "candidate_frames": 120,
+        "result": "PASS",
+        "width": 240,
+        "observed": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 1,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "expected": {
+          "schema": 1,
+          "completed_levels": 0,
+          "perfect_levels": 0,
+          "transformations": 0,
+          "red_coins": 0,
+          "flowers": 1,
+          "stars": 0,
+          "event_flags": 0
+        },
+        "baseline_reused": false,
+        "comparison": {
+          "trace_rows_equal": 121,
+          "states_equal_except_pixels_inactive_rtc": 3,
+          "exact_sections": [
+            "CPU0",
+            "BUS0",
+            "IO_0",
+            "AUD0",
+            "SAV0",
+            "META"
+          ],
+          "ppu_timing_equal": true,
+          "changed_captures": [
+            {
+              "elapsed_frame": 60,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            },
+            {
+              "elapsed_frame": 120,
+              "transformation": 0,
+              "pixels": 0,
+              "bounds": null
+            }
+          ],
+          "stable_vehicle_captures": 0,
+          "verified_previous_release_brightness_pixels": 0
+        },
+        "fuzzy_recovery": null,
+        "score_checks": null,
+        "input_sha256": {
+          "baseline": "09ba3bf1b95471c9f2ba704f20a00c5805624252b186820ba08df52f92e3d487",
+          "candidate": "10dafa76a77ccc755aee24afbe630d7f0cd3a4ae239c1fad97b72e109be45faa",
+          "rom": "a8bb331a6f0ff7af4387df9ac8566ae395863c2f79a5a597528a64c8bff57941",
+          "bios": "fd2547724b505f487e6dcb29ec2ecff3af35a841a77ab2e85fd87350abd36570",
+          "state": "2026c04bdd0dd339108bf3497e2536d7c2516435ddb6c1f744dd0373ea6f0d9a",
+          "actions": "3e8402c3fea5eca58dad09686620941fad058877e7ad23135c1c6f607770b7b6",
+          "expected": "01da7482ecde614b816cf56a1f223003070100e2ee8f3758df180d17a81aaea1"
+        },
+        "limits": [
+          "Native Linux replay; not Android UI or phone FPS.",
+          "Only the pinned inactive RTC wall-clock field is excluded from guest comparison.",
+          "All sampled pixels and PPU timing must match the reference exactly.",
+          "Private test inputs may use synthetic entry/position preparation; achievements are observed from executed game transitions."
+        ]
+      }
+    ]
+  },
+  "session_harness_regression": {
+    "result": "PASS",
+    "tests": 6,
+    "command": "python3 -m unittest discover -s validation -p test_panorama_session_limits.py -v",
+    "test_source_sha256": "85ac70e1a395015fe2ceb05f836452ef3104f4edfc8085ee6d21ae948adfd739"
+  },
+  "limits": [
+    "No physical Android installation, GPU, rotation or performance measurement for this APK.",
+    "Robolectric UI tests use controlled native snapshots, separate from the native gameplay replays.",
+    "No full-game completion or live coverage of every boss, vehicle and collection threshold.",
+    "The perfect-score fixture initializes collection counters synthetically; the goal, tally and confirmation execute original game code.",
+    "The flower fixture prepares Yoshi position and velocity; original collision collects the unmodified flower.",
+    "Three verified cached references and recorded-trace Tracker tests are not counted as new game executions.",
+    "Only the documented eight-byte inactive RTC wall-clock field is excluded from guest-state comparison.",
+    "No guarantee of 120 FPS, cloud achievement sync, export or server-backed anti-tampering.",
+    "Raw ROM, BIOS, private save states and game captures are not published or bundled in the APK."
+  ]
+}

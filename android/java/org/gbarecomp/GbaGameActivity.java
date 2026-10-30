@@ -153,8 +153,10 @@ public class GbaGameActivity extends SDLActivity {
         resetPresentationTiming();
         applyPresentationMode();
         if (updatesUi != null) updatesUi.onResume();
+        if (achievementsUi != null) achievementsUi.onResume();
     }
     @Override protected void onPause() {
+        if (achievementsUi != null) achievementsUi.onPause();
         if (updatesUi != null) updatesUi.onPause();
         activityResumed = false;
         applyPresentationMode();
@@ -168,6 +170,7 @@ public class GbaGameActivity extends SDLActivity {
     private AlertDialog optionsDialog;
     private ModsUi modsUi;
     private UpdatesUi updatesUi;
+    private AchievementsUi achievementsUi;
     private OnBackInvokedCallback optionsBackCallback;
 
     private String[] gbaButtons() { return new String[]{"A", "B", "Select", "Start", tr("Derecha", "Right", "Direita"), tr("Izquierda", "Left", "Esquerda"), tr("Arriba", "Up", "Cima"), tr("Abajo", "Down", "Baixo"), "R", "L"}; }
@@ -409,6 +412,9 @@ public class GbaGameActivity extends SDLActivity {
             tr("Pantalla táctil, mando y diseños personalizados", "Touchscreen, controller and custom layouts", "Tela de toque, controle e layouts personalizados"), this::showControlsMenu);
         panel.card(SettingsPanel.MODS, "Mods",
             tr("Color de Yoshi y perfiles de imagen", "Yoshi color and image profiles", "Cor do Yoshi e perfis de imagem"), this::showMods);
+        panel.card(SettingsPanel.ACHIEVEMENTS, tr("Logros", "Achievements", "Conquistas"),
+            achievementsUi == null ? tr("Retos y progreso guardados en este dispositivo", "Challenges and progress saved on this device", "Desafios e progresso salvos neste dispositivo")
+                : achievementsUi.summary(), this::showAchievements);
         panel.card(SettingsPanel.UPDATES, tr("Actualizar", "Updates", "Atualizar"),
             updatesUi == null ? tr("Buscar nuevas versiones en GitHub", "Check GitHub for new versions", "Buscar novas versões no GitHub") : updatesUi.summary(),
             this::showUpdates);
@@ -420,6 +426,13 @@ public class GbaGameActivity extends SDLActivity {
         if (updatesUi == null)
             updatesUi = new UpdatesUi(this, this::tr, this::openSettings, this::showOptions);
         updatesUi.show();
+    }
+    private void showAchievements() {
+        if (achievementsUi == null) {
+            achievementsUi = new AchievementsUi(this, this::tr, this::openSettings, this::showOptions);
+            if (activityResumed) achievementsUi.onResume();
+        }
+        achievementsUi.show();
     }
     private void showMods() {
         ensureModsUi();
@@ -641,6 +654,7 @@ public class GbaGameActivity extends SDLActivity {
         settingsDestroyed=true;
         if (modsUi != null) modsUi.close();
         if (updatesUi != null) updatesUi.close();
+        if (achievementsUi != null) achievementsUi.close();
         if(designEditor!=null)designEditor.dismiss();
         try { GbaNative.setTouchEditing(false); } catch(UnsatisfiedLinkError ignored) {}
         if (Build.VERSION.SDK_INT >= 33 && optionsBackCallback != null) {
@@ -678,6 +692,7 @@ public class GbaGameActivity extends SDLActivity {
         installFpsOptions();
         refreshController = new DisplayRefreshController(this);
         updatesUi = new UpdatesUi(this, this::tr, this::openSettings, this::showOptions);
+        achievementsUi = new AchievementsUi(this, this::tr, this::openSettings, this::showOptions);
         displayManager = (DisplayManager) getSystemService(DISPLAY_SERVICE);
         if (displayManager != null) displayManager.registerDisplayListener(displayListener, null);
         refreshCallback = new SurfaceHolder.Callback() {
@@ -853,7 +868,7 @@ public class GbaGameActivity extends SDLActivity {
 
     /** Files the player (or the running game) owns once they exist. */
     private static boolean isPlayerOwned(String name) {
-        return name.equals("state.toml") || name.endsWith(".sav") ||
+        return name.equals("state.toml") || name.equals("progress-v1.json") || name.endsWith(".sav") ||
                name.equals("config.ini") || name.equals("keybinds.ini");
     }
 }

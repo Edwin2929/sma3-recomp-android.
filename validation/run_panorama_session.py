@@ -21,12 +21,13 @@ ROOT = Path(__file__).resolve().parents[1]
 RAM_START, RAM_END = 0x4cb8, 0x6db4
 
 
-def observe(command, castle_status=False, fuzzy_status=False):
-    start, end = (0, IWRAM_SIZE) if castle_status or fuzzy_status else (RAM_START, RAM_END)
+def observe(command, castle_status=False, fuzzy_status=False, score_status=False):
+    complete = castle_status or fuzzy_status or score_status
+    start, end = (0, IWRAM_SIZE) if complete else (RAM_START, RAM_END)
     snapshot = bytes.fromhex(command(cmd='read_iwram', addr=0x03000000 + start,
                                      len=end - start)['data'])
     require(len(snapshot) == end - start, 'Truncated IWRAM observation')
-    raw = snapshot[RAM_START:RAM_END] if castle_status or fuzzy_status else snapshot
+    raw = snapshot[RAM_START:RAM_END] if complete else snapshot
     require(len(raw) == RAM_END - RAM_START, 'Truncated IWRAM observation')
     row = dict(player_xy_velocity=[v / 256 for v in struct.unpack_from('<iiii', raw, 0x6d80 - RAM_START)],
                level_id=struct.unpack_from('<H', raw, 0x6288 - RAM_START)[0],
@@ -37,16 +38,21 @@ def observe(command, castle_status=False, fuzzy_status=False):
         row['castle_status'] = parse_castle_status(snapshot)
     if fuzzy_status:
         row['fuzzy_status'] = parse_fuzzy_status(snapshot)
+    if score_status:
+        row['score_status'] = {name: struct.unpack_from('<H', snapshot, offset)[0]
+                               for name, offset in (('substate', 0x4828), ('score', 0x6aa4),
+                                                    ('red_coins', 0x6ad6), ('flowers', 0x6a9a),
+                                                    ('star_tenths', 0x6ace))}
     return row
 
 
 def execute_session(command, actions, capture, evidence, trace_enabled=False, capture_start=0,
-                    castle_status=False, fuzzy_status=False):
+                    castle_status=False, fuzzy_status=False, score_status=False):
     """Conditional waits stop on the FIRST target frame, never on a 60-frame sample."""
     validate_actions(actions)
-    trace_enabled = trace_enabled or castle_status or fuzzy_status or any('until_transformation' in a for a in actions)
+    trace_enabled = trace_enabled or castle_status or fuzzy_status or score_status or any('until_transformation' in a for a in actions)
     session, trace, shots = evidence['session'], evidence['trace'], evidence['captures']
-    current = observe(command, castle_status, fuzzy_status)
+    current = observe(command, castle_status, fuzzy_status, score_status)
     elapsed = 0
     if trace_enabled:
         trace.append(dict(current, frame=None, elapsed_frame=0, action_index=-1, keys=None))
@@ -62,18 +68,31 @@ def execute_session(command, actions, capture, evidence, trace_enabled=False, ca
             reply = command(cmd='run_frames', n=n, keyinput=action['keys'])
             executed += n
             elapsed += n
-            current = dict(observe(command, castle_status, fuzzy_status), frame=reply['frame'])
+            current = dict(observe(command, castle_status, fuzzy_status, score_status), frame=reply['frame'])
             if trace_enabled:
                 if trace[0]['frame'] is None:
                     trace[0]['frame'] = reply['frame'] - 1
-                require(reply['frame'] == trace[0]['frame'] + elapsed, 'Frame counter reset or gap')
+                if score_status:
+                    # A long native score-screen routine can cross two VBlanks
+                    # before run_frames(1) returns, then consume its pending
+                    # VBlank on the next command without advancing the PPU.
+                    # Keep the raw counter, forbid resets and permit at most
+                    # one frame ahead of the requested schedule. Other session
+                    # profiles retain their exact one-frame contract.
+                    previous_frame = previous.get('frame', trace[0]['frame'])
+                    require(reply['frame'] >= previous_frame and
+                            0 <= reply['frame'] - (trace[0]['frame'] + elapsed) <= 1,
+                            'Score replay exceeded the verified VBlank batching bound')
+                else:
+                    require(reply['frame'] == trace[0]['frame'] + elapsed, 'Frame counter reset or gap')
                 trace.append(dict(current, elapsed_frame=elapsed, action_index=index, keys=action['keys']))
             reached = conditional and current['transformation'] == action['until_transformation']
             endpoint = reached or executed == action['n']
             if trace_enabled:
                 if elapsed >= capture_start and (elapsed % 60 == 0 or endpoint or
                                                 transition_changed(previous, current) or
-                                                (fuzzy_status and fuzzy_transition_changed(previous, current))):
+                                                (fuzzy_status and fuzzy_transition_changed(previous, current)) or
+                                                (score_status and previous['score_status'] != current['score_status'])):
                     shots.append(capture(f'frame-{elapsed:05}', current, elapsed, True))
             elif endpoint:
                 capture(f'step-{index:03}', current, elapsed, False)
@@ -119,6 +138,8 @@ def main():
                          help='Observe castle health from full IWRAM; also enables per-frame tracing')
     profile.add_argument('--fuzzy-status', action='store_true',
                          help='Observe original Fuzzy countdown/effect from full IWRAM on every frame')
+    profile.add_argument('--score-status', action='store_true',
+                         help='Observe score transitions; permit bounded native VBlank batching during tally loading')
     p.add_argument('--expect-fuzzy-recovery', action='store_true',
                    help='Require real Fuzzy contact, natural recovery and 100 final normal frames in 1-7')
     a = p.parse_args()
@@ -146,7 +167,7 @@ def main():
     a.output.mkdir(parents=True, exist_ok=True)
     if any(a.output.iterdir()):
         p.error('Use a new empty output directory')
-    tracing = bool(a.trace_every_frame or expectations or a.castle_status or a.fuzzy_status or
+    tracing = bool(a.trace_every_frame or expectations or a.castle_status or a.fuzzy_status or a.score_status or
                    any('until_transformation' in x for x in actions))
     start = expectations['gameplay_start_frame'] if expectations else 0
     settings = dict(width=a.width, trace_every_frame=tracing, capture_start=start,
@@ -158,6 +179,9 @@ def main():
         settings['observation_profile'] = CASTLE_STATUS_PROFILE
     if a.fuzzy_status:
         settings['observation_profile'] = FUZZY_STATUS_PROFILE
+    if a.score_status:
+        settings['observation_profile'] = {'name': 'sma3-usa-score-tally-v1',
+            'max_ppu_frames_ahead': 1, 'elapsed_frame_unit': 'requested single-frame command'}
     with socket.socket() as sock:
         sock.bind(('127.0.0.1', 0))
         port = sock.getsockname()[1]
@@ -206,7 +230,8 @@ def main():
                 raise ValueError('Local debug server unavailable')
             command(cmd='savestate_load', path=str(a.state.resolve()))
             execute_session(command, actions, capture, evidence, tracing, start,
-                            castle_status=a.castle_status, fuzzy_status=a.fuzzy_status)
+                            castle_status=a.castle_status, fuzzy_status=a.fuzzy_status,
+                            score_status=a.score_status)
             command(cmd='savestate_save', path=str(a.output / 'final.state'))
             command(cmd='quit')
             proc.wait(timeout=10)

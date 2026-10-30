@@ -13,7 +13,13 @@
 #include "localization.h"
 #include "mod_profiles.h"
 #include "yoshi_color.h"
+#include "local_achievements.h"
 int sma3_ram_dispatch(uint32_t, int);
+
+#ifndef __ANDROID__
+#include <cstdio>
+#include <fstream>
+#endif
 
 #ifdef __ANDROID__
 #include <SDL.h>
@@ -48,7 +54,8 @@ int main(int argc, char** argv) {
     }
 #endif
     gbarecomp::RunOptions options;
-    options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo*) {
+    options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+        sma3::local_achievements_frame(frame);
         sma3::yoshi_color_frame();
     };
 #ifdef SMA3_PANORAMA
@@ -59,6 +66,7 @@ int main(int argc, char** argv) {
     options.orientation = gbarecomp::RunOptions::Orientation::Any;
     options.freely_resizable_window = true;
     options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+        sma3::local_achievements_frame(frame);
         sma3::yoshi_color_frame();
         sma3::wide::frame(frame, sma3::image_mode.load() == sma3::ImageMode::Panorama);
     };
@@ -75,6 +83,7 @@ int main(int argc, char** argv) {
     if (std::getenv("SMA3_WIDE_PROBE_DIR")) {
         options.max_view_width = 356;
         options.extended_view_frame = [](const gbarecomp::ExtendedViewFrameInfo* frame) {
+            sma3::local_achievements_frame(frame);
             sma3::yoshi_color_frame();
             sma3_probe_frame(frame);
             const char* authored = std::getenv("SMA3_AUTHORED_WIDE");
@@ -115,6 +124,24 @@ int main(int argc, char** argv) {
     for (auto& argument : arguments) pointers.push_back(argument.data());
     return gbarecomp::run_game(static_cast<int>(pointers.size()), pointers.data(), options);
 #else
-    return gbarecomp::run_game(argc, argv, options);
+    const int result = gbarecomp::run_game(argc, argv, options);
+    // Desktop qualification reads the same published snapshot as Android.
+    // There is no file I/O in the guest frame callback or the Android build.
+    if (const char* path = std::getenv("SMA3_LOCAL_ACHIEVEMENTS_REPORT")) {
+        const auto progress = sma3::local_achievements_snapshot();
+        std::ofstream report(path);
+        report << "{\"progress\":[";
+        for (std::size_t i = 0; i < progress.size(); ++i) {
+            if (i) report << ',';
+            report << progress[i];
+        }
+        report << "]}\n";
+        report.close();
+        if (!report) {
+            std::fprintf(stderr, "Cannot write local achievements validation report\n");
+            return result ? result : 1;
+        }
+    }
+    return result;
 #endif
 }
