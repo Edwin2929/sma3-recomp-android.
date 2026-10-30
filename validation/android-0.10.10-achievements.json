@@ -1,0 +1,268 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "version": "0.10.10-beta",
+  "version_code": 21,
+  "date_local": "2026-10-29",
+  "local_timezone": "America/El_Salvador",
+  "date_utc": "2026-10-30",
+  "scope": "Expand ten local achievements to twenty-five, preserve prior progress and verify Android packaging.",
+  "source": {
+    "project_base_commit": "2c5dbc94a707460da3ae1aac1b93cb6d2fcdaa32",
+    "engine_commit": "e7728148c6829ba526f682876430a0c9022dc6c0",
+    "sdl_commit": "8e28503b164d4353262ed5abf102c25fa838e4f8",
+    "engine_patch_count": 16,
+    "selected_build_input_hashes_rechecked": 275,
+    "selected_build_input_hashes_match": true,
+    "public_ui_report_sha256": "8e6815b16cbcc0b06253cc89fc057ac59585ea9d88a4388d78fc3cfd7347065c",
+    "native_audit_sha256": "0b29fcc438e744c435899e2512346c9e27f828d14ebe16831c2f014a75175f2c"
+  },
+  "catalog": {
+    "total": 25,
+    "previous": 10,
+    "added": 15,
+    "previous_definition_calls_exactly_preserved": true,
+    "stable_ordered_ids": [
+      "first_flower",
+      "five_flowers",
+      "first_red_coin",
+      "twenty_red_coins",
+      "thirty_stars",
+      "first_transformation",
+      "fuzzy_recovery",
+      "first_clear",
+      "five_clears",
+      "perfect_clear",
+      "three_flowers",
+      "five_red_coins",
+      "ten_red_coins",
+      "ten_clears",
+      "twenty_clears",
+      "thirty_clears",
+      "forty_clears",
+      "five_perfect_clears",
+      "ten_perfect_clears",
+      "twenty_perfect_clears",
+      "car_transformation",
+      "mole_transformation",
+      "helicopter_transformation",
+      "train_transformation",
+      "submarine_transformation"
+    ],
+    "native_snapshot_schema": 1,
+    "native_snapshot_longs": 8,
+    "local_file_schema": 2,
+    "all_notice_bits": "0x01ffffff",
+    "vehicle_required_masks": {
+      "car_transformation": 1,
+      "mole_transformation": 2,
+      "helicopter_transformation": 4,
+      "train_transformation": 8,
+      "submarine_transformation": 16
+    }
+  },
+  "artifact": {
+    "file_name": "sma3-recomp-0.10.10-beta-arm64.apk",
+    "bytes": 27972888,
+    "sha256": "ac157e1ae2b31b32d09ec19dda87412c1285a9a62fc1f7c413100de7c15e7524"
+  },
+  "application": {
+    "application_id": "org.sma3.recomp.experimental",
+    "version_code": 21,
+    "version_name": "0.10.10-beta",
+    "payload_version": "0.10.10",
+    "min_sdk": 28,
+    "target_sdk": 35,
+    "abi": "arm64-v8a"
+  },
+  "signing": {
+    "certificate_sha256": "2390f57b35d436ff37b2a303189d18d463c8f5114a5ff809b2f2e6df60f58da3",
+    "v2_signature_verified": true,
+    "original_signing_key_reused": true,
+    "previous_version_code": 20,
+    "new_version_code": 21,
+    "in_place_upgrade_identity_checks_pass": true,
+    "in_place_upgrade_on_physical_device_tested": false
+  },
+  "build_report": {
+    "file": "android-0.10.10-build.json",
+    "sha256": "cac8cba4b799e4a4171ffbe3d176fdbc0f45eae3db723b55537477811f915222",
+    "assembly_input_files": 1807,
+    "assembly_sources_unchanged": true,
+    "jni_bindings_verified": 20,
+    "catalog_ids_verified_in_dex": 25
+  },
+  "android_ui": {
+    "result": "PASS",
+    "version": "0.10.10-beta",
+    "version_code": 21,
+    "generated_at_utc": "2026-10-30T00:49:50.935792+00:00",
+    "definitions": 25,
+    "legacy_definitions_preserved_exactly": 10,
+    "native_snapshot_schema": 1,
+    "native_snapshot_longs": 8,
+    "file_schema": 2,
+    "model_checks": 2030,
+    "robolectric_tests": 10,
+    "framework": "Robolectric 4.16.1",
+    "android_api": 34,
+    "compile_api": 35,
+    "java_source_count": 32,
+    "java_version": "17.0.21+9",
+    "production_freeze_unchanged": true,
+    "legacy_fixture": {
+      "source_commit": "2c5dbc94a707460da3ae1aac1b93cb6d2fcdaa32",
+      "encoder": "unmodified 0.10.9 AchievementsStore.Disk.encode",
+      "bytes": 464,
+      "sha256": "e66c5b7e85bf7102fbe35b7918912cf160e9c68d92ef9a880c47f9337f104cc8",
+      "encoder_tests": 1,
+      "embedded_in_public_test": true,
+      "metrics": [
+        16777215,
+        511,
+        21,
+        10,
+        3,
+        30,
+        1
+      ],
+      "original_dates": [
+        1700000000100,
+        0,
+        1700000000200,
+        0,
+        1700000000300,
+        1700000000400,
+        1700000000500,
+        1700000000600,
+        1700000000700,
+        1700000000800
+      ],
+      "notifications": false,
+      "old_unlocked": 8,
+      "newly_recognized": 9,
+      "total_after_upgrade": 17,
+      "recognized_indices": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        17,
+        20,
+        22,
+        24
+      ],
+      "file_name": "legacy-0.10.9-record.json",
+      "public_fixture_location": "validation/AchievementsUiTest.java"
+    },
+    "gates": {
+      "migration_without_jni": true,
+      "preserve_all_seven_metrics": true,
+      "preserve_all_ten_old_dates": true,
+      "preserve_muted_preference": true,
+      "silent_upgrade_even_with_notices_enabled": true,
+      "pending_write_retry_same_dates": true,
+      "process_restart_before_and_after_commit": true,
+      "empty_legacy_record_rewritten": true,
+      "all_25_notice_bits": true,
+      "recognition_origin_roundtrip": true,
+      "all_32_vehicle_masks": true,
+      "strict_invalid_files_preserved": 16,
+      "filters_partial_migrated_complete": true,
+      "localized_ui_es_en_pt": true,
+      "serialized_background_writes": true,
+      "renders_visually_reviewed": 6,
+      "report_links_checked": true
+    },
+    "source_sha256": {
+      "android/java/org/gbarecomp/AchievementsModel.java": "7db8cfe1308e923a2176df9a6f4f4b4c6c3ae17eb380a6ca59738b11c73abee7",
+      "android/java/org/gbarecomp/AchievementsStore.java": "95710bd8373f1819407de6220f5aa50484e64f9197f6c577b026c660a48169ac",
+      "android/java/org/gbarecomp/AchievementsUi.java": "90c92816cb32080dcc6b5a841e5613ca51466fca87c2c4559d1318c397ba5cca",
+      "validation/AchievementsModelTest.java": "14c4d1867ddb294e85f224551d6d92ed3569095e131dcc15d578130f03782446",
+      "validation/AchievementsUiTest.java": "2082350c7e719c57ae187ffd7a30d5b43dd43b14fa1a4b44fc97cbc15ea470c9",
+      "validation/LOCAL_ACHIEVEMENTS_25_UI_VALIDATION.md": "8e6815b16cbcc0b06253cc89fc057ac59585ea9d88a4388d78fc3cfd7347065c",
+      "validation/run_achievements_ui_test.py": "1931d9835a4ed2cc8c9cd42db3a619a5c7a7333d8d32ead0678601916f4dccfe"
+    },
+    "captures": [
+      {
+        "sha256": "ea6b45a4c2b4cc71f13777304aa88b2b631a15149a0c24461a82f32547b0ce33",
+        "bytes": 71872,
+        "file_name": "achievements-264x560.png"
+      },
+      {
+        "sha256": "38d2d0c68b6d52162f34a332dc35f8c5db5faaf41126ad22492573d08e82970f",
+        "bytes": 28897,
+        "file_name": "achievements-360x240.png"
+      },
+      {
+        "sha256": "e2e8bb83c80dcf4b8ab0ddd54bf1c75d5549fabab2e6ef1f4ac751cb1a56730c",
+        "bytes": 110342,
+        "file_name": "achievements-360x760.png"
+      },
+      {
+        "sha256": "57339ec810131bb5e49d7494cddfcadf9b496ab2e0c04bbb5d1647f7a9bab568",
+        "bytes": 50713,
+        "file_name": "achievements-600x328.png"
+      },
+      {
+        "sha256": "69430d1235a34c461529fd59e25672b74357003a0d10c3a8e7fb13f8a50147c7",
+        "bytes": 44509,
+        "file_name": "achievements-all25-600x328.png"
+      },
+      {
+        "sha256": "d625975f2ee594d4c98959452b5f1fd64a3cc986cb0117fe62c84f8d9c22fd2b",
+        "bytes": 122931,
+        "file_name": "achievements-upgrade-360x760.png"
+      }
+    ],
+    "logs": {
+      "robolectric/model-test.log": "4e07bc4b4fc446541addc9f846bb5c9d54dbca4a4a2aec03d435b8bca6fa8704",
+      "robolectric/tests.log": "2c211ed03ecd7aa4fd2924aec3e48d58f3843245406399a86339a3dd11426b05",
+      "all-java-compile.log": "dece862a32d4e989fd23df958ea691a7e58fa3157857498e3049c7e8b6c37239",
+      "legacy-encoder/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "legacy-encoder/run.log": "38b37d5676e252c801faced5683cf2f02c24486dbcc0e8bff8720ffaa42b4231"
+    },
+    "limitations": [
+      "Host tests and renders; no physical phone installation or gameplay in this UI suite.",
+      "Controlled snapshots replace JNI; native gameplay tracking is unchanged and audited separately.",
+      "Controlled storage failures and backup recovery do not simulate physical storage or power faults.",
+      "A migration not committed before process death is retried from the intact legacy record; its recognition time may be later."
+    ]
+  },
+  "native_validation_reuse": {
+    "source_version": "0.10.9-beta",
+    "prior_public_build_report_sha256": "64a6fb3da8eda49c71631d64d370f463d5a9469b1ae2205efff8e12ba9ecdebd",
+    "native_source_files_compared": 1762,
+    "changed_native_source_files": [],
+    "all_native_libraries_byte_identical": true,
+    "jni_bindings_unchanged": true,
+    "native_gameplay_tests_rerun_for_this_version": false,
+    "scope": "Only the Java achievement catalogue, persistence and presentation are updated; native evidence from 0.10.9 is retained because its native sources and the three packaged native libraries are identical. Java migration and catalogue tests are reported separately.",
+    "new_native_gameplay_executions": 0,
+    "new_native_gameplay_frames": 0,
+    "historical_report": "android-0.10.9-achievements.json",
+    "historical_report_sha256": "f77fccd3d90bb6a534addaa8b44d6a8c2c4fb4be54664bb5c2d6c08bf0a794e0",
+    "historical_scope": "Prior detector tests and five native replay configurations retain their original coverage and limits; they are not counted as new executions."
+  },
+  "review": {
+    "native_vehicle_mapping_audited_against_pinned_disassembly": true,
+    "production_migration_reviewed_independently": true,
+    "renders_reviewed_by_ui_agent": 6,
+    "upgrade_and_final_vehicle_renders_reviewed_by_root": true,
+    "root_source_and_apk_hashes_rechecked": true
+  },
+  "publication": {
+    "apk_uploaded_to_github_releases": false,
+    "apk_release_upload_policy": "The user uploads the APK manually."
+  },
+  "limits": [
+    "No physical Android installation, GPU or FPS measurement for this APK.",
+    "UI tests use controlled native snapshots and host rendering.",
+    "The legacy migration fixture is synthetic test progress generated by the real previous encoder, not player data.",
+    "Storage failure and process-recreation tests do not simulate actual power loss or damaged hardware.",
+    "An uncommitted migration is retried from the intact old file; its unsaved recognition time can change after process loss.",
+    "No new native game sessions or full-game completion; the three unchanged native libraries retain the prior qualification scope.",
+    "No cloud sync, export or server-backed anti-tampering."
+  ]
+}

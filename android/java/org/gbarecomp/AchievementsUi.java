@@ -193,9 +193,9 @@ final class AchievementsUi {
         });
         page.content(notifications);
         page.paragraph(tr(
-            "Se obtienen mediante acciones detectadas durante el juego desde esta versión. Cargar una partida avanzada no importa sus logros. El progreso es local, independiente de la partida y no requiere una cuenta.",
-            "Earned through actions detected during play from this version onward. Loading an advanced save does not import achievements. Progress is local, separate from your game save, and needs no account.",
-            "São obtidas por ações detectadas durante o jogo a partir desta versão. Carregar uma partida avançada não importa conquistas. O progresso é local, separado da partida e não exige uma conta."));
+            "Los logros se guardan en este dispositivo y no requieren cuenta ni conexión. Al ampliar el catálogo se reconocen los retos ya cumplidos según tu registro local. Esos retos muestran cuándo se reconocieron. Cargar una partida avanzada no importa sus récords.",
+            "Achievements are saved on this device and need no account or connection. The expanded catalog recognizes goals already supported by your local record. Those goals show when they were recognized. Loading an advanced game save does not import its records.",
+            "As conquistas são salvas neste dispositivo e não exigem conta nem conexão. A ampliação reconhece objetivos já comprovados pelo seu registro local. Esses objetivos mostram quando foram reconhecidos. Carregar uma partida avançada não importa seus recordes."));
         rendered = null; renderedFilter = -1;
         shown = page.dialog(parent);
         presenter.open(shown, parent);
@@ -285,7 +285,10 @@ final class AchievementsUi {
         if (unlocked) {
             DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,
                 new Locale(tr("es", "en", "pt")));
-            date = tr("Obtenido: ", "Earned: ", "Obtida: ") + format.format(new Date(state.unlockedAt[index]));
+            boolean recognized = (state.recognizedOnUpgrade & (1 << index)) != 0;
+            date = (recognized ? tr("Reconocido al ampliar los logros: ",
+                    "Recognized when achievements expanded: ", "Reconhecida ao ampliar as conquistas: ")
+                : tr("Obtenido: ", "Earned: ", "Obtida: ")) + format.format(new Date(state.unlockedAt[index]));
             TextView when = text(date, 12, SettingsPanel.SECONDARY);
             LinearLayout.LayoutParams dateGap = new LinearLayout.LayoutParams(-1, -2);
             dateGap.setMargins(0, dp(8), 0, 0); card.addView(when, dateGap);

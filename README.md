@@ -2,7 +2,23 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.9 beta — logros locales
+## Versión actual: 0.10.10 beta — 25 logros locales
+
+**Atrás → Logros** amplía el catálogo a **25 retos en total**. Conserva los
+diez anteriores y añade metas de recolección, diez a cuarenta niveles distintos,
+cinco, diez y veinte niveles distintos con cien puntos y un logro por cada vehículo:
+coche, topo, helicóptero, tren y submarino.
+
+Al actualizar desde 0.10.9 se mantienen el progreso, las fechas de los logros
+anteriores y la preferencia de avisos. Los retos nuevos que ya cumplan la
+evidencia local guardada se reconocen sin repetirlos; su fecha corresponde
+a la ampliación del catálogo. No se importan récords de la partida.
+
+[Guía de los 25 logros](docs/LOGROS_LOCALES.md) ·
+[Notas de 0.10.10](docs/releases/v0.10.10-beta.md) ·
+[Pruebas y límites](validation/LOCAL_ACHIEVEMENTS_0.10.10_VALIDATION.md).
+
+### Logros locales incorporados en 0.10.9
 
 **Atrás → Logros** añade diez retos con progreso, fecha de obtención y
 avisos de desbloqueo opcionales. Incluye flores, monedas rojas, estrellas,
@@ -92,7 +108,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.9 se detectará cuando el mantenedor adjunte su APK a Descarga.
+0.10.10 se detectará cuando el mantenedor adjunte su APK a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·
@@ -206,7 +222,7 @@ Abre las opciones con **Atrás del teléfono**. Los ajustes se conservan entre s
 
 ### Imagen completa sin deformaciones
 
-En **0.10.9**, abre **Atrás → Imagen → Modo de imagen**:
+En **0.10.10**, abre **Atrás → Imagen → Modo de imagen**:
 
 | Opción | Resultado |
 | --- | --- |
@@ -224,10 +240,10 @@ respeta la elección anterior entre Original y Estirar.
 
 ## Descargar e instalar
 
-### APK 0.10.9 beta — nueva entrega
+### APK 0.10.10 beta — nueva entrega
 
-Archivo: **`sma3-recomp-0.10.9-beta-arm64.apk`**, versión `0.10.9-beta`,
-código **20**, ARM64 y Android 9 o posterior. Añade **Logros locales** y
+Archivo: **`sma3-recomp-0.10.10-beta-arm64.apk`**, versión `0.10.10-beta`,
+código **21**, ARM64 y Android 9 o posterior. Amplía a **25 logros locales** y
 conserva el mod Color de Yoshi, la presentación de 0.10.7, los controles,
 el actualizador, los perfiles de color, los siete filtros, la corrección de
 Fuzzy y la panorámica con su advertencia de fase temprana.
@@ -236,7 +252,7 @@ Instálalo encima de la versión anterior, sin desinstalarla ni borrar datos.
 Conserva el paquete y el certificado y aumenta el código de versión. Desde
 0.10.5 puedes usar **Actualizar → Buscar ahora** cuando el mantenedor haya
 publicado el archivo.
-[Instalación y datos del APK](docs/releases/v0.10.9-beta.md).
+[Instalación y datos del APK](docs/releases/v0.10.10-beta.md).
 
 ### Publicación verificada: APK 0.10.8 beta
 
@@ -248,13 +264,22 @@ coincide con el APK entregado:
 `1cfe2f32ddd8f180df5ed1078afdabbcea6facb26b82cce178f0c9e18ed82a26`.
 [Notas de 0.10.8](docs/releases/v0.10.8-beta.md).
 
-El nuevo APK 0.10.9 aparecerá en
+El nuevo APK 0.10.10 aparecerá en
 [Descarga](https://github.com/Edwin2929/sma3-recomp-android./releases/tag/Descarga)
 cuando el mantenedor lo adjunte manualmente. Publicar el código en `main`
 no publica el APK. Las indicaciones de disponibilidad en notas anteriores
 corresponden al momento de cada entrega.
 
 ## Estado de validación
+
+**0.10.10:** se valida el catálogo de 25 logros, sus umbrales y máscaras,
+la actualización del registro de diez logros, conservación de fechas,
+errores recuperables y la interfaz. El detector, el motor y el renderizado
+nativos conservan los archivos de 0.10.9; sus replays mantienen su alcance
+histórico y no se contabilizan como ejecuciones nuevas. No se ha probado
+esta entrega en un teléfono ni medido sus FPS en Android.
+[Validación y alcance](validation/LOCAL_ACHIEVEMENTS_0.10.10_VALIDATION.md) ·
+[APK](validation/android-0.10.10-build.json).
 
 **0.10.9:** pasan las pruebas del detector de logros, persistencia e interfaz
 Android en Robolectric. Las reproducciones nativas confirman transformación,
@@ -533,8 +558,8 @@ Usa una ruta de guardado nueva para repetir las condiciones iniciales. SDL2 es n
 ## Pendientes
 
 - Registrar versión de Android, APK exacto y duración de la prueba anterior de 60 FPS.
-- Probar 0.10.9 en Pixel 7 Pro: logros, persistencia y avisos, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
-- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.9, comparando la zona de la captura de 65,2 FPS.
+- Probar 0.10.10 en Pixel 7 Pro: los 25 logros, actualización del registro anterior, persistencia y avisos, selector de color de Yoshi, 60/120, símbolos, opacidad, actualizaciones, mods, siete filtros, contacto con Fuzzy, modos de imagen, rotación, segundo plano, mandos, idiomas y editor de controles.
+- Registrar versión de Android, duración, ajustes utilizados y mediciones de rendimiento de 0.10.10, comparando la zona de la captura de 65,2 FPS.
 - Ampliar y validar los límites originales de aparición y dibujo de objetos; la panorámica 0.10 no los modifica.
 - Completar la traducción de rótulos gráficos, créditos y Mario Bros.
 - Ampliar cobertura de niveles y transiciones.

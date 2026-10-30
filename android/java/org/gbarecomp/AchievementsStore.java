@@ -19,11 +19,19 @@ import java.util.concurrent.Executors;
 
 /** One process-owned, serial store: lifecycle recreation cannot race disk writes. */
 final class AchievementsStore {
+    static final int FILE_SCHEMA = 2;
     interface NativeSnapshot { long[] read(); }
     interface Listener { void updated(Result result); }
     interface Persistence {
-        AchievementsModel.State read() throws IOException;
+        ReadResult read() throws IOException;
         void write(AchievementsModel.State state) throws IOException;
+    }
+    static final class ReadResult {
+        final AchievementsModel.State state;
+        final boolean needsRewrite;
+        ReadResult(AchievementsModel.State state, boolean needsRewrite) {
+            this.state = state; this.needsRewrite = needsRewrite;
+        }
     }
     enum Problem { NONE, LOADING, READ, WRITE, NATIVE }
     static final class Result {
@@ -53,7 +61,7 @@ final class AchievementsStore {
     private final Handler main;
     private AchievementsModel.State current = AchievementsModel.empty();
     private AchievementsModel.State saved = current;
-    private boolean loaded;
+    private boolean loaded, needsRewrite;
     private volatile Result latest = new Result(current, Problem.LOADING, 0);
 
     AchievementsStore(Persistence disk, Executor worker, Handler main) {
@@ -84,7 +92,11 @@ final class AchievementsStore {
     private boolean load(Listener listener) {
         if (loaded) return true;
         try {
-            current = disk.read(); saved = current; loaded = true;
+            ReadResult result = disk.read();
+            current = result.state; saved = current; needsRewrite = result.needsRewrite; loaded = true;
+            // A legacy record is the notification baseline, including the new
+            // criteria recognized from its local evidence. Persist the expanded
+            // record even without fresh JNI evidence, but do not replay notices.
             return true;
         } catch (IOException | RuntimeException error) {
             // Preserve an unreadable/future-format file. Never overwrite it with
@@ -96,11 +108,12 @@ final class AchievementsStore {
 
     private void finish(Problem problem, Listener listener) {
         int unlocked = 0;
-        if (!current.same(saved)) {
+        if (needsRewrite || !current.same(saved)) {
             try {
                 disk.write(current);
                 unlocked = AchievementsModel.newUnlocks(saved, current);
                 saved = current;
+                needsRewrite = false;
             } catch (IOException | RuntimeException error) {
                 // Current evidence and first-unlock dates remain queued in
                 // memory. A later poll retries, even if its native snapshot is
@@ -121,9 +134,10 @@ final class AchievementsStore {
         private final AtomicFile file;
         Disk(File path) { file = new AtomicFile(path); }
 
-        public AchievementsModel.State read() throws IOException {
+        public ReadResult read() throws IOException {
             File base = file.getBaseFile();
-            if (!base.exists() && !new File(base.getPath() + ".bak").exists()) return AchievementsModel.empty();
+            if (!base.exists() && !new File(base.getPath() + ".bak").exists())
+                return new ReadResult(AchievementsModel.empty(), false);
             try (FileInputStream input = file.openRead()) {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 byte[] buffer = new byte[4096];
@@ -132,7 +146,7 @@ final class AchievementsStore {
                     if (bytes.size() + count > MAX_BYTES) throw new IOException("Achievement file too large");
                     bytes.write(buffer, 0, count);
                 }
-                return decode(new String(bytes.toByteArray(), StandardCharsets.UTF_8));
+                return decode(new String(bytes.toByteArray(), StandardCharsets.UTF_8), System.currentTimeMillis());
             }
         }
 
@@ -150,7 +164,9 @@ final class AchievementsStore {
                 file.finishWrite(output);
                 // finishWrite has a void API and may log a failed rename. Read
                 // the committed record before reporting a durable unlock.
-                if (!state.same(read())) throw new IOException("Achievement commit verification failed");
+                ReadResult committed = read();
+                if (committed.needsRewrite || !state.same(committed.state))
+                    throw new IOException("Achievement commit verification failed");
             } catch (IOException | RuntimeException error) {
                 if (output != null) file.failWrite(output);
                 throw new IOException("Achievement write failed", error);
@@ -160,8 +176,9 @@ final class AchievementsStore {
         static String encode(AchievementsModel.State state) throws IOException {
             try {
                 JSONObject root = new JSONObject();
-                root.put("schema", AchievementsModel.SCHEMA);
+                root.put("schema", FILE_SCHEMA);
                 root.put("notifications", state.notifications);
+                root.put("recognized_on_upgrade", state.recognizedOnUpgrade);
                 JSONObject evidence = new JSONObject(), dates = new JSONObject();
                 for (int i = 0; i < AchievementsModel.METRICS; ++i)
                     evidence.put(AchievementsModel.METRIC_KEYS[i], state.metrics[i]);
@@ -179,19 +196,38 @@ final class AchievementsStore {
             return ((Number)value).longValue();
         }
 
-        static AchievementsModel.State decode(String json) throws IOException {
+        private static void keys(JSONObject object, String... expected) throws IOException {
+            if (object.length() != expected.length) throw new IOException("Unexpected achievement fields");
+            for (String key : expected) if (!object.has(key)) throw new IOException("Missing achievement field");
+        }
+
+        static ReadResult decode(String json, long now) throws IOException {
             try {
                 JSONObject root = new JSONObject(json);
-                if (integer(root, "schema") != AchievementsModel.SCHEMA)
+                long schema = integer(root, "schema");
+                if (schema != 1 && schema != FILE_SCHEMA)
                     throw new IOException("Unsupported achievement file");
+                if (schema == 1) keys(root, "schema", "notifications", "evidence", "unlocked_at");
+                else keys(root, "schema", "notifications", "recognized_on_upgrade", "evidence", "unlocked_at");
                 Object notifications = root.get("notifications");
                 if (!(notifications instanceof Boolean)) throw new IOException("Invalid notification setting");
                 JSONObject evidence = root.getJSONObject("evidence"), dates = root.getJSONObject("unlocked_at");
+                keys(evidence, AchievementsModel.METRIC_KEYS);
                 long[] metrics = new long[AchievementsModel.METRICS];
-                long[] unlockedAt = new long[AchievementsModel.DEFINITIONS.length];
+                int count = schema == 1 ? AchievementsModel.LEGACY_COUNT : AchievementsModel.DEFINITIONS.length;
+                String[] ids = new String[count];
+                for (int i = 0; i < count; ++i) ids[i] = AchievementsModel.DEFINITIONS[i].id;
+                keys(dates, ids);
+                long[] unlockedAt = new long[count];
                 for (int i = 0; i < metrics.length; ++i) metrics[i] = integer(evidence, AchievementsModel.METRIC_KEYS[i]);
                 for (int i = 0; i < unlockedAt.length; ++i) unlockedAt[i] = integer(dates, AchievementsModel.DEFINITIONS[i].id);
-                return new AchievementsModel.State(metrics, unlockedAt, (Boolean)notifications);
+                if (schema == 1) return new ReadResult(
+                    AchievementsModel.expandLegacy(metrics, unlockedAt, (Boolean)notifications, now), true);
+                long recognized = integer(root, "recognized_on_upgrade");
+                if (recognized < 0 || recognized > AchievementsModel.ALL_IDS_MASK)
+                    throw new IOException("Invalid expanded achievement mask");
+                return new ReadResult(new AchievementsModel.State(metrics, unlockedAt,
+                    (Boolean)notifications, (int)recognized), false);
             } catch (JSONException | IllegalArgumentException error) {
                 throw new IOException("Invalid achievement file", error);
             }
