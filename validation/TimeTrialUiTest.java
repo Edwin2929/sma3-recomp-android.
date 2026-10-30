@@ -61,7 +61,9 @@ public final class TimeTrialUiTest {
     private MemoryDisk disk;
     private long[] nativeValue;
     private int reads, language;
-    private boolean requested;
+    private boolean requested, ghostRequested;
+    private long[] ghostValue, lastSyncedBests;
+    private int ghostSyncs;
 
     @Before public void setup() {
         ShadowChoreographer.setPaused(true); ShadowChoreographer.setFrameDelay(Duration.ofMillis(16));
@@ -70,8 +72,11 @@ public final class TimeTrialUiTest {
         overlayHost = new FrameLayout(activity); activity.setContentView(overlayHost);
         fps = new TextView(activity); fps.setText("FPS: 60"); fps.setVisibility(View.GONE);
         overlayHost.addView(fps);
-        disk = new MemoryDisk(); store = new TimeTrialStore(disk, Runnable::run, new Handler(Looper.getMainLooper()));
+        disk = new MemoryDisk(); store = new TimeTrialStore(disk, Runnable::run, new Handler(Looper.getMainLooper()), bests -> {
+            ++ghostSyncs; lastSyncedBests=bests.clone(); return ghostValue == null ? null : ghostValue.clone();
+        });
         nativeValue = disabled();
+        ghostValue = new long[72]; ghostValue[0]=1; ghostValue[2]=1; ghostValue[5]=2;
     }
     @After public void cleanup() {
         if (ui != null) ui.close(); if (shown != null) shown.dismiss();
@@ -90,7 +95,8 @@ public final class TimeTrialUiTest {
     private void open() {
         ui = new TimeTrialUi(activity,(es,en,pt)->language==0?es:language==1?en:pt,
             (dialog,parent)->{ if(shown!=null)shown.dismiss();shown=dialog;dialog.show();SettingsPanel.fitWindow(activity,dialog); },
-            ()->shown.dismiss(),overlayHost,fps,store,this::sample,value->{requested=value;nativeValue[1]=value?1:0;nativeValue[2]=value?1:0;});
+            ()->shown.dismiss(),overlayHost,fps,store,this::sample,value->{requested=value;nativeValue[1]=value?1:0;nativeValue[2]=value?1:0;},
+            value->{ghostRequested=value;ghostValue[1]=value?1:0;});
         ui.onResume(); ui.show(); advance(32);
     }
     private List<View> descendants(View root) {
@@ -142,7 +148,7 @@ public final class TimeTrialUiTest {
     }
     @Test public void togglesSavePreferencesWithoutClearingRecords() {
         open();List<Switch> toggles=new ArrayList<>();for(View view:descendants(panel()))if(view instanceof Switch)toggles.add((Switch)view);
-        assertEquals(2,toggles.size());toggles.get(0).setChecked(true);advance(32);assertTrue(requested);
+        assertEquals(3,toggles.size());toggles.get(0).setChecked(true);advance(32);assertTrue(requested);
         assertTrue(activity.getSharedPreferences("sma3-options",0).getBoolean(TimeTrialUi.ENABLED,false));
         toggles.get(1).setChecked(false);advance(16);assertEquals(View.GONE,overlayHost.findViewWithTag("time-trial-overlay").getVisibility());
         toggles.get(0).setChecked(false);advance(16);assertFalse(requested);assertEquals(0,disk.writes);
@@ -186,5 +192,60 @@ public final class TimeTrialUiTest {
         long[] cancelled=result(0,300,1,1000);cancelled[2]=5;cancelled[8]=1000;cancelled[9]=3;nativeValue=cancelled;
         store.poll(this::sample,null);assertEquals(1000,disk.value.best[0]);assertEquals(1000,disk.value.last[0]);assertEquals(1,disk.writes);
         nativeValue=new long[74];store.poll(this::sample,null);assertEquals(TimeTrialStore.Problem.NATIVE,store.latest().problem);assertEquals(1000,disk.value.best[0]);
+    }
+
+    @Test public void ghostDefaultsOffAndTogglePreservesExistingBest() {
+        nativeValue=result(0,900,1,900);open();assertFalse(ghostRequested);assertTrue(hasText("Fantasma desactivado"));
+        List<Switch> toggles=new ArrayList<>();for(View v:descendants(panel()))if(v instanceof Switch)toggles.add((Switch)v);
+        toggles.get(2).setChecked(true);advance(32);assertTrue(ghostRequested);assertTrue(hasText("Activa también el contrarreloj"));
+        toggles.get(0).setChecked(true);advance(32);assertTrue(hasText("fantasmas de récord disponibles"));
+        toggles.get(2).setChecked(false);advance(32);assertFalse(ghostRequested);assertEquals(900,disk.value.best[0]);
+        assertEquals(1,disk.writes);assertFalse(activity.getSharedPreferences("sma3-options",0).getBoolean(TimeTrialUi.GHOST,true));
+    }
+
+    @Test public void ghostSyncRequiresReadableRecordsAndUsesMergedBest() {
+        disk.readFail=true;nativeValue=result(0,900,1,900);store.poll(this::sample,null);assertEquals(0,ghostSyncs);
+        assertEquals(TimeTrialStore.Problem.READ,store.latest().problem);
+        disk.readFail=false;store.poll(this::sample,null);assertEquals(1,ghostSyncs);assertEquals(900,lastSyncedBests[0]);
+        lastSyncedBests[0]=3;assertEquals(900,store.latest().state.best[0]);
+        nativeValue=result(0,800,2,800);disk.writeFail=true;store.poll(this::sample,null);
+        assertEquals(800,lastSyncedBests[0]);assertEquals(800,store.latest().state.best[0]);assertEquals(900,disk.value.best[0]);
+        assertEquals(TimeTrialStore.Problem.WRITE,store.latest().problem);
+    }
+
+    @Test public void ghostShowsSavedReferenceAndPreservesClockAcrossRecreation() throws Exception {
+        activity.getSharedPreferences("sma3-options",0).edit().putBoolean(TimeTrialUi.ENABLED,true).putBoolean(TimeTrialUi.GHOST,true).commit();
+        nativeValue=result(0,900,1,900);ghostValue[1]=1;ghostValue[4]=1;ghostValue[7]=1;ghostValue[9]=900;ghostValue[11]=1;ghostValue[12]=900;
+        nativeValue[2]=TimeTrialModel.RUNNING;nativeValue[4]=450;nativeValue[5]=2;
+        open();assertTrue(hasText("Compitiendo contra: 0:15.06"));assertTrue(hasText("Fantasma disponible · 0:15.06"));
+        capture(measure(420,820),"ghost-record-es");footerVisible(measure(720,360));capture(measure(720,360),"ghost-landscape-es");
+        ui.close();shown.dismiss();language=1;open();assertTrue(hasText("Racing against: 0:15.06"));capture(measure(420,820),"ghost-record-en");
+        ui.close();shown.dismiss();language=2;open();assertTrue(hasText("Disputando contra: 0:15.06"));capture(measure(420,820),"ghost-record-pt");
+        assertEquals(1,disk.writes);assertEquals(450,store.latest().snapshot.frames);
+    }
+
+    @Test public void ghostWarningsDoNotBreakTimerOrEraseRecords() {
+        activity.getSharedPreferences("sma3-options",0).edit().putBoolean(TimeTrialUi.ENABLED,true).putBoolean(TimeTrialUi.GHOST,true).commit();
+        nativeValue=result(0,900,1,900);ghostValue[1]=1;open();
+        ghostValue[5]=4;advance(150);assertTrue(hasText("No se pudo leer un recorrido"));assertEquals(900,disk.value.best[0]);
+        ghostValue[5]=5;advance(150);assertTrue(hasText("guardado pendiente"));
+        ghostValue[5]=3;ghostValue[10]=1;advance(150);assertTrue(hasText("Guardando el fantasma"));
+        ghostValue[5]=2;ghostValue[10]=0;ghostValue[6]=4;advance(150);assertTrue(hasText("límite de grabación"));
+        ghostValue[6]=5;advance(150);assertTrue(hasText("no pudo generar un fantasma visible"));
+        ghostValue[6]=6;advance(150);assertTrue(hasText("Grabación cancelada"));
+        ghostValue=new long[72];advance(150);assertTrue(hasText("fantasma aún no está disponible"));
+        assertEquals(TimeTrialStore.Problem.NONE,store.latest().problem);assertEquals(900,disk.value.best[0]);assertEquals(1,disk.writes);
+    }
+
+    @Test public void ghostStatusRejectsMalformedBoundaryAndDoesNotPollInBackground() {
+        long[] bad=ghostValue.clone();bad[7]=12;
+        try { new TimeTrialGhostModel.Snapshot(bad);fail("welcome course accepted"); } catch(IllegalArgumentException expected) {}
+        bad=ghostValue.clone();bad[12]=72001;
+        try { new TimeTrialGhostModel.Snapshot(bad);fail("oversized ghost accepted"); } catch(IllegalArgumentException expected) {}
+        bad=ghostValue.clone();bad[2]=2;
+        try { new TimeTrialGhostModel.Snapshot(bad);fail("invalid bool accepted"); } catch(IllegalArgumentException expected) {}
+        ghostValue[12]=72000;TimeTrialGhostModel.Snapshot safe=new TimeTrialGhostModel.Snapshot(ghostValue);ghostValue[12]=1;
+        assertEquals(72000,safe.best[0]);assertEquals(1,safe.count());
+        open();ui.onPause();int stopped=ghostSyncs;advance(2000);assertEquals(stopped,ghostSyncs);ui.onResume();advance(32);assertTrue(ghostSyncs>stopped);
     }
 }

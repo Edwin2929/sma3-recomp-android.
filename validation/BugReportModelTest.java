@@ -37,17 +37,19 @@ public final class BugReportModelTest {
         Map<BugReportModel.Field, String> settings = BugReportModel.settings(prefs);
         Set<String> allowed = new HashSet<>(Arrays.asList("interpolation-120", "image-mode", "stretch-screen",
             "video-quality", "image-filter", "menu-language", "game-language", "touch-visible", "touch-style",
-            "touch-opacity", "touch-design-active", "show-fps", "yoshi-color-enabled", "time-trial-enabled", "time-trial-overlay"));
+            "touch-opacity", "touch-design-active", "show-fps", "yoshi-color-enabled", "time-trial-enabled", "time-trial-overlay", "time-trial-ghost"));
         for (int i = 0; i < 10; ++i) allowed.add("pad-" + i);
         require(prefs.reads.equals(allowed), "only the complete explicit settings allowlist is read");
         require(settings.get(BugReportModel.Field.REQUESTED_FPS).equals("60"), "default request is 60, no measurement invented");
         require(settings.get(BugReportModel.Field.PAD_MAPPING).equals("0 / 10"), "default controller settings");
+        require(settings.get(BugReportModel.Field.TIME_TRIAL_GHOST).equals("off"), "ghost is opt-in");
         require(!settings.toString().contains("private"), "unknown string preferences never enter the report");
         prefs.values.put("image-mode", 99); prefs.values.put("image-filter", -8);
         prefs.values.put("touch-opacity", 1000); prefs.values.put("video-quality", 999);
         prefs.values.put("pad-0", 9); prefs.values.put("pad-1", 42); prefs.values.put("pad-2", -1);
         prefs.values.put("interpolation-120", true); prefs.values.put("time-trial-enabled", true);
         prefs.values.put("time-trial-overlay", false);
+        prefs.values.put("time-trial-ghost", true);
         settings = BugReportModel.settings(prefs);
         require(settings.get(BugReportModel.Field.IMAGE).equals("original 3:2"), "invalid image ID follows actual fallback");
         require(settings.get(BugReportModel.Field.FILTER).equals("balanced"), "invalid filter fallback");
@@ -56,6 +58,7 @@ public final class BugReportModelTest {
         require(settings.get(BugReportModel.Field.PAD_MAPPING).equals("2 / 10"), "counts valid custom/unbound values only");
         require(settings.get(BugReportModel.Field.TIME_TRIAL).equals("on")
             && settings.get(BugReportModel.Field.TIME_TRIAL_OVERLAY).equals("off"), "new settings included distinctly");
+        require(settings.get(BugReportModel.Field.TIME_TRIAL_GHOST).equals("on"), "ghost preference reported without sharing recorded routes");
         prefs.values.remove("image-mode"); prefs.values.put("stretch-screen", true);
         require(BugReportModel.settings(prefs).get(BugReportModel.Field.IMAGE).equals("stretch"), "legacy image preference understood read-only");
         prefs.values.put("menu-language", 999); prefs.values.put("game-language", -1);

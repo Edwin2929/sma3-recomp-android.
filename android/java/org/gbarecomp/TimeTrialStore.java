@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 /** Process-owned record storage; neither game frames nor the UI perform disk writes. */
 final class TimeTrialStore {
     interface NativeSnapshot { long[] read(); }
+    interface GhostSource { long[] sync(long[] bestFrames); }
     interface Listener { void updated(Result result); }
     interface Persistence {
         TimeTrialModel.State read() throws IOException;
@@ -32,10 +33,18 @@ final class TimeTrialStore {
         final TimeTrialModel.Snapshot snapshot;
         final Problem problem;
         final long comparedCompletion, previousBest;
+        final TimeTrialGhostModel.Snapshot ghost;
+        final boolean ghostUnavailable;
         Result(TimeTrialModel.State state, TimeTrialModel.Snapshot snapshot, Problem problem,
                long comparedCompletion, long previousBest) {
+            this(state, snapshot, problem, comparedCompletion, previousBest, null, false);
+        }
+        Result(TimeTrialModel.State state, TimeTrialModel.Snapshot snapshot, Problem problem,
+               long comparedCompletion, long previousBest, TimeTrialGhostModel.Snapshot ghost,
+               boolean ghostUnavailable) {
             this.state = state; this.snapshot = snapshot; this.problem = problem;
             this.comparedCompletion = comparedCompletion; this.previousBest = previousBest;
+            this.ghost = ghost; this.ghostUnavailable = ghostUnavailable;
         }
     }
 
@@ -47,7 +56,7 @@ final class TimeTrialStore {
             instanceDirectory = directory;
             instance = new TimeTrialStore(new Disk(new File(directory, "time-trials/records-v1.json")),
                 Executors.newSingleThreadExecutor(task -> new Thread(task, "SMA3 time trials")),
-                new Handler(Looper.getMainLooper()));
+                new Handler(Looper.getMainLooper()), GbaNative::syncTimeTrialGhost);
         }
         return instance;
     }
@@ -55,6 +64,7 @@ final class TimeTrialStore {
     private final Persistence disk;
     private final Executor worker;
     private final Handler main;
+    private final GhostSource ghostSource;
     private TimeTrialModel.State current = TimeTrialModel.empty(), saved = current;
     private TimeTrialModel.Snapshot snapshot;
     private boolean loaded;
@@ -62,7 +72,11 @@ final class TimeTrialStore {
     private volatile Result latest = new Result(current, null, Problem.LOADING, 0, 0);
 
     TimeTrialStore(Persistence disk, Executor worker, Handler main) {
+        this(disk, worker, main, null);
+    }
+    TimeTrialStore(Persistence disk, Executor worker, Handler main, GhostSource ghostSource) {
         this.disk = disk; this.worker = worker; this.main = main;
+        this.ghostSource = ghostSource;
     }
     Result latest() { return latest; }
 
@@ -97,7 +111,13 @@ final class TimeTrialStore {
     }
 
     private void publish(Problem problem, Listener listener) {
-        Result result = new Result(current, snapshot, problem, seenCompletion, previousBest);
+        TimeTrialGhostModel.Snapshot ghost = null;
+        boolean ghostUnavailable = false;
+        if (loaded && ghostSource != null) {
+            try { ghost = new TimeTrialGhostModel.Snapshot(ghostSource.sync(current.best.clone())); }
+            catch (UnsatisfiedLinkError | RuntimeException failure) { ghostUnavailable = true; }
+        }
+        Result result = new Result(current, snapshot, problem, seenCompletion, previousBest, ghost, ghostUnavailable);
         latest = result;
         if (listener != null) main.post(() -> listener.updated(result));
     }

@@ -1,8 +1,13 @@
-# Contrarreloj y reportes de errores — 0.10.16 beta
+# Contrarreloj y reportes de errores
 
-Esta versión añade un cronómetro por nivel con récords personales y una
+Desde 0.10.16 hay un cronómetro por nivel con récords personales y una
 herramienta para preparar reportes de errores. Ambos apartados siguen el
 idioma elegido para los menús del port: español, inglés o portugués.
+
+**0.10.17** añade **Fantasma de mi récord** dentro de Contrarreloj. Permite
+grabar un intento completo que iguale o mejore tu marca y competir contra
+su imagen semitransparente. Los récords antiguos necesitan una nueva
+grabación. Consulta la [guía del fantasma](FANTASMA_CONTRARRELOJ.md).
 
 ## Activar el contrarreloj
 
@@ -116,7 +121,8 @@ de ajustes del port.
 
 Los ajustes incluyen FPS solicitados, estado de la mezcla a 120, modo de
 imagen, resolución, filtro, idiomas, controles táctiles, indicadores de
-personalización del mando y de Yoshi, contrarreloj y cronómetro visible.
+personalización del mando y de Yoshi, contrarreloj, cronómetro visible y
+fantasma del récord. Las grabaciones del fantasma no se adjuntan.
 Los perfiles gráficos se describen mediante cantidades de instalados y
 activos, sin sus nombres, autores ni rutas.
 

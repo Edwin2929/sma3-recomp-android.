@@ -45,6 +45,7 @@ final class BugReportModel {
         YOSHI_COLOR("Color personalizado de Yoshi", "Custom Yoshi color", "Cor personalizada do Yoshi"),
         TIME_TRIAL("Contrarreloj", "Time trial", "Contrarrelógio"),
         TIME_TRIAL_OVERLAY("Cronómetro en pantalla", "On-screen timer", "Cronômetro na tela"),
+        TIME_TRIAL_GHOST("Fantasma del récord", "Personal-best ghost", "Fantasma do recorde"),
         MODS("Perfiles de imagen instalados / activos", "Installed / active image profiles", "Perfis de imagem instalados / ativos");
 
         final String es, en, pt;
@@ -88,6 +89,7 @@ final class BugReportModel {
         values.put(Field.YOSHI_COLOR, enabled(prefs.flag("yoshi-color-enabled", false)));
         values.put(Field.TIME_TRIAL, enabled(prefs.flag("time-trial-enabled", false)));
         values.put(Field.TIME_TRIAL_OVERLAY, enabled(prefs.flag("time-trial-overlay", true)));
+        values.put(Field.TIME_TRIAL_GHOST, enabled(prefs.flag("time-trial-ghost", false)));
         return Collections.unmodifiableMap(values);
     }
 

@@ -25,7 +25,7 @@ def main():
         libraries.append(target)
     classes=work/'classes';classes.mkdir(exist_ok=True)
     sources=[root/'android/java/org/gbarecomp'/name for name in
-             ['TimeTrialModel.java','TimeTrialStore.java','TimeTrialUi.java','SettingsPanel.java','GbaNative.java']]
+             ['TimeTrialModel.java','TimeTrialGhostModel.java','TimeTrialStore.java','TimeTrialUi.java','SettingsPanel.java','GbaNative.java']]
     sources += [root/'validation/TimeTrialModelTest.java',root/'validation/TimeTrialUiTest.java']
     classpath=os.pathsep.join(map(str,[classes,args.android_jar.resolve()]+libraries))
     def run(name,command):

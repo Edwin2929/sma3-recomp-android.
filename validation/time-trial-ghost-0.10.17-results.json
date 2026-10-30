@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "release": "0.10.17-beta",
+  "result": "PASS",
+  "scope": "Controlled C++ ghost observations, binary codec and real private filesystem; no natural completed level, physical Android phone or GPU claim",
+  "checks_per_run": 1043,
+  "optimized": {
+    "flags": "-std=c++20 -O2 -Wall -Wextra -Werror -pthread",
+    "output": "PASS 1043 ghost codec, storage and lifecycle checks",
+    "binary_sha256": "e4d56b5f7e2b3b63e2fe2ee83ffccf79759d26ea875c998acffc5b7599a338ab"
+  },
+  "sanitized": {
+    "flags": "-std=c++20 -O1 -g -Wall -Wextra -Werror -pthread -fsanitize=address,undefined -fno-omit-frame-pointer",
+    "ASAN_OPTIONS": "detect_leaks=0",
+    "output": "PASS 1043 ghost codec, storage and lifecycle checks",
+    "stderr": "",
+    "binary_sha256": "efe9b41d9b3e11ad70077ec92897fa513e233c13f61c253cc00fdf0aeb73d1a1"
+  },
+  "source_sha256": {
+    "src/time_trial_ghost.h": "c611f41fd231abf01a38cabe270b863bf1592118db71953e3d9b902d0c962342",
+    "src/time_trial_ghost.cpp": "a671d4c6b5062fb0af6be891b2b68fcbb7a7419e31f391a3161e1eb808b75ee0",
+    "src/time_trial_ghost_detail.h": "9df6d32581f3ae91b9218a95aac54705446b98e64baba96715ab8b33b230c3b2",
+    "src/time_trial_ghost_storage.h": "b71acb5cbbdfccd336b588ed2e43bbe1f8fb81c2fa0c06954c3b8ab2151b1b6a",
+    "src/ghost_visual.h": "8994b64b7e14e9bf4a79aa5e0cb7ae57b27c93fb4a3090179f47a4db45b86ea5",
+    "validation/time_trial_ghost_test.cpp": "b9f39d41d070ad764adb8599248979e63a9ec8d64c216b5b271b9d409a29f5a2"
+  },
+  "limits": {
+    "maximum_timed_intervals": 72000,
+    "maximum_distinct_images": 512,
+    "maximum_file_bytes": 4194304,
+    "maximum_total_pending_and_active_write_jobs": 2,
+    "snapshot_words": 72,
+    "timer_snapshot_words_unchanged": 74
+  },
+  "covered": [
+    "Exact nonzero personal-best equality required for playback; a file alone never invents Java records",
+    "Historical personal best longer than capture limit is accepted by synchronization",
+    "Full run start only, slower run rejected, equal completion fills missing motion, faster run replaces motion",
+    "Per-game-frame recording, duplicate presentation ignored, pause endpoint replacement, previous-frame presentation latch",
+    "State restoration, clock gaps, disabling and mid-level enabling cannot retain a partial record",
+    "Room identifiers, signed world coordinates, transparent samples, sprite deduplication, duration and atlas bounds",
+    "Binary roundtrip, every byte corruption and truncation, unknown schema/flags, ROM/clock identity, counts, dimensions, palette and references",
+    "Atomic file replacement and readback, slower route preservation, corrupt/future files preserved",
+    "Actual write failure retains completed route; automatic retry recovers without altering another level",
+    "Monotonic personal-best synchronization and concurrent idempotent reads/synchronization",
+    "Same-process shutdown/reinitialize reloads replay, retains preference and cancels partial recording"
+  ],
+  "queue_review": "Enqueue counts both pending slots and the active write under one mutex; total<=2 reserves the retry slot. A new third route is declined with BufferUnavailable instead of evicting an accepted route.",
+  "threading": "Disk work, allocation of capture buffers and retirement of large replay payloads execute on a serial worker. The game callback appends only inside reserved capacities and performs no file I/O.",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+}

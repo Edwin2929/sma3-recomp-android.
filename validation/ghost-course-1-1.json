@@ -1,0 +1,542 @@
+[
+  {
+    "n": 1,
+    "keys": 1022
+  },
+  {
+    "n": 480,
+    "keys": 1023,
+    "capture": "running"
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007
+  },
+  {
+    "n": 30,
+    "keys": 1006
+  },
+  {
+    "n": 1,
+    "keys": 1007,
+    "capture": "jump-310"
+  },
+  {
+    "n": 1,
+    "keys": 1021
+  },
+  {
+    "n": 60,
+    "keys": 1007,
+    "capture": "after-message"
+  },
+  {
+    "n": 1,
+    "keys": 767
+  },
+  {
+    "n": 60,
+    "keys": 1007,
+    "capture": "after-message-r"
+  },
+  {
+    "n": 10,
+    "keys": 1022
+  },
+  {
+    "n": 20,
+    "keys": 1023
+  },
+  {
+    "n": 10,
+    "keys": 1021
+  },
+  {
+    "n": 30,
+    "keys": 1007,
+    "capture": "after-message-hold"
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007,
+    "capture": "forward-352"
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 40,
+    "keys": 1004
+  },
+  {
+    "n": 4,
+    "keys": 1007,
+    "capture": "forward-704"
+  },
+  {
+    "n": 40,
+    "keys": 1006,
+    "capture": "gap-hover"
+  },
+  {
+    "n": 20,
+    "keys": 1006,
+    "capture": "approach-ledge"
+  },
+  {
+    "n": 40,
+    "keys": 1006,
+    "capture": "ledge-top"
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 70,
+    "keys": 1004,
+    "capture": "hill-exit"
+  },
+  {
+    "n": 100,
+    "keys": 1004,
+    "capture": "descent"
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 25,
+    "keys": 1005,
+    "capture": "under-blocks"
+  },
+  {
+    "n": 30,
+    "keys": 895,
+    "capture": "make-egg"
+  },
+  {
+    "n": 6,
+    "keys": 1023
+  },
+  {
+    "n": 8,
+    "keys": 767,
+    "capture": "first-aim"
+  },
+  {
+    "n": 15,
+    "keys": 1023,
+    "capture": "aim-sweep"
+  },
+  {
+    "n": 15,
+    "keys": 1023,
+    "capture": "aim-upward"
+  },
+  {
+    "n": 8,
+    "keys": 1023
+  },
+  {
+    "n": 4,
+    "keys": 767
+  },
+  {
+    "n": 50,
+    "keys": 1023,
+    "capture": "cloud-hit"
+  },
+  {
+    "n": 150,
+    "keys": 1023,
+    "capture": "vine-grown"
+  },
+  {
+    "n": 40,
+    "keys": 1006,
+    "capture": "vine-first-hop"
+  },
+  {
+    "n": 150,
+    "keys": 1023
+  },
+  {
+    "n": 40,
+    "keys": 1006,
+    "capture": "vine-ready-hop"
+  },
+  {
+    "n": 15,
+    "keys": 1006
+  },
+  {
+    "n": 20,
+    "keys": 991,
+    "capture": "vine-first-leaf"
+  },
+  {
+    "n": 10,
+    "keys": 991
+  },
+  {
+    "n": 20,
+    "keys": 1023
+  },
+  {
+    "n": 55,
+    "keys": 1022,
+    "capture": "vine-stationary-hop"
+  },
+  {
+    "n": 12,
+    "keys": 1023,
+    "capture": "vine-landed"
+  },
+  {
+    "n": 20,
+    "keys": 990
+  },
+  {
+    "n": 20,
+    "keys": 1006
+  },
+  {
+    "n": 20,
+    "keys": 1023,
+    "capture": "vine-second-leaf"
+  },
+  {
+    "n": 55,
+    "keys": 1022
+  },
+  {
+    "n": 12,
+    "keys": 1023,
+    "capture": "vine-third-leaf"
+  },
+  {
+    "n": 25,
+    "keys": 990
+  },
+  {
+    "n": 10,
+    "keys": 1006
+  },
+  {
+    "n": 25,
+    "keys": 1023,
+    "capture": "vine-top-center"
+  },
+  {
+    "n": 35,
+    "keys": 990
+  },
+  {
+    "n": 15,
+    "keys": 1006
+  },
+  {
+    "n": 20,
+    "keys": 1023,
+    "capture": "vine-left-tip"
+  },
+  {
+    "n": 20,
+    "keys": 1022,
+    "capture": "platform-jump"
+  },
+  {
+    "n": 30,
+    "keys": 1006,
+    "capture": "platform-ride"
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 90,
+    "keys": 1006,
+    "capture": "clear-high-wall"
+  },
+  {
+    "n": 25,
+    "keys": 991
+  },
+  {
+    "n": 20,
+    "keys": 1023,
+    "capture": "behind-boulder"
+  },
+  {
+    "n": 100,
+    "keys": 1007,
+    "capture": "boulder-roll"
+  },
+  {
+    "n": 100,
+    "keys": 1007,
+    "capture": "boulder-through-piranha"
+  },
+  {
+    "n": 100,
+    "keys": 1007,
+    "capture": "boulder-exit"
+  },
+  {
+    "n": 70,
+    "keys": 1006,
+    "capture": "rock-step"
+  },
+  {
+    "n": 4,
+    "keys": 1007
+  },
+  {
+    "n": 80,
+    "keys": 1004,
+    "capture": "last-hills"
+  },
+  {
+    "n": 100,
+    "keys": 1006,
+    "capture": "toward-goal"
+  },
+  {
+    "n": 70,
+    "keys": 991,
+    "capture": "recover-end-baby"
+  },
+  {
+    "n": 55,
+    "keys": 990,
+    "capture": "reach-end-bubble"
+  },
+  {
+    "n": 24,
+    "keys": 1023
+  },
+  {
+    "n": 90,
+    "keys": 1022,
+    "capture": "recover-baby-vertical"
+  },
+  {
+    "n": 50,
+    "keys": 1007,
+    "capture": "approach-end-baby"
+  },
+  {
+    "n": 18,
+    "keys": 1022,
+    "capture": "touch-end-baby"
+  },
+  {
+    "n": 70,
+    "keys": 1023,
+    "capture": "end-baby-safe"
+  },
+  {
+    "n": 70,
+    "keys": 1006,
+    "capture": "first-goal-approach"
+  },
+  {
+    "n": 300,
+    "keys": 1023,
+    "capture": "recovery-before-final-jump"
+  },
+  {
+    "n": 120,
+    "keys": 1006,
+    "capture": "verified-natural-goal"
+  },
+  {
+    "n": 300,
+    "keys": 1023,
+    "capture": "verified-goal-results"
+  }
+]

@@ -36,6 +36,10 @@ public final class GbaNative {
     // Versioned 74-word snapshot: status, guest-frame time, last completion,
     // hardware clock ratio and 60 session minima. See TimeTrialModel.
     public static native long[] getTimeTrial();
+    public static native void setTimeTrialGhostEnabled(boolean enabled);
+    // Worker-only: sync the 60 validated personal bests and read the coherent
+    // 72-word ghost status. No game memory is read from the Java thread.
+    public static native long[] syncTimeTrialGhost(long[] bestFrames);
     public static native void setTouchControlsVisible(boolean visible);
     // Styles: 0 classic letters, 1 action symbols. Opacity is clamped to 20..100%.
     public static native void setTouchAppearance(int style, int opacityPercent);

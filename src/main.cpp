@@ -15,6 +15,8 @@
 #include "yoshi_color.h"
 #include "local_achievements.h"
 #include "time_trial.h"
+#include "time_trial_ghost.h"
+#include "ghost_visual.h"
 #include "challenge_lifecycle.h"
 #ifdef SMA3_PRESENTATION_DIAGNOSTICS
 #include "frame_interpolation.h"
@@ -35,6 +37,34 @@ int sma3_ram_dispatch(uint32_t, int);
 #include <vector>
 #endif
 
+namespace {
+#ifndef __ANDROID__
+sma3::TimeTrialGhostBests host_ghost_bests{};
+std::uint64_t host_ghost_completion = 0;
+#endif
+void ghost_frame(const gbarecomp::ExtendedViewFrameInfo* frame) noexcept {
+    if (!sma3::time_trial_ghost_enabled()) return;
+    sma3::ghost_visual_frame(frame);
+    const auto timer = sma3::time_trial_snapshot();
+    sma3::GhostVisualSample visual;
+    if (timer[2] == std::uint64_t(sma3::TimeTrialStatus::Running) ||
+            timer[2] == std::uint64_t(sma3::TimeTrialStatus::Finished))
+        visual = sma3::ghost_capture_visual();
+    sma3::time_trial_ghost_frame(timer, visual);
+#ifndef __ANDROID__
+    // Desktop qualification mirrors Java's monotonic record synchronization.
+    // Android receives its validated record file only through the worker JNI.
+    if (timer[6] != host_ghost_completion) {
+        host_ghost_completion = timer[6];
+        for (std::size_t i = 0; i < host_ghost_bests.size(); ++i)
+            if (timer[14 + i] && (!host_ghost_bests[i] || timer[14 + i] < host_ghost_bests[i]))
+                host_ghost_bests[i] = timer[14 + i];
+        sma3::time_trial_ghost_set_bests(host_ghost_bests);
+    }
+#endif
+}
+}
+
 int main(int argc, char** argv) {
     g_runtime_ram_dispatch_hook = sma3_ram_dispatch;
     g_runtime_bus_read_override = sma3::localized_read;
@@ -43,6 +73,17 @@ int main(int argc, char** argv) {
     // Host qualification uses the same opt-in observer and snapshot as JNI.
     if (const char* timer = std::getenv("SMA3_TIME_TRIAL"))
         sma3::time_trial_set_enabled(std::string_view(timer) == "1");
+    if (const char* directory = std::getenv("SMA3_TIME_TRIAL_GHOST_DIR")) {
+        if (!sma3::time_trial_ghost_initialize(directory)) return 1;
+        if (const char* records = std::getenv("SMA3_TIME_TRIAL_GHOST_BESTS")) {
+            std::ifstream input(records);
+            for (auto& value : host_ghost_bests) if (!(input >> value)) return 1;
+            std::string extra;
+            if (input >> extra) return 1;
+        }
+        if (!sma3::time_trial_ghost_set_bests(host_ghost_bests)) return 1;
+        sma3::time_trial_ghost_set_enabled(true);
+    }
     // Desktop validation exercises the same palette mod as Android. Only a
     // complete RGB code is accepted; missing/invalid input leaves it disabled.
     if (const char* color = std::getenv("SMA3_YOSHI_COLOR")) {
@@ -64,6 +105,7 @@ int main(int argc, char** argv) {
     }
 #endif
     gbarecomp::RunOptions options;
+    options.host_overlay = sma3::ghost_draw_overlay;
 #ifdef SMA3_PRESENTATION_DIAGNOSTICS
     // Explicit desktop qualification of the production scheduler and scaler.
     // This option is forbidden for Android builds: its preferences still come
@@ -99,6 +141,7 @@ int main(int argc, char** argv) {
         sma3::local_achievements_frame(frame);
         sma3::time_trial_frame(frame);
         sma3::yoshi_color_frame();
+        ghost_frame(frame);
     };
 #ifdef SMA3_PANORAMA
     options.resize_driven_view = true;
@@ -112,6 +155,7 @@ int main(int argc, char** argv) {
         sma3::time_trial_frame(frame);
         sma3::yoshi_color_frame();
         sma3::wide::frame(frame, sma3::image_mode.load() == sma3::ImageMode::Panorama);
+        ghost_frame(frame);
     };
     options.presentation_request = [](gbarecomp::RunOptions::PresentationRequest* request) {
         if (!request) return;
@@ -132,6 +176,7 @@ int main(int argc, char** argv) {
             sma3_probe_frame(frame);
             const char* authored = std::getenv("SMA3_AUTHORED_WIDE");
             if (authored && authored[0] == '1') sma3::wide::frame(frame);
+            ghost_frame(frame);
         };
     }
 #endif
@@ -146,6 +191,7 @@ int main(int argc, char** argv) {
     }
     const std::string root(storage);
     sma3::local_achievements_checkpoint_path((root + "/achievements/yo-shi-pude-v1.bin").c_str());
+    sma3::time_trial_ghost_initialize((root + "/time-trials/ghosts-v1").c_str());
     options.resume_suspend_state_on_launch = true;
     if (chdir(root.c_str()) != 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Cannot open app storage directory");
@@ -168,7 +214,9 @@ int main(int argc, char** argv) {
     };
     std::vector<char*> pointers;
     for (auto& argument : arguments) pointers.push_back(argument.data());
-    return gbarecomp::run_game(static_cast<int>(pointers.size()), pointers.data(), options);
+    const int result = gbarecomp::run_game(static_cast<int>(pointers.size()), pointers.data(), options);
+    sma3::time_trial_ghost_shutdown();
+    return result;
 #else
     // Optional private replay directory exercises the same suspend proof on
     // the host. Production Android always uses its protected files directory.
@@ -177,6 +225,17 @@ int main(int argc, char** argv) {
         options.resume_suspend_state_on_launch = true;
     }
     const int result = gbarecomp::run_game(argc, argv, options);
+    sma3::time_trial_ghost_shutdown();
+    if (const char* path = std::getenv("SMA3_TIME_TRIAL_GHOST_REPORT")) {
+        const auto snapshot = sma3::time_trial_ghost_snapshot();
+        std::ofstream report(path);
+        report << "{\"schema\":1,\"snapshot\":[";
+        for (std::size_t i = 0; i < snapshot.size(); ++i) {
+            if (i) report << ',';
+            report << snapshot[i];
+        }
+        report << "]}\n";
+    }
     // Exit-only host evidence. Android never writes diagnostic files here.
     if (const char* path = std::getenv("SMA3_TIME_TRIAL_REPORT")) {
         const auto snapshot = sma3::time_trial_snapshot();

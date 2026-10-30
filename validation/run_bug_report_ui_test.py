@@ -102,7 +102,8 @@ final class GbaNative {
     public_sources = [p for p in sources if p.is_relative_to(root)] + [
         root / 'validation/BugReportModelTest.java', Path(__file__).resolve()]
     report = {
-        'result': 'PASS', 'version': '0.10.16-beta', 'scope': 'Android host UI and pure report composer; no physical phone or game JNI execution',
+        'result': 'PASS', 'version': re.search(r"versionName:\s*'([^']+)'", (root / 'android/app/build.gradle').read_text()).group(1),
+        'scope': 'Android host UI and pure report composer; no physical phone or game JNI execution',
         'framework': 'Robolectric 4.16.1', 'android_api': 34,
         'physical_device': False, 'native_game_loaded': False,
         'external_intents_intercepted': True, 'reports_sent_or_issues_submitted': 0,

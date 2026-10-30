@@ -3,6 +3,7 @@
 #include "yoshi_color.h"
 #include "local_achievements.h"
 #include "time_trial.h"
+#include "time_trial_ghost.h"
 #include <bit>
 #include <jni.h>
 extern "C" JNIEXPORT void JNICALL
@@ -90,6 +91,32 @@ extern "C" JNIEXPORT jlongArray JNICALL
 Java_org_gbarecomp_GbaNative_getTimeTrial(JNIEnv* env, jclass) {
     const auto snapshot = sma3::time_trial_snapshot();
     std::array<jlong, std::tuple_size_v<sma3::TimeTrialSnapshot>> values{};
+    for (std::size_t i = 0; i < values.size(); ++i)
+        values[i] = std::bit_cast<jlong>(snapshot[i]);
+    auto output = env->NewLongArray(static_cast<jsize>(values.size()));
+    if (output) env->SetLongArrayRegion(output, 0, static_cast<jsize>(values.size()), values.data());
+    return output;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_org_gbarecomp_GbaNative_setTimeTrialGhostEnabled(JNIEnv*, jclass, jboolean enabled) {
+    sma3::time_trial_ghost_set_enabled(enabled == JNI_TRUE);
+}
+
+extern "C" JNIEXPORT jlongArray JNICALL
+Java_org_gbarecomp_GbaNative_syncTimeTrialGhost(JNIEnv* env, jclass, jlongArray bests) {
+    if (!bests || env->GetArrayLength(bests) != 60) return nullptr;
+    std::array<jlong, 60> input{};
+    env->GetLongArrayRegion(bests, 0, 60, input.data());
+    if (env->ExceptionCheck()) return nullptr;
+    std::array<std::uint64_t, 60> records{};
+    for (std::size_t i = 0; i < records.size(); ++i) {
+        if (input[i] < 0) return nullptr;
+        records[i] = static_cast<std::uint64_t>(input[i]);
+    }
+    if (!sma3::time_trial_ghost_set_bests(records)) return nullptr;
+    const auto snapshot = sma3::time_trial_ghost_snapshot();
+    std::array<jlong, std::tuple_size_v<sma3::TimeTrialGhostSnapshot>> values{};
     for (std::size_t i = 0; i < values.size(); ++i)
         values[i] = std::bit_cast<jlong>(snapshot[i]);
     auto output = env->NewLongArray(static_cast<jsize>(values.size()));

@@ -2,7 +2,29 @@
 
 Proyecto experimental de recompilación estática de **Yoshi’s Island: Super Mario Advance 3 (USA)** para Android ARM64, basado en [GBARecomp](https://github.com/mstan/gbarecomp) y en el análisis de [sma3-disasm](https://github.com/KarisaAdvynia/sma3-disasm).
 
-## Versión actual: 0.10.16 beta — contrarreloj y reportes de errores
+## Versión actual: 0.10.17 beta — fantasma de tu mejor recorrido
+
+**Atrás → Contrarreloj → Fantasma de mi récord** graba un recorrido completo
+y muestra un Yoshi semitransparente al volver a intentar ese nivel. Conserva
+la animación y el color grabados, sigue el reloj del contrarreloj y permite
+comparar tu avance con el mejor recorrido guardado. Está desactivado inicialmente.
+
+Activa también **Activar contrarreloj** antes de entrar por el principio del
+nivel. Completa una marca que iguale o mejore tu récord para guardar su
+fantasma. Los tiempos anteriores no contienen movimientos: necesitan una
+nueva grabación. Cada nivel indica si dispone de fantasma.
+
+Esta primera versión dibuja a Yoshi en su forma normal y en la misma
+habitación. Oculta el fantasma durante transformaciones, Fuzzy y escenas
+sin cobertura. Es una referencia visual; no interactúa con enemigos ni
+objetos. Desactivarlo conserva los recorridos guardados. **El arranque y
+la recuperación automática de la sesión permanecen como en 0.10.16.**
+
+[Notas de 0.10.17](docs/releases/v0.10.17-beta.md) ·
+[Cómo usar el fantasma](docs/FANTASMA_CONTRARRELOJ.md) ·
+[Pruebas y límites](validation/GHOST_0.10.17_VALIDATION.md).
+
+### Contrarreloj y reportes conservados de 0.10.16
 
 **Atrás → Contrarreloj** añade tiempo por nivel, comparación con la mejor
 marca y un cronómetro pequeño opcional. Guarda récords locales separados
@@ -212,7 +234,7 @@ La consulta automática se realiza al abrir o regresar a la app, con un
 intervalo de seis horas. La descarga se inicia desde el apartado y Android
 pide confirmar la instalación. Las versiones anteriores a 0.10.5 requieren
 una primera actualización manual para obtener este apartado. Desde 0.10.5,
-0.10.16 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
+0.10.17 se detectará cuando el mantenedor adjunte su APK con el nombre indicado a Descarga.
 
 [Rendimiento y límites](docs/RENDIMIENTO_Y_FPS.md) ·
 [Controles](docs/AJUSTES_Y_DISENOS.md) ·

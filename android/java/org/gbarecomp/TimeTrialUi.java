@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -24,6 +25,7 @@ final class TimeTrialUi {
     interface Translator { String text(String es, String en, String pt); }
     interface Presenter { void open(AlertDialog dialog, Runnable parent); }
     static final String ENABLED = "time-trial-enabled", OVERLAY = "time-trial-overlay";
+    static final String GHOST = "time-trial-ghost";
     private final Activity activity;
     private final Translator translator;
     private final Presenter presenter;
@@ -33,29 +35,37 @@ final class TimeTrialUi {
     private final TimeTrialStore store;
     private final TimeTrialStore.NativeSnapshot source;
     private final Consumer<Boolean> enabledSink;
+    private final Consumer<Boolean> ghostSink;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final AtomicBoolean sampling = new AtomicBoolean();
     private boolean closed, resumed;
     private int world;
     private AlertDialog shown;
-    private TextView current, best, comparison, problem;
+    private TextView current, best, comparison, problem, ghostStatus;
     private LinearLayout records;
     private TimeTrialModel.State rendered;
     private int renderedWorld = -1;
+    private long[] renderedGhosts;
     private final Button[] worlds = new Button[6];
 
     TimeTrialUi(Activity activity, Translator translator, Presenter presenter, Runnable parent,
                 FrameLayout overlayHost, TextView fpsLabel) {
         this(activity, translator, presenter, parent, overlayHost, fpsLabel, TimeTrialStore.get(activity),
-            GbaNative::getTimeTrial, GbaNative::setTimeTrialEnabled);
+            GbaNative::getTimeTrial, GbaNative::setTimeTrialEnabled, GbaNative::setTimeTrialGhostEnabled);
     }
 
     TimeTrialUi(Activity activity, Translator translator, Presenter presenter, Runnable parent,
                 FrameLayout overlayHost, TextView fpsLabel, TimeTrialStore store,
                 TimeTrialStore.NativeSnapshot source, Consumer<Boolean> enabledSink) {
+        this(activity, translator, presenter, parent, overlayHost, fpsLabel, store, source, enabledSink, ignored -> {});
+    }
+
+    TimeTrialUi(Activity activity, Translator translator, Presenter presenter, Runnable parent,
+                FrameLayout overlayHost, TextView fpsLabel, TimeTrialStore store,
+                TimeTrialStore.NativeSnapshot source, Consumer<Boolean> enabledSink, Consumer<Boolean> ghostSink) {
         this.activity = activity; this.translator = translator; this.presenter = presenter; this.parent = parent;
         this.overlayHost = overlayHost; this.fpsLabel = fpsLabel; this.store = store;
-        this.source = source; this.enabledSink = enabledSink;
+        this.source = source; this.enabledSink = enabledSink; this.ghostSink = ghostSink;
         overlay = text("", 13, SettingsPanel.TEXT);
         overlay.setTag("time-trial-overlay");
         overlay.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
@@ -74,12 +84,15 @@ final class TimeTrialUi {
     static void applySaved(Context context) {
         GbaNative.setTimeTrialEnabled(context.getSharedPreferences("sma3-options", Context.MODE_PRIVATE)
             .getBoolean(ENABLED, false));
+        GbaNative.setTimeTrialGhostEnabled(context.getSharedPreferences("sma3-options", Context.MODE_PRIVATE)
+            .getBoolean(GHOST, false));
     }
     private String tr(String es, String en, String pt) { return translator.text(es, en, pt); }
     private boolean alive() { return !closed && !activity.isFinishing() && !activity.isDestroyed(); }
     private int dp(int value) { return Math.round(value * activity.getResources().getDisplayMetrics().density); }
     private boolean enabled() { return activity.getSharedPreferences("sma3-options", Context.MODE_PRIVATE).getBoolean(ENABLED, false); }
     private boolean overlayEnabled() { return activity.getSharedPreferences("sma3-options", Context.MODE_PRIVATE).getBoolean(OVERLAY, true); }
+    private boolean ghostEnabled() { return activity.getSharedPreferences("sma3-options", Context.MODE_PRIVATE).getBoolean(GHOST, false); }
     private TextView text(String value, int size, int color) {
         TextView result = new TextView(activity); result.setText(value); result.setTextSize(size); result.setTextColor(color);
         return result;
@@ -150,6 +163,16 @@ final class TimeTrialUi {
                 activity.getSharedPreferences("sma3-options", Context.MODE_PRIVATE).edit().putBoolean(OVERLAY, value).apply();
                 update(store.latest());
             });
+        page.toggle(tr("Fantasma de mi récord", "Personal-best ghost", "Fantasma do meu recorde"),
+            tr("Graba tu mejor recorrido y compite contra su fantasma.",
+                "Record your best run and race its ghost.", "Grave seu melhor percurso e dispute com seu fantasma."),
+            ghostEnabled(), value -> {
+                activity.getSharedPreferences("sma3-options", Context.MODE_PRIVATE).edit().putBoolean(GHOST, value).apply();
+                try { ghostSink.accept(value); } catch (UnsatisfiedLinkError | RuntimeException unavailable) { /* sampling reports availability */ }
+                sample(); update(store.latest());
+            });
+        ghostStatus = text("", 13, SettingsPanel.SECONDARY);
+        ghostStatus.setTag("time-trial-ghost-status"); page.content(ghostStatus);
 
         LinearLayout live = new LinearLayout(activity); live.setOrientation(LinearLayout.VERTICAL);
         live.setPadding(dp(14), dp(12), dp(14), dp(12)); live.setBackground(shape(0xff263d29, 0xff46613d));
@@ -186,7 +209,10 @@ final class TimeTrialUi {
             "Morir, salir del nivel o cargar un estado cancela ese intento. Actívalo antes de entrar al nivel; un reinicio desde un punto intermedio no registra un récord. Las mejores marcas se guardan en este dispositivo para los 60 niveles principales, Extra y Secretos. La bienvenida y Mario Bros. quedan fuera.",
             "Dying, leaving the level or loading a state cancels that attempt. Enable it before entering a level; restarting from a checkpoint cannot set a record. Personal bests are saved on this device for the 60 main, Extra and Secret levels. The welcome course and Mario Bros. are excluded.",
             "Morrer, sair da fase ou carregar um estado cancela a tentativa. Ative antes de entrar na fase; reiniciar de um ponto intermediário não registra recorde. As melhores marcas ficam neste dispositivo para as 60 fases principais, Extra e Secretas. A fase de boas-vindas e Mario Bros. ficam de fora."));
-        shown = page.dialog(parent); rendered = null; renderedWorld = -1;
+        page.paragraph(tr("Para crear un fantasma, activa el contrarreloj y el fantasma antes de entrar desde el inicio y termina igualando o mejorando tu récord. Los tiempos anteriores no contienen movimientos. El fantasma solo aparece en tu misma sala y se oculta durante transformaciones y escenas sin cobertura. No interactúa con enemigos ni objetos. Desactivarlo conserva los recorridos guardados.",
+            "To create a ghost, enable time trials and the ghost before entering from the beginning and finish by matching or beating your best. Earlier times contain no movements. The ghost appears only in your current room and hides during transformations and unsupported scenes. It does not interact with enemies or objects. Turning it off preserves saved runs.",
+            "Para criar um fantasma, ative o contra o relógio e o fantasma antes de entrar pelo início e termine igualando ou superando seu recorde. Tempos anteriores não contêm movimentos. O fantasma aparece apenas na sua sala e fica oculto durante transformações e cenas sem suporte. Não interage com inimigos nem objetos. Desativar preserva os percursos salvos."));
+        shown = page.dialog(parent); rendered = null; renderedWorld = -1; renderedGhosts = null;
         presenter.open(shown, parent); update(store.latest()); sample();
     }
 
@@ -222,6 +248,43 @@ final class TimeTrialUi {
         }
         return result;
     }
+    private String ghostStatus(TimeTrialStore.Result value) {
+        if (!ghostEnabled()) return tr("Fantasma desactivado. Tus recorridos guardados se conservan.",
+            "Ghost disabled. Saved runs are preserved.", "Fantasma desativado. Os percursos salvos são preservados.");
+        if (!enabled()) return tr("Activa también el contrarreloj para grabar y ver fantasmas.",
+            "Also enable time trials to record and see ghosts.", "Ative também o contra o relógio para gravar e ver fantasmas.");
+        TimeTrialGhostModel.Snapshot ghost = value.ghost;
+        if (value.ghostUnavailable) return tr("El fantasma aún no está disponible. Se reintentará.",
+            "The ghost is not available yet. It will retry.", "O fantasma ainda não está disponível. Uma nova tentativa será feita.");
+        if (ghost == null || !ghost.bestsReady || ghost.storage == TimeTrialGhostModel.NOT_CONFIGURED || ghost.storage == TimeTrialGhostModel.LOADING)
+            return tr("Preparando recorridos…", "Preparing recorded runs…", "Preparando percursos…");
+        if (ghost.storage == TimeTrialGhostModel.READ_ERROR) return tr("No se pudo leer un recorrido. El archivo se conserva; el cronómetro sigue funcionando.",
+            "A recorded run could not be read. Its file is preserved; the timer still works.",
+            "Não foi possível ler um percurso. O arquivo é preservado; o cronômetro continua funcionando.");
+        if (ghost.storage == TimeTrialGhostModel.WRITE_ERROR) return tr("El fantasma tiene un guardado pendiente. Se reintentará sin borrar la ruta anterior.",
+            "The ghost has a pending save. It will retry while preserving the previous run.",
+            "O fantasma tem um salvamento pendente. Uma nova tentativa preservará o percurso anterior.");
+        if (ghost.storage == TimeTrialGhostModel.SAVING || ghost.pending > 0) return tr("Guardando el fantasma de tu récord…",
+            "Saving your personal-best ghost…", "Salvando o fantasma do seu recorde…");
+        if (ghost.reason == TimeTrialGhostModel.LIMIT) return tr("Este recorrido superó el límite de grabación del fantasma. El tiempo sigue registrándose.",
+            "This run exceeded the ghost recording limit. Timing continues.", "Este percurso ultrapassou o limite de gravação do fantasma. O tempo continua sendo registrado.");
+        if (ghost.reason == TimeTrialGhostModel.CAPTURE_UNAVAILABLE) return tr("Este recorrido no pudo generar un fantasma visible. Su tiempo se conserva.",
+            "This run could not produce a visible ghost. Its time is preserved.", "Este percurso não pôde gerar um fantasma visível. Seu tempo é preservado.");
+        if (ghost.reason == TimeTrialGhostModel.BUFFER_UNAVAILABLE || ghost.reason == TimeTrialGhostModel.INVALID_BESTS)
+            return tr("No se pudo preparar esta grabación. Vuelve a entrar desde el inicio para intentarlo.",
+                "This recording could not be prepared. Enter again from the beginning to retry.",
+                "Não foi possível preparar esta gravação. Entre novamente pelo início para tentar.");
+        if (ghost.playing) return tr("Compitiendo contra: ", "Racing against: ", "Disputando contra: ")
+            + TimeTrialModel.format(ghost.referenceFrames)
+            + (ghost.recording ? tr(" · Grabando intento", " · Recording attempt", " · Gravando tentativa") : "");
+        if (ghost.recording) return tr("Grabando intento. Iguala o mejora tu récord para guardar su fantasma.",
+            "Recording attempt. Match or beat your best to save its ghost.", "Gravando tentativa. Iguale ou supere seu recorde para salvar o fantasma.");
+        if (ghost.reason == TimeTrialGhostModel.CANCELLED) return tr("Grabación cancelada. Tus fantasmas completos se conservan.",
+            "Recording cancelled. Your completed ghosts are preserved.", "Gravação cancelada. Seus fantasmas concluídos são preservados.");
+        return ghost.count() + " / 60 " + tr("fantasmas de récord disponibles. Entra desde el inicio para empezar.",
+            "personal-best ghosts available. Enter from the beginning to start.",
+            "fantasmas de recorde disponíveis. Entre pelo início para começar.");
+    }
     private void update(TimeTrialStore.Result value) {
         TimeTrialModel.Snapshot s = value.snapshot;
         String live = status(s);
@@ -248,11 +311,13 @@ final class TimeTrialUi {
         }
         if (shown == null || !shown.isShowing()) return;
         setText(current, live); setText(best, mark); setText(comparison, comparison(value)); setText(problem, issue);
+        setText(ghostStatus, ghostStatus(value));
         problem.setVisibility(issue.isEmpty() ? View.GONE : View.VISIBLE);
-        if (rendered != value.state || renderedWorld != world) renderRecords(value.state);
+        long[] ghosts = value.ghost == null ? null : value.ghost.best;
+        if (rendered != value.state || renderedWorld != world || !Arrays.equals(renderedGhosts, ghosts)) renderRecords(value.state, ghosts);
     }
 
-    private void renderRecords(TimeTrialModel.State state) {
+    private void renderRecords(TimeTrialModel.State state, long[] ghosts) {
         if (records == null) return;
         for (int i = 0; i < worlds.length; ++i) {
             worlds[i].setSelected(i == world);
@@ -273,10 +338,14 @@ final class TimeTrialUi {
                 if (state.last[index] != 0) detail += "\n" + tr("Último: ", "Last: ", "Último: ")
                     + TimeTrialModel.format(state.last[index]) + " · " + TimeTrialModel.delta(state.last[index], state.best[index]);
                 row.addView(text(detail, 12, SettingsPanel.SECONDARY));
+                if (ghosts != null && ghosts[index] > 0)
+                    row.addView(text(tr("Fantasma disponible · ", "Ghost available · ", "Fantasma disponível · ")
+                        + TimeTrialModel.format(ghosts[index]), 12, SettingsPanel.ACCENT));
+                else row.addView(text(tr("Sin fantasma para esta marca", "No ghost for this record", "Sem fantasma para este recorde"), 12, SettingsPanel.SECONDARY));
             }
             LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(-1, -2); size.setMargins(0, 0, 0, dp(6));
             records.addView(row, size);
         }
-        rendered = state; renderedWorld = world;
+        rendered = state; renderedWorld = world; renderedGhosts = ghosts == null ? null : ghosts.clone();
     }
 }

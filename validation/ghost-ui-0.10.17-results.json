@@ -1,0 +1,38 @@
+{
+  "result": "PASS",
+  "scope": "Production Android UI/store with controlled JNI snapshots; no physical phone or ARM64 game",
+  "framework": "Robolectric 4.16.1",
+  "android_api": 34,
+  "physical_device": false,
+  "model_output": "PASS 115 time-trial model checks\n",
+  "test_output": "JUnit version 4.13.2\n[Robolectric] WARN: Android SDK 36 requires Java 21 (have Java 17). Tests won't be run on SDK 36 unless explicitly requested.\n.............\nTime: 9.807\n\nOK (13 tests)\n\n",
+  "captures": [
+    "ghost-landscape-es.png",
+    "ghost-record-en.png",
+    "ghost-record-es.png",
+    "ghost-record-pt.png",
+    "time-trial-es-landscape.png",
+    "time-trial-es-portrait.png",
+    "time-trial-record-en.png",
+    "time-trial-record-es.png",
+    "time-trial-record-pt.png"
+  ],
+  "source_sha256": {
+    "android/java/org/gbarecomp/TimeTrialModel.java": "2679c64312a84e05c09eab30178f178d1eec72ec86949177d1d9e9ce5b13c5af",
+    "android/java/org/gbarecomp/TimeTrialGhostModel.java": "a24c274479fb8251029cd41127c8c12c80b9197859be78cb8cfff3e24da0c6f7",
+    "android/java/org/gbarecomp/TimeTrialStore.java": "4b9eb7791d6fcbd818328d23a8022c08b87037ac4c8f11a1d3a6b13128448535",
+    "android/java/org/gbarecomp/TimeTrialUi.java": "9f2a7e8f0e570aa02660638302bc1bc9e301d40f24a2facaed819cbaa8735a2d",
+    "android/java/org/gbarecomp/SettingsPanel.java": "178a5fcd718d3d52dee00b47b8e78416f7cf05235416908297407eb0e0afa53f",
+    "android/java/org/gbarecomp/GbaNative.java": "fa9ce443fc77c52fd6b9e218f5df4e436933f92d17e9e475e3e49a851b7c12e8",
+    "validation/TimeTrialModelTest.java": "19be3dd006b487246820b608f6c9be468a1007990810ad61f50f2d9b9aeb4053",
+    "validation/TimeTrialUiTest.java": "1d7d3b60a6075d36a04e5fa2f5c7b0d07043fdba6ad66cc894a5b071f0182f67"
+  },
+  "version": "0.10.17-beta",
+  "model_checks": 115,
+  "ui_tests": 13,
+  "capture_review": {
+    "portrait": "Spanish, English and Portuguese portrait captures visually inspected",
+    "landscape": "Back button outside scroll area; remaining content scrolls",
+    "physical_device": false
+  }
+}

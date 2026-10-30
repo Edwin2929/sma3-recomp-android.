@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "release": "0.10.17-beta",
+  "result": "PASS",
+  "scope": "Supplementary bounded windowed reference for the nonzero unmapped counter; real SDL software and the same ordinary-button CSV, not a phone or performance test",
+  "comparison_version": "0.10.16-beta",
+  "reference_runner_sha256": "7d7307841645e6f17af28a2f79c9f95ffec09bcc2d9f838a3c6f82b6820cc0b2",
+  "candidate_runner_sha256": "9e5068fe31818e340d9cf508f61e00a8b4ed09f6aa3e353cbbc298084f8d55a9",
+  "entry_checkpoint_sha256": "f3da3fc0e6a0354afcf4cf77fc552dd86f3c5bf6eb43c8ed040e014ff3af9b13",
+  "start_frame": 9621,
+  "presentations": 604,
+  "presentation_index": 603,
+  "drawable": [
+    960,
+    640
+  ],
+  "input_route": "First two actions of ghost-course-1-1.json, then 30 neutral frames, then route actions 2 through 7 inclusive, at absolute PPU frame indices",
+  "replay_csv_sha256": "c3b01a54bae879085a2d8bc6b4a49a16579bdd3a373e525adfdc084d4d815c19",
+  "same_replay_csv_as_candidate": true,
+  "source_sha256": {
+    "validation/ghost-course-1-1.json": "a87db7579132b55811dc959433bdaa8cfb661dafd5094aab3db068e78fec6542",
+    "validation/sdl_ghost_present_capture.c": "1864544e02278310d5f89113b7879b0408fc7d8e6237aed83a230cf1058f6b71"
+  },
+  "runtime_counters_identical_in_reference_candidate_off_candidate_on": {
+    "final_pc": 134228896,
+    "unmapped": 448,
+    "io_unhandled": 0,
+    "steps": 94779,
+    "cycles": 0,
+    "ppu_vcount": 189,
+    "ppu_frames": 10225,
+    "frames_presented": 604
+  },
+  "coverage": {
+    "coverage": "FULLY_STATIC",
+    "distinct_misses": 0,
+    "interpreted_insns": 0,
+    "healed_native": 0,
+    "failed": 0
+  },
+  "checks": {
+    "reference_and_candidate_off_presentations_byte_identical": true,
+    "all_three_faithful_framebuffers_byte_identical": true,
+    "all_three_timers_identical": true,
+    "all_three_runtime_counters_identical": true
+  },
+  "reference_guest_png_sha256": "7b9a3157319994e0b5833806ece8d974e79eaaebfb013e8b6fe8c8e64b4aabe3",
+  "reference_present_rgba_sha256": "1e7271a3d6507e393e184ead9348782528f01dcf87189b7056591bcddadcd745",
+  "reference_runtime_log_sha256": "77f2737d5444d61c6d4aa5d9ad71cab3534e9bcdbcfcd06682f0b80972f63788",
+  "reference_harness_sha256": "3771c34396779aca9270d9e00caae6f46517e9645602ab659bdc599644e65189",
+  "note": "unmapped=448 is present in the same 0.10.16 replay and remains unchanged with the ghost off or on. It is not zero and is distinct from dispatch misses, interpreted instructions, healing and failed execution counters. The harness and binary inputs remain private; source and execution hashes are recorded."
+}

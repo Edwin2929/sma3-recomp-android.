@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "Ghost visual component and production overlay callback; complete native recording/replay is qualified separately",
+  "sources": {
+    "src/ghost_visual.h": "8994b64b7e14e9bf4a79aa5e0cb7ae57b27c93fb4a3090179f47a4db45b86ea5",
+    "src/ghost_visual_detail.h": "aeff07288fddf5b585fdf9372459e0e45062249ee505dc8df72a17cd529ec2d9",
+    "src/ghost_visual.cpp": "9c824ff8292dd8c97886d9f80a7c44430abc56297780bc684ecebcd6db9ac9df",
+    "validation/ghost_visual_test.cpp": "7256a1f33067650e751fa63b392028fa4ac7eab899854e8fb5577f3d4343972f",
+    "validation/ghost_overlay_test.cpp": "f28e8157b5ef500fd6eb19aa25113d47573971cfe36265e10f485c069bea42d7",
+    "validation/sdl_ghost_present_capture.c": "1864544e02278310d5f89113b7879b0408fc7d8e6237aed83a230cf1058f6b71"
+  },
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "tests": {
+    "pure_optimized": {
+      "result": "PASS",
+      "checks": 2545
+    },
+    "pure_sanitized": {
+      "result": "PASS",
+      "checks": 2545,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "leak_detection": false,
+      "real_native_capture_included": false
+    },
+    "native_input_optimized": {
+      "result": "PASS",
+      "checks_total": 2556,
+      "checks_added": 11
+    },
+    "production_overlay_optimized": {
+      "result": "PASS",
+      "checks": 38,
+      "disabled_draw_calls": 0,
+      "maximum_draw_calls": 512
+    },
+    "production_overlay_sanitized": {
+      "result": "PASS",
+      "checks": 38,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "excluded_sanitizers": [
+        "vptr"
+      ],
+      "leak_detection": false,
+      "fixture_playback_and_context": true
+    },
+    "production_translation_unit": {
+      "result": "PASS",
+      "flags": [
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-misleading-indentation"
+      ],
+      "warning_suppression_reason": "pre-existing touch_layout.h indentation"
+    },
+    "sdl_present_tap_compile": {
+      "result": "PASS",
+      "flags": [
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ]
+    }
+  },
+  "real_native_source": {
+    "runner_version": "0.10.16",
+    "origin": "existing private 1-1 running savestate, then two neutral native frames",
+    "frame": 10104,
+    "dispcnt": "0x7f00",
+    "camera": [
+      47,
+      1812
+    ],
+    "player_anchor": [
+      72,
+      92
+    ],
+    "normal_yoshi_objects": 6,
+    "palette_bank": 5,
+    "base_tiles": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "coverage": "FULLY_STATIC",
+    "distinct_misses": 0,
+    "interpreted_insns": 0,
+    "healed_native": 0,
+    "failed": 0
+  },
+  "captured_sprite": {
+    "width": 26,
+    "height": 31,
+    "world_x": 119,
+    "world_y": 1905,
+    "room": 0,
+    "opaque_texels": 444,
+    "draw_calls": 216,
+    "maximum_draw_calls": 512
+  },
+  "component_timing": {
+    "iterations": 20000,
+    "capture_mean_ns": 7098.12,
+    "run_build_mean_ns": 2848.79,
+    "scope": "optimized host component, repeated input; excludes SDL and whole-game costs",
+    "phone_fps_claim": false
+  },
+  "presentation": {
+    "alpha": 112,
+    "alpha_denominator": 255,
+    "color": "captured RGB555, including custom-Yoshi provider",
+    "layer": "after image/filter, before touch controls",
+    "frame_source": "previous unique frame and epoch, matching latched PPU image",
+    "hard_draw_limit": 512,
+    "clip": [
+      "drawable",
+      "actual image rectangle",
+      "native center when pillarboxed",
+      "cinematic bars"
+    ],
+    "hidden": [
+      "transformed Yoshi",
+      "non-gameplay scene",
+      "inventory or Start pause",
+      "Fuzzy",
+      "forced blank",
+      "OBJ brightness fade",
+      "restricted OBJ windows",
+      "OBJ mosaic",
+      "unmatched room",
+      "Android settings",
+      "touch editor"
+    ]
+  },
+  "limitations": [
+    "Private native OAM/VRAM capture decoded only in optimized test, not ASan/UBSan",
+    "Overlay callback sanitizer excludes vptr because bus functions and RTTI are discarded",
+    "Component tests use controlled playback/context fixtures and do not establish end-to-end ghost persistence",
+    "Native capture is a loaded-state normal-Yoshi observation, not a naturally completed ghost route",
+    "No physical-phone test or device FPS claim",
+    "Private ROM, BIOS, screenshots, savestates and raw buffers excluded from repository"
+  ]
+}

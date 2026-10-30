@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "baseline_commit": "ba2d2193fa36c5eba1e468b85068ee8ab721a36b",
+  "startup_runtime_inputs_unchanged": {
+    "sma3-recomp-android/runtime.toml": {
+      "sha256": "c8f87a8ae90d9334d3b0181f4f4d64fb147c1b4cb36cddf9edd71f307df237b2",
+      "bytes": 226
+    },
+    "gbarecomp/src/runtime/runtime.cpp": {
+      "sha256": "9993526074cb6df7342c08634a66196622cc1741397d8576d3bb61852482a62a",
+      "bytes": 201775
+    },
+    "gbarecomp/src/runtime/runtime.h": {
+      "sha256": "ce133f0a4f922f7c42beda5cd2160df25cd275df2f8751e2ab73f9846e49ea90",
+      "bytes": 17995
+    },
+    "gbarecomp/platform/android/java/org/gbarecomp/GbaGameActivity.java": {
+      "sha256": "f29b5da3e258d0abd71e4f3d23f93d650e5b1bd8de429e2e2f8487dbff56c28b",
+      "bytes": 8015
+    }
+  },
+  "android_resume_suspend_state_on_launch": true,
+  "android_bios_skip_intro": true,
+  "requested_intro_behavior_change_applied": false,
+  "scope": "Comparison of runtime/bootstrap inputs and existing Android launch flags. New ghost initialization and shutdown surround the unchanged run_game launch path."
+}
